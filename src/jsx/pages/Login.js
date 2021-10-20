@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory,Route } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert"
 
@@ -18,13 +18,12 @@ const Login = () => {
       axios.get('sanctum/csrf-cookie').then(response=>{
          axios.post("/api/login", loginstate).then(res=>{
             if(res.data.status === 200){
-               localStorage.setItem('auth_token', res.data.token)
-               localStorage.setItem('auth_name', res.data.user)
-               history.push("/home")
+               localStorage.setItem('auth_token', res.data.token);
+               localStorage.setItem('auth_name', res.data.user);
+               history.push("/home");
             }
             else{
                swal("Warning",res.data.message,"warning");
-               
             }
         });
       });   
@@ -79,7 +78,11 @@ const Login = () => {
                   </div>
                </div>
             </div>
+             
+
          </div>
+
+         
          
    );
 };

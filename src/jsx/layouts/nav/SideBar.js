@@ -47,67 +47,26 @@ class SideBar extends Component {
 
       /// Active menu
       let deshBoard = [
-            "",
-            "analytics",
-            "companies",
-            "statistics",
-			
+            "home",
          ],
-         app = [
-            "app-profile",
-            "app-calender",
-            "email-compose",
-            "email-inbox",
-            "email-read",
-            "ecom-product-grid",
-            "ecom-product-list",
-            "ecom-product-list",
-            "ecom-product-order",
-            "ecom-checkout",
-            "ecom-invoice",
-            "ecom-customers",
+         branch = [
+            "branches",
          ],
          charts = [
             "chart-morris",
-            "chart-chartjs",
-            "chart-chartist",
-            "chart-sparkline",
-            "chart-peity",
          ],
          bootstrap = [
             "ui-accordion",
-            "ui-badge",
-            "ui-alert",
-            "ui-button",
-            "ui-modal",
-            "ui-button-group",
-            "ui-list-group",
-            "ui-media-object",
-            "ui-card",
-            "ui-carousel",
-            "ui-dropdown",
-            "ui-popover",
-            "ui-progressbar",
-            "ui-tab",
-            "ui-typography",
-            "ui-pagination",
-            "ui-grid",
+           
          ],
          plugins = [
             "uc-select2",
-            "uc-nestable",
-            "uc-sweetalert",
-            "uc-toastr",
-            "uc-jqvmap",
-            "uc-noui-slider",
+            
          ],
          widget = ["widget"],
          forms = [
             "form-element",
-            "form-wizard",
-            "form-editor-summernote",
-            "form-pickers",
-            "form-validation-jquery",
+           
          ],
          table = ["table-bootstrap-basic", "table-datatable-basic"];
 
@@ -122,7 +81,7 @@ class SideBar extends Component {
                   >
                      <Link
                         className="ai-icon"
-                        to="/"
+                        to="/home"
                         
                      >
                         <i className="flaticon-381-networking"></i>
@@ -132,7 +91,7 @@ class SideBar extends Component {
                   </li>
                   <li
                      className={`${
-                        app.includes(path.slice(1)) ? "mm-active" : ""
+                        branch.includes(path.slice(1)) ? "mm-active" : ""
                      }`}
                   >
                      <Link

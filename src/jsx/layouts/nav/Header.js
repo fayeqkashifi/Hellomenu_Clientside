@@ -47,7 +47,6 @@ const Header = ({ onNote, toggle, onProfile, onActivity, onNotification}) => {
                localStorage.removeItem('auth_token');
                localStorage.removeItem('auth_name');
                swal("Success",res.data.message,"success");
-
                history.push("/page-login");
             }
            
@@ -56,6 +55,7 @@ const Header = ({ onNote, toggle, onProfile, onActivity, onNotification}) => {
    };  
    return (
       <div className="header">
+         
          <div className="header-content">
             <nav className="navbar navbar-expand">
                <div className="collapse navbar-collapse justify-content-between">

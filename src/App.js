@@ -26,20 +26,20 @@ const App = () => {
       
       <Router>
          <Switch>
-            {/* <Route exact path='/' component={Login} /> */}
-            {/* <Route  path='/dashboard' component={Markup} /> */}
-            {/* <Route       path="/forgot-password" component={ForgotPassword} />
-            <Route       path="/user-register"  component={Registration} /> */}
-            <Route path='/page-login'>
-               {localStorage.getItem('auth_token') ? <Redirect to="/home" /> : <Login /> }
+            <Route exact path='/page-login' component={Login} />
+            <Route path="/user-register"  component={Registration} /> 
+            <Route path="/home"  component={Markup} /> 
+
+            <Route path='/'>
+              <Redirect to="/page-login" />
             </Route>
-            <Route path="/user-register">
-               {localStorage.getItem('auth_token') ? <Redirect to="/home" /> : <Registration /> }
-            </Route>
+            {/* <Route path="/user-register">
+               {localStorage.getItem('auth_token') ? <Redirect to="/user-register" /> : <Registration /> }
+            </Route> */}
          </Switch>
-         <Fragment> 
+         {/* <Fragment> 
             <Markup />
-         </Fragment>  
+         </Fragment>   */}
        </Router>
 
    );
