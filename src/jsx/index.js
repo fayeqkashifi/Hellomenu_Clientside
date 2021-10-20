@@ -68,9 +68,9 @@ import Customers from "./components/AppsMenu/Shop/Customers/Customers";
 
 
 
-/// Table
-import DataTable from "./components/table/DataTable";
-import BootstrapTable from "./components/table/BootstrapTable";
+// /// Table
+// import DataTable from "./components/table/DataTable";
+// import BootstrapTable from "./components/table/BootstrapTable";
 
 /// Form
 import Element from "./components/Forms/Element/Element";
@@ -140,8 +140,8 @@ const Markup = () => {
 		
 	
 		/// table
-		{ url: "table-datatable-basic", component: DataTable },
-		{ url: "table-bootstrap-basic", component: BootstrapTable },
+		// { url: "table-datatable-basic", component: DataTable },
+		// { url: "table-bootstrap-basic", component: BootstrapTable },
 	
 		/// Form
 		{ url: "form-element", component: Element },

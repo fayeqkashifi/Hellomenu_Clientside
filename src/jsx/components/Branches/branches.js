@@ -1,43 +1,47 @@
 import React, { Fragment,useState,useEffect } from "react";
-import { Link } from "react-router-dom";
 import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
-
+import swal from "sweetalert"
 const Branches = () => {
-   
+    // state for modal
     const [modalCentered, setModalCentered] = useState(false);
+    // insert a branch
     const [branchstate, setBranchstate] = useState({
         BrancheName: '',
     });
     const handleInput = (e) => {
-        setBranchstate({[e.target.name]: e.target.value});
-    };
-    const saveBranch = async (e) => {
         e.preventDefault();
-        console.log(branchstate);
-        const res = await axios.post("http://localhost/yesilik1/public/api/InsertBranches", branchstate);
-        if(res.data.status === 200){
-            branchstate({
-                BrancheName: '',
-             });
-             this.props.history.push("/")
+        setBranchstate({...branchstate, [e.target.name]: e.target.value});
+    };
+    const saveBranch =  (e) => {
+        e.preventDefault();
+        const data={
+            BrancheName:branchstate.BrancheName
         }
+        axios.post("/api/InsertBranches", data).then(res=>{
+            if(res.data.status === 200){
+                // console.log(res.data.status);
+                setBranchstate({
+                    BrancheName: '',
+                 });
+                 swal("Success",res.data.message,"success");
+                 setModalCentered(false)
+                //  this.props.history.push("/")
+            }
+        });
+        
     };
     //for retriving data using laravel API
-   
     const [branchdata,setBranchdata]=useState({
         branches:[],
-        loading:true,
     });
-     useEffect(async () => {
-        const res=  await axios.get('http://localhost/yesilik1/public/api/GetBranches');
-
-        setBranchdata({
-            branches: res.data.branches,
-            loading:false,
-        });
-
+    useEffect( () => {
+        axios.get('/api/GetBranches').then(res => {
+            setBranchdata({
+                branches: res.data.branches,
+            });
+          });
       });
     
 
@@ -46,7 +50,7 @@ const Branches = () => {
          <PageTItle headingPara="Branches" activeMenu="add-branch" motherMenu="Branch" />
         {/* <!-- Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveBranch} method= "POST">
+            <Form onSubmit={saveBranch} method= "POST" >
                 <Modal.Header>
                     <Modal.Title>Add A Branch</Modal.Title>
                     <Button
@@ -98,7 +102,7 @@ const Branches = () => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								add
+								Add
 							</Button>
 							
 						</div>
@@ -107,19 +111,22 @@ const Branches = () => {
 						<div className="table-responsive ">
 							<table className="table ">
                                 <thead>
-                                    <th>
-                                        ID
-                                    </th>
-                                    <th>
-                                        Branch Name
-                                    </th>
-                                    <th>
-                                        Actions
-                                    </th>
+                                    <tr>
+                                        <th>
+                                            ID
+                                        </th>
+                                        <th>
+                                            Branch Name
+                                        </th>
+                                        <th>
+                                            Actions
+                                        </th>
+                                    </tr>
                                 </thead>
 								<tbody>
                                 {branchdata.branches.map((branch) => (
-                                    <tr>
+                                    
+                                    <tr key={branch.id}>
                                         <td >
                                             <h5>{branch.id}</h5>
                                         </td>
@@ -127,13 +134,14 @@ const Branches = () => {
                                             <h5>{branch.BrancheName}</h5>
                                         </td> 
                                         <td>
-                                            <button type="button" class="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                                            <button type="button" class="btn btn-outline-warning btn-sm">Delete</button>
+                                            <button type="button" className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
+                                            <button type="button" className="btn btn-outline-warning btn-sm">Delete</button>
                                         </td> 
                                     </tr>	
+                                    
                                    ))}											
-							</tbody></table>
-							
+							    </tbody>
+                            </table>
 						</div>
 					</div>
 				</div>

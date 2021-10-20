@@ -17,7 +17,7 @@ const Home = () => {
 					</div>
 					<div className="card-body">
 						<p>Create new menus, add or edit your items and sections in your menus</p>
-						<button type="button" class="btn btn-outline-success">Menus</button>
+						<button type="button" className="btn btn-outline-success">Menus</button>
 					</div>
 				</div>
 			</div>
@@ -30,7 +30,7 @@ const Home = () => {
 					</div>
 					<div className="card-body">
 						<p>Design your menu to reflect your business and your brand</p>
-						<button type="button" class="btn btn-outline-primary">Design</button>
+						<button type="button" className="btn btn-outline-primary">Design</button>
 					</div>
 				</div>
 			</div><div className="col-xl-3 col-lg-6 col-sm-6">
@@ -43,7 +43,7 @@ const Home = () => {
 					</div>
 					<div className="card-body ">
 						<p>Set up all the details of your menu to fit it in your business</p>
-						<button type="button" class="btn btn-outline-warning">settings</button>
+						<button type="button" className="btn btn-outline-warning">settings</button>
 					</div>
 				</div>
 			</div><div className="col-xl-3 col-lg-6 col-sm-6">
@@ -55,7 +55,7 @@ const Home = () => {
 					</div>
 					<div className="card-body ">
 						<p>Set up all the details of your menu to fit it in your business</p>
-						<button type="button" class="btn btn-outline-success">Integrations</button>
+						<button type="button" className="btn btn-outline-success">Integrations</button>
 					</div>
 				</div>
 			</div>

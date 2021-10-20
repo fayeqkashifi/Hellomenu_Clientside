@@ -1,11 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link ,useHistory} from "react-router-dom";
 /// Scroll
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 /// Image
 import profile from "../../../images/profile/12.png";
 import avatar from "../../../images/avatar/1.jpg";
+import axios from "axios";
+import swal from "sweetalert";
 
 const Header = ({ onNote, toggle, onProfile, onActivity, onNotification}) => {
    var path = window.location.pathname.split("/");
@@ -36,7 +38,22 @@ const Header = ({ onNote, toggle, onProfile, onActivity, onNotification}) => {
       : filterName;
 	
 	var page_name = (finalName.join(" ") === '')?'Dashboard':finalName.join(" ");	
-	  
+
+   const history = useHistory();
+   const logoutUser =  (e) => {
+      e.preventDefault();
+         axios.post("/api/logout").then(res=>{
+            if(res.data.status === 200){
+               localStorage.removeItem('auth_token');
+               localStorage.removeItem('auth_name');
+               swal("Success",res.data.message,"success");
+
+               history.push("/page-login");
+            }
+           
+        });
+     
+   };  
    return (
       <div className="header">
          <div className="header-content">
@@ -352,9 +369,10 @@ const Header = ({ onNote, toggle, onProfile, onActivity, onNotification}) => {
                               </svg>
                               <span className="ml-2">Inbox </span>
                            </Link>
-                           <Link
-                              to="/page-login"
+                           <button
+                             
                               className="dropdown-item ai-icon"
+                              onClick={logoutUser}
                            >
                               <svg
                                  id="icon-logout"
@@ -374,7 +392,7 @@ const Header = ({ onNote, toggle, onProfile, onActivity, onNotification}) => {
                                  <line x1="21" y1="12" x2="9" y2="12"></line>
                               </svg>
                               <span className="ml-2">Logout </span>
-                           </Link>
+                           </button>
                         </div>
                      </li>
 					 
