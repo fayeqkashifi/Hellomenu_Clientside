@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import Registration from "./jsx/pages/Registration";
@@ -28,7 +28,7 @@ const App = () => {
          <Switch>
             <Route exact path='/page-login' component={Login} />
             <Route path="/user-register"  component={Registration} /> 
-            <Route path="/home"  component={Markup} /> 
+            <Route path="/dashboard"  component={Markup} /> 
 
             <Route path='/'>
               <Redirect to="/page-login" />

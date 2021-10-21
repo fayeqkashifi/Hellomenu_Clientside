@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Link, useHistory,Route } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert"
 
@@ -20,7 +20,7 @@ const Login = () => {
             if(res.data.status === 200){
                localStorage.setItem('auth_token', res.data.token);
                localStorage.setItem('auth_name', res.data.user);
-               history.push("/home");
+               history.push("/dashboard");
             }
             else{
                swal("Warning",res.data.message,"warning");

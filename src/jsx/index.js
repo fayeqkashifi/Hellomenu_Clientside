@@ -10,11 +10,6 @@ import "./chart.css";
 /// Layout
 import Nav from "./layouts/nav";
 import Footer from "./layouts/Footer";
-
-/// Pages
-import Registration from "./pages/Registration";
-import Login from "./pages/Login";
-
 /// Deshboard
 import Home from "./components/Dashboard/Home/Home";
 
@@ -23,10 +18,8 @@ import Branches from "./components/Branches/branches";
 const Markup = () => {
    const routes = [
 		/// Login
-		{ url: "/home", component: Home },
+		{ url: "dashboard", component: Home },
 		{ url: "branches", component: Branches },
-		
-	
    ];
 
    return (

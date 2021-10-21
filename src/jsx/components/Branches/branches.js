@@ -4,8 +4,10 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 const Branches = () => {
-    // state for modal
+    // insert modal
     const [modalCentered, setModalCentered] = useState(false);
+    // edit modal
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a branch
     const [branchstate, setBranchstate] = useState({
         BrancheName: '',
@@ -32,23 +34,95 @@ const Branches = () => {
         });
         
     };
-    //for retriving data using laravel API
-    const [branchdata,setBranchdata]=useState({
-        branches:[],
-    });
-    useEffect( () => {
-        axios.get('/api/GetBranches').then(res => {
-            setBranchdata({
-                branches: res.data.branches,
-            });
-          });
-      });
+    // edit code
+    const [editBranchstate, setEditBranchstate] = useState([]);
+    const editHandleInput = (e) => {
+        e.persist();
+        setEditBranchstate({...editBranchstate, [e.target.name]: e.target.value});
+    };
+    const editBranch = (e,id)=>{
+        e.preventDefault();
+        axios.get(`/api/EditBranches/${id}`).then(res=>{
+            if(res.data.status === 200){
+                setEditBranchstate(res.data.branch);
+                setEditModalCentered(true);
+            }else if(res.data.status === 404){
+                swal("Error",res.data.message,"error");
+            }
+
+        });
+
+    }
+    const updateBranch =  (e) => {
+        e.preventDefault();
+        
+        axios.post("/api/UpdateBranches", editBranchstate).then(res=>{
+            if(res.data.status === 200){
+                // console.log(res.data.status);
+                setEditBranchstate('');
+                swal("Success",res.data.message,"success");
+                setEditModalCentered(false)
+                //  this.props.history.push("/")
+            }
+        });
+        
+    };
     
 
+
+
+
+
+    //for retriving data using laravel API
+    const [branchdata,setBranchdata]=useState([]);
+    const [loading, setLoading]=useState(true);
+    
+    useEffect( () => {
+        axios.get('/api/GetBranches').then(res => {
+            if(res.data.status === 200){
+            setBranchdata(res.data.branches);
+            }
+            setLoading(false);
+          });
+      }, []);
+
+    var viewBranches_HTMLTABLE = "";
+    if(loading){
+        return <h4>Loading...!</h4>
+    }else{
+        viewBranches_HTMLTABLE = 
+        branchdata.map((item)=>{
+            return (
+                <tr key={item.id}>
+                    <td>{item.id}</td>
+                    <td>{item.BrancheName}</td>
+                    <td>
+                        <button type="button"   onClick={(e)=>editBranch(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteBranch(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                    </td> 
+                </tr>
+            )
+        })
+
+    }
+    // delete branch 
+    const deleteBranch= (e,id)=>{
+        e.preventDefault();
+        axios.delete(`/api/DeleteBranches/${id}`).then(res=>{
+            if(res.data.status === 200){
+                swal("Success",res.data.message,"success");
+                // thisClicked.closest("tr").remove();
+            }else if(res.data.status === 404){
+                swal("Success",res.data.message,"success");
+            }
+        });
+
+    }
+    
     return (
       <Fragment>
          <PageTItle headingPara="Branches" activeMenu="add-branch" motherMenu="Branch" />
-        {/* <!-- Modal --> */}
+        {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveBranch} method= "POST" >
                 <Modal.Header>
@@ -87,7 +161,59 @@ const Branches = () => {
 
                 </Modal.Footer>
             </Form>
+        </Modal>
+         {/* Edit Modal */}
+         <Modal className="fade" show={editmodalCentered}>
+            <Form onSubmit={updateBranch} method= "POST" >
+                <Modal.Header>
+                    <Modal.Title>Edit Branch</Modal.Title>
+                    <Button
+                        onClick={() => setEditModalCentered(false)}
+                        variant=""
+                        className="close"
+                    >
+                        <span>&times;</span>
+                    </Button>
+                </Modal.Header>
+                <Modal.Body>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>ID</strong> </label>
+                            <input
+                                type="text"
+                                disabled="disabled"
+                                className="form-control"
+                                placeholder="Branch Name"
+                                name="id"
+                                required
+                                onChange={editHandleInput}  
+                                value={editBranchstate.id}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>Branch Name</strong> </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Branch Name"
+                                name="BrancheName"
+                                required
+                                onChange={editHandleInput}  
+                                value={editBranchstate.BrancheName}
+                            />
+                        </div>
 
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={() => setEditModalCentered(false)}
+                        variant="danger light"
+                    >
+                        Close
+                    </Button>
+                    <Button variant="primary" type="submit">Update </Button>
+
+                </Modal.Footer>
+            </Form>
         </Modal>
          <div className="row" >
             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
@@ -104,7 +230,6 @@ const Branches = () => {
                             onClick={() => setModalCentered(true)} >
 								Add
 							</Button>
-							
 						</div>
 					</div>
 					<div className="card-body p-0">
@@ -112,19 +237,14 @@ const Branches = () => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            ID
-                                        </th>
-                                        <th>
-                                            Branch Name
-                                        </th>
-                                        <th>
-                                            Actions
-                                        </th>
+                                        <th>ID</th>
+                                        <th>Branch Name</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
 								<tbody>
-                                {branchdata.branches.map((branch) => (
+                                    {viewBranches_HTMLTABLE}
+                                {/* {branchdata.branches.map((branch) => (
                                     
                                     <tr key={branch.id}>
                                         <td >
@@ -135,11 +255,11 @@ const Branches = () => {
                                         </td> 
                                         <td>
                                             <button type="button" className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                                            <button type="button" className="btn btn-outline-warning btn-sm">Delete</button>
+                                            <button type="button" onClick={(e)=>deleteBranch(e,branch.id)} className="btn btn-outline-warning btn-sm">Delete</button>
                                         </td> 
                                     </tr>	
                                     
-                                   ))}											
+                                   ))}											 */}
 							    </tbody>
                             </table>
 						</div>

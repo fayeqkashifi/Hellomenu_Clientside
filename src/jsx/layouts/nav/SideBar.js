@@ -46,8 +46,8 @@ class SideBar extends Component {
       const path = window.location.pathname;
 
       /// Active menu
-      let deshBoard = [
-            "home",
+      let dashBoard = [
+            "dashboard",
          ],
          branch = [
             "branches",
@@ -76,13 +76,12 @@ class SideBar extends Component {
                <MM className="metismenu" id="menu">
                   <li
                      className={`${
-                        deshBoard.includes(path.slice(1)) ? "mm-active" : ""
+                        dashBoard.includes(path.slice(1)) ? "mm-active" : ""
                      }`}
                   >
                      <Link
                         className="ai-icon"
-                        to="/home"
-                        
+                        to="/dashboard"
                      >
                         <i className="flaticon-381-networking"></i>
                         <span className="nav-text">Dashboard</span>
