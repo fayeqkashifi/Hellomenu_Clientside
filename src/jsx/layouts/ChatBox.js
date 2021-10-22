@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 
-/// Scroll
-import PerfectScrollbar from "react-perfect-scrollbar";
+// /// Scroll
+// import PerfectScrollbar from "react-perfect-scrollbar";
 
-/// Components
-import Notes from "../components/chatBox/Notes";
-import Alerts from "../components/chatBox/Alerts";
-import Chat from "../components/chatBox/Chat";
+
 
 const ChatBox = ({ onClick, toggle }) => {
    const [toggleTab, settoggleTab] = useState(
@@ -44,21 +41,7 @@ const ChatBox = ({ onClick, toggle }) => {
                ))}
             </ul>
             <div className="tab-content">
-               <Chat
-                  PerfectScrollbar={PerfectScrollbar}
-                  toggle={toggle}
-                  toggleTab={toggleTab}
-               />
-               <Notes
-                  PerfectScrollbar={PerfectScrollbar}
-                  toggle={toggle}
-                  toggleTab={toggleTab}
-               />
-               <Alerts
-                  PerfectScrollbar={PerfectScrollbar}
-                  toggle={toggle}
-                  toggleTab={toggleTab}
-               />
+              
             </div>
          </div>
       </div>

@@ -52,8 +52,8 @@ class SideBar extends Component {
          branch = [
             "branches",
          ],
-         charts = [
-            "chart-morris",
+         menus = [
+            "menu",
          ],
          bootstrap = [
             "ui-accordion",
@@ -104,22 +104,18 @@ class SideBar extends Component {
                   </li>
                   <li
                      className={`${
-                        charts.includes(path.slice(1)) ? "mm-active" : ""
+                        menus.includes(path.slice(1)) ? "mm-active" : ""
                      }`}
                   >
                      <Link
-                        className="has-arrow ai-icon"
-                        to="#"
+                        className="ai-icon"
+                        to="/menu"
                         
                      >
                         <i className="flaticon-381-controls-3"></i>
                         <span className="nav-text">Menus</span>
                      </Link>
-                     <ul >
-                        <li>
-                           <Link to="/chart-rechart">Test one</Link>
-                        </li>
-                     </ul>
+                    
                   </li>
                   <li
                      className={`${

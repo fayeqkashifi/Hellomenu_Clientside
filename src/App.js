@@ -20,16 +20,14 @@ axios.interceptors.request.use(function(config){
    config.headers.Authorization = token ? `Bearer ${token}` : '';
    return config;
 });
+
 const App = () => {
-   
    return (
-      
       <Router>
          <Switch>
             <Route exact path='/page-login' component={Login} />
             <Route path="/user-register"  component={Registration} /> 
             <Route path="/dashboard"  component={Markup} /> 
-
             <Route path='/'>
               <Redirect to="/page-login" />
             </Route>
@@ -37,11 +35,7 @@ const App = () => {
                {localStorage.getItem('auth_token') ? <Redirect to="/user-register" /> : <Registration /> }
             </Route> */}
          </Switch>
-         {/* <Fragment> 
-            <Markup />
-         </Fragment>   */}
        </Router>
-
    );
 };
 

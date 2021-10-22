@@ -1,7 +1,7 @@
 import React from "react";
 
 /// React router dom
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 /// Css
 import "./index.css";
@@ -14,12 +14,14 @@ import Footer from "./layouts/Footer";
 import Home from "./components/Dashboard/Home/Home";
 
 import Branches from "./components/Branches/branches";
+import Menu from "./components/Menus/menu";
 
 const Markup = () => {
    const routes = [
 		/// Login
 		{ url: "dashboard", component: Home },
 		{ url: "branches", component: Branches },
+		{ url: "menu", component: Menu },
    ];
 
    return (
@@ -31,12 +33,13 @@ const Markup = () => {
 						<div className="container-fluid">
 							<Switch>
 								{routes.map((data, i) => (
+									localStorage.getItem('auth_token')?
 									<Route
 										key={i}
 										exact
 										path={`/${data.url}`}
 										component={data.component}
-									/>
+									/>: <Redirect to="/page-login" />
 								))}
 							</Switch>
 						</div>

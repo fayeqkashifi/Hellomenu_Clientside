@@ -40,10 +40,11 @@ const Login = () => {
                            <form onSubmit={checkAuth}>
                             
                               <div className="form-group">    <label className="mb-1 ">  <strong>Email</strong> </label>
-                                 <input type="email"
+                                 <input type="text"
                                     onChange={handleInput}  
                                     value={loginstate.email}
                                     className="form-control"
+                                    placeholder="Enter Your Email/Phone Number"
                                     name="email"  />
                               </div>
                               <div className="form-group">
