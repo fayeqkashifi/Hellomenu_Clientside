@@ -55,8 +55,12 @@ class SideBar extends Component {
          menus = [
             "menu",
          ],
-         bootstrap = [
-            "ui-accordion",
+         Companies = [
+            "companies",
+           
+         ],
+         Products = [
+            "products",
            
          ],
          plugins = [
@@ -119,22 +123,32 @@ class SideBar extends Component {
                   </li>
                   <li
                      className={`${
-                        bootstrap.includes(path.slice(1)) ? "mm-active" : ""
+                        Companies.includes(path.slice(1)) ? "mm-active" : ""
                      }`}
                   >
                      <Link
-                        className="has-arrow ai-icon"
-                        to="#"
+                        className="ai-icon"
+                        to="/companies"
                         
                      >
                         <i className="flaticon-381-internet"></i>
-                        <span className="nav-text">Design</span>
+                        <span className="nav-text">Companies</span>
                      </Link>
-                     <ul >
-                        <li>
-                           <Link to="/ui-accordion">Test one</Link>
-                        </li>
-                     </ul>
+                    
+                  </li>
+                  <li
+                     className={`${
+                        Products.includes(path.slice(1)) ? "mm-active" : ""
+                     }`}
+                  >
+                     <Link
+                        className="ai-icon"
+                        to="/products"
+                     >
+                        <i className="flaticon-381-internet"></i>
+                        <span className="nav-text">Products</span>
+                     </Link>
+                    
                   </li>
                   <li
                      className={`${

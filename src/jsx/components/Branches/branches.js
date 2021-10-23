@@ -1,6 +1,7 @@
 import React, { Fragment,useState,useEffect } from "react";
 import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
+import {Link} from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
 const Branches = () => {
@@ -95,7 +96,11 @@ const Branches = () => {
             return (
                 <tr key={item.id}>
                     <td>{item.id}</td>
-                    <td>{item.BrancheName}</td>
+                    <td>
+                    <Link to={{
+                        pathname: '/menu',
+                        id:item.id,
+                        branchName:item.BrancheName }} > {item.BrancheName}</Link></td>
                     <td>
                         <button type="button"   onClick={(e)=>editBranch(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
                         <button type="button" onClick={(e)=>deleteBranch(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
@@ -244,22 +249,6 @@ const Branches = () => {
                                 </thead>
 								<tbody>
                                     {viewBranches_HTMLTABLE}
-                                {/* {branchdata.branches.map((branch) => (
-                                    
-                                    <tr key={branch.id}>
-                                        <td >
-                                            <h5>{branch.id}</h5>
-                                        </td>
-                                        <td>
-                                            <h5>{branch.BrancheName}</h5>
-                                        </td> 
-                                        <td>
-                                            <button type="button" className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                                            <button type="button" onClick={(e)=>deleteBranch(e,branch.id)} className="btn btn-outline-warning btn-sm">Delete</button>
-                                        </td> 
-                                    </tr>	
-                                    
-                                   ))}											 */}
 							    </tbody>
                             </table>
 						</div>
@@ -267,6 +256,9 @@ const Branches = () => {
 				</div>
 			</div>
          </div>
+         
+         
+         
       </Fragment>
    );
 };

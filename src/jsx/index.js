@@ -15,6 +15,8 @@ import Home from "./components/Dashboard/Home/Home";
 
 import Branches from "./components/Branches/branches";
 import Menu from "./components/Menus/menu";
+import Company from "./components/Companies/company";
+import Product from "./components/Products/product";
 
 const Markup = () => {
    const routes = [
@@ -22,6 +24,8 @@ const Markup = () => {
 		{ url: "dashboard", component: Home },
 		{ url: "branches", component: Branches },
 		{ url: "menu", component: Menu },
+		{ url: "companies", component: Company },
+		{ url: "products", component: Product },
    ];
 
    return (
