@@ -3,55 +3,46 @@ import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
-const Menu = (props) => {
+const ServiceArea = (props) => {
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a section
-
-    const [categoryInsert, setCategoryInsert] = useState({
-        CategoryName : '',
-        branchID : props.location.id,
+    const [serviceAreaInsert, setServiceAreaInsert] = useState({
+        AreaName: '',
+        BranchID: props.location.id
     });
-    const [imageState, setImageState] = useState([]);
-
     const handleInput = (e) => {
         e.persist();
-        setCategoryInsert({...categoryInsert, [e.target.name]: e.target.value});
+        setServiceAreaInsert({...serviceAreaInsert, [e.target.name]: e.target.value});
     };
-    const handleImage = (e) => {
-        setImageState({...imageState, CategoryIcon: e.target.files[0] });
-    };
-    const saveProduct=  (e) => {
+   
+    const saveServiceAreas=  (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('CategoryIcon', imageState.CategoryIcon);
-        formData.append('CategoryName', categoryInsert.CategoryName);
-        formData.append('branchID', categoryInsert.branchID);
-
-        axios.post("/api/InsertCategories", formData).then(res=>{
+        axios.post("/api/InsertServicAreas", serviceAreaInsert).then(res=>{
             if(res.data.status === 200){
-                // console.log(res.data.status);
-                setCategoryInsert('');
+                setServiceAreaInsert({
+                    AreaName: '',
+                    BranchID: props.location.id
+                });
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
                 //  this.props.history.push("/")
             }
         });
-        
     };
     // edit code
-    const [editMenu, setEditMenu] = useState('');
+    const [editServiceAreas, setEditServiceAreas] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
-        setEditMenu({...editMenu, [e.target.name]: e.target.value});
+        setEditServiceAreas({...editServiceAreas, [e.target.name]: e.target.value});
     };
-    const fetchMenus = (e,id)=>{
+    const fetchServiceArea = (e,id)=>{
         e.preventDefault();
-        axios.get(`/api/EditCategories/${id}`).then(res=>{
+        axios.get(`/api/EditServiceAreas/${id}`).then(res=>{
             if(res.data.status === 200){
-                setEditMenu(res.data.menu);
+                setEditServiceAreas(res.data.menu);
                 setEditModalCentered(true);
             }else if(res.data.status === 404){
                 swal("Error",res.data.message,"error");
@@ -60,19 +51,12 @@ const Menu = (props) => {
         });
 
     }
-    const updateProduct =  (e) => {
+    const updateServiceArea =  (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('CategoryIcon', imageState.CategoryIcon);
-        formData.append('CategoryName', editMenu.CategoryName);
-        formData.append('branchID', editMenu.branchID);
-        formData.append('id', editMenu.id);
-
-
-        axios.post("/api/UpdateCategories", formData).then(res=>{
+        axios.post("/api/UpdateServiceAreas", editServiceAreas).then(res=>{
             if(res.data.status === 200){
-                // console.log(res.data.status);
-                setEditMenu('');
+                console.log(res.data.status);
+                setEditServiceAreas('');
                 swal("Success",res.data.message,"success");
                 setEditModalCentered(false)
                 //  this.props.history.push("/")
@@ -94,7 +78,7 @@ const Menu = (props) => {
     const [loading, setLoading]=useState(true);
     
     useEffect( () => {
-        axios.get(`/api/GetCategories/${props.location.id}`).then(res => {
+        axios.get(`/api/GetServiceAreas/${props.location.id}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
             }
@@ -107,15 +91,15 @@ const Menu = (props) => {
         return <h4>Loading...!</h4>
     }else{
         viewProducts_HTMLTABLE = 
-        fetchData.map((item)=>{
+        fetchData.map((item,i)=>{
             return (
                 <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td><img src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`} width="100" /></td>
-                    <td>{item.CategoryName}</td>
+                    <td>{i+1}</td>
+                   
+                    <td> {item.AreaName}</td>
                     <td>
-                        <button type="button"   onClick={(e)=>fetchMenus(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteMenu(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                        <button type="button"   onClick={(e)=>fetchServiceArea(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteServiceArea(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
                     </td> 
                 </tr>
             )
@@ -123,9 +107,9 @@ const Menu = (props) => {
 
     }
     // delete section 
-    const deleteMenu= (e,id)=>{
+    const deleteServiceArea= (e,id)=>{
         e.preventDefault();
-        axios.delete(`/api/DeleteCategories/${id}`).then(res=>{
+        axios.delete(`/api/DeleteServiceAreas/${id}`).then(res=>{
             if(res.data.status === 200){
                 swal("Success",res.data.message,"success");
                 // thisClicked.closest("tr").remove();
@@ -133,17 +117,15 @@ const Menu = (props) => {
                 swal("Error",res.data.message,"error");
             }
         });
-
     }
-    
     return (
       <Fragment>
-         <PageTItle headingPara="Menu" activeMenu="add-Menu" motherMenu="Menus" />
+         <PageTItle headingPara="Service-Areas" activeMenu="add-service-area" motherMenu="Service-Area" />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveProduct} method= "POST" encType="multipart/form-data">
+            <Form onSubmit={saveServiceAreas} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
-                    <Modal.Title>Add A Menu</Modal.Title>
+                    <Modal.Title>Add A service</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -154,33 +136,19 @@ const Menu = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Brach  Name: {props.location.branchName}</strong> </label>
+                            <label className="mb-1 "> <strong>Branch Name: {props.location.branchName}</strong> </label>
                         </div>
+                        
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Menu Icon</strong> </label>
-                            <div className="input-group">
-                                <div className="custom-file">
-                                    <input
-                                    type="file"
-                                    className="form-control"
-                                    placeholder="Menu Icon"
-                                    name="CategoryIcon"
-                                    required
-                                    onChange={handleImage}  
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Menu Name</strong> </label>
-                            <input
+                            <label className="mb-1 "> <strong>Service Area</strong> </label>
+                            <textarea
                                 type="text"
                                 className="form-control"
-                                placeholder="Menu Name"
-                                name="CategoryName"
+                                placeholder="Service Area"
+                                name="AreaName"
                                 required
                                 onChange={handleInput}  
-                                value={categoryInsert.CategoryName}
+                                value={serviceAreaInsert.AreaName}
                             />
                         </div>
                 </Modal.Body>
@@ -198,9 +166,9 @@ const Menu = (props) => {
         </Modal>
          {/* Edit Modal */}
          <Modal className="fade" show={editmodalCentered}>
-            <Form onSubmit={updateProduct} method= "POST" >
+            <Form onSubmit={updateServiceArea} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Menu</Modal.Title>
+                    <Modal.Title>Edit Service Area</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -211,44 +179,15 @@ const Menu = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>ID</strong> </label>
-                            <input
-                                type="text"
-                                disabled="disabled"
-                                className="form-control"
-                                name="id"
-                                required
-                                onChange={editHandleInput}  
-                                value={editMenu.id}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Menu Icon</strong> </label>
-                            <div className="input-group">
-                                <div className="custom-file">
-                                    <input
-                                        type="file"
-                                        className="form-control"
-                                        placeholder="Menu Icon"
-                                        name="CategoryIcon"
-                                        required
-                                        onChange={handleImage} 
-                                    />
-                                    <img src={`http://localhost:8000/images/catagories/${editMenu.CategoryIcon}`} width="70" />
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Menu Name</strong> </label>
-                            <input
+                            <label className="mb-1 "> <strong>Service Area</strong> </label>
+                            <textarea
                                 type="text"
                                 className="form-control"
-                                placeholder="Menu Name"
-                                name="CategoryName"
+                                placeholder="Service Area"
+                                name="AreaName"
                                 required
                                 onChange={editHandleInput}  
-                                value={editMenu.CategoryName}
+                                value={editServiceAreas.AreaName}
                             />
                         </div>
 
@@ -270,7 +209,7 @@ const Menu = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Menus</h4>
+							<h4 className="card-title mb-2">Service Area</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -278,7 +217,7 @@ const Menu = (props) => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Menu
+								Add Service Area
 							</Button>
 						</div>
 					</div>
@@ -287,9 +226,8 @@ const Menu = (props) => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Menu Icon</th>
-                                        <th>Menu Name</th>
+                                        <th>#NO</th>
+                                        <th>Service Area</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -306,4 +244,4 @@ const Menu = (props) => {
    );
 };
 
-export default Menu;
+export default ServiceArea;

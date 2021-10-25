@@ -85,10 +85,10 @@ const Product = () => {
         return <h4>Loading...!</h4>
     }else{
         viewProducts_HTMLTABLE = 
-        fetchData.map((item)=>{
+        fetchData.map((item,i)=>{
             return (
                 <tr key={item.id}>
-                    <td>{item.id}</td>
+                    <td>{i+1}</td>
                     <td>{item.ProductName}</td>
                     <td>
                         <button type="button"   onClick={(e)=>fetchProduct(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
@@ -230,7 +230,7 @@ const Product = () => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#NO</th>
                                         <th>Product Name</th>
                                         <th>Actions</th>
                                     </tr>

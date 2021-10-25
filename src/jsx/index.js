@@ -14,18 +14,25 @@ import Footer from "./layouts/Footer";
 import Home from "./components/Dashboard/Home/Home";
 
 import Branches from "./components/Branches/branches";
-import Menu from "./components/Menus/menu";
+import Menu from "./components/Categories/category";
 import Company from "./components/Companies/company";
 import Product from "./components/Products/product";
-
+import SubMenu from "./components/Categories/subCategory";
+import ServiceArea from "./components/Services/serviceArea"
+import Unit from "./components/Units/unit";
+import Inventory from "./components/Inventories/inventory";
 const Markup = () => {
    const routes = [
 		/// Login
 		{ url: "dashboard", component: Home },
 		{ url: "branches", component: Branches },
-		{ url: "menu", component: Menu },
+		{ url: "category", component: Menu },
 		{ url: "companies", component: Company },
 		{ url: "products", component: Product },
+		{ url: "sub-category", component: SubMenu },
+		{ url: "service-area", component: ServiceArea },
+		{ url: "unit", component: Unit },
+		{ url: "inventory", component: Inventory },
    ];
 
    return (

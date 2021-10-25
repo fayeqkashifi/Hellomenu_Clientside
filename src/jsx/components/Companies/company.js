@@ -81,10 +81,10 @@ const Company = () => {
         return <h4>Loading...!</h4>
     }else{
         viewCompanies_HTMLTABLE = 
-        fetchData.map((item)=>{
+        fetchData.map((item,i)=>{
             return (
                 <tr key={item.id}>
-                    <td>{item.id}</td>
+                    <td>{i+1}</td>
                     <td>{item.company}</td>
                     <td>
                         <button type="button"   onClick={(e)=>editCompany(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
@@ -240,7 +240,7 @@ const Company = () => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#NO</th>
                                         <th>Company Name</th>
                                         <th>Actions</th>
                                     </tr>

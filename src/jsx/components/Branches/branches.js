@@ -1,7 +1,10 @@
 import React, { Fragment,useState,useEffect } from "react";
 import PageTItle from "../../layouts/PageTitle";
+
 import { Button, Modal,  Form } from "react-bootstrap";
 import {Link} from "react-router-dom"
+import SVG from "react-inlinesvg";
+
 import axios from "axios";
 import swal from "sweetalert"
 const Branches = () => {
@@ -92,16 +95,33 @@ const Branches = () => {
         return <h4>Loading...!</h4>
     }else{
         viewBranches_HTMLTABLE = 
-        branchdata.map((item)=>{
+        branchdata.map((item,i)=>{
             return (
                 <tr key={item.id}>
-                    <td>{item.id}</td>
+                    <td>{i+1}</td>
                     <td>
-                    <Link to={{
-                        pathname: '/menu',
+                    <span className="svg-icon svg-icon-md svg-icon-primary">
+
+                        <Link to={{
+                        pathname: '/category',
                         id:item.id,
-                        branchName:item.BrancheName }} > {item.BrancheName}</Link></td>
+                        branchName:item.BrancheName }} > {item.BrancheName}</Link>
+                    </span>
+                        
+                        </td>
                     <td>
+                    <Link className="btn btn-outline-danger btn-sm" to={{
+                        pathname: '/service-area',
+                        id:item.id,
+                        branchName:item.BrancheName }} > Services </Link>
+                        <Link className="btn btn-outline-danger btn-sm" to={{
+                        pathname: '/unit',
+                        id:item.id,
+                        branchName:item.BrancheName }} > Units </Link>
+                        <Link className="btn btn-outline-danger btn-sm" to={{
+                        pathname: '/inventory',
+                        id:item.id,
+                        branchName:item.BrancheName }} > Inventory </Link>
                         <button type="button"   onClick={(e)=>editBranch(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
                         <button type="button" onClick={(e)=>deleteBranch(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
                     </td> 
@@ -242,7 +262,7 @@ const Branches = () => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#NO</th>
                                         <th>Branch Name</th>
                                         <th>Actions</th>
                                     </tr>
@@ -257,9 +277,89 @@ const Branches = () => {
 			</div>
          </div>
          
-         
+         <div className='card card-custom'>
+      {/* begin::Body */}
+      <div className="card-body d-flex flex-column">
+        <div className="flex-grow-1 pb-5">
+          {/* begin::Info */}
+          <div className="d-flex align-items-center pr-2 mb-6">
+            <span className="text-muted font-weight-bold font-size-lg flex-grow-1">
+              7 Hours Ago
+            </span>
+            <div className="symbol symbol-50">
+              <span className="symbol-label bg-light-light">
+                <SVG
+                  src="/media/svg/misc/006-plurk.svg"
+                  className="h-50 align-self-center"
+                ></SVG>
+              </span>
+            </div>
+          </div>
+          {/* end::Info */}
+
+          {/* begin::Link */}
+          <a
+            href="#"
+            className="text-dark font-weight-bolder text-hover-primary font-size-h4"
+          >
+            PitStop - Multiple Email
+            <br />
+            Generator
+          </a>
+          {/* end::Link */}
+
+          {/* begin::Desc */}
+          <p className="text-dark-50 font-weight-normal font-size-lg mt-6">
+            Pitstop creates quick email campaigns.
+            <br />
+            We help to strengthen your brand
+            <br />
+            for your every purpose.
+          </p>
+          {/* end::Desc */}
+        </div>
+        {/* begin::Team */}
+        <div className="d-flex align-items-center">
+          {/* begin::Pic */}
+          <a href="#" className="symbol symbol-45 symbol-light mr-3">
+            <div className="symbol-label">
+              <SVG
+                src=""
+                className="h-75 align-self-end"
+              ></SVG>
+            </div>
+          </a>
+          {/* end::Pic */}
+
+          {/* begin::Pic */}
+          <a href="#" className="symbol symbol-45 symbol-light mr-3">
+            <div className="symbol-label">
+              <SVG
+                src=""
+                className="h-75 align-self-end"
+              ></SVG>
+            </div>
+          </a>
+          {/* end::Pic */}
+
+          {/* begin::Pic */}
+          <a href="#" className="symbol symbol-45 symbol-light">
+            <div className="symbol-label">
+              <SVG
+                src=""
+                className="h-75 align-self-end"
+              ></SVG>
+            </div>
+          </a>
+          {/* end::Pic */}
+        </div>
+        {/* end::Team */}
+      </div>
+      {/* end::Body */}
+    </div>
          
       </Fragment>
+      
    );
 };
 
