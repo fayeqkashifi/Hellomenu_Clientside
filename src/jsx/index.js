@@ -1,7 +1,9 @@
 import React from "react";
 
 /// React router dom
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch} from "react-router-dom";
+import PrivateRoute from './components/PrivateRoute';
+// import PublicRoute from './components/PublicRoute';
 
 /// Css
 import "./index.css";
@@ -11,8 +13,8 @@ import "./chart.css";
 import Nav from "./layouts/nav";
 import Footer from "./layouts/Footer";
 /// Deshboard
-import Home from "./components/Dashboard/Home/Home";
 
+import Home from "./components/Dashboard/Home/Home";
 import Branches from "./components/Branches/branches";
 import Menu from "./components/Categories/category";
 import Company from "./components/Companies/company";
@@ -21,6 +23,8 @@ import SubMenu from "./components/Categories/subCategory";
 import ServiceArea from "./components/Services/serviceArea"
 import Unit from "./components/Units/unit";
 import Inventory from "./components/Inventories/inventory";
+import Profile from "./components/Dashboard/Profile/Profile";
+
 const Markup = () => {
    const routes = [
 		/// Login
@@ -33,24 +37,24 @@ const Markup = () => {
 		{ url: "service-area", component: ServiceArea },
 		{ url: "unit", component: Unit },
 		{ url: "inventory", component: Inventory },
+		{ url: "profile", component: Profile },
    ];
 
    return (
 		
-			<Router basename="/">
+			<Router>
 				<div id="main-wrapper" className="show">
 					<Nav />
 					<div className="content-body">
 						<div className="container-fluid">
 							<Switch>
 								{routes.map((data, i) => (
-									localStorage.getItem('auth_token')?
-									<Route
+									<PrivateRoute
 										key={i}
 										exact
 										path={`/${data.url}`}
 										component={data.component}
-									/>: <Redirect to="/page-login" />
+									/>
 								))}
 							</Switch>
 						</div>

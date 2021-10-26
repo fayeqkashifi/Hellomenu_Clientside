@@ -1,9 +1,12 @@
 import React, { Fragment,useState,useEffect } from "react";
 import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
+/// Bootstrap
+import { Row, Col, Card } from "react-bootstrap";
 import {Link } from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
+
 const Category = (props) => {
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
@@ -113,20 +116,46 @@ const Category = (props) => {
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
             return (
-                <tr key={item.id}>
-                    <td>{i+1}</td>
-                    <Link to={{
-                        pathname: '/sub-category',
-                        id:item.id,
-                        CategoryName:item.CategoryName }}>
-                    <td><img src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`} width="100" /></td>
-                    <td>{item.CategoryName}</td>
-                    </Link>
-                    <td>
-                        <button type="button"   onClick={(e)=>fetchMenus(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteMenu(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
-                    </td> 
-                </tr>
+                    <Col xl={4} key={item.id}>
+                    <Card>
+                        <Card.Header>
+                            <h4 className="card-intro-title">{item.CategoryName}</h4>
+                        </Card.Header>
+                        <Card.Body className="p-4">
+                                <img
+                                    src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`}
+                                    className="d-block w-100"
+                                    alt=""
+                                />
+                            
+                        </Card.Body>
+                        <Card.Footer>
+                            <Link className="btn btn-outline-success btn-xxs ml-1" to={{
+                            pathname: '/sub-category',
+                            id:item.id,
+                            CategoryName:item.CategoryName }}>
+                                Sub-Category
+                            </Link>
+
+                            <button type="button"   onClick={(e)=>fetchMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">Edit</button>
+                            <button type="button" onClick={(e)=>deleteMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">Delete</button>
+                        </Card.Footer>
+                    </Card>
+                    </Col>
+                // <tr key={item.id}>
+                //     <td>{i+1}</td>
+                //     <Link to={{
+                //         pathname: '/sub-category',
+                //         id:item.id,
+                //         CategoryName:item.CategoryName }}>
+                //     <td><img src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`} width="100" /></td>
+                //     <td>{item.CategoryName}</td>
+                //     </Link>
+                //     <td>
+                //         <button type="button"   onClick={(e)=>fetchMenus(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
+                //         <button type="button" onClick={(e)=>deleteMenu(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                //     </td> 
+                // </tr>
             )
         })
 
@@ -162,36 +191,36 @@ const Category = (props) => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Brach  Name: {props.location.branchName}</strong> </label>
-                        </div>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Category Icon</strong> </label>
-                            <div className="input-group">
-                                <div className="custom-file">
-                                    <input
-                                    type="file"
-                                    className="form-control"
-                                    placeholder="Category Icon"
-                                    name="CategoryIcon"
-                                    required
-                                    onChange={handleImage}  
-                                    />
-                                </div>
+                    <div className="form-group">
+                        <label className="mb-1 "> <strong>Brach  Name: {props.location.branchName}</strong> </label>
+                    </div>
+                    <div className="form-group">
+                        <label className="mb-1 "> <strong>Category Icon</strong> </label>
+                        <div className="input-group">
+                            <div className="custom-file">
+                                <input
+                                type="file"
+                                className="form-control"
+                                placeholder="Category Icon"
+                                name="CategoryIcon"
+                                required
+                                onChange={handleImage}  
+                                />
                             </div>
                         </div>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Menu Name</strong> </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Category Name"
-                                name="CategoryName"
-                                required
-                                onChange={handleInput}  
-                                value={categoryInsert.CategoryName}
-                            />
-                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="mb-1 "> <strong>Category Name</strong> </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Category Name"
+                            name="CategoryName"
+                            required
+                            onChange={handleInput}  
+                            value={categoryInsert.CategoryName}
+                        />
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
@@ -219,47 +248,47 @@ const Category = (props) => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>ID</strong> </label>
-                            <input
-                                type="text"
-                                disabled="disabled"
-                                className="form-control"
-                                name="id"
-                                required
-                                onChange={editHandleInput}  
-                                value={editMenu.id}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Category Icon</strong> </label>
-                            <div className="input-group">
-                                <div className="custom-file">
-                                    <input
-                                        type="file"
-                                        className="form-control"
-                                        placeholder="Category Icon"
-                                        name="CategoryIcon"
-                                        
-                                        onChange={handleImage} 
-                                    />
-                                    <img src={`http://localhost:8000/images/catagories/${editMenu.CategoryIcon}`} width="70" />
+                    <div className="form-group">
+                        <label className="mb-1 "> <strong>ID</strong> </label>
+                        <input
+                            type="text"
+                            disabled="disabled"
+                            className="form-control"
+                            name="id"
+                            required
+                            onChange={editHandleInput}  
+                            value={editMenu.id}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label className="mb-1 "> <strong>Category Icon</strong> </label>
+                        <div className="input-group">
+                            <div className="custom-file">
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    placeholder="Category Icon"
+                                    name="CategoryIcon"
+                                    
+                                    onChange={handleImage} 
+                                />
+                                <img src={`http://localhost:8000/images/catagories/${editMenu.CategoryIcon}`} width="70" alt=" " />
 
-                                </div>
                             </div>
                         </div>
-                        <div className="form-group">
-                            <label className="mb-1 "> <strong>Category Name</strong> </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Category Name"
-                                name="CategoryName"
-                                required
-                                onChange={editHandleInput}  
-                                value={editMenu.CategoryName}
-                            />
-                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="mb-1 "> <strong>Category Name</strong> </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Category Name"
+                            name="CategoryName"
+                            required
+                            onChange={editHandleInput}  
+                            value={editMenu.CategoryName}
+                        />
+                    </div>
 
                 </Modal.Body>
                 <Modal.Footer>
@@ -274,7 +303,7 @@ const Category = (props) => {
                 </Modal.Footer>
             </Form>
         </Modal>
-         <div className="row" >
+        <div className="row" >
             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
 				<div className="card">
 					<div className="card-header border-0">
@@ -291,26 +320,15 @@ const Category = (props) => {
 							</Button>
 						</div>
 					</div>
-					<div className="card-body p-0">
-						<div className="table-responsive ">
-							<table className="table ">
-                                <thead>
-                                    <tr>
-                                        <th>#NO</th>
-                                        <th>Category Icon</th>
-                                        <th>Category Name</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-								<tbody>
-                                    {viewProducts_HTMLTABLE}
-							    </tbody>
-                            </table>
-						</div>
-					</div>
 				</div>
 			</div>
          </div>
+         <Row>
+            {viewProducts_HTMLTABLE}
+         </Row>
+
+
+        
       </Fragment>
    );
 };

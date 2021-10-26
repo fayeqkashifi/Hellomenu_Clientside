@@ -52,28 +52,16 @@ class SideBar extends Component {
          branch = [
             "branches",
          ],
-         menus = [
-            "menu",
+         categories = [
+            "category",
          ],
          Companies = [
             "companies",
-           
          ],
          Products = [
             "products",
-           
-         ],
-         plugins = [
-            "uc-select2",
-            
-         ],
-         widget = ["widget"],
-         forms = [
-            "form-element",
-           
-         ],
-         table = ["table-bootstrap-basic", "table-datatable-basic"];
-
+         ];
+         console.log(path.slice(1));
       return (
          <div className="deznav">
             <PerfectScrollbar className="deznav-scroll">
@@ -108,12 +96,12 @@ class SideBar extends Component {
                   </li>
                   <li
                      className={`${
-                        menus.includes(path.slice(1)) ? "mm-active" : ""
+                        categories.includes(path.slice(1)) ? "mm-active" : ""
                      }`}
                   >
                      <Link
                         className="ai-icon"
-                        to="/menu"
+                        to="/category"
                         
                      >
                         <i className="flaticon-381-controls-3"></i>
@@ -150,89 +138,7 @@ class SideBar extends Component {
                      </Link>
                     
                   </li>
-                  <li
-                     className={`${
-                        plugins.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
-                  >
-                     <Link
-                        className="has-arrow ai-icon"
-                        to="#"
-                        
-                     >
-                        <i className="flaticon-381-heart"></i>
-                        <span className="nav-text">Orders</span>
-                     </Link>
-                     <ul >
-                        <li>
-                           <Link to="/uc-select2">Orders</Link>
-                        </li>
-                        <li>
-                           <Link to="/uc-nestable">Tables</Link>
-                        </li>
-                        <li>
-                           <Link to="/uc-noui-slider">Waiters</Link>
-                        </li>
-                        <li>
-                           <Link to="/uc-sweetalert">Modifiers</Link>
-                        </li>
-                     </ul>
-                  </li>
-                  <li
-                     className={`${
-                        widget.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
-                  >
-                     <Link
-                        to="widget-basic"
-                        className="ai-icon"
-                        
-                     >
-                        <i className="flaticon-381-settings-2"></i>
-                        <span className="nav-text">Feedback</span>
-                     </Link>
-                  </li>
-                  <li
-                     className={`${
-                        forms.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
-                  >
-                     <Link
-                        className="has-arrow ai-icon"
-                        to="#"
-                        
-                     >
-                        <i className="flaticon-381-notepad"></i>
-                        <span className="nav-text forms">Feedback</span>
-                     </Link>
-                     <ul >
-                        <li>
-                           <Link to="/form-element">Survey forms</Link>
-                        </li>
-                        <li>
-                           <Link to="/form-wizard">Survey result</Link>
-                        </li>
-                     </ul>
-                  </li>
-                  <li
-                     className={`${
-                        table.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
-                  >
-                     <Link
-                        className="has-arrow ai-icon"
-                        to="#"
-                        
-                     >
-                        <i className="flaticon-381-network"></i>
-                        <span className="nav-text">Settings</span>
-                     </Link>
-                     <ul >
-                        <li>
-                           <Link to="table-bootstrap-basic">Test one</Link>
-                        </li>
-                     </ul>
-                  </li>
+                  
                </MM>
             </PerfectScrollbar>
          </div>

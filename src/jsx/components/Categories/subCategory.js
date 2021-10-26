@@ -1,7 +1,6 @@
 import React, { Fragment,useState,useEffect } from "react";
 import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
-import {Link } from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
 const SubCategory = (props) => {
@@ -102,13 +101,10 @@ const SubCategory = (props) => {
                 <tr key={item.id}>
                     <td>{i+1}</td>
                    
-                    <td> <Link to={{
-                        pathname: '/menu',
-                        id:item.id,
-                        SubCategoryName:item.SubCategoryName }}>{item.SubCategoryName}</Link></td>
+                    <td> {item.SubCategoryName}</td>
                     <td>
-                        <button type="button"   onClick={(e)=>fetchSubMenus(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteSubMenu(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                        <button type="button"   onClick={(e)=>fetchSubMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">Edit</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteSubMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">Delete</button>
                     </td> 
                 </tr>
             )
@@ -134,7 +130,7 @@ const SubCategory = (props) => {
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveSubMenu} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
-                    <Modal.Title>Add A SubMenu</Modal.Title>
+                    <Modal.Title>Add A Sub Category</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -145,15 +141,15 @@ const SubCategory = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Menu Name: {props.location.CategoryName}</strong> </label>
+                            <label className="mb-1 "> <strong>Category Name: {props.location.CategoryName}</strong> </label>
                         </div>
                         
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Sub Menu Name</strong> </label>
+                            <label className="mb-1 "> <strong>Sub Category Name</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Sub Menu Name"
+                                placeholder="Sub Category Name"
                                 name="SubCategoryName"
                                 required
                                 onChange={handleInput}  

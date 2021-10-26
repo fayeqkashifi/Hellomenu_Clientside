@@ -21270,7 +21270,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 .photo-content {
   position: relative; }
   .photo-content .cover-photo {
-    background: url(../images/profile/cover.jpg);
+    /* background: url(../images/profile/cover.jpg); */
     background-size: cover;
     background-position: center;
     min-height: 250px;
@@ -27047,7 +27047,7 @@ table.dataTable thead th {
     box-shadow: none; }
 
 .welcome-content {
-  background: url("./../images/1.jpg");
+  /* background: url("./../images/1.jpg"); */
   background-size: cover;
   background-position: center;
   height: 100%;
@@ -27658,14 +27658,14 @@ table.dataTable thead th {
     width: 20px;
     height: 20px;
     background-repeat: no-repeat;
-    background-image: url("../images/dots.png");
+    /* background-image: url("../images/dots.png"); */
     opacity: 1; }
   .plus-box:after {
     right: 15px;
     bottom: 15px;
     height: 40px;
     width: 40px;
-    background-image: url("../images/dots2.png");
+    /* background-image: url("../images/dots2.png"); */
     background-repeat: no-repeat;
     opacity: 1; }
 

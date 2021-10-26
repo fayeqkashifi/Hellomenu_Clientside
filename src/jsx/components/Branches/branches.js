@@ -3,7 +3,7 @@ import PageTItle from "../../layouts/PageTitle";
 
 import { Button, Modal,  Form } from "react-bootstrap";
 import {Link} from "react-router-dom"
-import SVG from "react-inlinesvg";
+import profile from "../../../images/hellomenu/logo.svg";
 
 import axios from "axios";
 import swal from "sweetalert"
@@ -71,10 +71,7 @@ const Branches = () => {
         });
         
     };
-    
-
-
-
+   
 
 
     //for retriving data using laravel API
@@ -97,35 +94,75 @@ const Branches = () => {
         viewBranches_HTMLTABLE = 
         branchdata.map((item,i)=>{
             return (
-                <tr key={item.id}>
-                    <td>{i+1}</td>
-                    <td>
-                    <span className="svg-icon svg-icon-md svg-icon-primary">
-
-                        <Link to={{
-                        pathname: '/category',
-                        id:item.id,
-                        branchName:item.BrancheName }} > {item.BrancheName}</Link>
-                    </span>
-                        
-                        </td>
-                    <td>
-                    <Link className="btn btn-outline-danger btn-sm" to={{
-                        pathname: '/service-area',
-                        id:item.id,
-                        branchName:item.BrancheName }} > Services </Link>
-                        <Link className="btn btn-outline-danger btn-sm" to={{
-                        pathname: '/unit',
-                        id:item.id,
-                        branchName:item.BrancheName }} > Units </Link>
-                        <Link className="btn btn-outline-danger btn-sm" to={{
-                        pathname: '/inventory',
-                        id:item.id,
-                        branchName:item.BrancheName }} > Inventory </Link>
-                        <button type="button"   onClick={(e)=>editBranch(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteBranch(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
-                    </td> 
-                </tr>
+                <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                    <div className="card overflow-hidden">
+                        <div className="card-body">
+                            <div className="text-center">
+                            <div className="profile-photo">
+                                <img
+                                    src={profile}
+                                    width="100"
+                                    className="img-fluid rounded-circle"
+                                    alt=""
+                                />
+                            </div>
+                            <h3 className="mt-4 mb-1"><Link to={{
+                            pathname: '/category',
+                            id:item.id,
+                            branchName:item.BrancheName }} > {item.BrancheName}</Link></h3>
+                            <p className="text-muted"></p>
+                            <Link
+                                onClick={(e)=>editBranch(e,item.id)}
+                                className="btn btn-primary btn-xxs shadow"
+                            >
+                                Edit
+                            </Link>
+                            <Link
+                                onClick={(e)=>deleteBranch(e,item.id)}
+                                className="btn btn-outline-danger btn-xxs ml-1"
+                            >
+                                Delete
+                            </Link>
+                            </div>
+                        </div>
+        
+                        <div className="card-footer pt-0 pb-0 text-center">
+                            <div className="row">
+                            
+                            <div className="col-4 pt-3 pb-3 border-right">
+                                <Link
+                                    to={{
+                                    pathname: '/service-area',
+                                    id:item.id,
+                                    branchName:item.BrancheName }}
+                                >
+                                    <span>Services</span>
+                                </Link>
+                            </div>
+                            <div className="col-3 pt-3 pb-3 border-right">
+                                <Link
+                                    to={{
+                                        pathname: '/unit',
+                                        id:item.id,
+                                        branchName:item.BrancheName }} 
+                                >
+                                    <span>Units</span>
+                                </Link>
+                            </div>
+                            <div className="col-5 pt-3 pb-3">
+                                <Link
+                                    to={{
+                                        pathname: '/inventory',
+                                        id:item.id,
+                                        branchName:item.BrancheName }}
+                                >
+                                    <span>Inventory</span>
+                                </Link>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )
         })
 
@@ -240,7 +277,7 @@ const Branches = () => {
                 </Modal.Footer>
             </Form>
         </Modal>
-         <div className="row" >
+        <div className="row" >
             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
 				<div className="card">
 					<div className="card-header border-0">
@@ -253,111 +290,20 @@ const Branches = () => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add
+								Add Branch
 							</Button>
-						</div>
-					</div>
-					<div className="card-body p-0">
-						<div className="table-responsive ">
-							<table className="table ">
-                                <thead>
-                                    <tr>
-                                        <th>#NO</th>
-                                        <th>Branch Name</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-								<tbody>
-                                    {viewBranches_HTMLTABLE}
-							    </tbody>
-                            </table>
 						</div>
 					</div>
 				</div>
 			</div>
          </div>
-         
-         <div className='card card-custom'>
-      {/* begin::Body */}
-      <div className="card-body d-flex flex-column">
-        <div className="flex-grow-1 pb-5">
-          {/* begin::Info */}
-          <div className="d-flex align-items-center pr-2 mb-6">
-            <span className="text-muted font-weight-bold font-size-lg flex-grow-1">
-              7 Hours Ago
-            </span>
-            <div className="symbol symbol-50">
-              <span className="symbol-label bg-light-light">
-                <SVG
-                  src="/media/svg/misc/006-plurk.svg"
-                  className="h-50 align-self-center"
-                ></SVG>
-              </span>
-            </div>
-          </div>
-          {/* end::Info */}
-
-          {/* begin::Link */}
-          <a
-            href="#"
-            className="text-dark font-weight-bolder text-hover-primary font-size-h4"
-          >
-            PitStop - Multiple Email
-            <br />
-            Generator
-          </a>
-          {/* end::Link */}
-
-          {/* begin::Desc */}
-          <p className="text-dark-50 font-weight-normal font-size-lg mt-6">
-            Pitstop creates quick email campaigns.
-            <br />
-            We help to strengthen your brand
-            <br />
-            for your every purpose.
-          </p>
-          {/* end::Desc */}
+         <div className="row" >
+            {viewBranches_HTMLTABLE}
+            
         </div>
-        {/* begin::Team */}
-        <div className="d-flex align-items-center">
-          {/* begin::Pic */}
-          <a href="#" className="symbol symbol-45 symbol-light mr-3">
-            <div className="symbol-label">
-              <SVG
-                src=""
-                className="h-75 align-self-end"
-              ></SVG>
-            </div>
-          </a>
-          {/* end::Pic */}
 
-          {/* begin::Pic */}
-          <a href="#" className="symbol symbol-45 symbol-light mr-3">
-            <div className="symbol-label">
-              <SVG
-                src=""
-                className="h-75 align-self-end"
-              ></SVG>
-            </div>
-          </a>
-          {/* end::Pic */}
-
-          {/* begin::Pic */}
-          <a href="#" className="symbol symbol-45 symbol-light">
-            <div className="symbol-label">
-              <SVG
-                src=""
-                className="h-75 align-self-end"
-              ></SVG>
-            </div>
-          </a>
-          {/* end::Pic */}
-        </div>
-        {/* end::Team */}
-      </div>
-      {/* end::Body */}
-    </div>
          
+            
       </Fragment>
       
    );

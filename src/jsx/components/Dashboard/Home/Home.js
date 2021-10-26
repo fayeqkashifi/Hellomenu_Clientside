@@ -88,7 +88,6 @@ const Home = () => {
 									<td>
 										<div className="media align-items-center">
 											<Link to={"/ecom-product-detail"}>	
-												<img className="mr-3 img-fluid rounded-circle" width="75" src={require("./../../../../images/card/pic7.jpg").default} alt="DexignZone" />
 											</Link>	
 											<div className="media-body">
 												<h5 className="mt-0 mb-2"><Link to={"/ecom-product-detail"}  className="text-black">Mozarella Pizza With Random Topping</Link></h5>
@@ -172,7 +171,6 @@ const Home = () => {
 									<div className="timeline-panel">
 										<div className="media mr-3">
 											<Link to={"/ecom-product-detail"}>	
-												<img alt="" width="90" src={require("./../../../../images/card/pic8.jpg").default} />
 											</Link>	
 											<div className="number">#1</div>
 										</div>

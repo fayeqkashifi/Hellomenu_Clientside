@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 /// images
-import logo from "../../../images/logo.png";
-import logoText from "../../../images/logo-text.png";
+import logo from "../../../images/hellomenu/logo.svg";
 
 const NavHader = () => {
    const [toggle, setToggle] = useState(false);
@@ -14,8 +13,8 @@ const NavHader = () => {
       <div className="nav-header">
          <Link to="/" className="brand-logo">
             <img className="logo-abbr" src={logo} alt="" />
-            <img className="logo-compact" src={logoText} alt="" />
-            <img className="brand-title" src={logoText} alt="" />
+            {/* <img className="logo-compact" src={logo}  alt="" /> */}
+            <div className="brand-title">HELLO MENU</div>
          </Link>
 
          <div className="nav-control" onClick={() => setToggle(!toggle)}>
