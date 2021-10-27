@@ -24,6 +24,9 @@ import ServiceArea from "./components/Services/serviceArea"
 import Unit from "./components/Units/unit";
 import Inventory from "./components/Inventories/inventory";
 import Profile from "./components/Dashboard/Profile/Profile";
+import Order from "./components/Orders/order";
+import Variants from "./components/Variants/variants";
+import Gallery from "./components/Variants/gallary";
 
 const Markup = () => {
    const routes = [
@@ -38,6 +41,9 @@ const Markup = () => {
 		{ url: "unit", component: Unit },
 		{ url: "inventory", component: Inventory },
 		{ url: "profile", component: Profile },
+		{ url: "orders", component: Order },
+		{ url: "variants/:id", component: Variants },
+		{ url: "gallery/:id", component: Gallery },
    ];
 
    return (

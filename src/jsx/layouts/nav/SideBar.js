@@ -52,8 +52,8 @@ class SideBar extends Component {
          branch = [
             "branches",
          ],
-         categories = [
-            "category",
+         orders = [
+            "orders",
          ],
          Companies = [
             "companies",
@@ -96,16 +96,16 @@ class SideBar extends Component {
                   </li>
                   <li
                      className={`${
-                        categories.includes(path.slice(1)) ? "mm-active" : ""
+                        orders.includes(path.slice(1)) ? "mm-active" : ""
                      }`}
                   >
                      <Link
                         className="ai-icon"
-                        to="/category"
+                        to="/orders"
                         
                      >
                         <i className="flaticon-381-controls-3"></i>
-                        <span className="nav-text">Menus</span>
+                        <span className="nav-text">Orders</span>
                      </Link>
                     
                   </li>

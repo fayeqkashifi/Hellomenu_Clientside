@@ -11,7 +11,7 @@ const Inventory = (props) => {
     // insert a section
     const [variantInsert, setVariantInsert] = useState({
         variant_name: '',
-        SellingQuantity: '',
+        // SellingQuantity: '',
         Buyingquantity: '',
         buyingPrice: '',
         sellingPrice: '',
@@ -21,36 +21,12 @@ const Inventory = (props) => {
         OldPrice: '',
         UnitID: '',
         sub_categoryID:'',
+        ProductName:'',
         branch_id: props.location.id
     });
     const handleInput = (e) => {
         e.persist();
         setVariantInsert({...variantInsert, [e.target.name]: e.target.value});
-    };
-   
-    const saveInventory=  (e) => {
-        e.preventDefault();
-        axios.post("/api/InsertInventory", variantInsert).then(res=>{
-            if(res.data.status === 200){
-                setVariantInsert({
-                    variant_name: '',
-                    SellingQuantity: '',
-                    Buyingquantity: '',
-                    buyingPrice: '',
-                    sellingPrice: '',
-                    Description: '',
-                    Advice: '',
-                    CurrentPrice: '',
-                    OldPrice: '',
-                    UnitID: '',
-                    sub_categoryID:'',
-                    branch_id: props.location.id
-                });
-                swal("Success",res.data.message,"success");
-                setModalCentered(false)
-                //  this.props.history.push("/")
-            }
-        });
     };
     // edit code
     const [editIventory, setEditInventory] = useState([]);
@@ -85,9 +61,79 @@ const Inventory = (props) => {
         });
         
     };
-    
 
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [imageState, setImageState] = useState([]);
 
+    const handleImageChange = (e) => {
+        const imagesArray = [];
+        for (let i = 0; i < e.target.files.length; i++) {      
+            imagesArray.push(e.target.files[i]);
+        }
+        setImageState({...imageState, image : imagesArray });
+
+        setSelectedFiles([]);
+        if (e.target.files) {
+        const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+        setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+        Array.from(e.target.files).map(
+            (file) => URL.revokeObjectURL(file)
+        );
+        }
+       
+    };
+
+    const renderPhotos = (source) => {
+        return source.map((photo) => {
+        return <img className="p-2" src={photo} alt="" key={photo} style={{ width: "100", height: "100px" }} />;
+        });
+    };
+
+    const saveInventory=  (e) => {
+        e.preventDefault();
+        // console.log(e.target[0].files);
+
+        // var files = e.target[0].files;
+        const formData = new FormData();
+        for (let i = 0; i < imageState.image.length; i++) {
+            formData.append("file[]", imageState.image[i]);
+          }
+        // formData.append('file', imageState.PicturesLocation	);
+        formData.append('variant_name', variantInsert.variant_name);
+        formData.append('Buyingquantity', variantInsert.Buyingquantity);
+        formData.append('buyingPrice', variantInsert.buyingPrice);
+        formData.append('sellingPrice', variantInsert.sellingPrice);
+        formData.append('Description', variantInsert.Description);
+        formData.append('Advice', variantInsert.Advice);
+        formData.append('CurrentPrice', variantInsert.CurrentPrice);
+        formData.append('OldPrice', variantInsert.OldPrice);
+        formData.append('UnitID', variantInsert.UnitID);
+        formData.append('sub_categoryID', variantInsert.sub_categoryID);
+        formData.append('ProductName', variantInsert.ProductName);
+        formData.append('branch_id', variantInsert.branch_id);
+        // console.log(formData);
+        axios.post("/api/InsertInventory", formData).then(res=>{
+            if(res.data.status === 200){
+                setVariantInsert({
+                    variant_name: '',
+                    // SellingQuantity: '',
+                    Buyingquantity: '',
+                    buyingPrice: '',
+                    sellingPrice: '',
+                    Description: '',
+                    Advice: '',
+                    CurrentPrice: '',
+                    OldPrice: '',
+                    UnitID: '',
+                    sub_categoryID:'',
+                    branch_id: props.location.id
+                });
+                swal("Success",res.data.message,"success");
+                setModalCentered(false)
+                setSelectedFiles([]);
+            }
+        });
+    };
 
 
 
@@ -96,6 +142,7 @@ const Inventory = (props) => {
     const [unitData,setUnitData]=useState([]);
     const [subCategoryData,setSubCategoryData]=useState([]);
     const [loading, setLoading]=useState(true);
+    const [products, setProducts]=useState([]);
     
     useEffect( () => {
         axios.get(`/api/GetInventory/${props.location.id}`).then(res => {
@@ -112,6 +159,11 @@ const Inventory = (props) => {
         axios.get(`/api/GetAllSubCategories/`).then(res => {
             if(res.data.status === 200){
                 setSubCategoryData(res.data.fetchData);
+            }
+          });
+        axios.get('/api/GetProducts').then(res => {
+            if(res.data.status === 200){
+                setProducts(res.data.fetchData);
             }
           });
       }, [props.location.id]);
@@ -174,6 +226,58 @@ const Inventory = (props) => {
                             <label className="mb-1 "> <strong>Branch Name: {props.location.branchName}</strong> </label>
                         </div>
                         <div className="row" >
+                            <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
+                                <div className="form-group">
+                                    <label className="mb-1 "> <strong>Product Name</strong> </label>
+                                    <select type="text"
+                                        className="form-control"
+                                        placeholder="ProductName"
+                                        name="ProductName"
+                                        required
+                                        onChange={handleInput}  
+                                        value={variantInsert.ProductName}>
+                                        <option value=''>Select A Product</option> )
+                                        {
+                                        products.map( (item) => 
+                                        <option value={item.id} key={item.id}>{item.ProductName}</option> )
+                                    }</select>
+                                </div>
+                            </div>
+                            <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
+                                <div className="form-group">
+                                    <label className="mb-1 "> <strong>sub Category</strong> </label>
+                                    <select type="text"
+                                        className="form-control"
+                                        placeholder="sub_categoryID"
+                                        name="sub_categoryID"
+                                        required
+                                        onChange={handleInput}  
+                                        value={variantInsert.sub_categoryID}>
+                                        <option value="">Select SubCategory</option> )
+                                        
+                                        {
+                                        subCategoryData.map( (item) => 
+                                        <option value={item.id} key={item.id}>{item.SubCategoryName}</option> )
+                                    }</select>
+                                </div>
+                            </div>
+                            <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
+                                <div className="form-group">
+                                    <label className="mb-1 "> <strong>Unit</strong> </label>
+                                    <select type="text"
+                                        className="form-control"
+                                        placeholder="UnitID"
+                                        name="UnitID"
+                                        required
+                                        onChange={handleInput}  
+                                        value={variantInsert.UnitID}>
+                                        <option value="">Select A Unit</option> )
+                                        {
+                                        unitData.map( (item) => 
+                                        <option value={item.id} key={item.id}>{item.UnitName}</option> )
+                                    }</select>
+                                </div>
+                            </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>Variant Name</strong> </label>
@@ -187,6 +291,8 @@ const Inventory = (props) => {
                                         value={variantInsert.variant_name}
                                     />
                                 </div>
+                            </div>
+                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>Buying Quantity</strong> </label>
                                     <input
@@ -200,8 +306,8 @@ const Inventory = (props) => {
                                     />
                                 </div>
                             </div>
+                            
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                               
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>Buying Price</strong> </label>
                                     <input
@@ -214,6 +320,8 @@ const Inventory = (props) => {
                                         value={variantInsert.buyingPrice}
                                     />
                                 </div>
+                            </div>
+                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>Selling Price</strong> </label>
                                     <input
@@ -228,22 +336,6 @@ const Inventory = (props) => {
                                 </div>
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                               
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>Product Name</strong> </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="ProductName"
-                                        name="ProductName"
-                                        required
-                                        onChange={handleInput}  
-                                        value={variantInsert.ProductName}
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                               
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>Description</strong> </label>
                                     <textarea
@@ -256,9 +348,11 @@ const Inventory = (props) => {
                                         value={variantInsert.Description}
                                     />
                                 </div>
+                            </div>
+                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>Advice</strong> </label>
-                                    <input
+                                    <textarea
                                         type="text"
                                         className="form-control"
                                         placeholder="Advice"
@@ -270,9 +364,8 @@ const Inventory = (props) => {
                                 </div>
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                               
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>CurrentPrice</strong> </label>
+                                    <label className="mb-1 "> <strong>Current Price</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -283,8 +376,10 @@ const Inventory = (props) => {
                                         value={variantInsert.CurrentPrice}
                                     />
                                 </div>
+                            </div>
+                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>OldPrice</strong> </label>
+                                    <label className="mb-1 "> <strong>Old Price</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -297,8 +392,28 @@ const Inventory = (props) => {
                                 </div>
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>SellingQuantity</strong> </label>
+                                    <label className="mb-1 "> <strong>Images</strong> </label>
+                                    {/* <div class="file-loading"> */}
+                                        <input 
+                                        type="file" 
+                                        name="file"
+                                        className="form-control"
+                                        onChange={handleImageChange}  
+                                        required
+                                        multiple 
+                                        data-overwrite-initial="false" 
+                                        data-min-file-count="1" />
+                                    </div>
+
+                                {/* </div> */}
+                            </div>
+                            <div className="result">{renderPhotos(selectedFiles)}</div>
+
+                            {/* <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                                <div className="form-group">
+                                    <label className="mb-1 "> <strong>Selling Quantity</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -309,37 +424,7 @@ const Inventory = (props) => {
                                         value={variantInsert.SellingQuantity}
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>UnitID</strong> </label>
-                                    <select type="text"
-                                        className="form-control"
-                                        placeholder="UnitID"
-                                        name="UnitID"
-                                        required
-                                        onChange={handleInput}  
-                                        value={variantInsert.UnitID}>{
-                                        unitData.map( (item) => 
-                                        <option value={item.id}>{item.UnitName}</option> )
-                                    }</select>
-                                </div>
-                            </div>
-                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>sub_categoryID</strong> </label>
-                                    <select type="text"
-                                        className="form-control"
-                                        placeholder="sub_categoryID"
-                                        name="sub_categoryID"
-                                        required
-                                        onChange={handleInput}  
-                                        value={variantInsert.sub_categoryID}>{
-                                        subCategoryData.map( (item) => 
-                                        <option value={item.id}>{item.SubCategoryName}</option> )
-                                    }</select>
-                                </div>
-                                
-                            </div>
-
+                            </div> */}
                         </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -422,7 +507,7 @@ const Inventory = (props) => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                            {/* <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>SellingQuantity</strong> </label>
                                     <input
@@ -435,7 +520,7 @@ const Inventory = (props) => {
                                         value={editIventory.SellingQuantity}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                 </Modal.Body>
                 <Modal.Footer>

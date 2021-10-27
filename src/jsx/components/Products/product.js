@@ -3,6 +3,7 @@ import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
+import {Link} from "react-router-dom"
 const Product = () => {
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
@@ -74,6 +75,7 @@ const Product = () => {
     useEffect( () => {
         axios.get('/api/GetProducts').then(res => {
             if(res.data.status === 200){
+                // console.log(res.data.fetchData);
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);
@@ -87,14 +89,60 @@ const Product = () => {
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
             return (
-                <tr key={item.id}>
-                    <td>{i+1}</td>
-                    <td>{item.ProductName}</td>
-                    <td>
-                        <button type="button"   onClick={(e)=>fetchProduct(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteProduct(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
-                    </td> 
-                </tr>
+                <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                    <div className="card overflow-hidden">
+                        <div className="card-body">
+                            <div className="text-center">
+                            <div className="profile-photo">
+                                {/* <img
+                                    src={`http://localhost:8000/images/catagories/${item.PicturesLocation}`}
+                                    className="d-block w-100"
+                                    alt=""
+                                /> */}
+                            </div>
+                            <h3 className="mt-4 mb-1"><Link to={{
+                            pathname: `/variants/${item.id}`,
+                            id:item.id,
+                            ProductName:item.ProductName }} > {item.ProductName}</Link></h3>
+                            <p className="text-muted"></p>
+                            {/* <p className="text-muted">{item.SubCategoryName}</p> */}
+                          
+                           
+                            </div>
+                        </div>
+        
+                        <div className="card-footer pt-0 pb-0 text-center">
+                            <div className="row">
+                                <div className="col-4 pt-3 pb-3 border-right">
+                                    <Link
+                                         onClick={(e)=>fetchProduct(e,item.id)}
+                                    >
+                                        <span>Edit</span>
+                                    </Link>
+                                </div>
+                                <div className="col-4 pt-3 pb-3 border-right">
+                                    <Link
+                                        onClick={(e)=>deleteProduct(e,item.id)}
+                                    >
+                                        <span>Delete</span>
+                                    </Link>
+                                </div>
+                                <div className="col-4 pt-3 pb-3">
+                                    <Link
+                                         to={{
+                                            pathname: `/variants/${item.id}`,
+                                            id:item.id,
+                                            ProductName:item.ProductName }}
+                                    >
+                                        <span>variants</span>
+                                    </Link>
+                                </div>
+                            
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )
         })
 
@@ -225,25 +273,13 @@ const Product = () => {
 							</Button>
 						</div>
 					</div>
-					<div className="card-body p-0">
-						<div className="table-responsive ">
-							<table className="table ">
-                                <thead>
-                                    <tr>
-                                        <th>#NO</th>
-                                        <th>Product Name</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-								<tbody>
-                                    {viewProducts_HTMLTABLE}
-							    </tbody>
-                            </table>
-						</div>
-					</div>
+					
 				</div>
 			</div>
          </div>
+         <div className="row" >
+            {viewProducts_HTMLTABLE}
+        </div>
       </Fragment>
    );
 };
