@@ -4,6 +4,8 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 const ServiceArea = (props) => {
+    const id =props.match.params.id;
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -11,7 +13,7 @@ const ServiceArea = (props) => {
     // insert a section
     const [serviceAreaInsert, setServiceAreaInsert] = useState({
         AreaName: '',
-        BranchID: props.location.id
+        BranchID: id
     });
     const handleInput = (e) => {
         e.persist();
@@ -24,7 +26,7 @@ const ServiceArea = (props) => {
             if(res.data.status === 200){
                 setServiceAreaInsert({
                     AreaName: '',
-                    BranchID: props.location.id
+                    BranchID: id
                 });
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
@@ -78,13 +80,13 @@ const ServiceArea = (props) => {
     const [loading, setLoading]=useState(true);
     
     useEffect( () => {
-        axios.get(`/api/GetServiceAreas/${props.location.id}`).then(res => {
+        axios.get(`/api/GetServiceAreas/${id}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);
           });
-      }, [props.location.id]);
+      }, [id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){

@@ -9,6 +9,8 @@ import swal from "sweetalert"
 
 const Category = (props) => {
     // insert modal
+    const id =props.match.params.id;
+
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
@@ -16,7 +18,7 @@ const Category = (props) => {
 
     const [categoryInsert, setCategoryInsert] = useState({
         CategoryName : '',
-        branchID : props.location.id,
+        branchID : id,
     });
     const [imageState, setImageState] = useState([]);
 
@@ -39,7 +41,7 @@ const Category = (props) => {
                 // console.log(res.data.status);
                 setCategoryInsert({
                     CategoryName : '',
-                    branchID : props.location.id,
+                    branchID : id,
                 });
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
@@ -101,13 +103,13 @@ const Category = (props) => {
     const [loading, setLoading]=useState(true);
     
     useEffect( () => {
-        axios.get(`/api/GetCategories/${props.location.id}`).then(res => {
+        axios.get(`/api/GetCategories/${id}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);
           });
-      }, [props.location.id]);
+      }, [id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
@@ -131,8 +133,7 @@ const Category = (props) => {
                         </Card.Body>
                         <Card.Footer>
                             <Link className="btn btn-outline-success btn-xxs ml-1" to={{
-                            pathname: '/sub-category',
-                            id:item.id,
+                            pathname: `/sub-category/${item.id}`,
                             CategoryName:item.CategoryName }}>
                                 Sub-Category
                             </Link>

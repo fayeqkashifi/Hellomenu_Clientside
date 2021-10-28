@@ -4,6 +4,8 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 const Inventory = (props) => {
+    const id =props.match.params.id;
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -22,7 +24,7 @@ const Inventory = (props) => {
         UnitID: '',
         sub_categoryID:'',
         ProductName:'',
-        branch_id: props.location.id
+        branch_id: id
     });
     const handleInput = (e) => {
         e.persist();
@@ -126,7 +128,7 @@ const Inventory = (props) => {
                     OldPrice: '',
                     UnitID: '',
                     sub_categoryID:'',
-                    branch_id: props.location.id
+                    branch_id: id
                 });
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
@@ -145,13 +147,13 @@ const Inventory = (props) => {
     const [products, setProducts]=useState([]);
     
     useEffect( () => {
-        axios.get(`/api/GetInventory/${props.location.id}`).then(res => {
+        axios.get(`/api/GetInventory/${id}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);
           });
-        axios.get(`/api/GetUnits/${props.location.id}`).then(res => {
+        axios.get(`/api/GetUnits/${id}`).then(res => {
             if(res.data.status === 200){
                 setUnitData(res.data.fetchData);
             }
@@ -166,7 +168,7 @@ const Inventory = (props) => {
                 setProducts(res.data.fetchData);
             }
           });
-      }, [props.location.id]);
+      }, [id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){

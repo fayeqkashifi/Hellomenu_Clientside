@@ -107,8 +107,7 @@ const Branches = () => {
                                 />
                             </div>
                             <h3 className="mt-4 mb-1"><Link to={{
-                            pathname: '/category',
-                            id:item.id,
+                            pathname: `/category/${item.id}`,
                             branchName:item.BrancheName }} > {item.BrancheName}</Link></h3>
                             <p className="text-muted"></p>
                             <Link
@@ -132,8 +131,7 @@ const Branches = () => {
                             <div className="col-4 pt-3 pb-3 border-right">
                                 <Link
                                     to={{
-                                    pathname: '/service-area',
-                                    id:item.id,
+                                    pathname: `/service-area/${item.id}`,
                                     branchName:item.BrancheName }}
                                 >
                                     <span>Services</span>
@@ -142,8 +140,7 @@ const Branches = () => {
                             <div className="col-3 pt-3 pb-3 border-right">
                                 <Link
                                     to={{
-                                        pathname: '/unit',
-                                        id:item.id,
+                                        pathname: `/unit/${item.id}`,
                                         branchName:item.BrancheName }} 
                                 >
                                     <span>Units</span>
@@ -152,8 +149,7 @@ const Branches = () => {
                             <div className="col-5 pt-3 pb-3">
                                 <Link
                                     to={{
-                                        pathname: '/inventory',
-                                        id:item.id,
+                                        pathname: `/inventory/${item.id}`,
                                         branchName:item.BrancheName }}
                                 >
                                     <span>Inventory</span>

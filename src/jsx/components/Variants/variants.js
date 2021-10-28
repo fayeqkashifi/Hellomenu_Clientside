@@ -5,42 +5,29 @@ import axios from "axios";
 import swal from "sweetalert"
 import {Link} from "react-router-dom"
 const Variants = (props) => {
+    const id =props.match.params.id;
+
     // insert modal
-    const [modalCentered, setModalCentered] = useState(false);
+    // const [modalCentered, setModalCentered] = useState(false);
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a section
 
 
-    const [productInsert, setProductInsert] = useState('');
-    const handleInput = (e) => {
-        e.persist();
-        setProductInsert({...productInsert, [e.target.name]: e.target.value});
-    };
-    const saveProduct=  (e) => {
-        e.preventDefault();
-        axios.post("/api/InsertProducts", productInsert).then(res=>{
-            if(res.data.status === 200){
-                // console.log(res.data.status);
-                setProductInsert('');
-                 swal("Success",res.data.message,"success");
-                 setModalCentered(false)
-                //  this.props.history.push("/")
-            }
-        });
-        
-    };
+   
     // edit code
-    const [editProduct, setEditProduct] = useState([]);
+    const [editVariant, setEditVariant] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
-        setEditProduct({...editProduct, [e.target.name]: e.target.value});
+        setEditVariant({...editVariant, [e.target.name]: e.target.value});
     };
-    const fetchProduct = (e,id)=>{
+    
+    const fetchVariant = (e,id)=>{
         e.preventDefault();
-        axios.get(`/api/EditProducts/${id}`).then(res=>{
+        axios.get(`/api/Editvariations/${id}`).then(res=>{
             if(res.data.status === 200){
-                setEditProduct(res.data.product);
+                // console.log(res.data.variant);
+                setEditVariant(res.data.variant);
                 setEditModalCentered(true);
             }else if(res.data.status === 404){
                 swal("Error",res.data.message,"error");
@@ -49,12 +36,12 @@ const Variants = (props) => {
         });
 
     }
-    const updateProduct =  (e) => {
+    const updateVariant =  (e) => {
         e.preventDefault();
-        axios.post("/api/UpdateProduct", editProduct).then(res=>{
+        axios.post("/api/UpdateVariations", editVariant).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
-                setEditProduct('');
+                setEditVariant('');
                 swal("Success",res.data.message,"success");
                 setEditModalCentered(false)
                 //  this.props.history.push("/")
@@ -71,16 +58,23 @@ const Variants = (props) => {
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
     const [loading, setLoading]=useState(true);
+    const [unitData,setUnitData]=useState([]);
     
     useEffect( () => {
-        axios.get(`/api/Getvariations/${props.location.id}`).then(res => {
+        axios.get(`/api/Getvariations/${id}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
                 // console.log(fetchData);
             }
             setLoading(false);
           });
-      }, [props.location.id]);
+          axios.get(`/api/GetUnitsAll/${editVariant.UnitID}`).then(res => {
+            if(res.data.status === 200){
+                // console.log(editVariant.UnitID);
+                setUnitData(res.data.fetchData);
+            }
+          });
+      }, [id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
@@ -112,7 +106,7 @@ const Variants = (props) => {
                             <div className="row">
                                 <div className="col-4 pt-3 pb-3 border-right">
                                     <Link
-                                         onClick={(e)=>fetchProduct(e,item.id)}
+                                         onClick={(e)=>fetchVariant(e,item.variantID)}
                                     >
                                         <span>Edit</span>
                                     </Link>
@@ -161,87 +155,9 @@ const Variants = (props) => {
     return (
       <Fragment>
          <PageTItle headingPara="Variant" activeMenu="add-variant" motherMenu="Variants" />
-        {/* <!-- Insert  Modal --> */}
-        <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveProduct} method= "POST" >
-                <Modal.Header>
-                    <Modal.Title>Add A Variant</Modal.Title>
-                    <Button
-                        onClick={() => setModalCentered(false)}
-                        variant=""
-                        className="close"
-                    >
-                        <span>&times;</span>
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="row" >
-                        <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                            <div className="form-group">
-                                <label className="mb-1 "> <strong>Variant Name</strong> </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Variant Name"
-                                    name="variant_name"
-                                    required
-                                    onChange={handleInput}  
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="mb-1 "> <strong>Buying Quantity</strong> </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Buying Quantity"
-                                    name="Buyingquantity"
-                                    required
-                                    onChange={handleInput}  
-                                />
-                            </div>
-                        </div>
-                        <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                            <div className="form-group">
-                                <label className="mb-1 "> <strong>Variant Name</strong> </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Variant Name"
-                                    name="variant_name"
-                                    required
-                                    onChange={handleInput}  
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="mb-1 "> <strong>Buying Quantity</strong> </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Buying Quantity"
-                                    name="Buyingquantity"
-                                    required
-                                    onChange={handleInput}  
-                                />
-                            </div>
-                        </div>
-                    </div>
-                        
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        onClick={() => setModalCentered(false)}
-                        variant="danger light"
-                    >
-                        Close
-                    </Button>
-                    <Button variant="primary" type="submit">Save </Button>
-
-                </Modal.Footer>
-            </Form>
-        </Modal>
          {/* Edit Modal */}
-         <Modal className="fade" show={editmodalCentered}>
-            <Form onSubmit={updateProduct} method= "POST" >
+         <Modal className="fade bd-example-modal-lg" show={editmodalCentered} size="lg"> 
+            <Form onSubmit={updateVariant} method= "POST" >
                 <Modal.Header>
                     <Modal.Title>Edit Product</Modal.Title>
                     <Button
@@ -253,6 +169,8 @@ const Variants = (props) => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
+                <div className="row" >
+                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
                             <label className="mb-1 "> <strong>ID</strong> </label>
                             <input
@@ -262,21 +180,101 @@ const Variants = (props) => {
                                 name="id"
                                 required
                                 onChange={editHandleInput}  
-                                value={editProduct.id}
+                                value={editVariant.id}
                             />
                         </div>
+                    </div>
+                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Product Name</strong> </label>
+                            <label className="mb-1 "> <strong>Variation Name</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Product Name"
-                                name="ProductName"
+                                placeholder="Variation Name"
+                                name="VariationName"
                                 required
                                 onChange={editHandleInput}  
-                                value={editProduct.ProductName}
+                                value={editVariant.VariationName}
                             />
                         </div>
+                    </div>
+                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>Unit</strong> </label>
+                            <select type="text"
+                                className="form-control"
+                                placeholder="UnitID"
+                                name="UnitID"
+                                required
+                                onChange={editHandleInput}  
+                                value={editVariant.UnitID}>
+                                <option value={editVariant.UnitID}>Selected</option> )
+                                {
+                                unitData.map( (item) => 
+                                <option value={item.id} key={item.id}>{item.UnitName}</option> )
+                            }</select>
+                        </div>
+                    </div>
+                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>Description</strong> </label>
+                            <textarea
+                                type="text"
+                                className="form-control"
+                                placeholder="Description"
+                                name="Description"
+                                required
+                                onChange={editHandleInput}  
+                                value={editVariant.Description}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>Advice</strong> </label>
+                            <textarea
+                                type="text"
+                                className="form-control"
+                                placeholder="Advice"
+                                name="Advice"
+                                required
+                                onChange={editHandleInput}  
+                                value={editVariant.Advice}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>Current Price</strong> </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Current Price"
+                                name="CurrentPrice"
+                                required
+                                onChange={editHandleInput}  
+                                value={editVariant.CurrentPrice}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>Old Price</strong> </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Old Price"
+                                name="OldPrice"
+                                required
+                                onChange={editHandleInput}  
+                                value={editVariant.OldPrice}
+                            />
+                        </div>
+                    </div>
+
+                </div>
+
 
                 </Modal.Body>
                 <Modal.Footer>
@@ -299,13 +297,13 @@ const Variants = (props) => {
 							<h4 className="card-title mb-2">Variants</h4>
 						</div>
 						<div className="dropdown">
-							<Button 
+							{/* <Button 
                             variant="primary"
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
 								Add Variant
-							</Button>
+							</Button> */}
 						</div>
 					</div>
 					

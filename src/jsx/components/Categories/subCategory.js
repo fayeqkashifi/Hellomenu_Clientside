@@ -4,6 +4,8 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 const SubCategory = (props) => {
+    const id =props.match.params.id;
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -11,7 +13,7 @@ const SubCategory = (props) => {
     // insert a section
     const [subCategoryInsert, setSubCategoryInsert] = useState({
         SubCategoryName: '',
-        CategoryID: props.location.id
+        CategoryID: id
     });
     const handleInput = (e) => {
         e.persist();
@@ -28,7 +30,7 @@ const SubCategory = (props) => {
                 // console.log(res.data.status);
                 setSubCategoryInsert({
                     SubCategoryName: '',
-                    CategoryID: props.location.id
+                    CategoryID: id
                 });
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
@@ -83,13 +85,13 @@ const SubCategory = (props) => {
     const [loading, setLoading]=useState(true);
     
     useEffect( () => {
-        axios.get(`/api/GetSubCategories/${props.location.id}`).then(res => {
+        axios.get(`/api/GetSubCategories/${id}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);
           });
-      }, [props.location.id]);
+      }, [id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
