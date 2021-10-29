@@ -27,6 +27,8 @@ import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/order";
 import Variants from "./components/Variants/variants";
 import Gallery from "./components/Variants/gallary";
+import Basket from "./components/Orders/basket";
+import VariantDetails from "./components/Variants/variant-details";
 
 const Markup = () => {
    const routes = [
@@ -42,8 +44,10 @@ const Markup = () => {
 		{ url: "inventory/:id", component: Inventory },
 		{ url: "profile", component: Profile },
 		{ url: "orders", component: Order },
+		{ url: "baskets", component: Basket },
 		{ url: "variants/:id", component: Variants },
 		{ url: "gallery/:id", component: Gallery },
+		{ url: "variant-details/:id", component: VariantDetails },
    ];
 
    return (

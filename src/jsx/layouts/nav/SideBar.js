@@ -55,6 +55,10 @@ class SideBar extends Component {
          orders = [
             "orders",
          ],
+         baskets=[
+            "baskets",
+
+         ],
          Companies = [
             "companies",
          ],
@@ -107,7 +111,20 @@ class SideBar extends Component {
                         <i className="flaticon-381-controls-3"></i>
                         <span className="nav-text">Orders</span>
                      </Link>
-                    
+                  </li>
+                  <li
+                     className={`${
+                        baskets.includes(path.slice(1)) ? "mm-active" : ""
+                     }`}
+                  >
+                     <Link
+                        className="ai-icon"
+                        to="/baskets"
+                        
+                     >
+                        <i className="flaticon-381-controls-3"></i>
+                        <span className="nav-text">Baskets</span>
+                     </Link>
                   </li>
                   <li
                      className={`${

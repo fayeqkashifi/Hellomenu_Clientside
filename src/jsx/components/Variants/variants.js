@@ -74,7 +74,7 @@ const Variants = (props) => {
                 setUnitData(res.data.fetchData);
             }
           });
-      }, [id]);
+      }, [id,editVariant.UnitID]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
