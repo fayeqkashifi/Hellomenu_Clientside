@@ -1,6 +1,8 @@
 import React, { Fragment,useState,useEffect } from "react";
 import {Link } from "react-router-dom"
 import axios from "axios";
+import swal from "sweetalert"
+
 const VariantDetails = (props) => {
    
     
@@ -10,6 +12,19 @@ const VariantDetails = (props) => {
     const [fetchData,setFetchData]=useState([]);
     const [variantData,setVariantData]=useState([]);
     const [loading, setLoading]=useState(true);
+
+    // Quantity increment/decrement using hooks start
+    const [quantity,setQuantity]=useState(1);
+    const handleDecrement=()=>{
+        if(quantity>1){
+            setQuantity(prevCount=>prevCount-1);
+        }
+    }
+    const handelIncrement=()=>{
+        setQuantity(prevCount=>prevCount+1);
+    }
+    // Quantity increment/decrement using hooks end
+
    
     useEffect( () => {
         
@@ -57,7 +72,27 @@ const VariantDetails = (props) => {
         })
 
     }
+
     
+    // add to basket start   
+    const addBaskets= (e)=>{
+        e.preventDefault();
+        const basket={
+            VariantQuantity: quantity,
+        }
+        axios.post(`/api/InsertBasket/${id}`,basket).then(res=>{
+            if(res.data.status === 200){
+                setQuantity(1);
+                swal("Success",res.data.message,"success");
+                // thisClicked.closest("tr").remove();
+            }else if(res.data.status === 404){
+                swal("Success",res.data.message,"success");
+            }
+        });
+
+    }
+    // add to basket end   
+
     
 
     return (
@@ -73,7 +108,7 @@ const VariantDetails = (props) => {
             <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
             {variantData.map((item,i)=>{
                 return ( 
-            <div className="card">
+            <div className="card" key={i}>
                 <div className="card-body">
                     <div className="row">
                     <div className="col-xl-12 col-lg-12  col-md-12 col-xxl-12 col-sm-12">
@@ -104,23 +139,24 @@ const VariantDetails = (props) => {
                                 <h4 className="m-b-15">Advice</h4>
                                 <p className="text-content">{item.Advice}</p>
                                
-                                <div className="col-2 px-0 mt-3">
-                                <input
-                                    type="number"
-                                    name="num"
-                                    className="form-control input-btn input-number"
-                                    defaultValue="1"
-                                />
-                                </div>
-                                <div className="shopping-cart mt-5">
-                                <Link
-                                    className="btn btn-primary btn-lg"
-                                    to="#"
-                                >
-                                    <i className="fa fa-shopping-basket mr-2"></i>
-                                    Add to Basket
-                                </Link>
-                                </div>
+                                    <div className="col-6 px-0 mt-3">
+                                        <div className="input-group">
+                                            <button type="button" onClick={handleDecrement} className="input-group-text">-</button>
+                                            <div className="form-control text-center"> {quantity}</div>
+                                            <button type="button" onClick={handelIncrement} className="input-group-text">+</button>
+                                        </div>
+                                    </div>
+
+                                    <div className="shopping-cart mt-5">
+                                        <button
+                                            type="button"
+                                            onClick={addBaskets}
+                                            className="btn btn-primary btn-lg">
+                                            <i className="fa fa-shopping-basket mr-2"></i>
+                                            Add to Basket
+                                        </button>
+                                    </div>
+
                             </div>
                         </div>
                     </div>
