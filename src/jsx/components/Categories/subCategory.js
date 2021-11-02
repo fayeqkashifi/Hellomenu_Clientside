@@ -3,7 +3,12 @@ import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next";
+
 const SubCategory = (props) => {
+    // for localization
+	const { t } = useTranslation();
+
     const id =props.match.params.id;
 
     // insert modal
@@ -95,7 +100,7 @@ const SubCategory = (props) => {
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -105,8 +110,8 @@ const SubCategory = (props) => {
                    
                     <td> {item.SubCategoryName}</td>
                     <td>
-                        <button type="button"   onClick={(e)=>fetchSubMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteSubMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">Delete</button>
+                        <button type="button"   onClick={(e)=>fetchSubMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteSubMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">{t('delete')}</button>
                     </td> 
                 </tr>
             )
@@ -127,7 +132,7 @@ const SubCategory = (props) => {
     }
     return (
       <Fragment>
-         <PageTItle headingPara="Sub-Category" activeMenu="add-sub-Category" motherMenu="Sub Categories" />
+         <PageTItle headingPara={t('sub_category')} activeMenu={t('add_sub_Category')} motherMenu={t('sub_category')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveSubMenu} method= "POST" encType="multipart/form-data">
@@ -143,15 +148,15 @@ const SubCategory = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Category Name: {props.location.CategoryName}</strong> </label>
+                            <label className="mb-1 "> <strong>{t('category_name')}: {props.location.CategoryName}</strong> </label>
                         </div>
                         
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Sub Category Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('sub_category_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Sub Category Name"
+                                placeholder={t('sub_category_name')}
                                 name="SubCategoryName"
                                 required
                                 onChange={handleInput}  
@@ -164,9 +169,9 @@ const SubCategory = (props) => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save</Button>
+                    <Button variant="primary" type="submit">{t('save')}</Button>
 
                 </Modal.Footer>
             </Form>
@@ -175,7 +180,7 @@ const SubCategory = (props) => {
          <Modal className="fade" show={editmodalCentered}>
             <Form onSubmit={updateSubMenu} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Sub-Category</Modal.Title>
+                    <Modal.Title>{t('edit_sub_category')}</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -186,11 +191,11 @@ const SubCategory = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Sub Category Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('sub_category_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="CategoryName"
+                                placeholder={t('sub_category_name')}
                                 name="SubCategoryName"
                                 required
                                 onChange={editHandleInput}  
@@ -204,9 +209,9 @@ const SubCategory = (props) => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -216,7 +221,7 @@ const SubCategory = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Sub Categories</h4>
+							<h4 className="card-title mb-2">{t('sub_category')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -224,7 +229,7 @@ const SubCategory = (props) => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Sub-Category
+								{t('add_sub_Category')}
 							</Button>
 						</div>
 					</div>
@@ -233,9 +238,9 @@ const SubCategory = (props) => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>#NO</th>
-                                        <th>Sub Category Name</th>
-                                        <th>Actions</th>
+                                        <th>{t('number')}</th>
+                                        <th>{t('sub_category_name')}</th>
+                                        <th>{t('actions')}</th>
                                     </tr>
                                 </thead>
 								<tbody>

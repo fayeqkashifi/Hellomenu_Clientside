@@ -2,8 +2,12 @@ import React, { Fragment,useState,useEffect } from "react";
 import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
-import swal from "sweetalert"
+import swal from "sweetalert";
+import { useTranslation } from "react-i18next";
+
 const Company = () => {
+    // for localization
+	const { t } = useTranslation();
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -78,7 +82,7 @@ const Company = () => {
 
     var viewCompanies_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewCompanies_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -87,8 +91,8 @@ const Company = () => {
                     <td>{i+1}</td>
                     <td>{item.company}</td>
                     <td>
-                        <button type="button"   onClick={(e)=>editCompany(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteCompany(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                        <button type="button"   onClick={(e)=>editCompany(e,item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteCompany(e,item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
                     </td> 
                 </tr>
             )
@@ -111,12 +115,12 @@ const Company = () => {
     
     return (
       <Fragment>
-         <PageTItle headingPara="Company" activeMenu="add-Company" motherMenu="Companies" />
+         <PageTItle headingPara={t('companies')} activeMenu={t('add_company')} motherMenu={t('companies')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveCompany} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Add A Company</Modal.Title>
+                    <Modal.Title>{t('add_company')}</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -127,11 +131,11 @@ const Company = () => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>User ID</strong> </label>
+                            <label className="mb-1 "> <strong>{t('user_id')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="User ID"
+                                placeholder={t('user_id')}
                                 name="user_id"
                                 required
                                 disabled
@@ -140,11 +144,11 @@ const Company = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Company Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('company_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Company Name"
+                                placeholder={t('company_name')}
                                 name="company"
                                 required
                                 onChange={handleInput}  
@@ -158,9 +162,9 @@ const Company = () => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save </Button>
+                    <Button variant="primary" type="submit">{t('save')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -169,7 +173,7 @@ const Company = () => {
          <Modal className="fade" show={editmodalCentered}>
             <Form onSubmit={updateCompany} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Company</Modal.Title>
+                    <Modal.Title>{t('edit_company')}</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -180,12 +184,12 @@ const Company = () => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>ID</strong> </label>
+                            <label className="mb-1 "> <strong>{t('id')}</strong> </label>
                             <input
                                 type="text"
                                 disabled="disabled"
                                 className="form-control"
-                                placeholder="Company Name"
+                                // placeholder="Company Name"
                                 name="id"
                                 required
                                 onChange={editHandleInput}  
@@ -193,11 +197,11 @@ const Company = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Company Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('company_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Company Name"
+                                placeholder={t('company_name')}
                                 name="company"
                                 required
                                 onChange={editHandleInput}  
@@ -211,9 +215,9 @@ const Company = () => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -223,7 +227,7 @@ const Company = () => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Companies</h4>
+							<h4 className="card-title mb-2">{t('companies')} </h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -231,7 +235,7 @@ const Company = () => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Company
+								{t('add_company')} 
 							</Button>
 						</div>
 					</div>
@@ -240,9 +244,9 @@ const Company = () => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>#NO</th>
-                                        <th>Company Name</th>
-                                        <th>Actions</th>
+                                        <th>{t('number')} </th>
+                                        <th>{t('company_name')} </th>
+                                        <th>{t('actions')} </th>
                                     </tr>
                                 </thead>
 								<tbody>

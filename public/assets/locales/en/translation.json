@@ -1,7 +1,6 @@
 {
     "dashboard": "Dashboard",
     "baskets": "Baskets",
-    "companies": "Companies",
 
     "branches": "Branches",
     "branch_text": "Create new branches, add or edit your categories, subCategories and inventory.",
@@ -15,23 +14,53 @@
 
     "products": "Products",
     "product_text":"Add and delete products as well as variants.",
+    "product_name": "Product Name",
+    "select_a_product": "Select A Product",
 
-
-    "sub_category":"Sub Menu",
+    "sub_category":"Sub Menus",
     "add_category":"Add Menu",
     "category_icon":"Menu Icon",
     "category_name":"Menu Name",
     "edit_category":"Edit Category",
     "categories":"Menus",
+    "add_sub_Category":"Add Sub-Menu",
+    "sub_category_name":"Sub Menu Name",
+    "edit_sub_category":"Edit Sub-Menu",
+    "select_subCategory": "Select SubCategory",
+
+    "companies": "Companies",
+    "add_company": "Add Company",
+    "user_id": "User ID",
+    "company_name": "Company Name", 
+    "edit_company": "Edit Company",
+
+    "inventory": "Inventory",
+    "add_variant":"Add Variant",
+    "add_to_inventory": "Add To Inventory",    
+    "variant_name": "Variant Name",
+    "buying_quantity": "Buying Quantity",
+    "buying_price": "Buying Price",
+    "selling_price": "Selling Price",
+    "selling_quantity": "Selling Quantity",
+    "description": "Description",
+    "advice": "Advice",
+    "current_price": "Current Price",
+    "old_price": "Old Price",
+    "images": "Images",
+    "edit_inventory": "Edit Inventory",
 
 
+    "actions":"Actions",
+    "number": "#NO",
     "id": "ID",
     "profile": "Profile",
     "close": "Close",
     "save": "Save",
     "services": "Services",
+    
     "units": "Units",
-    "inventory": "Inventory",
+    "select_a_unit": "Select A Unit",
+
     "logout": "Logout",
     "edit": "Edit",
     "delete": "Delete",

@@ -3,7 +3,11 @@ import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next";
+
 const Inventory = (props) => {
+    // for localization
+	const { t } = useTranslation();
     const id =props.match.params.id;
 
     // insert modal
@@ -172,7 +176,7 @@ const Inventory = (props) => {
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -185,10 +189,10 @@ const Inventory = (props) => {
                     <td> {item.SellingQuantity}</td>
                     <td> {item.buyingPrice}</td>
                     <td> {item.sellingPrice}</td>
-                    <td> {item.purchase_sell}</td>
+                    {/* <td> {item.purchase_sell}</td> */}
                     <td>
-                        <button type="button"   onClick={(e)=>fetchUnit(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteInventory(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                        <button type="button"   onClick={(e)=>fetchUnit(e,item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteInventory(e,item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
                     </td> 
                 </tr>
             )
@@ -209,12 +213,12 @@ const Inventory = (props) => {
     }
     return (
       <Fragment>
-         <PageTItle headingPara="Inventory" activeMenu="add-variant" motherMenu="Inventories" />
+         <PageTItle headingPara={t('inventory')} activeMenu={t('add_variant')} motherMenu={t('inventory')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade bd-example-modal-lg" show={modalCentered} size="lg">
             <Form onSubmit={saveInventory} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
-                    <Modal.Title>Add To Inventory</Modal.Title>
+                    <Modal.Title>{t('add_to_inventory')}</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -225,12 +229,12 @@ const Inventory = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Branch Name: {props.location.branchName}</strong> </label>
+                            <label className="mb-1 "> <strong>{t('branch_name')}: {props.location.branchName}</strong> </label>
                         </div>
                         <div className="row" >
                             <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Product Name</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('product_name')}</strong> </label>
                                     <select type="text"
                                         className="form-control"
                                         placeholder="ProductName"
@@ -238,7 +242,7 @@ const Inventory = (props) => {
                                         required
                                         onChange={handleInput}  
                                         value={variantInsert.ProductName}>
-                                        <option value=''>Select A Product</option> )
+                                        <option value=''>{t('select_a_product')}</option> )
                                         {
                                         products.map( (item) => 
                                         <option value={item.id} key={item.id}>{item.ProductName}</option> )
@@ -247,7 +251,7 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>sub Category</strong> </label>
+                                    <label className="mb-1 "> <strong></strong> </label>
                                     <select type="text"
                                         className="form-control"
                                         placeholder="sub_categoryID"
@@ -255,7 +259,7 @@ const Inventory = (props) => {
                                         required
                                         onChange={handleInput}  
                                         value={variantInsert.sub_categoryID}>
-                                        <option value="">Select SubCategory</option> )
+                                        <option value="">{t('select_subCategory')}</option> )
                                         
                                         {
                                         subCategoryData.map( (item) => 
@@ -265,7 +269,7 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Unit</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('unit')}</strong> </label>
                                     <select type="text"
                                         className="form-control"
                                         placeholder="UnitID"
@@ -273,7 +277,7 @@ const Inventory = (props) => {
                                         required
                                         onChange={handleInput}  
                                         value={variantInsert.UnitID}>
-                                        <option value="">Select A Unit</option> )
+                                        <option value="">{t('select_a_unit')}</option> )
                                         {
                                         unitData.map( (item) => 
                                         <option value={item.id} key={item.id}>{item.UnitName}</option> )
@@ -282,11 +286,11 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Variant Name</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('variant_name')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Variant Name"
+                                        placeholder={t('variant_name')}
                                         name="variant_name"
                                         required
                                         onChange={handleInput}  
@@ -296,11 +300,11 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Buying Quantity</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('buying_quantity')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Buying Quantity"
+                                        placeholder={t('buying_quantity')}
                                         name="Buyingquantity"
                                         required
                                         onChange={handleInput}  
@@ -311,11 +315,11 @@ const Inventory = (props) => {
                             
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Buying Price</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('buying_price')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Buying Price"
+                                        placeholder={t('buying_price')}
                                         name="buyingPrice"
                                         required
                                         onChange={handleInput}  
@@ -325,11 +329,11 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Selling Price</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('selling_price')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Selling Price"
+                                        placeholder={t('selling_price')}
                                         name="sellingPrice"
                                         required
                                         onChange={handleInput}  
@@ -339,11 +343,11 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Description</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('description')}</strong> </label>
                                     <textarea
                                         type="text"
                                         className="form-control"
-                                        placeholder="Buying Price"
+                                        placeholder={t('description')}
                                         name="Description"
                                         required
                                         onChange={handleInput}  
@@ -353,11 +357,11 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Advice</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('advice')}</strong> </label>
                                     <textarea
                                         type="text"
                                         className="form-control"
-                                        placeholder="Advice"
+                                        placeholder={t('advice')}
                                         name="Advice"
                                         required
                                         onChange={handleInput}  
@@ -367,11 +371,11 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Current Price</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('current_price')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="CurrentPrice"
+                                        placeholder={t('current_price')}
                                         name="CurrentPrice"
                                         required
                                         onChange={handleInput}  
@@ -381,11 +385,11 @@ const Inventory = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Old Price</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('old_price')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="OldPrice"
+                                        placeholder={t('old_price')}
                                         name="OldPrice"
                                         required
                                         onChange={handleInput}  
@@ -396,7 +400,7 @@ const Inventory = (props) => {
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
 
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Images</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('images')}</strong> </label>
                                     {/* <div class="file-loading"> */}
                                         <input 
                                         type="file" 
@@ -434,9 +438,9 @@ const Inventory = (props) => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                       {t('close')} 
                     </Button>
-                    <Button variant="primary" type="submit">Save</Button>
+                    <Button variant="primary" type="submit"> {t('save')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -445,7 +449,7 @@ const Inventory = (props) => {
          <Modal className="fade bd-example-modal-lg" show={editmodalCentered} size="lg">
             <Form onSubmit={updateInventory} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Inventory</Modal.Title>
+                    <Modal.Title> {t('edit_inventory')} </Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -458,11 +462,11 @@ const Inventory = (props) => {
                     <div className="row" >
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Variant Name</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('variant_name')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Variant Name"
+                                        placeholder={t('variant_name')}
                                         name="variant_name"
                                         required
                                         onChange={editHandleInput}  
@@ -470,11 +474,11 @@ const Inventory = (props) => {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Buying Quantity</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('buying_quantity')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Buying Quantity"
+                                        placeholder={t('buying_quantity')}
                                         name="Buyingquantity"
                                         required
                                         onChange={editHandleInput}  
@@ -485,11 +489,11 @@ const Inventory = (props) => {
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Buying Price</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('buying_price')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Buying Price"
+                                        placeholder={t('buying_price')}
                                         name="buyingPrice"
                                         required
                                         onChange={editHandleInput}  
@@ -497,11 +501,11 @@ const Inventory = (props) => {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Selling Price</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('selling_price')}</strong> </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Selling Price"
+                                        placeholder={t('selling_price')}
                                         name="sellingPrice"
                                         required
                                         onChange={editHandleInput}  
@@ -530,9 +534,9 @@ const Inventory = (props) => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit"> {t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -542,7 +546,7 @@ const Inventory = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Units</h4>
+							<h4 className="card-title mb-2">{t('inventory')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -550,7 +554,7 @@ const Inventory = (props) => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Variant
+								{t('add_variant')}
 							</Button>
 						</div>
 					</div>
@@ -559,14 +563,14 @@ const Inventory = (props) => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>#NO</th>
-                                        <th>Variant Name</th>
-                                        <th>Buying Quantity</th>
-                                        <th>Selling Quantity</th>
-                                        <th>Buying Price</th>
-                                        <th>Selling Price</th>
-                                        <th>Purchase Sell</th>
-                                        <th>Actions</th>
+                                        <th>{t('number')}</th>
+                                        <th>{t('variant_name')}</th>
+                                        <th>{t('buying_quantity')}</th>
+                                        <th>{t('selling_quantity')}</th>
+                                        <th>{t('buying_price')}</th>
+                                        <th>{t('selling_price')}</th>
+                                        {/* <th>{t('purchase_sell')}</th> */}
+                                        <th>{t('actions')}</th>
                                     </tr>
                                 </thead>
 								<tbody>
