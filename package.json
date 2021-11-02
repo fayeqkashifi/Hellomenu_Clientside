@@ -1,6 +1,6 @@
 {
    "name": "hello-menu",
-   "homepage": "/page-login",
+   "homepage": "/",
    "version": "0.1.0",
    "private": true,
    "dependencies": {

@@ -92,7 +92,7 @@ const Branches = () => {
 
     var viewBranches_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewBranches_HTMLTABLE = 
         branchdata.map((item,i)=>{

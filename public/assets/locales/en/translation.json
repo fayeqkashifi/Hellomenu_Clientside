@@ -16,6 +16,15 @@
     "products": "Products",
     "product_text":"Add and delete products as well as variants.",
 
+
+    "sub_category":"Sub Menu",
+    "add_category":"Add Menu",
+    "category_icon":"Menu Icon",
+    "category_name":"Menu Name",
+    "edit_category":"Edit Category",
+    "categories":"Menus",
+
+
     "id": "ID",
     "profile": "Profile",
     "close": "Close",
@@ -26,5 +35,6 @@
     "logout": "Logout",
     "edit": "Edit",
     "delete": "Delete",
-    "update": "Update"
+    "update": "Update",
+    "loading": "Loading...!"
 }

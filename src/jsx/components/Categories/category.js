@@ -6,8 +6,11 @@ import { Row, Col, Card } from "react-bootstrap";
 import {Link } from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next";
 
 const Category = (props) => {
+    // for localization
+	const { t } = useTranslation();
     // insert modal
     const id =props.match.params.id;
 
@@ -113,7 +116,7 @@ const Category = (props) => {
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -135,11 +138,11 @@ const Category = (props) => {
                             <Link className="btn btn-outline-success btn-xxs ml-1" to={{
                             pathname: `/sub-category/${item.id}`,
                             CategoryName:item.CategoryName }}>
-                                Sub-Category
+                               {t('sub_category')} 
                             </Link>
 
-                            <button type="button"   onClick={(e)=>fetchMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">Edit</button>
-                            <button type="button" onClick={(e)=>deleteMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">Delete</button>
+                            <button type="button"   onClick={(e)=>fetchMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">{t('edit')} </button>
+                            <button type="button" onClick={(e)=>deleteMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">{t('delete')} </button>
                         </Card.Footer>
                     </Card>
                     </Col>
@@ -177,12 +180,12 @@ const Category = (props) => {
     
     return (
       <Fragment>
-         <PageTItle headingPara="Category" activeMenu="add-Category" motherMenu="Categories" />
+         <PageTItle headingPara={t('categories')} activeMenu={t('add_category')} motherMenu={t('categories')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveMenu} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
-                    <Modal.Title>Add A Category</Modal.Title>
+                    <Modal.Title>{t('add_category')} </Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -193,16 +196,16 @@ const Category = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="form-group">
-                        <label className="mb-1 "> <strong>Brach  Name: {props.location.branchName}</strong> </label>
+                        <label className="mb-1 "> <strong>{t('branch_name')}: {props.location.branchName}</strong> </label>
                     </div>
                     <div className="form-group">
-                        <label className="mb-1 "> <strong>Category Icon</strong> </label>
+                        <label className="mb-1 "> <strong>{t('category_icon')}</strong> </label>
                         <div className="input-group">
                             <div className="custom-file">
                                 <input
                                 type="file"
                                 className="form-control"
-                                placeholder="Category Icon"
+                                placeholder={t('category_icon')}
                                 name="CategoryIcon"
                                 required
                                 onChange={handleImage}  
@@ -211,11 +214,11 @@ const Category = (props) => {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="mb-1 "> <strong>Category Name</strong> </label>
+                        <label className="mb-1 "> <strong>{t('category_name')}</strong> </label>
                         <input
                             type="text"
                             className="form-control"
-                            placeholder="Category Name"
+                            placeholder={t('category_name')}
                             name="CategoryName"
                             required
                             onChange={handleInput}  
@@ -228,9 +231,9 @@ const Category = (props) => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save</Button>
+                    <Button variant="primary" type="submit">{t('save')}</Button>
 
                 </Modal.Footer>
             </Form>
@@ -239,7 +242,7 @@ const Category = (props) => {
          <Modal className="fade" show={editmodalCentered}>
             <Form onSubmit={updateMenu} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Category</Modal.Title>
+                    <Modal.Title>{t('edit_category')}</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -250,7 +253,7 @@ const Category = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="form-group">
-                        <label className="mb-1 "> <strong>ID</strong> </label>
+                        <label className="mb-1 "> <strong>{t('edit_category')}</strong> </label>
                         <input
                             type="text"
                             disabled="disabled"
@@ -262,13 +265,13 @@ const Category = (props) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label className="mb-1 "> <strong>Category Icon</strong> </label>
+                        <label className="mb-1 "> <strong>{t('category_icon')}</strong> </label>
                         <div className="input-group">
                             <div className="custom-file">
                                 <input
                                     type="file"
                                     className="form-control"
-                                    placeholder="Category Icon"
+                                    placeholder={t('category_icon')}
                                     name="CategoryIcon"
                                     
                                     onChange={handleImage} 
@@ -279,11 +282,11 @@ const Category = (props) => {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="mb-1 "> <strong>Category Name</strong> </label>
+                        <label className="mb-1 "> <strong>{t('category_name')}</strong> </label>
                         <input
                             type="text"
                             className="form-control"
-                            placeholder="Category Name"
+                            placeholder={t('category_name')}
                             name="CategoryName"
                             required
                             onChange={editHandleInput}  
@@ -297,9 +300,9 @@ const Category = (props) => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -309,7 +312,7 @@ const Category = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Categories</h4>
+							<h4 className="card-title mb-2">{t('categories')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -317,7 +320,7 @@ const Category = (props) => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Category
+								{t('add_category')}
 							</Button>
 						</div>
 					</div>
