@@ -1,20 +1,24 @@
 import React from "react";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
-
 import Registration from "./jsx/pages/Registration";
 /// Components
 import Markup from "./jsx";
 import Login from "./jsx/pages/Login";
-
 /// Style
 import "./css/style.css";
 import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
-
-
 // import PrivateRoute from './jsx/components/PrivateRoute';
 import PublicRoute from './jsx/components/PublicRoute';
-
 import axios from "axios"
+
+// function App() {
+//   const { t } = useTranslation();
+//   return <h2>{t('welcome_to_react')}</h2>;
+// }
+
+
+
+
 axios.defaults.baseURL="http://127.0.0.1:8000";
 axios.defaults.headers.post['Content-Type']='application/json'
 axios.defaults.headers.post['Accept']='application/json'
@@ -24,7 +28,6 @@ axios.interceptors.request.use(function(config){
    config.headers.Authorization = token ? `Bearer ${token}` : '';
    return config;
 });
-
 const App = () => {
    return (
       <Router>

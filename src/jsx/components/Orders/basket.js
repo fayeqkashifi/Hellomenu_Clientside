@@ -28,7 +28,7 @@ const Basket = () => {
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
             return (
-                <tr key={item.id}>
+                <tr key={i}>
                     <td>{i+1}</td>
                     <td>{item.VariationName}</td>
                     <td>{item.ProductName}</td>
@@ -58,9 +58,9 @@ const Basket = () => {
                         >
                             <g
                                 stroke="none"
-                                stroke-width="1"
+                                strokeWidth="1"
                                 fill="none"
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                             >
                                 <rect
                                     x="0"

@@ -115,6 +115,7 @@ const Product = () => {
                             <div className="row">
                                 <div className="col-4 pt-3 pb-3 border-right">
                                     <Link
+                                        to=""
                                          onClick={(e)=>fetchProduct(e,item.id)}
                                     >
                                         <span>Edit</span>
@@ -122,6 +123,7 @@ const Product = () => {
                                 </div>
                                 <div className="col-4 pt-3 pb-3 border-right">
                                     <Link
+                                        to=""
                                         onClick={(e)=>deleteProduct(e,item.id)}
                                     >
                                         <span>Delete</span>

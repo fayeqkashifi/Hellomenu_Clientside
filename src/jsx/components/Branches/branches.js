@@ -111,12 +111,14 @@ const Branches = () => {
                             branchName:item.BrancheName }} > {item.BrancheName}</Link></h3>
                             <p className="text-muted"></p>
                             <Link
+                                to=""
                                 onClick={(e)=>editBranch(e,item.id)}
                                 className="btn btn-primary btn-xxs shadow"
                             >
                                 Edit
                             </Link>
                             <Link
+                                to=""
                                 onClick={(e)=>deleteBranch(e,item.id)}
                                 className="btn btn-outline-danger btn-xxs ml-1"
                             >

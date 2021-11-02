@@ -8,6 +8,8 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 /// Menu
 import MetisMenu from "metismenujs";
+import { withTranslation  } from "react-i18next";
+// const { t } = useTranslation();
 
 class MM extends Component {
    componentDidMount() {
@@ -42,9 +44,10 @@ class SideBar extends Component {
       btn.addEventListener("click", toggleFunc);
    }
    render() {
+      const { t } = this.props;
       /// Path
       const path = window.location.pathname;
-
+      // console.log(path);
       /// Active menu
       let dashBoard = [
             "dashboard",
@@ -65,7 +68,7 @@ class SideBar extends Component {
          Products = [
             "products",
          ];
-         console.log(path.slice(1));
+         // console.log(dashBoard.includes(path.slice(1)));
       return (
          <div className="deznav">
             <PerfectScrollbar className="deznav-scroll">
@@ -80,7 +83,7 @@ class SideBar extends Component {
                         to="/dashboard"
                      >
                         <i className="flaticon-381-networking"></i>
-                        <span className="nav-text">Dashboard</span>
+                        <span className="nav-text">{t('dashboard')}</span>
                      </Link>
                      
                   </li>
@@ -94,7 +97,7 @@ class SideBar extends Component {
                         to="/branches"
                      >
                         <i className="flaticon-381-television"></i>
-                        <span className="nav-text">Branches</span>
+                        <span className="nav-text">{t('branches')}</span>
                      </Link>
                     
                   </li>
@@ -109,7 +112,7 @@ class SideBar extends Component {
                         
                      >
                         <i className="flaticon-381-controls-3"></i>
-                        <span className="nav-text">Orders</span>
+                        <span className="nav-text">{t('orders')}</span>
                      </Link>
                   </li>
                   <li
@@ -123,7 +126,7 @@ class SideBar extends Component {
                         
                      >
                         <i className="flaticon-381-controls-3"></i>
-                        <span className="nav-text">Baskets</span>
+                        <span className="nav-text">{t('baskets')}</span>
                      </Link>
                   </li>
                   <li
@@ -137,7 +140,7 @@ class SideBar extends Component {
                         
                      >
                         <i className="flaticon-381-internet"></i>
-                        <span className="nav-text">Companies</span>
+                        <span className="nav-text">{t('companies')}</span>
                      </Link>
                     
                   </li>
@@ -151,7 +154,7 @@ class SideBar extends Component {
                         to="/products"
                      >
                         <i className="flaticon-381-internet"></i>
-                        <span className="nav-text">Products</span>
+                        <span className="nav-text">{t('products')}</span>
                      </Link>
                     
                   </li>
@@ -163,4 +166,4 @@ class SideBar extends Component {
    }
 }
 
-export default SideBar;
+export default withTranslation()(SideBar);
