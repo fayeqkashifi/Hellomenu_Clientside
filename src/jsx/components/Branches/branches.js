@@ -4,10 +4,13 @@ import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import {Link} from "react-router-dom"
 import profile from "../../../images/hellomenu/logo.svg";
+import { useTranslation } from "react-i18next";
 
 import axios from "axios";
 import swal from "sweetalert"
 const Branches = () => {
+	const { t } = useTranslation();
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -115,14 +118,15 @@ const Branches = () => {
                                 onClick={(e)=>editBranch(e,item.id)}
                                 className="btn btn-primary btn-xxs shadow"
                             >
-                                Edit
+                                {t('edit')}
                             </Link>
                             <Link
                                 to=""
                                 onClick={(e)=>deleteBranch(e,item.id)}
                                 className="btn btn-outline-danger btn-xxs ml-1"
                             >
-                                Delete
+                              {t('delete')}
+
                             </Link>
                             </div>
                         </div>
@@ -136,7 +140,7 @@ const Branches = () => {
                                     pathname: `/service-area/${item.id}`,
                                     branchName:item.BrancheName }}
                                 >
-                                    <span>Services</span>
+                                    <span>{t('services')}</span>
                                 </Link>
                             </div>
                             <div className="col-3 pt-3 pb-3 border-right">
@@ -145,7 +149,7 @@ const Branches = () => {
                                         pathname: `/unit/${item.id}`,
                                         branchName:item.BrancheName }} 
                                 >
-                                    <span>Units</span>
+                                    <span>{t('units')}</span>
                                 </Link>
                             </div>
                             <div className="col-5 pt-3 pb-3">
@@ -154,7 +158,7 @@ const Branches = () => {
                                         pathname: `/inventory/${item.id}`,
                                         branchName:item.BrancheName }}
                                 >
-                                    <span>Inventory</span>
+                                    <span>{t('inventory')}</span>
                                 </Link>
                             </div>
                             </div>
@@ -181,12 +185,12 @@ const Branches = () => {
     
     return (
       <Fragment>
-         <PageTItle headingPara="Branches" activeMenu="add-branch" motherMenu="Branch" />
+         <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveBranch} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Add A Branch</Modal.Title>
+                    <Modal.Title>{t('add_branch')}</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -197,11 +201,11 @@ const Branches = () => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Branch Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('branch_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Branch Name"
+                                placeholder={t('branch_name')}
                                 name="BrancheName"
                                 required
                                 onChange={handleInput}  
@@ -215,9 +219,9 @@ const Branches = () => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save </Button>
+                    <Button variant="primary" type="submit">{t('save')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -226,7 +230,7 @@ const Branches = () => {
          <Modal className="fade" show={editmodalCentered}>
             <Form onSubmit={updateBranch} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Branch</Modal.Title>
+                    <Modal.Title>{t('edit_branch')}</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -237,12 +241,12 @@ const Branches = () => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>ID</strong> </label>
+                            <label className="mb-1 "> <strong>{t('id')}</strong> </label>
                             <input
                                 type="text"
                                 disabled="disabled"
                                 className="form-control"
-                                placeholder="Branch Name"
+                                // placeholder="Branch Name"
                                 name="id"
                                 required
                                 onChange={editHandleInput}  
@@ -250,11 +254,11 @@ const Branches = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Branch Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('branch_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Branch Name"
+                                placeholder={t('branch_name')}
                                 name="BrancheName"
                                 required
                                 onChange={editHandleInput}  
@@ -268,9 +272,9 @@ const Branches = () => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                       {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -280,7 +284,7 @@ const Branches = () => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Branches</h4>
+							<h4 className="card-title mb-2">{t('branches')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -288,7 +292,7 @@ const Branches = () => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Branch
+								{t('add_branch')}
 							</Button>
 						</div>
 					</div>

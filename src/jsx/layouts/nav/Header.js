@@ -2,11 +2,14 @@ import React from "react";
 import { Link ,useHistory} from "react-router-dom";
 /// Image
 import i18next from "i18next";
-
 import profile from "../../../images/hellomenu/logo.svg";
 import axios from "axios";
 import "flag-icon-css/css/flag-icons.min.css"
+import { useTranslation } from "react-i18next";
+
 const Header = ({ toggle, onProfile,onNotification}) => {
+	const { t } = useTranslation();
+
    const history = useHistory();
    const logoutUser =  (e) => {
       e.preventDefault();
@@ -118,7 +121,7 @@ const Header = ({ toggle, onProfile,onNotification}) => {
                                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                  <circle cx="12" cy="7" r="4"></circle>
                               </svg>
-                              <span className="ml-2">Profile </span>
+                              <span className="ml-2">{t('profile')} </span>
                            </Link>
                            
                            <button
@@ -143,7 +146,7 @@ const Header = ({ toggle, onProfile,onNotification}) => {
                                  <polyline points="16 17 21 12 16 7"></polyline>
                                  <line x1="21" y1="12" x2="9" y2="12"></line>
                               </svg>
-                              <span className="ml-2">Logout </span>
+                              <span className="ml-2">{t('logout')} </span>
                            </button>
                         </div>
                      </li>

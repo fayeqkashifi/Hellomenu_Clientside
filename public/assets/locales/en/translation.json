@@ -2,7 +2,29 @@
     "dashboard": "Dashboard",
     "baskets": "Baskets",
     "companies": "Companies",
+
     "branches": "Branches",
+    "branch_text": "Create new branches, add or edit your categories, subCategories and inventory.",
+    "add_branch":"Add Branch",
+    "branch_name": "Branch Name",
+    "edit_branch":"Edit Branch",
+
+
     "orders": "Orders",
-    "products": "Products"
+    "order_text": "Design your menu to reflect your business and your brand.",
+
+    "products": "Products",
+    "product_text":"Add and delete products as well as variants.",
+
+    "id": "ID",
+    "profile": "Profile",
+    "close": "Close",
+    "save": "Save",
+    "services": "Services",
+    "units": "Units",
+    "inventory": "Inventory",
+    "logout": "Logout",
+    "edit": "Edit",
+    "delete": "Delete",
+    "update": "Update"
 }

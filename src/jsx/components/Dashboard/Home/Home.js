@@ -16,7 +16,7 @@ const Home = () => {
 						</div>
 					</div>
 					<div className="card-body">
-						<p>Create new branches, add or edit your categories, subCategories and inventory.</p>
+						<p>{t('branch_text')}</p>
 						<Link to="branches" className="btn btn-outline-success">{t('branches')}</Link>
 					</div>
 				</div>
@@ -29,7 +29,7 @@ const Home = () => {
 						</div>
 					</div>
 					<div className="card-body">
-						<p>Design your menu to reflect your business and your brand</p>
+						<p>{t('order_text')}</p>
 						<Link to="orders" className="btn btn-outline-primary">{t('orders')}</Link>
 
 					</div>
@@ -43,7 +43,7 @@ const Home = () => {
 						
 					</div>
 					<div className="card-body ">
-						<p>Add and delete products as well as variants</p>
+						<p>{t('product_text')}</p>
 						<Link to="products" className="btn btn-outline-info">{t('products')}</Link>
 					</div>
 				</div>
