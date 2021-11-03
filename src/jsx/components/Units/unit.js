@@ -3,7 +3,12 @@ import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next";
+
 const Unit = (props) => {
+    // for localization
+    const { t } = useTranslation();
+    // ID
     const id =props.match.params.id;
     
     // insert modal
@@ -70,10 +75,6 @@ const Unit = (props) => {
     };
     
 
-
-
-
-
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
     const [loading, setLoading]=useState(true);
@@ -82,17 +83,15 @@ const Unit = (props) => {
         axios.get(`/api/GetUnits/${id}`).then(res => {
             if(res.data.status === 200){
                 // console.log(res.data.fetchData);
-
                 setFetchData(res.data.fetchData);
-
             }
             setLoading(false);
           });
-      }, [id]);
+      }, [unitInsert,editUnit,id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -102,8 +101,8 @@ const Unit = (props) => {
                    
                     <td> {item.UnitName}</td>
                     <td>
-                        <button type="button"   onClick={(e)=>fetchUnit(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteUnit(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                        <button type="button"   onClick={(e)=>fetchUnit(e,item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteUnit(e,item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
                     </td> 
                 </tr>
             )
@@ -124,12 +123,12 @@ const Unit = (props) => {
     }
     return (
       <Fragment>
-         <PageTItle headingPara="Unit" activeMenu="add-unit" motherMenu="Units" />
+         <PageTItle headingPara={t('units')} activeMenu={t('add_unit')} motherMenu={t('units')}/>
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveUnit} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
-                    <Modal.Title>Add A Unit</Modal.Title>
+                    <Modal.Title>{t('add_unit')}</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -140,15 +139,15 @@ const Unit = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Branch Name: {props.location.branchName}</strong> </label>
+                            <label className="mb-1 "> <strong>{t('branch_name')}: {props.location.branchName}</strong> </label>
                         </div>
                         
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Unit Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('unit_name')} </strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Unit Name"
+                                placeholder={t('unit_name')}
                                 name="UnitName"
                                 required
                                 onChange={handleInput}  
@@ -161,9 +160,9 @@ const Unit = (props) => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save</Button>
+                    <Button variant="primary" type="submit">{t('update')}</Button>
 
                 </Modal.Footer>
             </Form>
@@ -172,7 +171,7 @@ const Unit = (props) => {
          <Modal className="fade" show={editmodalCentered}>
             <Form onSubmit={updateUnit} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Unit</Modal.Title>
+                    <Modal.Title>{t('edit_unit')} </Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -183,11 +182,11 @@ const Unit = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Unit Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('unit_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Service Area"
+                                placeholder={t('unit_name')}
                                 name="UnitName"
                                 required
                                 onChange={editHandleInput}  
@@ -200,9 +199,9 @@ const Unit = (props) => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -212,7 +211,7 @@ const Unit = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Units</h4>
+							<h4 className="card-title mb-2">{t('units')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -220,7 +219,7 @@ const Unit = (props) => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Unit
+								{t('add_unit')}
 							</Button>
 						</div>
 					</div>
@@ -229,9 +228,9 @@ const Unit = (props) => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>#NO</th>
-                                        <th>Unit Name</th>
-                                        <th>Actions</th>
+                                        <th>{t('number')}</th>
+                                        <th>{t('unit_name')}</th>
+                                        <th>{t('actions')}</th>
                                     </tr>
                                 </thead>
 								<tbody>

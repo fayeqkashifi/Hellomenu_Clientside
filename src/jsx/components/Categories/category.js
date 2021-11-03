@@ -112,7 +112,7 @@ const Category = (props) => {
             }
             setLoading(false);
           });
-      }, [id]);
+      }, [categoryInsert,editMenu,id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){

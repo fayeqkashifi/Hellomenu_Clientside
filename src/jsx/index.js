@@ -1,7 +1,7 @@
 import React from "react";
 
 /// React router dom
-import { BrowserRouter as Router, Switch} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Redirect} from "react-router-dom";
 import PrivateRoute from './components/PrivateRoute';
 // import PublicRoute from './components/PublicRoute';
 
@@ -37,7 +37,7 @@ const Markup = () => {
 		{ url: "branches", component: Branches },
 		{ url: "category/:id", component: Menu },
 		{ url: "companies", component: Company },
-		{ url: "products", component: Product },
+		{ url: "products/:id", component: Product },
 		{ url: "sub-category/:id", component: SubMenu },
 		{ url: "service-area/:id", component: ServiceArea },
 		{ url: "unit/:id", component: Unit },
@@ -54,7 +54,7 @@ const Markup = () => {
 		
 			<Router>
 				<div id="main-wrapper" className="show">
-					<Nav />
+				{localStorage.getItem('auth_token') ? <Nav /> : <Redirect to="/page-login" />}
 					<div className="content-body">
 						<div className="container-fluid">
 							<Switch>
@@ -69,7 +69,8 @@ const Markup = () => {
 							</Switch>
 						</div>
 					</div>
-					<Footer />
+				{localStorage.getItem('auth_token') ? <Footer /> : <Redirect to="/page-login" />}
+
 				</div>
 				
 			</Router>

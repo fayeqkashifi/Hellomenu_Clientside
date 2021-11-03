@@ -78,7 +78,7 @@ const Company = () => {
             }
             setLoading(false);
           });
-      }, []);
+      }, [companyState,editCompanystate]);
 
     var viewCompanies_HTMLTABLE = "";
     if(loading){

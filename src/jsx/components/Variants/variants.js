@@ -4,11 +4,13 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 import {Link} from "react-router-dom"
+import { useTranslation } from "react-i18next";
+
 const Variants = (props) => {
+    // for localization
+    const { t } = useTranslation();
     const id =props.match.params.id;
 
-    // insert modal
-    // const [modalCentered, setModalCentered] = useState(false);
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a section
@@ -74,11 +76,11 @@ const Variants = (props) => {
                 setUnitData(res.data.fetchData);
             }
           });
-      }, [id,editVariant.UnitID]);
+      }, [id,editVariant,editVariant.UnitID]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -104,30 +106,21 @@ const Variants = (props) => {
         
                         <div className="card-footer pt-0 pb-0 text-center">
                             <div className="row">
-                                <div className="col-4 pt-3 pb-3 border-right">
+                                <div className="col-6 pt-3 pb-3 border-right">
                                     <Link
                                          onClick={(e)=>fetchVariant(e,item.variantID)}
                                     >
-                                        <span>Edit</span>
+                                        <span>{t('edit')}</span>
                                     </Link>
                                 </div>
-                                <div className="col-4 pt-3 pb-3 border-right">
+                                <div className="col-6 pt-3 pb-3">
                                     <Link
                                         onClick={(e)=>deleteVariant(e,item.variantID)}
                                     >
-                                        <span>Delete</span>
+                                        <span>{t('delete')}</span>
                                     </Link>
                                 </div>
-                                <div className="col-4 pt-3 pb-3">
-                                    <Link
-                                         to={{
-                                            pathname: '/variants',
-                                            id:item.id,
-                                            ProductName:item.ProductName }}
-                                    >
-                                        <span>variants</span>
-                                    </Link>
-                                </div>
+                                
                             
                             
                             </div>
@@ -154,12 +147,12 @@ const Variants = (props) => {
     
     return (
       <Fragment>
-         <PageTItle headingPara="Variant" activeMenu="add-variant" motherMenu="Variants" />
+         <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} />
          {/* Edit Modal */}
          <Modal className="fade bd-example-modal-lg" show={editmodalCentered} size="lg"> 
             <Form onSubmit={updateVariant} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Product</Modal.Title>
+                    <Modal.Title>{t('edit_variant')}</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -172,7 +165,7 @@ const Variants = (props) => {
                 <div className="row" >
                     <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>ID</strong> </label>
+                            <label className="mb-1 "> <strong>{t('id')}</strong> </label>
                             <input
                                 type="text"
                                 disabled="disabled"
@@ -186,11 +179,11 @@ const Variants = (props) => {
                     </div>
                     <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Variation Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('variant_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Variation Name"
+                                placeholder={t('variant_name')}
                                 name="VariationName"
                                 required
                                 onChange={editHandleInput}  
@@ -200,15 +193,15 @@ const Variants = (props) => {
                     </div>
                     <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Unit</strong> </label>
+                            <label className="mb-1 "> <strong>{t('unit')}</strong> </label>
                             <select type="text"
                                 className="form-control"
-                                placeholder="UnitID"
+                                placeholder={t('unit')}
                                 name="UnitID"
                                 required
                                 onChange={editHandleInput}  
                                 value={editVariant.UnitID}>
-                                <option value={editVariant.UnitID}>Selected</option> )
+                                <option value={editVariant.UnitID}>selected</option> )
                                 {
                                 unitData.map( (item) => 
                                 <option value={item.id} key={item.id}>{item.UnitName}</option> )
@@ -217,11 +210,11 @@ const Variants = (props) => {
                     </div>
                     <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Description</strong> </label>
+                            <label className="mb-1 "> <strong>{t('description')}</strong> </label>
                             <textarea
                                 type="text"
                                 className="form-control"
-                                placeholder="Description"
+                                placeholder={t('description')}
                                 name="Description"
                                 required
                                 onChange={editHandleInput}  
@@ -231,11 +224,11 @@ const Variants = (props) => {
                     </div>
                     <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Advice</strong> </label>
+                            <label className="mb-1 "> <strong>{t('advice')}</strong> </label>
                             <textarea
                                 type="text"
                                 className="form-control"
-                                placeholder="Advice"
+                                placeholder={t('advice')}
                                 name="Advice"
                                 required
                                 onChange={editHandleInput}  
@@ -245,11 +238,11 @@ const Variants = (props) => {
                     </div>
                     <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Current Price</strong> </label>
+                            <label className="mb-1 "> <strong>{t('current_price')} </strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Current Price"
+                                placeholder={t('current_price')} 
                                 name="CurrentPrice"
                                 required
                                 onChange={editHandleInput}  
@@ -260,11 +253,11 @@ const Variants = (props) => {
                     <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
 
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Old Price</strong> </label>
+                            <label className="mb-1 "> <strong>{t('old_price')} </strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Old Price"
+                                placeholder={t('old_price')}
                                 name="OldPrice"
                                 required
                                 onChange={editHandleInput}  
@@ -282,9 +275,9 @@ const Variants = (props) => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -294,7 +287,7 @@ const Variants = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Variants</h4>
+							<h4 className="card-title mb-2">{t('variant_list')}</h4>
 						</div>
 						<div className="dropdown">
 							{/* <Button 

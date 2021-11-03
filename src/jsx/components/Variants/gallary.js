@@ -4,11 +4,14 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import {Link } from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next";
+
 const Gallery = (props) => {
+    // for localization
+    const { t } = useTranslation();
+
     const [modalCentered, setModalCentered] = useState(false);
-    
-    
-    // let { id } = useParams();
+    // get ID
     const id =props.match.params.id;
     
     //for retriving data using laravel API
@@ -24,11 +27,11 @@ const Gallery = (props) => {
             setLoading(false);
           });
        
-      }, [id]);
+      }, [selectedFiles,id]);
 
     var viewImages_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewImages_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -54,7 +57,7 @@ const Gallery = (props) => {
                                     <Link
                                         onClick={(e)=>deletePicture(e,item.id)}
                                     >
-                                        <span>Delete</span>
+                                        <span>{t('delete')}</span>
                                     </Link>
                                 </div>
                                 
@@ -131,12 +134,12 @@ const Gallery = (props) => {
 
     return (
       <Fragment>
-         <PageTItle headingPara="Inventory" activeMenu="add-variant" motherMenu="Inventories" />
+         <PageTItle headingPara={t('gallery')} activeMenu={t('add_to_gallery')} motherMenu={t('gallery')} />
         {/* <!-- Insert  Modal --> */}
-        <Modal className="fade bd-example-modal-lg" show={modalCentered} size="lg">
+        <Modal className="fade bd-example-modal-lg" show={modalCentered} >
             <Form onSubmit={savePictures} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
-                    <Modal.Title>Add To Inventory</Modal.Title>
+                    <Modal.Title>{t('add_to_gallery')}</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -147,10 +150,10 @@ const Gallery = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="row" >
-                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
 
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>Images</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('images')}</strong> </label>
                                     {/* <div class="file-loading"> */}
                                         <input 
                                         type="file" 
@@ -188,9 +191,9 @@ const Gallery = (props) => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save</Button>
+                    <Button variant="primary" type="submit">{t('save')}</Button>
 
                 </Modal.Footer>
             </Form>
@@ -200,7 +203,7 @@ const Gallery = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Images</h4>
+							<h4 className="card-title mb-2">{t('images')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -209,7 +212,7 @@ const Gallery = (props) => {
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)}
                              >
-								Add Image
+								{t('add_to_gallery')}
 							</Button>
 						</div>
 					</div>

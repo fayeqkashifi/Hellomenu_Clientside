@@ -74,21 +74,19 @@ const Branches = () => {
         });
         
     };
-   
-
-
     //for retriving data using laravel API
     const [branchdata,setBranchdata]=useState([]);
     const [loading, setLoading]=useState(true);
     
     useEffect( () => {
+        
         axios.get('/api/GetBranches').then(res => {
             if(res.data.status === 200){
             setBranchdata(res.data.branches);
             }
             setLoading(false);
           });
-      }, []);
+      }, [branchstate,editBranchstate]);
 
     var viewBranches_HTMLTABLE = "";
     if(loading){

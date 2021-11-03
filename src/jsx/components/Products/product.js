@@ -4,7 +4,14 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 import {Link} from "react-router-dom"
-const Product = () => {
+import { useTranslation } from "react-i18next";
+
+const Product = (props) => {
+     // for localization
+	const { t } = useTranslation();
+    const subMenuId =props.match.params.id;
+
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -73,23 +80,23 @@ const Product = () => {
     const [loading, setLoading]=useState(true);
     
     useEffect( () => {
-        axios.get('/api/GetProducts').then(res => {
+        axios.get(`/api/GetProducts/${subMenuId}`).then(res => {
             if(res.data.status === 200){
-                // console.log(res.data.fetchData);
+                console.log(res.data.fetchData);
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);
           });
-      }, []);
+      }, [productInsert,editProduct,subMenuId]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
             return (
-                <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
                     <div className="card overflow-hidden">
                         <div className="card-body">
                             <div className="text-center">
@@ -101,8 +108,8 @@ const Product = () => {
                                 /> */}
                             </div>
                             <h3 className="mt-4 mb-1"><Link to={{
-                            pathname: `/variants/${item.id}`,
-                            id:item.id,
+                            pathname: `/variants/${item.variant_id}`,
+                           
                             ProductName:item.ProductName }} > {item.ProductName}</Link></h3>
                             <p className="text-muted"></p>
                             {/* <p className="text-muted">{item.SubCategoryName}</p> */}
@@ -118,7 +125,7 @@ const Product = () => {
                                         to=""
                                          onClick={(e)=>fetchProduct(e,item.id)}
                                     >
-                                        <span>Edit</span>
+                                        <span>{t('edit')}</span>
                                     </Link>
                                 </div>
                                 <div className="col-4 pt-3 pb-3 border-right">
@@ -126,17 +133,17 @@ const Product = () => {
                                         to=""
                                         onClick={(e)=>deleteProduct(e,item.id)}
                                     >
-                                        <span>Delete</span>
+                                        <span>{t('delete')}</span>
                                     </Link>
                                 </div>
                                 <div className="col-4 pt-3 pb-3">
                                     <Link
                                          to={{
-                                            pathname: `/variants/${item.id}`,
+                                            pathname: `/variants/${item.variant_id}`,
                                             id:item.id,
                                             ProductName:item.ProductName }}
                                     >
-                                        <span>variants</span>
+                                        <span>{t('variants')} </span>
                                     </Link>
                                 </div>
                             
@@ -165,12 +172,12 @@ const Product = () => {
     
     return (
       <Fragment>
-         <PageTItle headingPara="Product" activeMenu="add-Product" motherMenu="Products" />
+         <PageTItle headingPara={t('products')} activeMenu={t('add_product')} motherMenu={t('products')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveProduct} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Add A Product</Modal.Title>
+                    <Modal.Title>{t('add_product')}</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -181,11 +188,11 @@ const Product = () => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Product Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('product_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Product Name"
+                                placeholder={t('product_name')}
                                 name="ProductName"
                                 required
                                 onChange={handleInput}  
@@ -199,9 +206,9 @@ const Product = () => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save </Button>
+                    <Button variant="primary" type="submit">{t('save')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -210,7 +217,7 @@ const Product = () => {
          <Modal className="fade" show={editmodalCentered}>
             <Form onSubmit={updateProduct} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Product</Modal.Title>
+                    <Modal.Title>{t('edit_product')}</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -221,7 +228,7 @@ const Product = () => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>ID</strong> </label>
+                            <label className="mb-1 "> <strong>{t('ID')}</strong> </label>
                             <input
                                 type="text"
                                 disabled="disabled"
@@ -233,11 +240,11 @@ const Product = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Product Name</strong> </label>
+                            <label className="mb-1 "> <strong>{t('product_name')}</strong> </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Product Name"
+                                placeholder={t('product_name')}
                                 name="ProductName"
                                 required
                                 onChange={editHandleInput}  
@@ -251,9 +258,9 @@ const Product = () => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -263,7 +270,7 @@ const Product = () => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Products</h4>
+							<h4 className="card-title mb-2">{t('products')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -271,7 +278,7 @@ const Product = () => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Product
+								{t('add_product')}
 							</Button>
 						</div>
 					</div>

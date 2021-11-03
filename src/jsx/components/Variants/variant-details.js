@@ -1,9 +1,13 @@
 import React, { Fragment,useState,useEffect } from "react";
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next"
+import PageTItle from "../../layouts/PageTitle";
+
 
 const VariantDetails = (props) => {
-   
+   // for localization
+   const { t } = useTranslation();
     
     // let { id } = useParams();
     const id =props.match.params.id;
@@ -39,13 +43,11 @@ const VariantDetails = (props) => {
                 setVariantData(res.data.variantdata);
             }
           });
-        
-       
-      }, [id]);
+      }, [variantData,id]);
 
     var viewImages_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewImages_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -96,6 +98,8 @@ const VariantDetails = (props) => {
 
     return (
       <Fragment>
+        <PageTItle headingPara={t('variants')} activeMenu={t('variant_details')} motherMenu={t('variants')} />
+
         {/* <!-- Insert  Modal --> */}
         <div className="row" >
             <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
@@ -119,30 +123,30 @@ const VariantDetails = (props) => {
                                 </div>
                                 <p className="price">{item.CurrentPrice}</p>
                                 <p>
-                                Availability: 
+                                {t('availability')}: 
                                 <span className="item">
                                     {item.IsAvailable===0 ? ' Yes ' : ' No '}
                                     <i className="fa fa-shopping-basket"></i>
                                 </span>
                                 </p>
                                 <p>
-                                Variant code: 
+                                {t('variant_code')}: 
                                 <span className="item">{id}</span>
                                 </p>
                                 <p>
-                                Unit: <span className="item">{item.UnitName}</span>
+                                {t('unit')}: <span className="item">{item.UnitName}</span>
                                 </p>
                                 
-                                <h4 className="m-b-15">Description</h4>
-                                <p className="text-content">{item.Description}</p>
-                                <h4 className="m-b-15">Advice</h4>
-                                <p className="text-content">{item.Advice}</p>
+                                <h4 className="m-b-15">{t('description')}</h4>
+                                <p className="text-content"> {item.Description}</p>
+                                <h4 className="m-b-15">{t('advice')}</h4>
+                                <p className="text-content"> {item.Advice}</p>
                                
                                     <div className="col-6 px-0 mt-3">
                                         <div className="input-group">
-                                            <button type="button" onClick={handleDecrement} className="input-group-text">-</button>
+                                            <button type="button" onClick={handleDecrement} className="input-group-text">{t('minus')}</button>
                                             <div className="form-control text-center"> {quantity}</div>
-                                            <button type="button" onClick={handelIncrement} className="input-group-text">+</button>
+                                            <button type="button" onClick={handelIncrement} className="input-group-text">{t('plus')}</button>
                                         </div>
                                     </div>
 
@@ -152,7 +156,7 @@ const VariantDetails = (props) => {
                                             onClick={addBaskets}
                                             className="btn btn-primary btn-lg">
                                             <i className="fa fa-shopping-basket mr-2"></i>
-                                            Add to Basket
+                                                {t('add_to_basket')}
                                         </button>
                                     </div>
 

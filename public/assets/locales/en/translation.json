@@ -16,6 +16,8 @@
     "product_text":"Add and delete products as well as variants.",
     "product_name": "Product Name",
     "select_a_product": "Select A Product",
+    "add_product": "Add Product",
+    "edit_product": "Edit Product",
 
     "sub_category":"Sub Menus",
     "add_category":"Add Menu",
@@ -35,6 +37,7 @@
     "edit_company": "Edit Company",
 
     "inventory": "Inventory",
+    "variants": "Variants",
     "add_variant":"Add Variant",
     "add_to_inventory": "Add To Inventory",    
     "variant_name": "Variant Name",
@@ -48,6 +51,14 @@
     "old_price": "Old Price",
     "images": "Images",
     "edit_inventory": "Edit Inventory",
+    "variant_quantity": "Variant Quantity",
+    "add_to_basket": "Add To Basket",
+    "basket": "Basket",
+    "basket_list": "Basket List",
+    "variant_details": "Variant Dtetails",
+    "variant_list": "Variant List",
+    "edit_variant": "Edit Variant",
+    
 
 
     "actions":"Actions",
@@ -57,13 +68,50 @@
     "close": "Close",
     "save": "Save",
     "services": "Services",
-    
+    "services_area": "Services Area",
+    "add_service_area": "Add Service Area",
+    "edit_service_area": "Edit Service Area",
+    "service_area": "Service Area",
+
+
+
     "units": "Units",
     "select_a_unit": "Select A Unit",
+    "add_unit": "Add Unit",
+    "unit_name": "Unit Name",
+    "edit_unit": "Edit Unit",
+    "unit": "Unit",
+
+    "gallery": "Gallery",
+    "add_to_gallery": "Add To Gallery",
 
     "logout": "Logout",
     "edit": "Edit",
     "delete": "Delete",
     "update": "Update",
-    "loading": "Loading...!"
+    "loading": "Loading...!",
+    "completed": "Completed",
+    "status": "Status",
+    "welcome_msg": "Hi, welcome !",
+    "minus": " - ",
+    "plus": " + ",
+    "availability": "Availability",
+    "variant_code": "Variant Code",
+    "sign_in_your_account": "Sign in your account",
+    "sign_up_your_account": "Sign up your account",
+    "email": "Email",
+    "email_msg": "Enter Your Email/Phone Number",
+    "password": "Password",
+    "password_msg": "Enter Your Password",
+    "remember_me": "Remember my preference",
+    "forgot_password": "Forgot Password ?",
+    "sign_in": "Sign In",
+    "sign_up": "Sign Up",
+    "have_not_account": "Don't have an account?",
+    "full_name": "Full Name",
+    "phone": "Phone",
+    "email_example": "hello@gmail.com",
+    "sign_me_up": "Sign Me Up",
+    "already_have_an_account": "Already have an account?"
+
 }

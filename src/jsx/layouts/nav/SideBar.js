@@ -64,9 +64,6 @@ class SideBar extends Component {
          ],
          Companies = [
             "companies",
-         ],
-         Products = [
-            "products",
          ];
          // console.log(dashBoard.includes(path.slice(1)));
       return (
@@ -144,20 +141,7 @@ class SideBar extends Component {
                      </Link>
                     
                   </li>
-                  <li
-                     className={`${
-                        Products.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
-                  >
-                     <Link
-                        className="ai-icon"
-                        to="/products"
-                     >
-                        <i className="flaticon-381-internet"></i>
-                        <span className="nav-text">{t('products')}</span>
-                     </Link>
-                    
-                  </li>
+                  
                   
                </MM>
             </PerfectScrollbar>

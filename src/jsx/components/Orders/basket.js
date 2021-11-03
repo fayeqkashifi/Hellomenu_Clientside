@@ -1,11 +1,12 @@
 import React,{Fragment,useEffect, useState } from 'react';
-
 import { Table, Badge, Dropdown } from "react-bootstrap";
-
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import PageTItle from "../../layouts/PageTitle";
 
 const Basket = () => {
-
+    // for localization
+    const { t } = useTranslation();
     
     
     //for retriving data using laravel API
@@ -23,7 +24,7 @@ const Basket = () => {
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -33,15 +34,15 @@ const Basket = () => {
                     <td>{item.VariationName}</td>
                     <td>{item.ProductName}</td>
                     <td>{item.VariantQuantity}</td>
-                    <td>{item.CountryName}</td>
+                    {/* <td>{item.CountryName}</td>
                     <td>{item.CityName}</td>
                     <td>{item.user_ip}</td>
-                    <td>{item.BrowserName}</td>
+                    <td>{item.BrowserName}</td> */}
                     <td>
                             {item.Status===0 ? <Badge variant="danger light">
                             <i className="fa fa-circle text-danger mr-1"></i> Pendding</Badge> : <Badge variant="success light">
                             <i className="fa fa-circle text-success mr-1"></i>
-                            Completed
+                            {t('completed')}
                         </Badge>}
                         </td>
                     <td>
@@ -109,10 +110,13 @@ const Basket = () => {
   
 	return (
 		<Fragment>
+            <PageTItle headingPara={t('basket')} activeMenu={t('basket_list')} motherMenu={t('basket')} />
+
+
 			<div className="col-12">
                 <div className="card">
                     <div className="card-header">
-                    <h4 className="card-title">Orders</h4>
+                    <h4 className="card-title">{t('orders')}</h4>
                     </div>
                     <div className="card-body">
                     <Table responsive className="w-100">
@@ -120,16 +124,16 @@ const Basket = () => {
                             <table id="example" className="display w-100 dataTable">
                                 <thead>
                                     <tr>
-                                        <th>#NO</th>
-                                        <th>Variation Name</th>
-                                        <th>Product Name</th>
-                                        <th>Variant Quantity</th>
-                                        <th>Country Name</th>
+                                        <th>{t('number')}</th>
+                                        <th>{t('variant_name')}</th>
+                                        <th>{t('product_name')}</th>
+                                        <th>{t('variant_quantity')}</th>
+                                        {/* <th>Country Name</th>
                                         <th>City Name</th>
                                         <th>user ip </th>
-                                        <th>Browser Name</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>Browser Name</th> */}
+                                        <th>{t('status')}</th>
+                                        <th>{t('actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

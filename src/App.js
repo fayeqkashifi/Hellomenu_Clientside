@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import Registration from "./jsx/pages/Registration";
 /// Components
 import Markup from "./jsx";
@@ -24,6 +24,9 @@ const App = () => {
    return (
       <Router>
          <Switch>
+            <Route exact path="/">
+               <Redirect to="/page-login" />
+            </Route>
             <PublicRoute restricted={true} component={Login} path="/page-login" exact />
             <PublicRoute restricted={false} component={Registration} path="/user-register" exact />
             {/* {localStorage.getItem('auth_token') ? <Markup /> : <Redirect to="/page-login" />} */}

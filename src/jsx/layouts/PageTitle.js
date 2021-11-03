@@ -1,12 +1,15 @@
 import React from "react";
 import {Link} from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 
 const PageTitle = ({ headingPara, motherMenu, activeMenu }) => {
+	// for localization
+    const { t } = useTranslation();
    return (
 		<div className="row page-titles mx-0">
 			<div className="col-sm-6 p-md-0">
 				<div className="welcome-text">
-					<h4>Hi, welcome !</h4>
+					<h4>{t('welcome_msg')}</h4>
 					<p className="mb-0">{headingPara}</p>
 				</div>
 			</div>

@@ -2,8 +2,12 @@ import React, {useState} from "react";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
+import { useTranslation } from "react-i18next";
 
 const Registration = () => {
+   // for localization
+   const { t } = useTranslation();
+
    const history = useHistory();
    const [registerstate, setRegisterstate] = useState({
       name:'',
@@ -55,7 +59,7 @@ const Registration = () => {
                   <div className="col-xl-12">
                      <div className="auth-form">
                         <div className="text-center mb-3">
-                          <h4 className="text-center mb-4">Sign up your account</h4>
+                          <h4 className="text-center mb-4">{t('sign_up_your_account')}</h4>
                         </div>
                         
                         <form
@@ -65,11 +69,11 @@ const Registration = () => {
 
                         >
                            <div className="form-group">
-                              <label className="mb-1 "> <strong>Full Name</strong> </label>
+                              <label className="mb-1 "> <strong>{t('full_name')}</strong> </label>
                               <input
                                  type="text"
                                  className="form-control"
-                                 placeholder="Full name"
+                                 placeholder={t('full_name')}
                                  name="name"
                                  onChange={handleInput}  
                                  value={registerstate.name}
@@ -79,11 +83,11 @@ const Registration = () => {
                               {/* <span>{registerstate.error_list.name}</span> */}
                            </div>
                            <div className="form-group">
-                              <label className="mb-1 "> <strong>Phone</strong> </label>
+                              <label className="mb-1 "> <strong>{t('phone')}</strong> </label>
                               <input
                                  type="text"
                                  className="form-control"
-                                 placeholder="phone"
+                                 placeholder={t('phone')}
                                  name="phone_number"
                                  onChange={handleInput}  value={registerstate.phone_number}
                                  required
@@ -93,11 +97,11 @@ const Registration = () => {
 
                            </div>
                            <div className="form-group">
-                              <label className="mb-1 ">   <strong>Email</strong>  </label>
+                              <label className="mb-1 ">   <strong>{t('email')}</strong>  </label>
                               <input  
                               type="email"
                               className="form-control"  
-                              placeholder="hello@example.com"  
+                              placeholder={t('email_example')} 
                               required
                               name="email"
                               onChange={handleInput}  value={registerstate.email}
@@ -106,10 +110,11 @@ const Registration = () => {
 
                            </div>
                            <div className="form-group">
-                              <label className="mb-1 ">   <strong>Password</strong>  </label>
+                              <label className="mb-1 ">   <strong>{t('password')}</strong>  </label>
                               <input type="password" 
                               className="form-control" 
                               name="password" 
+                              placeholder={t('password_msg')}
                               onChange={handleInput}  value={registerstate.password}
                               required
 
@@ -118,14 +123,14 @@ const Registration = () => {
 
                            </div>
                            <div className="text-center mt-4">
-                              <button type="submit" className="btn btn-primary btn-block"   >  Sign me up  </button>
+                              <button type="submit" className="btn btn-primary btn-block"   >  {t('sign_me_up')}  </button>
                            </div>
                         </form>
                         <div className="new-account mt-3">
                            <p className="">
-                              Already have an account?{" "}
+                           {t('already_have_an_account')}  {" "}
                               <Link className="text-primary" to="/page-login">
-                                 Sign in
+                              {t('sign_in')}  
                               </Link>
                            </p>
                         </div>

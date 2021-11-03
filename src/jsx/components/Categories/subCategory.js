@@ -4,6 +4,7 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 import { useTranslation } from "react-i18next";
+import {Link} from "react-router-dom"
 
 const SubCategory = (props) => {
     // for localization
@@ -96,7 +97,7 @@ const SubCategory = (props) => {
             }
             setLoading(false);
           });
-      }, [id]);
+      }, [subCategoryInsert,editSubMenu,id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
@@ -105,15 +106,70 @@ const SubCategory = (props) => {
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
             return (
-                <tr key={item.id}>
-                    <td>{i+1}</td>
+                <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                    <div className="card overflow-hidden">
+                        <div className="card-body">
+                            <div className="text-center">
+                            <div className="profile-photo">
+                                {/* <img
+                                    src={`http://localhost:8000/images/catagories/${item.PicturesLocation}`}
+                                    className="d-block w-100"
+                                    alt=""
+                                /> */}
+                            </div>
+                            <h3 className="mt-4 mb-1"><Link to={{
+                            pathname: `/products/${item.id}`,
+                            id:item.id,
+                            ProductName:item.ProductName }} > {item.SubCategoryName}</Link></h3>
+                            <p className="text-muted"></p>
+                            {/* <p className="text-muted">{item.SubCategoryName}</p> */}
+                          
+                           
+                            </div>
+                        </div>
+        
+                        <div className="card-footer pt-0 pb-0 text-center">
+                            <div className="row">
+                                <div className="col-4 pt-3 pb-3 border-right">
+                                    <Link
+                                        to=""
+                                         onClick={(e)=>fetchSubMenus(e,item.id)}
+                                    >
+                                        <span>{t('edit')}</span>
+                                    </Link>
+                                </div>
+                                <div className="col-4 pt-3 pb-3 border-right">
+                                    <Link
+                                        to=""
+                                        onClick={(e)=>deleteSubMenu(e,item.id)}
+                                    >
+                                        <span>{t('delete')}</span>
+                                    </Link>
+                                </div>
+                                <div className="col-4 pt-3 pb-3">
+                                    <Link
+                                         to={{
+                                            pathname: `/products/${item.id}`,
+                                            }}
+                                    >
+                                        <span>{t('products')}</span>
+                                    </Link>
+                                </div>
+                            
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                // <tr key={item.id}>
+                //     <td>{i+1}</td>
                    
-                    <td> {item.SubCategoryName}</td>
-                    <td>
-                        <button type="button"   onClick={(e)=>fetchSubMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteSubMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">{t('delete')}</button>
-                    </td> 
-                </tr>
+                //     <td> {item.SubCategoryName}</td>
+                //     <td>
+                //         <button type="button"   onClick={(e)=>fetchSubMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                //         <button type="button" onClick={(e)=>deleteSubMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">{t('delete')}</button>
+                //     </td> 
+                // </tr>
             )
         })
 
@@ -233,7 +289,7 @@ const SubCategory = (props) => {
 							</Button>
 						</div>
 					</div>
-					<div className="card-body p-0">
+					{/* <div className="card-body p-0">
 						<div className="table-responsive ">
 							<table className="table ">
                                 <thead>
@@ -248,10 +304,13 @@ const SubCategory = (props) => {
 							    </tbody>
                             </table>
 						</div>
-					</div>
+					</div> */}
 				</div>
 			</div>
          </div>
+         <div className="row" >
+            {viewProducts_HTMLTABLE}
+        </div>
       </Fragment>
    );
 };

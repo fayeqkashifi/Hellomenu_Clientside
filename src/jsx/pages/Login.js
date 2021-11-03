@@ -2,8 +2,12 @@ import React, {useState} from "react";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
+   // for localization
+   const { t } = useTranslation();
+
    const history = useHistory();
    const [loginstate, setLoginstate] = useState({
       email:'',
@@ -37,43 +41,44 @@ const Login = () => {
                   <div className="row no-gutters">
                      <div className="col-xl-12">
                         <div className="auth-form">
-                           <h4 className="text-center mb-4 "> Sign in your account  </h4>
+                           <h4 className="text-center mb-4 ">{t('sign_in_your_account')}   </h4>
                            <form onSubmit={checkAuth}>
                             
-                              <div className="form-group">    <label className="mb-1 ">  <strong>Email</strong> </label>
+                              <div className="form-group">    <label className="mb-1 ">  <strong>{t('email')} </strong> </label>
                                  <input type="text"
                                     onChange={handleInput}  
                                     value={loginstate.email}
                                     className="form-control"
-                                    placeholder="Enter Your Email/Phone Number"
+                                    placeholder={t('email_msg')}
                                     name="email"  />
                               </div>
                               <div className="form-group">
-                                 <label className="mb-1 "> <strong>Password</strong>  </label>
+                                 <label className="mb-1 "> <strong>{t('password')}</strong>  </label>
                                  <input type="password" 
                                     onChange={handleInput}  
                                     value={loginstate.password}
                                     className="form-control" 
+                                    placeholder={t('password_msg')}
                                     name="password"   />
                               </div>
                               <div className="form-row d-flex justify-content-between mt-4 mb-2">
                                  <div className="form-group">
                                     <div className="custom-control custom-checkbox ml-1 ">
                                        <input  type="checkbox" className="custom-control-input"   id="basic_checkbox_1"  />
-                                       <label    className="custom-control-label" htmlFor="basic_checkbox_1"  >  Remember my preference </label>
+                                       <label    className="custom-control-label" htmlFor="basic_checkbox_1"  > {t('remember_me')}  </label>
                            </div>
                                  </div>
                                  <div className="form-group">
-                                    <Link  className=""  to="/forgot-password" > Forgot Password?  </Link>
+                                    <Link  className=""  to="/forgot-password" > {t('forgot_password')}   </Link>
                                  </div>
                               </div>
                               <div className="text-center">
-                                 <button  type="submit"  className="btn btn-primary btn-block"   > Sign Me In </button>
+                                 <button  type="submit"  className="btn btn-primary btn-block"   > {t('sign_in')} </button>
                               </div>
                            </form>
                            <div className="new-account mt-3">
-                              <p className=""> Don't have an account?{" "}  
-                               <Link className="text-primary" to="/user-register">  Sign up   </Link>  </p>
+                              <p className=""> {t('have_not_account')}{" "}  
+                               <Link className="text-primary" to="/user-register">  {t('sign_up')}    </Link>  </p>
                            </div>
                         </div>
                      </div>

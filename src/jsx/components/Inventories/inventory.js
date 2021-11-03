@@ -167,12 +167,12 @@ const Inventory = (props) => {
                 setSubCategoryData(res.data.fetchData);
             }
           });
-        axios.get('/api/GetProducts').then(res => {
+        axios.get(`/api/getdataAllProduct`).then(res => {
             if(res.data.status === 200){
                 setProducts(res.data.fetchData);
             }
           });
-      }, [id]);
+      }, [variantInsert,editIventory,id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){

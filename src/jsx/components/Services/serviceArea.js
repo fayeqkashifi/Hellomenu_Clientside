@@ -3,7 +3,12 @@ import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
+import { useTranslation } from "react-i18next";
+
 const ServiceArea = (props) => {
+    // for localization
+    const { t } = useTranslation();
+    //ID
     const id =props.match.params.id;
 
     // insert modal
@@ -69,11 +74,6 @@ const ServiceArea = (props) => {
         });
         
     };
-    
-
-
-
-
 
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
@@ -86,11 +86,11 @@ const ServiceArea = (props) => {
             }
             setLoading(false);
           });
-      }, [id]);
+      }, [serviceAreaInsert,editServiceAreas,id]);
 
     var viewProducts_HTMLTABLE = "";
     if(loading){
-        return <h4>Loading...!</h4>
+        return <h4>{t('loading')}</h4>
     }else{
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
@@ -100,8 +100,8 @@ const ServiceArea = (props) => {
                    
                     <td> {item.AreaName}</td>
                     <td>
-                        <button type="button"   onClick={(e)=>fetchServiceArea(e,item.id)} className="btn btn-outline-danger btn-sm">Edit</button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" onClick={(e)=>deleteServiceArea(e,item.id)} className="btn btn-outline-warning btn-sm">Delete</button>
+                        <button type="button"   onClick={(e)=>fetchServiceArea(e,item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" onClick={(e)=>deleteServiceArea(e,item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
                     </td> 
                 </tr>
             )
@@ -122,12 +122,12 @@ const ServiceArea = (props) => {
     }
     return (
       <Fragment>
-         <PageTItle headingPara="Service-Areas" activeMenu="add-service-area" motherMenu="Service-Area" />
+         <PageTItle headingPara={t('services_area')} activeMenu={t('add_service_area')} motherMenu={t('services_area')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
             <Form onSubmit={saveServiceAreas} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
-                    <Modal.Title>Add A service</Modal.Title>
+                    <Modal.Title>{t('add_service_area')}</Modal.Title>
                     <Button
                         onClick={() => setModalCentered(false)}
                         variant=""
@@ -138,15 +138,15 @@ const ServiceArea = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Branch Name: {props.location.branchName}</strong> </label>
+                            <label className="mb-1 "> <strong>{t('branch_name')}: {props.location.branchName}</strong> </label>
                         </div>
                         
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Service Area</strong> </label>
+                            <label className="mb-1 "> <strong>{t('service_area')}</strong> </label>
                             <textarea
                                 type="text"
                                 className="form-control"
-                                placeholder="Service Area"
+                                placeholder={t('service_area')}
                                 name="AreaName"
                                 required
                                 onChange={handleInput}  
@@ -159,9 +159,9 @@ const ServiceArea = (props) => {
                         onClick={() => setModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Save</Button>
+                    <Button variant="primary" type="submit">{t('save')}</Button>
 
                 </Modal.Footer>
             </Form>
@@ -170,7 +170,7 @@ const ServiceArea = (props) => {
          <Modal className="fade" show={editmodalCentered}>
             <Form onSubmit={updateServiceArea} method= "POST" >
                 <Modal.Header>
-                    <Modal.Title>Edit Service Area</Modal.Title>
+                    <Modal.Title>{t('edit_service_area')}</Modal.Title>
                     <Button
                         onClick={() => setEditModalCentered(false)}
                         variant=""
@@ -181,11 +181,11 @@ const ServiceArea = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                         <div className="form-group">
-                            <label className="mb-1 "> <strong>Service Area</strong> </label>
+                            <label className="mb-1 "> <strong>{t('service_area')}</strong> </label>
                             <textarea
                                 type="text"
                                 className="form-control"
-                                placeholder="Service Area"
+                                placeholder={t('service_area')}
                                 name="AreaName"
                                 required
                                 onChange={editHandleInput}  
@@ -199,9 +199,9 @@ const ServiceArea = (props) => {
                         onClick={() => setEditModalCentered(false)}
                         variant="danger light"
                     >
-                        Close
+                        {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">Update </Button>
+                    <Button variant="primary" type="submit">{t('update')} </Button>
 
                 </Modal.Footer>
             </Form>
@@ -211,7 +211,7 @@ const ServiceArea = (props) => {
 				<div className="card">
 					<div className="card-header border-0">
 						<div>
-							<h4 className="card-title mb-2">Service Area</h4>
+							<h4 className="card-title mb-2">{t('service_area')}</h4>
 						</div>
 						<div className="dropdown">
 							<Button 
@@ -219,7 +219,7 @@ const ServiceArea = (props) => {
                             type="button"
                             className="mb-2 mr-2"
                             onClick={() => setModalCentered(true)} >
-								Add Service Area
+								{t('add_service_area')}
 							</Button>
 						</div>
 					</div>
@@ -228,9 +228,9 @@ const ServiceArea = (props) => {
 							<table className="table ">
                                 <thead>
                                     <tr>
-                                        <th>#NO</th>
-                                        <th>Service Area</th>
-                                        <th>Actions</th>
+                                        <th>{t('number')}</th>
+                                        <th>{t('service_area')}</th>
+                                        <th>{t('actions')}</th>
                                     </tr>
                                 </thead>
 								<tbody>
