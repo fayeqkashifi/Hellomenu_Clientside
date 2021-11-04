@@ -13,7 +13,7 @@
     "order_text": "Design your menu to reflect your business and your brand.",
 
     "products": "Products",
-    "product_text":"Add and delete products as well as variants.",
+    "basket_text":"List of baskets, approve and reject options.",
     "product_name": "Product Name",
     "select_a_product": "Select A Product",
     "add_product": "Add Product",
@@ -112,6 +112,8 @@
     "phone": "Phone",
     "email_example": "hello@gmail.com",
     "sign_me_up": "Sign Me Up",
-    "already_have_an_account": "Already have an account?"
+    "already_have_an_account": "Already have an account?",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
 
 }

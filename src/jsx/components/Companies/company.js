@@ -4,10 +4,22 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 const Company = () => {
+    // for validation start
+    const schema = yup.object().shape({
+        company: yup.string().required(),
+    }).required();
+    const { register, handleSubmit, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+    });
+    //   validation end
+    
     // for localization
 	const { t } = useTranslation();
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -19,8 +31,6 @@ const Company = () => {
         setCompanyState({...companyState, [e.target.name]: e.target.value});
     };
     const saveCompany =  (e) => {
-        e.preventDefault();
-        
         axios.post("/api/InsertCompanies", companyState).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
@@ -53,7 +63,6 @@ const Company = () => {
     }
     const updateCompany =  (e) => {
         e.preventDefault();
-        
         axios.post("/api/UpdateCompanies", editCompanystate).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
@@ -65,7 +74,6 @@ const Company = () => {
         });
         
     };
-    
 
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
@@ -101,15 +109,35 @@ const Company = () => {
     }
     // delete section 
     const deleteCompany= (e,id)=>{
-        e.preventDefault();
-        axios.delete(`/api/DeleteCompanies/${id}`).then(res=>{
-            if(res.data.status === 200){
-                swal("Success",res.data.message,"success");
-                // thisClicked.closest("tr").remove();
-            }else if(res.data.status === 404){
-                swal("Error",res.data.message,"error");
+        // e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                axios.delete(`/api/DeleteCompanies/${id}`).then(res=>{
+                    if(res.data.status === 200){
+                        swal(res.data.message, {
+                            icon: "success",
+                        });
+                        // swal("Success",,"success");
+                        // thisClicked.closest("tr").remove();
+                    }else if(res.data.status === 404){
+                        swal("Error",res.data.message,"error");
+                    }
+                    setCompanyState([]);
+        
+                });
+               
+            } else {
+              swal("Your Data is safe now!");
             }
-        });
+          });
+        
 
     }
     
@@ -118,7 +146,7 @@ const Company = () => {
          <PageTItle headingPara={t('companies')} activeMenu={t('add_company')} motherMenu={t('companies')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveCompany} method= "POST" >
+            <Form onSubmit={handleSubmit(saveCompany)} method= "POST" >
                 <Modal.Header>
                     <Modal.Title>{t('add_company')}</Modal.Title>
                     <Button
@@ -147,13 +175,16 @@ const Company = () => {
                             <label className="mb-1 "> <strong>{t('company_name')}</strong> </label>
                             <input
                                 type="text"
+                                {...register("company")}
                                 className="form-control"
                                 placeholder={t('company_name')}
                                 name="company"
-                                required
                                 onChange={handleInput}  
                                 value={companyState.company}
                             />
+                            <div className="text-danger">
+                                 {errors.company?.message}
+                              </div>
                         </div>
                        
                 </Modal.Body>

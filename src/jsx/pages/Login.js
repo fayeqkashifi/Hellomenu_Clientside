@@ -3,8 +3,22 @@ import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert"
 import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 
 const Login = () => {
+   const schema = yup.object().shape({
+      email: yup.string().required(),
+      password: yup.string().required().min(6),
+     
+   }).required();
+   
+   const { register, handleSubmit, formState:{ errors } } = useForm({
+      resolver: yupResolver(schema)
+    });
+
    // for localization
    const { t } = useTranslation();
 
@@ -18,8 +32,8 @@ const Login = () => {
       setLoginstate({...loginstate, [e.target.name]: e.target.value});
   };
   const checkAuth =  (e) => {
-      e.preventDefault();
       axios.get('sanctum/csrf-cookie').then(response=>{
+
          axios.post("/api/login", loginstate).then(res=>{
             if(res.data.status === 200){
                localStorage.setItem('auth_token', res.data.token);
@@ -42,24 +56,36 @@ const Login = () => {
                      <div className="col-xl-12">
                         <div className="auth-form">
                            <h4 className="text-center mb-4 ">{t('sign_in_your_account')}   </h4>
-                           <form onSubmit={checkAuth}>
+                           <form onSubmit={handleSubmit(checkAuth)}>
                             
                               <div className="form-group">    <label className="mb-1 ">  <strong>{t('email')} </strong> </label>
-                                 <input type="text"
+                                 <input 
+                                    type="text"
+                                    {...register("email")}
                                     onChange={handleInput}  
                                     value={loginstate.email}
                                     className="form-control"
                                     placeholder={t('email_msg')}
-                                    name="email"  />
+                                    name="email" 
+                                     />
+                                    <div className="text-danger">
+                                       {errors.email?.message}
+                                    </div>
+                                   {/* <p>{errors.email}</p> */}
                               </div>
                               <div className="form-group">
                                  <label className="mb-1 "> <strong>{t('password')}</strong>  </label>
                                  <input type="password" 
+                                    {...register('password')}
                                     onChange={handleInput}  
                                     value={loginstate.password}
                                     className="form-control" 
                                     placeholder={t('password_msg')}
-                                    name="password"   />
+                                    name="password" 
+                                    />
+                                    <div className="text-danger">
+                                       {errors.password?.message}
+                                    </div>
                               </div>
                               <div className="form-row d-flex justify-content-between mt-4 mb-2">
                                  <div className="form-group">

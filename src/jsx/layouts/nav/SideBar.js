@@ -43,41 +43,27 @@ class SideBar extends Component {
 
       btn.addEventListener("click", toggleFunc);
    }
+   constructor(props) {
+      super(props);
+      this.state = {
+        path: 'dashboard'
+      };
+    }
    render() {
       const { t } = this.props;
-      /// Path
-      const path = window.location.pathname;
-      // console.log(path);
-      /// Active menu
-      let dashBoard = [
-            "dashboard",
-         ],
-         branch = [
-            "branches",
-         ],
-         orders = [
-            "orders",
-         ],
-         baskets=[
-            "baskets",
-
-         ],
-         Companies = [
-            "companies",
-         ];
-         // console.log(dashBoard.includes(path.slice(1)));
       return (
          <div className="deznav">
             <PerfectScrollbar className="deznav-scroll">
                <MM className="metismenu" id="menu">
                   <li
                      className={`${
-                        dashBoard.includes(path.slice(1)) ? "mm-active" : ""
+                        this.state.path==="dashboard" ? "mm-active" : ""
                      }`}
                   >
                      <Link
                         className="ai-icon"
                         to="/dashboard"
+                        onClick={() => this.setState({ path:"dashboard"})}
                      >
                         <i className="flaticon-381-networking"></i>
                         <span className="nav-text">{t('dashboard')}</span>
@@ -85,13 +71,15 @@ class SideBar extends Component {
                      
                   </li>
                   <li
-                     className={`${
-                        branch.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
+                    className={`${
+                     this.state.path==="branches" ? "mm-active" : ""
+                  }`}
                   >
                      <Link
                         className="ai-icon"
                         to="/branches"
+                        onClick={() => this.setState({ path:"branches"})}
+
                      >
                         <i className="flaticon-381-television"></i>
                         <span className="nav-text">{t('branches')}</span>
@@ -99,13 +87,15 @@ class SideBar extends Component {
                     
                   </li>
                   <li
-                     className={`${
-                        orders.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
+                    className={`${
+                     this.state.path==="orders" ? "mm-active" : ""
+                  }`}
                   >
                      <Link
                         className="ai-icon"
                         to="/orders"
+                        onClick={() => this.setState({ path:"orders"})}
+
                         
                      >
                         <i className="flaticon-381-controls-3"></i>
@@ -113,13 +103,15 @@ class SideBar extends Component {
                      </Link>
                   </li>
                   <li
-                     className={`${
-                        baskets.includes(path.slice(1)) ? "mm-active" : ""
-                     }`}
+                    className={`${
+                     this.state.path==="baskets" ? "mm-active" : ""
+                  }`}
                   >
                      <Link
                         className="ai-icon"
                         to="/baskets"
+                        onClick={() => this.setState({ path:"baskets"})}
+
                         
                      >
                         <i className="flaticon-381-controls-3"></i>
@@ -128,12 +120,14 @@ class SideBar extends Component {
                   </li>
                   <li
                      className={`${
-                        Companies.includes(path.slice(1)) ? "mm-active" : ""
+                        this.state.path==="companies" ? "mm-active" : ""
                      }`}
                   >
                      <Link
                         className="ai-icon"
                         to="/companies"
+                        onClick={() => this.setState({ path:"companies"})}
+
                         
                      >
                         <i className="flaticon-381-internet"></i>

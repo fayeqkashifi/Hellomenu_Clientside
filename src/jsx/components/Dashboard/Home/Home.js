@@ -38,13 +38,13 @@ const Home = () => {
 				<div className="card overflow-hidden">
 					<div className="card-header media border-0 pb-0">
 						<div className="media-body">
-							<h4 className="text-info">{t('products')}</h4>
+							<h4 className="text-info">{t('baskets')}</h4>
 						</div>
 						
 					</div>
 					<div className="card-body ">
-						<p>{t('product_text')}</p>
-						<Link to="products" className="btn btn-outline-info">{t('products')}</Link>
+						<p>{t('basket_text')}</p>
+						<Link to="baskets" className="btn btn-outline-info">{t('baskets')}</Link>
 					</div>
 				</div>
 			</div>
