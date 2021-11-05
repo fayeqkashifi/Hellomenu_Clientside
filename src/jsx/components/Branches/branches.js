@@ -3,43 +3,33 @@ import PageTItle from "../../layouts/PageTitle";
 
 import { Button, Modal,  Form } from "react-bootstrap";
 import {Link} from "react-router-dom"
-import profile from "../../../images/hellomenu/logo.svg";
+// import profile from "../../../images/hellomenu/logo.svg";
 import { useTranslation } from "react-i18next";
-
 import axios from "axios";
 import swal from "sweetalert"
+import QRCode from "react-qr-code";
+
 const Branches = () => {
 	const { t } = useTranslation();
-
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a branch
-    const [branchstate, setBranchstate] = useState({
-        BrancheName: '',
-    });
+    const [branchstate, setBranchstate] = useState([]);
     const handleInput = (e) => {
         e.preventDefault();
         setBranchstate({...branchstate, [e.target.name]: e.target.value});
     };
     const saveBranch =  (e) => {
         e.preventDefault();
-        const data={
-            BrancheName:branchstate.BrancheName
-        }
-        axios.post("/api/InsertBranches", data).then(res=>{
+        axios.post("/api/InsertBranches", branchstate).then(res=>{
             if(res.data.status === 200){
-                // console.log(res.data.status);
-                setBranchstate({
-                    BrancheName: '',
-                 });
-                 swal("Success",res.data.message,"success");
-                 setModalCentered(false)
-                //  this.props.history.push("/")
+                setBranchstate([]);
+                swal("Success",res.data.message,"success");
+                setModalCentered(false)
             }
         });
-        
     };
     // edit code
     const [editBranchstate, setEditBranchstate] = useState([]);
@@ -56,17 +46,17 @@ const Branches = () => {
             }else if(res.data.status === 404){
                 swal("Error",res.data.message,"error");
             }
-
         });
 
     }
     const updateBranch =  (e) => {
         e.preventDefault();
+        console.log(editBranchstate);
         
         axios.post("/api/UpdateBranches", editBranchstate).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
-                setEditBranchstate('');
+                setEditBranchstate([]);
                 swal("Success",res.data.message,"success");
                 setEditModalCentered(false)
                 //  this.props.history.push("/")
@@ -76,16 +66,22 @@ const Branches = () => {
     };
     //for retriving data using laravel API
     const [branchdata,setBranchdata]=useState([]);
+    const [currency,setCurrency]=useState([]);
     const [loading, setLoading]=useState(true);
     
     useEffect( () => {
-        
         axios.get('/api/GetBranches').then(res => {
             if(res.data.status === 200){
             setBranchdata(res.data.branches);
             }
             setLoading(false);
           });
+          axios.get('/api/GetCurrencies').then(res => {
+            if(res.data.status === 200){
+                setCurrency(res.data.fetchData);
+            }
+          });
+        
       }, [branchstate,editBranchstate]);
 
     var viewBranches_HTMLTABLE = "";
@@ -100,12 +96,13 @@ const Branches = () => {
                         <div className="card-body">
                             <div className="text-center">
                             <div className="profile-photo">
-                                <img
+                                <QRCode value={`show-branch-details/${btoa(item.BrancheName)}`} />
+                                {/* <img
                                     src={profile}
                                     width="100"
                                     className="img-fluid rounded-circle"
                                     alt=""
-                                />
+                                /> */}
                             </div>
                             <h3 className="mt-4 mb-1"><Link to={{
                             pathname: `/category/${item.id}`,
@@ -150,13 +147,20 @@ const Branches = () => {
                                     <span>{t('units')}</span>
                                 </Link>
                             </div>
-                            <div className="col-5 pt-3 pb-3">
+                            <div className="col-3 pt-3 pb-3">
                                 <Link
                                     to={{
                                         pathname: `/inventory/${item.id}`,
                                         branchName:item.BrancheName }}
                                 >
                                     <span>{t('inventory')}</span>
+                                </Link>
+                            </div>
+                            <div className="col-2 pt-3 pb-3">
+                                <Link
+                                    to={`show-branch-details/${btoa(item.id)}`}
+                                >
+                                    <span>{t('demo')}</span>
                                 </Link>
                             </div>
                             </div>
@@ -170,17 +174,29 @@ const Branches = () => {
     // delete branch 
     const deleteBranch= (e,id)=>{
         e.preventDefault();
-        axios.delete(`/api/DeleteBranches/${id}`).then(res=>{
-            if(res.data.status === 200){
-                swal("Success",res.data.message,"success");
-                // thisClicked.closest("tr").remove();
-            }else if(res.data.status === 404){
-                swal("Success",res.data.message,"success");
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                axios.delete(`/api/DeleteBranches/${id}`).then(res=>{
+                    if(res.data.status === 200){
+                        swal("Success",res.data.message,"success");
+                        // thisClicked.closest("tr").remove();
+                    }else if(res.data.status === 404){
+                        swal("Success",res.data.message,"success");
+                    }
+                    setBranchstate([]);
+                });
+            } else {
+              swal("Your Data is safe now!");
             }
-        });
-
+          });
     }
-    
     return (
       <Fragment>
          <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} />
@@ -209,6 +225,21 @@ const Branches = () => {
                                 onChange={handleInput}  
                                 value={branchstate.BrancheName}
                             />
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('currency')}</strong> </label>
+                            <select type="text"
+                                className="form-control"
+                                placeholder="currencyID"
+                                name="currencyID"
+                                required
+                                onChange={handleInput}  
+                                value={branchstate.currencyID}>
+                                <option value=''>{t('select_currency')}</option> )
+                                {
+                                currency.map( (item) => 
+                                <option value={item.id} key={item.id}>{item.currency_name +' / '+ item.currency_code}</option> )
+                            }</select>
                         </div>
 
                 </Modal.Body>
@@ -263,6 +294,21 @@ const Branches = () => {
                                 value={editBranchstate.BrancheName}
                             />
                         </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('currency')}</strong> </label>
+                            <select type="text"
+                                className="form-control"
+                                placeholder="currencyID"
+                                name="currencyID"
+                                required
+                                onChange={editHandleInput}  
+                                value={editBranchstate.currencyID}>
+                                <option value=''>{t('select_currency')}</option> )
+                                {
+                                currency.map( (item) => 
+                                <option value={item.id} key={item.id}>{item.currency_name +' / '+ item.currency_code}</option> )
+                            }</select>
+                        </div>
 
                 </Modal.Body>
                 <Modal.Footer>
@@ -299,11 +345,9 @@ const Branches = () => {
          </div>
          <div className="row" >
             {viewBranches_HTMLTABLE}
-            
         </div>
-
-         
-            
+        {}
+        
       </Fragment>
       
    );

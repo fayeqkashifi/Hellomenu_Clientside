@@ -82,7 +82,6 @@ const Product = (props) => {
     useEffect( () => {
         axios.get(`/api/GetProducts/${subMenuId}`).then(res => {
             if(res.data.status === 200){
-                console.log(res.data.fetchData);
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);

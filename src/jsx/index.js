@@ -15,20 +15,21 @@ import Footer from "./layouts/Footer";
 /// Deshboard
 
 import Home from "./components/Dashboard/Home/Home";
-import Branches from "./components/Branches/branches";
-import Menu from "./components/Categories/category";
-import Company from "./components/Companies/company";
-import Product from "./components/Products/product";
-import SubMenu from "./components/Categories/subCategory";
-import ServiceArea from "./components/Services/serviceArea"
-import Unit from "./components/Units/unit";
-import Inventory from "./components/Inventories/inventory";
+import Branches from "./components/Branches/Branches";
+import Menu from "./components/Categories/Category";
+import Company from "./components/Companies/Company";
+import Product from "./components/Products/Product";
+import SubMenu from "./components/Categories/SubCategory";
+import ServiceArea from "./components/Services/ServiceArea"
+import Unit from "./components/Units/Unit";
+import Inventory from "./components/Inventories/Inventory";
 import Profile from "./components/Dashboard/Profile/Profile";
-import Order from "./components/Orders/order";
-import Variants from "./components/Variants/variants";
-import Gallery from "./components/Variants/gallary";
-import Basket from "./components/Orders/basket";
-import VariantDetails from "./components/Variants/variant-details";
+import Order from "./components/Orders/Order";
+import Variants from "./components/Variants/Variants";
+import Gallery from "./components/Variants/Gallary";
+import Basket from "./components/Orders/Basket";
+import VariantDetails from "./components/Variants/VariantDetails";
+import ShowBranchDetails from "./components/Branches/ShowBranchDetails";
 
 const Markup = () => {
    const routes = [
@@ -48,11 +49,13 @@ const Markup = () => {
 		{ url: "variants/:id", component: Variants },
 		{ url: "gallery/:id", component: Gallery },
 		{ url: "variant-details/:id", component: VariantDetails },
+		{ url: "show-branch-details/:id", component: ShowBranchDetails },
    ];
 
    return (
 		
 			<Router>
+				
 				<div id="main-wrapper" className="show">
 				{localStorage.getItem('auth_token') ? <Nav /> : <Redirect to="/page-login" />}
 					<div className="content-body">
@@ -66,7 +69,9 @@ const Markup = () => {
 										component={data.component}
 									/>
 								))}
+								
 							</Switch>
+							
 						</div>
 					</div>
 				{localStorage.getItem('auth_token') ? <Footer /> : <Redirect to="/page-login" />}

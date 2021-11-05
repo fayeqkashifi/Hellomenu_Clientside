@@ -114,6 +114,8 @@
     "sign_me_up": "Sign Me Up",
     "already_have_an_account": "Already have an account?",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "currency": "Currency",
+    "select_currency": "Select Currency"
 
 }

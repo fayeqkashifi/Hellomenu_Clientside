@@ -25,7 +25,7 @@ const Company = () => {
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert section
-    const [companyState, setCompanyState] = useState('');
+    const [companyState, setCompanyState] = useState([]);
     const handleInput = (e) => {
         e.preventDefault();
         setCompanyState({...companyState, [e.target.name]: e.target.value});
