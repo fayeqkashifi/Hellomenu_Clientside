@@ -70,7 +70,7 @@ const ShowBranchDetails = (props) => {
 
    var viewShow_HTMLTABLE="";
    if(loading){
-      return <h4>{t('loading')}</h4>
+      return <div className="container "><h4>{t('loading')}</h4></div>
   }else{
       viewShow_HTMLTABLE = 
       variants.map((item,i)=>{
@@ -84,7 +84,7 @@ const ShowBranchDetails = (props) => {
                      </div>
                      <div className="new-arrival-content text-center mt-3">
                            <h4>
-                              <Link to={`/variant-details/${item.variantID}`}  className="text-black"> {item.VariationName}</Link>
+                              <Link to={`/page-login`}  className="text-black"> {item.VariationName}</Link>
                            </h4>
                            <h5>{item.ProductName}</h5>
                            <span className="price">{item.CurrentPrice+' '+ item.currency_code}</span>
@@ -99,7 +99,7 @@ const ShowBranchDetails = (props) => {
   }
    
    return (
-      <div className="row">
+      <div className="container">
 
          <Navbar bg="primary" variant="dark">
             {data.map((item,i)=>{
@@ -119,7 +119,7 @@ const ShowBranchDetails = (props) => {
             {subcategories.map((item,i)=>{
                return(
                   <div className="col-4 pt-3 pb-3 " key={i}>
-                     <button type="button" className="btn btn-primary"  onClick={()=>filterProducts(item.id)}>{item.SubCategoryName}</button>
+                     <button type="button" className="btn btn-outline-primary"  onClick={()=>filterProducts(item.id)}>{item.SubCategoryName}</button>
                   </div>
                )
             }) }
@@ -128,7 +128,7 @@ const ShowBranchDetails = (props) => {
             {products.map((item,i)=>{
                return(
                   <div className="col-4 pt-3 pb-3 " key={i}>
-                     <button type="button" className="btn btn-primary" onClick={()=>filterVariants(item.id)}>{item.ProductName}</button>
+                     <button type="button" className="btn btn-outline-primary" onClick={()=>filterVariants(item.id)}>{item.ProductName}</button>
                   </div>
                   
                )

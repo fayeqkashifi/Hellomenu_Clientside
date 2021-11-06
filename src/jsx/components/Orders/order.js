@@ -41,8 +41,8 @@ const Order = () => {
                                         <Link to={`/variant-details/${item.variantID}`}  className="text-black"> {item.VariationName}</Link>
                                     </h4>
                                     <h5>{item.ProductName}</h5>
-                                    <span className="price">{item.CurrentPrice}</span>
-                                    <s className="ms-2">{item.OldPrice}</s>
+                                    <span className="price">{item.CurrentPrice+' '+ item.currency_code}</span>
+                                    <s className="ms-2">{item.OldPrice +' '+ item.currency_code}</s>
                                 </div>
                             </div>
                             </div>

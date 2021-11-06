@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useRef} from "react";
 import { Link ,useHistory} from "react-router-dom";
 /// Image
 import i18next from "i18next";
@@ -6,13 +6,15 @@ import profile from "../../../images/hellomenu/logo.svg";
 import axios from "axios";
 import "flag-icon-css/css/flag-icons.min.css"
 import { useTranslation } from "react-i18next";
+import IdleTimer from 'react-idle-timer'
 
 const Header = ({ toggle, onProfile,onNotification}) => {
+   const idleTimerRef= useRef(null);
 	const { t } = useTranslation();
 
    const history = useHistory();
    const logoutUser =  (e) => {
-      e.preventDefault();
+      // e.preventDefault();
          axios.post("/api/logout").then(res=>{
             if(res.data.status === 200){
                localStorage.removeItem('auth_token');
@@ -37,8 +39,13 @@ const Header = ({ toggle, onProfile,onNotification}) => {
 
 ]
    return (
+      
       <div className="header">
-         
+         <IdleTimer
+          ref={idleTimerRef}
+          timeout={1000 * 60 * 15}
+          onIdle={logoutUser}
+        />
          <div className="header-content" >
             <nav className="navbar navbar-expand">
                <div className="collapse navbar-collapse justify-content-between">

@@ -10,7 +10,8 @@ import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
 // import PrivateRoute from './jsx/components/PrivateRoute';
 import PublicRoute from './jsx/components/PublicRoute';
 import axios from "axios"
-// import ShowBranchDetails from "./jsx/components/Branches/ShowBranchDetails";
+import ShowBranchDetails from "./jsx/components/Branches/ShowBranchDetails";
+import Variants from "./jsx/components/Variants/Variants";
 
 
 axios.defaults.baseURL="http://127.0.0.1:8000";
@@ -31,7 +32,8 @@ const App = () => {
             </Route>
             <PublicRoute restricted={true} component={Login} path="/page-login" exact />
             <PublicRoute restricted={false} component={Registration} path="/user-register" exact />
-            {/* <PublicRoute restricted={true} component={ShowBranchDetails} path="/show-branch-details/:id" loc="https://meetflo.zendesk.com/hc/en-us/articles/230425728-Privacy-Policies" /> */}
+            <PublicRoute exact component={ShowBranchDetails} path="/show-branch-details/:id" />
+            <PublicRoute exact component={Variants} path="variants/:id:id" />
             {/* {localStorage.getItem('auth_token') ? <Markup /> : <Redirect to="/page-login" />} */}
             <Markup />
          </Switch>

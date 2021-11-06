@@ -96,7 +96,9 @@ const Branches = () => {
                         <div className="card-body">
                             <div className="text-center">
                             <div className="profile-photo">
-                                <QRCode value={`show-branch-details/${btoa(item.BrancheName)}`} />
+                                <div  className="primary">
+                                    <QRCode value={`show-branch-details/${btoa(item.BrancheName)}`} className="primary"/>
+                                </div>
                                 {/* <img
                                     src={profile}
                                     width="100"
