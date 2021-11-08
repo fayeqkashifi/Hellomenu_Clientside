@@ -11,10 +11,10 @@ const Registration = () => {
    const schema = yup.object().shape({
       name: yup.string().required(),
       phone_number: yup.string().required(),
-      email: yup.string().required(),
+      email: yup.string().email().required(),
       password: yup.string().required().min(6),
    }).required();
-   const { register, handleSubmit, formState:{ errors } } = useForm({
+   const { register, handleSubmit,reset, formState:{ errors } } = useForm({
       resolver: yupResolver(schema)
     });
    // for localization
@@ -39,7 +39,7 @@ const Registration = () => {
                 // console.log(res.data.status);
                 localStorage.setItem('auth_token', res.data.token);
                 localStorage.setItem('auth_name', res.data.user);
-               localStorage.setItem('auth_id', res.data.id);
+                localStorage.setItem('auth_id', res.data.id);
 
                 setRegisterstate({
                     name: '',
@@ -47,8 +47,9 @@ const Registration = () => {
                     email:'',
                     password:''
                  });
+                reset();
                  swal("Success",res.data.message,"success");
-                 history.push("/login")
+                 history.push("/page-login")
             }
         });
       });

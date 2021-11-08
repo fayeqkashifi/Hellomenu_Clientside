@@ -84,7 +84,7 @@ const ShowBranchDetails = (props) => {
                      </div>
                      <div className="new-arrival-content text-center mt-3">
                            <h4>
-                              <Link to={`/page-login`}  className="text-black"> {item.VariationName}</Link>
+                              <Link to={`/variant-details/${item.variantID}`}  className="text-black"> {item.VariationName}</Link>
                            </h4>
                            <h5>{item.ProductName}</h5>
                            <span className="price">{item.CurrentPrice+' '+ item.currency_code}</span>

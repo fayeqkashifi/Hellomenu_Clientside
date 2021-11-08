@@ -5,9 +5,18 @@ import axios from "axios";
 import swal from "sweetalert"
 import {Link} from "react-router-dom"
 import { useTranslation } from "react-i18next";
-
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 const Product = (props) => {
-     // for localization
+    // validation
+    const schema = yup.object().shape({
+        ProductName: yup.string().required("This field is a required field"),
+    }).required();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+    });
+    // for localization
 	const { t } = useTranslation();
     const subMenuId =props.match.params.id;
 
@@ -25,13 +34,14 @@ const Product = (props) => {
         setProductInsert({...productInsert, [e.target.name]: e.target.value});
     };
     const saveProduct=  (e) => {
-        e.preventDefault();
-        axios.post("/api/InsertProducts", productInsert).then(res=>{
+        // e.preventDefault();
+        axios.post(`/api/InsertProducts/${subMenuId}`, productInsert).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
                 setProductInsert('');
-                 swal("Success",res.data.message,"success");
-                 setModalCentered(false)
+                reset();
+                swal("Success",res.data.message,"success");
+                setModalCentered(false)
                 //  this.props.history.push("/")
             }
         });
@@ -69,12 +79,6 @@ const Product = (props) => {
         });
         
     };
-    
-
-
-
-
-
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
     const [loading, setLoading]=useState(true);
@@ -83,6 +87,7 @@ const Product = (props) => {
         axios.get(`/api/GetProducts/${subMenuId}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
+                console.log(res.data.fetchData);
             }
             setLoading(false);
           });
@@ -107,7 +112,7 @@ const Product = (props) => {
                                 /> */}
                             </div>
                             <h3 className="mt-4 mb-1"><Link to={{
-                            pathname: `/variants/${item.variant_id}`,
+                            pathname: `/variants/${item.product_id}`,
                            
                             ProductName:item.ProductName }} > {item.ProductName}</Link></h3>
                             <p className="text-muted"></p>
@@ -138,7 +143,7 @@ const Product = (props) => {
                                 <div className="col-4 pt-3 pb-3">
                                     <Link
                                          to={{
-                                            pathname: `/variants/${item.variant_id}`,
+                                            pathname: `/variants/${item.product_id}`,
                                             id:item.id,
                                             ProductName:item.ProductName }}
                                     >
@@ -158,15 +163,29 @@ const Product = (props) => {
     // delete section 
     const deleteProduct= (e,id)=>{
         e.preventDefault();
-        axios.delete(`/api/DeleteProducts/${id}`).then(res=>{
-            if(res.data.status === 200){
-                swal("Success",res.data.message,"success");
-                // thisClicked.closest("tr").remove();
-            }else if(res.data.status === 404){
-                swal("Error",res.data.message,"error");
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                axios.delete(`/api/DeleteProducts/${id}`).then(res=>{
+                    if(res.data.status === 200){
+                        swal("Success",res.data.message,"success");
+                        setProductInsert([]);
+                        // thisClicked.closest("tr").remove();
+                    }else if(res.data.status === 404){
+                        swal("Error",res.data.message,"error");
+                    }
+                });
+               
+            } else {
+              swal("Your Data is safe now!");
             }
         });
-
     }
     
     return (
@@ -174,7 +193,7 @@ const Product = (props) => {
          <PageTItle headingPara={t('products')} activeMenu={t('add_product')} motherMenu={t('products')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveProduct} method= "POST" >
+            <Form onSubmit={handleSubmit(saveProduct)} method= "POST" >
                 <Modal.Header>
                     <Modal.Title>{t('add_product')}</Modal.Title>
                     <Button
@@ -190,13 +209,16 @@ const Product = (props) => {
                             <label className="mb-1 "> <strong>{t('product_name')}</strong> </label>
                             <input
                                 type="text"
+                                {...register("ProductName")}
                                 className="form-control"
                                 placeholder={t('product_name')}
                                 name="ProductName"
-                                required
                                 onChange={handleInput}  
                                 value={productInsert.ProductName}
                             />
+                            <div className="text-danger">
+                                {errors.ProductName?.message}
+                            </div>
                         </div>
                        
                 </Modal.Body>

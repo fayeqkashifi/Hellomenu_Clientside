@@ -5,8 +5,17 @@ import axios from "axios";
 import swal from "sweetalert"
 import { useTranslation } from "react-i18next";
 import {Link} from "react-router-dom"
-
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 const SubCategory = (props) => {
+    // validation
+    const schema = yup.object().shape({
+        SubCategoryName: yup.string().required("This field is a required field"),
+    }).required();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+    });
     // for localization
 	const { t } = useTranslation();
 
@@ -27,7 +36,7 @@ const SubCategory = (props) => {
     };
    
     const saveSubMenu=  (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         const formData = new FormData();
         formData.append('SubCategoryName', subCategoryInsert.SubCategoryName);
         formData.append('CategoryID', subCategoryInsert.CategoryID);
@@ -38,6 +47,7 @@ const SubCategory = (props) => {
                     SubCategoryName: '',
                     CategoryID: id
                 });
+                reset();
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
                 //  this.props.history.push("/")
@@ -80,11 +90,6 @@ const SubCategory = (props) => {
         });
         
     };
-    
-
-
-
-
 
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
@@ -161,15 +166,6 @@ const SubCategory = (props) => {
                         </div>
                     </div>
                 </div>
-                // <tr key={item.id}>
-                //     <td>{i+1}</td>
-                   
-                //     <td> {item.SubCategoryName}</td>
-                //     <td>
-                //         <button type="button"   onClick={(e)=>fetchSubMenus(e,item.id)} className="btn btn-outline-info btn-xxs ml-1">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
-                //         <button type="button" onClick={(e)=>deleteSubMenu(e,item.id)} className="btn btn-outline-danger btn-xxs ml-1">{t('delete')}</button>
-                //     </td> 
-                // </tr>
             )
         })
 
@@ -177,21 +173,37 @@ const SubCategory = (props) => {
     // delete section 
     const deleteSubMenu= (e,id)=>{
         e.preventDefault();
-        axios.delete(`/api/DeleteSubCategories/${id}`).then(res=>{
-            if(res.data.status === 200){
-                swal("Success",res.data.message,"success");
-                // thisClicked.closest("tr").remove();
-            }else if(res.data.status === 404){
-                swal("Error",res.data.message,"error");
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                axios.delete(`/api/DeleteSubCategories/${id}`).then(res=>{
+                    if(res.data.status === 200){
+                        setSubCategoryInsert([]);
+                        swal("Success",res.data.message,"success");
+                        // thisClicked.closest("tr").remove();
+                    }else if(res.data.status === 404){
+                        swal("Error",res.data.message,"error");
+                    }
+                });
+               
+            } else {
+              swal("Your Data is safe now!");
             }
-        });
+          });
+        
     }
     return (
       <Fragment>
          <PageTItle headingPara={t('sub_category')} activeMenu={t('add_sub_Category')} motherMenu={t('sub_category')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveSubMenu} method= "POST" encType="multipart/form-data">
+            <Form onSubmit={handleSubmit(saveSubMenu)} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
                     <Modal.Title>Add A Sub Category</Modal.Title>
                     <Button
@@ -211,13 +223,16 @@ const SubCategory = (props) => {
                             <label className="mb-1 "> <strong>{t('sub_category_name')}</strong> </label>
                             <input
                                 type="text"
+                                {...register("SubCategoryName")}
                                 className="form-control"
                                 placeholder={t('sub_category_name')}
                                 name="SubCategoryName"
-                                required
                                 onChange={handleInput}  
                                 value={subCategoryInsert.SubCategoryName}
                             />
+                             <div className="text-danger">
+                                {errors.SubCategoryName?.message}
+                            </div>
                         </div>
                 </Modal.Body>
                 <Modal.Footer>

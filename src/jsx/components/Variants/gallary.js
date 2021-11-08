@@ -74,14 +74,29 @@ const Gallery = (props) => {
     // delete section 
     const deletePicture= (e,id)=>{
         e.preventDefault();
-        axios.delete(`/api/DeletePictures/${id}`).then(res=>{
-            if(res.data.status === 200){
-                swal("Success",res.data.message,"success");
-                // thisClicked.closest("tr").remove();
-            }else if(res.data.status === 404){
-                swal("Error",res.data.message,"error");
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                axios.delete(`/api/DeletePictures/${id}`).then(res=>{
+                    if(res.data.status === 200){
+                        setSelectedFiles([]);
+                        swal("Success",res.data.message,"success");
+                        // thisClicked.closest("tr").remove();
+                    }else if(res.data.status === 404){
+                        swal("Error",res.data.message,"error");
+                    }
+                });
+            } else {
+              swal("Your Data is safe now!");
             }
         });
+        
     }
     // insert 
    

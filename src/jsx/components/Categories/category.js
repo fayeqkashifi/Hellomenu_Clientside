@@ -7,8 +7,16 @@ import {Link } from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
 import { useTranslation } from "react-i18next";
-
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 const Category = (props) => {
+    const schema = yup.object().shape({
+        CategoryName: yup.string().required("This field is a required field"),
+    }).required();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+    });
     // for localization
 	const { t } = useTranslation();
     // insert modal
@@ -33,7 +41,7 @@ const Category = (props) => {
         setImageState({...imageState, CategoryIcon: e.target.files[0] });
     };
     const saveMenu=  (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         const formData = new FormData();
         formData.append('CategoryIcon', imageState.CategoryIcon);
         formData.append('CategoryName', categoryInsert.CategoryName);
@@ -46,6 +54,7 @@ const Category = (props) => {
                     CategoryName : '',
                     branchID : id,
                 });
+                reset();
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
                 //  this.props.history.push("/")
@@ -95,12 +104,6 @@ const Category = (props) => {
         });
         
     };
-    
-
-
-
-
-
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
     const [loading, setLoading]=useState(true);
@@ -167,14 +170,30 @@ const Category = (props) => {
     // delete section 
     const deleteMenu= (e,id)=>{
         e.preventDefault();
-        axios.delete(`/api/DeleteCategories/${id}`).then(res=>{
-            if(res.data.status === 200){
-                swal("Success",res.data.message,"success");
-                // thisClicked.closest("tr").remove();
-            }else if(res.data.status === 404){
-                swal("Error",res.data.message,"error");
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                axios.delete(`/api/DeleteCategories/${id}`).then(res=>{
+                    if(res.data.status === 200){
+                        setCategoryInsert([]);
+                        swal("Success",res.data.message,"success");
+                        // thisClicked.closest("tr").remove();
+                    }else if(res.data.status === 404){
+                        swal("Error",res.data.message,"error");
+                    }
+                });
+               
+            } else {
+              swal("Your Data is safe now!");
             }
-        });
+          });
+        
 
     }
     
@@ -183,7 +202,7 @@ const Category = (props) => {
          <PageTItle headingPara={t('categories')} activeMenu={t('add_category')} motherMenu={t('categories')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveMenu} method= "POST" encType="multipart/form-data">
+            <Form onSubmit={handleSubmit(saveMenu)} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
                     <Modal.Title>{t('add_category')} </Modal.Title>
                     <Button
@@ -217,13 +236,17 @@ const Category = (props) => {
                         <label className="mb-1 "> <strong>{t('category_name')}</strong> </label>
                         <input
                             type="text"
+                            {...register("CategoryName")}
                             className="form-control"
                             placeholder={t('category_name')}
                             name="CategoryName"
-                            required
+                            
                             onChange={handleInput}  
                             value={categoryInsert.CategoryName}
                         />
+                        <div className="text-danger">
+                            {errors.CategoryName?.message}
+                        </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

@@ -12,7 +12,7 @@ const Company = () => {
     const schema = yup.object().shape({
         company: yup.string().required(),
     }).required();
-    const { register, handleSubmit, formState:{ errors } } = useForm({
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
     resolver: yupResolver(schema)
     });
     //   validation end
@@ -35,8 +35,9 @@ const Company = () => {
             if(res.data.status === 200){
                 // console.log(res.data.status);
                 setCompanyState('');
-                 swal("Success",res.data.message,"success");
-                 setModalCentered(false)
+                reset();
+                swal("Success",res.data.message,"success");
+                setModalCentered(false)
                 //  this.props.history.push("/")
             }
         });

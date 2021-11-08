@@ -8,8 +8,20 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert"
 import QRCode from "react-qr-code";
-
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+const schema = yup.object().shape({
+    BrancheName: yup.string().required("This field is a required field"),
+    currencyID: yup.string().required("This field is a required field"),
+}).required();
 const Branches = () => {
+    // validation
+  
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+    });
+    // localization
 	const { t } = useTranslation();
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
@@ -22,10 +34,11 @@ const Branches = () => {
         setBranchstate({...branchstate, [e.target.name]: e.target.value});
     };
     const saveBranch =  (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         axios.post("/api/InsertBranches", branchstate).then(res=>{
             if(res.data.status === 200){
                 setBranchstate([]);
+                reset();
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
             }
@@ -97,7 +110,13 @@ const Branches = () => {
                             <div className="text-center">
                             <div className="profile-photo">
                                 <div  className="primary">
-                                    <QRCode value={`show-branch-details/${btoa(item.BrancheName)}`} className="primary"/>
+                                    <Link
+                                        to={`show-branch-details/${btoa(item.id)}`}
+                                        target="_blank"
+                                    >
+                                        <QRCode value={`show-branch-details/${btoa(item.id)}`} className="primary"/>
+                                    </Link>
+                                
                                 </div>
                                 {/* <img
                                     src={profile}
@@ -149,7 +168,7 @@ const Branches = () => {
                                     <span>{t('units')}</span>
                                 </Link>
                             </div>
-                            <div className="col-3 pt-3 pb-3">
+                            <div className="col-5 pt-3 pb-3">
                                 <Link
                                     to={{
                                         pathname: `/inventory/${item.id}`,
@@ -158,13 +177,14 @@ const Branches = () => {
                                     <span>{t('inventory')}</span>
                                 </Link>
                             </div>
-                            <div className="col-2 pt-3 pb-3">
+                            {/* <div className="col-2 pt-3 pb-3">
                                 <Link
                                     to={`show-branch-details/${btoa(item.id)}`}
+                                    target="_blank"
                                 >
                                     <span>{t('demo')}</span>
                                 </Link>
-                            </div>
+                            </div> */}
                             </div>
                         </div>
                     </div>
@@ -204,7 +224,7 @@ const Branches = () => {
          <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} />
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveBranch} method= "POST" >
+            <Form onSubmit={handleSubmit(saveBranch)} method= "POST" >
                 <Modal.Header>
                     <Modal.Title>{t('add_branch')}</Modal.Title>
                     <Button
@@ -220,21 +240,26 @@ const Branches = () => {
                             <label className="mb-1 "> <strong>{t('branch_name')}</strong> </label>
                             <input
                                 type="text"
+                                {...register("BrancheName")}
                                 className="form-control"
                                 placeholder={t('branch_name')}
                                 name="BrancheName"
-                                required
                                 onChange={handleInput}  
                                 value={branchstate.BrancheName}
                             />
+                             <div className="text-danger">
+                                {errors.BrancheName?.message}
+                            </div>
                         </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('currency')}</strong> </label>
                             <select type="text"
+                                {...register("currencyID")}
+
                                 className="form-control"
                                 placeholder="currencyID"
+                                
                                 name="currencyID"
-                                required
                                 onChange={handleInput}  
                                 value={branchstate.currencyID}>
                                 <option value=''>{t('select_currency')}</option> )
@@ -242,7 +267,11 @@ const Branches = () => {
                                 currency.map( (item) => 
                                 <option value={item.id} key={item.id}>{item.currency_name +' / '+ item.currency_code}</option> )
                             }</select>
+                            <div className="text-danger">
+                                {errors.currencyID?.message}
+                            </div>
                         </div>
+
 
                 </Modal.Body>
                 <Modal.Footer>

@@ -28,7 +28,7 @@ import Order from "./components/Orders/Order";
 import Variants from "./components/Variants/Variants";
 import Gallery from "./components/Variants/Gallary";
 import Basket from "./components/Orders/Basket";
-import VariantDetails from "./components/Variants/VariantDetails";
+// import VariantDetails from "./components/Variants/VariantDetails";
 import ShowBranchDetails from "./components/Branches/ShowBranchDetails";
 
 const Markup = () => {
@@ -48,7 +48,7 @@ const Markup = () => {
 		{ url: "baskets", component: Basket },
 		{ url: "variants/:id", component: Variants },
 		{ url: "gallery/:id", component: Gallery },
-		{ url: "variant-details/:id", component: VariantDetails },
+		// { url: "variant-details/:id", component: VariantDetails },
 		{ url: "show-branch-details/:id", component: ShowBranchDetails },
    ];
 

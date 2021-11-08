@@ -12,7 +12,7 @@ const ServiceArea = (props) => {
     const schema = yup.object().shape({
         AreaName: yup.string().required("This field is a required field"),
     }).required();
-    const { register, handleSubmit, formState:{ errors } } = useForm({
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
     resolver: yupResolver(schema)
     });
     // for localization
@@ -42,6 +42,7 @@ const ServiceArea = (props) => {
                     AreaName: '',
                     BranchID: id
                 });
+                reset();
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
                 //  this.props.history.push("/")

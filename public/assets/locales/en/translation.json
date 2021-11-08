@@ -116,6 +116,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "currency": "Currency",
-    "select_currency": "Select Currency"
+    "select_currency": "Select Currency",
+    "not_available": "Sorry, more then that is not available in stock."
 
 }

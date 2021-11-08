@@ -11,7 +11,8 @@ import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
 import PublicRoute from './jsx/components/PublicRoute';
 import axios from "axios"
 import ShowBranchDetails from "./jsx/components/Branches/ShowBranchDetails";
-import Variants from "./jsx/components/Variants/Variants";
+// import Variants from "./jsx/components/Variants/Variants";
+import VariantDetails from "./jsx/components/Variants/VariantDetails";
 
 
 axios.defaults.baseURL="http://127.0.0.1:8000";
@@ -33,7 +34,7 @@ const App = () => {
             <PublicRoute restricted={true} component={Login} path="/page-login" exact />
             <PublicRoute restricted={false} component={Registration} path="/user-register" exact />
             <PublicRoute exact component={ShowBranchDetails} path="/show-branch-details/:id" />
-            <PublicRoute exact component={Variants} path="variants/:id:id" />
+            <PublicRoute exact component={VariantDetails} path="/variant-details/:id" />
             {/* {localStorage.getItem('auth_token') ? <Markup /> : <Redirect to="/page-login" />} */}
             <Markup />
          </Switch>

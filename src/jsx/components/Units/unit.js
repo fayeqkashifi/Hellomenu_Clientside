@@ -4,13 +4,21 @@ import { Button, Modal,  Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
 import { useTranslation } from "react-i18next";
-
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 const Unit = (props) => {
+    // validation
+    const schema = yup.object().shape({
+        UnitName: yup.string().required("This field is a required field"),
+    }).required();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+    });
     // for localization
     const { t } = useTranslation();
     // ID
     const id =props.match.params.id;
-    
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -33,6 +41,8 @@ const Unit = (props) => {
                     UnitName: '',
                     brancheID: id
                 });
+                reset();
+
                 swal("Success",res.data.message,"success");
                 setModalCentered(false)
                 //  this.props.history.push("/")
@@ -74,11 +84,10 @@ const Unit = (props) => {
         
     };
     
-
     //for retriving data using laravel API
     const [fetchData,setFetchData]=useState([]);
     const [loading, setLoading]=useState(true);
-    
+
     useEffect( () => {
         axios.get(`/api/GetUnits/${id}`).then(res => {
             if(res.data.status === 200){
@@ -112,21 +121,38 @@ const Unit = (props) => {
     // delete section 
     const deleteUnit= (e,id)=>{
         e.preventDefault();
-        axios.delete(`/api/DeleteUnits/${id}`).then(res=>{
-            if(res.data.status === 200){
-                swal("Success",res.data.message,"success");
-                // thisClicked.closest("tr").remove();
-            }else if(res.data.status === 404){
-                swal("Error",res.data.message,"error");
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                axios.delete(`/api/DeleteUnits/${id}`).then(res=>{
+                    if(res.data.status === 200){
+                        swal("Success",res.data.message,"success");
+                        setUnitInsert({
+                            UnitName: '',
+                            brancheID: id
+                        });
+                    }else if(res.data.status === 404){
+                        swal("Error",res.data.message,"error");
+                    }
+                });
+               
+            } else {
+              swal("Your Data is safe now!");
             }
-        });
+          });
     }
     return (
       <Fragment>
          <PageTItle headingPara={t('units')} activeMenu={t('add_unit')} motherMenu={t('units')}/>
         {/* <!-- Insert  Modal --> */}
         <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={saveUnit} method= "POST" encType="multipart/form-data">
+            <Form onSubmit={handleSubmit(saveUnit)} method= "POST" encType="multipart/form-data">
                 <Modal.Header>
                     <Modal.Title>{t('add_unit')}</Modal.Title>
                     <Button
@@ -146,13 +172,17 @@ const Unit = (props) => {
                             <label className="mb-1 "> <strong>{t('unit_name')} </strong> </label>
                             <input
                                 type="text"
+                                {...register("UnitName")}
+
                                 className="form-control"
                                 placeholder={t('unit_name')}
                                 name="UnitName"
-                                required
                                 onChange={handleInput}  
                                 value={unitInsert.UnitName}
                             />
+                            <div className="text-danger">
+                                {errors.UnitName?.message}
+                            </div>
                         </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -162,7 +192,7 @@ const Unit = (props) => {
                     >
                         {t('close')}
                     </Button>
-                    <Button variant="primary" type="submit">{t('update')}</Button>
+                    <Button variant="primary" type="submit">{t('save')}</Button>
 
                 </Modal.Footer>
             </Form>
