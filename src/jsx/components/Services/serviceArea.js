@@ -35,7 +35,7 @@ const ServiceArea = (props) => {
     };
    
     const saveServiceAreas=  (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         axios.post("/api/InsertServicAreas", serviceAreaInsert).then(res=>{
             if(res.data.status === 200){
                 setServiceAreaInsert({

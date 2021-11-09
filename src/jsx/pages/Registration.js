@@ -37,9 +37,9 @@ const Registration = () => {
          axios.post("/api/register", registerstate).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
-                localStorage.setItem('auth_token', res.data.token);
-                localStorage.setItem('auth_name', res.data.user);
-                localStorage.setItem('auth_id', res.data.id);
+               //  localStorage.setItem('auth_token', res.data.token);
+               //  localStorage.setItem('auth_name', res.data.user);
+               //  localStorage.setItem('auth_id', res.data.id);
 
                 setRegisterstate({
                     name: '',
@@ -47,9 +47,9 @@ const Registration = () => {
                     email:'',
                     password:''
                  });
-                reset();
-                 swal("Success",res.data.message,"success");
-                 history.push("/page-login")
+               reset();
+               swal("Success",res.data.message,"success");
+               //   history.push("/page-login")
             }
         });
       });

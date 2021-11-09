@@ -34,7 +34,7 @@ const Unit = (props) => {
     };
    
     const saveUnit=  (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         axios.post("/api/InsertUnits", unitInsert).then(res=>{
             if(res.data.status === 200){
                 setUnitInsert({

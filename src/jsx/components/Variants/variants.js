@@ -27,13 +27,14 @@ const Variants = (props) => {
     // for localization
     const { t } = useTranslation();
     const id =props.match.params.id;
+    
 
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a section
     const [modalCentered, setModalCentered] = useState(false);
 
-
+    const[barchid, setBranchId]=useState(0);
    
     // edit code
     const [editVariant, setEditVariant] = useState([]);
@@ -83,7 +84,7 @@ const Variants = (props) => {
         UnitID: '',
         sub_categoryID:'',
         ProductName:'',
-        branch_id: id
+        branch_id: barchid
     });
     const handleInput = (e) => {
         e.persist();
@@ -111,7 +112,7 @@ const Variants = (props) => {
         formData.append('UnitID', variantInsert.UnitID);
         formData.append('sub_categoryID', variantInsert.sub_categoryID);
         formData.append('ProductName', variantInsert.ProductName);
-        formData.append('branch_id', variantInsert.branch_id);
+        formData.append('branch_id', barchid);
         // console.log(formData);
         axios.post(`/api/InsertInventory/${id}`, formData).then(res=>{
             if(res.data.status === 200){
@@ -127,7 +128,7 @@ const Variants = (props) => {
                     OldPrice: '',
                     UnitID: '',
                     sub_categoryID:'',
-                    branch_id: id
+                    branch_id: barchid
                 });
                 reset();
                 swal("Success",res.data.message,"success");
@@ -175,7 +176,7 @@ const Variants = (props) => {
           });
           axios.get(`/api/GetUnitsAll/${id}`).then(res => {
             if(res.data.status === 200){
-                // console.log(editVariant.UnitID);
+                setBranchId(res.data.fetchData[0].branchID);
                 setUnitData(res.data.fetchData);
             }
           });
@@ -188,7 +189,7 @@ const Variants = (props) => {
         viewProducts_HTMLTABLE = 
         fetchData.map((item,i)=>{
             return (
-                <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
                     <div className="card overflow-hidden">
                         <div className="card-body">
                             <div className="text-center">

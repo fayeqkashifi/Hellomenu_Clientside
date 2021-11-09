@@ -118,7 +118,7 @@ const ShowBranchDetails = (props) => {
          <div className="row">
             {subcategories.map((item,i)=>{
                return(
-                  <div className="col-4 pt-3 pb-3 " key={i}>
+                  <div className="col-2 pt-3 pb-3 " key={i}>
                      <button type="button" className="btn btn-outline-primary"  onClick={()=>filterProducts(item.id)}>{item.SubCategoryName}</button>
                   </div>
                )
