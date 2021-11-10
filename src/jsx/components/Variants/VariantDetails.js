@@ -55,7 +55,9 @@ const VariantDetails = (props) => {
                             <div className="text-center">
                                 <div className="profile-photo">
                                     <img
-                                        src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
+                                        style={{with:'100px', height:'200px' ,objectFit: 'contain'}} 
+
+                                        src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`}
                                         className="d-block w-100 img-thumbnail" 
                                         alt=""
                                     />
@@ -111,14 +113,19 @@ const VariantDetails = (props) => {
                                         <div className="star-rating d-inline mb-2">
                                             {item.ProductName}
                                         </div>
+                                        <br></br>
                                         <p className="price">{item.CurrentPrice+' '+ item.currency_code}</p>
+                                        <br></br>
+                                        <br></br>
                                         <p>
                                         {t('availability')}: 
                                         <span className="item">
                                             {item.IsAvailable===0 ? ' Yes ' : ' No '}
                                             <i className="fa fa-shopping-basket"></i>
                                         </span>
+                                        
                                         </p>
+                                        
                                         <p>
                                         {t('variant_code')}: 
                                         <span className="item">{id}</span>

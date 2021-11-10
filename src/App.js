@@ -14,8 +14,8 @@ import ShowBranchDetails from "./jsx/components/Branches/ShowBranchDetails";
 // import Variants from "./jsx/components/Variants/Variants";
 import VariantDetails from "./jsx/components/Variants/VariantDetails";
 
-
-axios.defaults.baseURL="http://127.0.0.1:8000";
+// axios.defaults.baseURL="http://127.0.0.1:8000";
+axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
 axios.defaults.headers.post['Content-Type']='application/json'
 axios.defaults.headers.post['Accept']='application/json'
 axios.defaults.withcredentials= true;

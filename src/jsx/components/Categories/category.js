@@ -131,6 +131,7 @@ const Category = (props) => {
                         </Card.Header>
                         <Card.Body className="p-4">
                                 <img
+                                    style={{with:'100px', height:'300px' ,objectFit: 'contain'}}
                                     src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`}
                                     className="d-block w-100"
                                     alt=""

@@ -114,7 +114,7 @@ const Branches = () => {
                                         to={`show-branch-details/${btoa(item.id)}`}
                                         target="_blank"
                                     >
-                                        <QRCode value={`show-branch-details/${btoa(item.id)}`} className="primary"/>
+                                        <QRCode value={`http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`} className="primary"/>
                                     </Link>
                                 
                                 </div>

@@ -42,6 +42,7 @@ const Gallery = (props) => {
                             <div className="text-center">
                                 <div className="profile-photo">
                                     <img
+                                        style={{with:'100px', height:'250px' ,objectFit: 'contain'}} 
                                         src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
                                         className="d-block w-100 img-thumbnail" 
                                         alt=""

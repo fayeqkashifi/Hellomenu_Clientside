@@ -34,12 +34,17 @@ const SubCategory = (props) => {
         e.persist();
         setSubCategoryInsert({...subCategoryInsert, [e.target.name]: e.target.value});
     };
-   
+    const [imageState, setImageState] = useState([]);
+
+    const handleImage = (e) => {
+        setImageState({...imageState, SubCategoryIcon: e.target.files[0] });
+    };
     const saveSubMenu=  (e) => {
         // e.preventDefault();
         const formData = new FormData();
         formData.append('SubCategoryName', subCategoryInsert.SubCategoryName);
         formData.append('CategoryID', subCategoryInsert.CategoryID);
+        formData.append('SubCategoryIcon', imageState.SubCategoryIcon);
         axios.post("/api/InsertSubCategories", formData).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
@@ -76,7 +81,12 @@ const SubCategory = (props) => {
     }
     const updateSubMenu =  (e) => {
         e.preventDefault();
-        axios.post("/api/UpdateSubCategory", editSubMenu).then(res=>{
+        const formData = new FormData();
+        formData.append('SubCategoryIcon', imageState.SubCategoryIcon);
+        formData.append('SubCategoryName', editSubMenu.SubCategoryName);
+        formData.append('CategoryID', editSubMenu.CategoryID);
+        formData.append('id', editSubMenu.id);
+        axios.post("/api/UpdateSubCategory", formData).then(res=>{
             if(res.data.status === 200){
                 // console.log(res.data.status);
                 setEditSubMenu('');
@@ -123,7 +133,7 @@ const SubCategory = (props) => {
                                 /> */}
                             </div>
                             <h3 className="mt-4 mb-1"><Link to={{
-                            pathname: `/products/${item.id}`,
+                            pathname: `/products/${item.sub_id}`,
                             id:item.id,
                             ProductName:item.ProductName }} > {item.SubCategoryName}</Link></h3>
                             <p className="text-muted"></p>
@@ -138,7 +148,7 @@ const SubCategory = (props) => {
                                 <div className="col-4 pt-3 pb-3 border-right">
                                     <Link
                                         to=""
-                                         onClick={(e)=>fetchSubMenus(e,item.id)}
+                                         onClick={(e)=>fetchSubMenus(e,item.sub_id)}
                                     >
                                         <span>{t('edit')}</span>
                                     </Link>
@@ -146,7 +156,7 @@ const SubCategory = (props) => {
                                 <div className="col-4 pt-3 pb-3 border-right">
                                     <Link
                                         to=""
-                                        onClick={(e)=>deleteSubMenu(e,item.id)}
+                                        onClick={(e)=>deleteSubMenu(e,item.sub_id)}
                                     >
                                         <span>{t('delete')}</span>
                                     </Link>
@@ -218,7 +228,21 @@ const SubCategory = (props) => {
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('category_name')}: {props.location.CategoryName}</strong> </label>
                         </div>
-                        
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('sub_category_icon')}</strong> </label>
+                            <div className="input-group">
+                                <div className="custom-file">
+                                    <input
+                                    type="file"
+                                    className="form-control"
+                                    placeholder={t('sub_category_icon')}
+                                    name="SubCategoryIcon"
+                                    required
+                                    onChange={handleImage}  
+                                    />
+                                </div>
+                            </div>
+                        </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('sub_category_name')}</strong> </label>
                             <input
@@ -261,6 +285,23 @@ const SubCategory = (props) => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('sub_category_icon')}</strong> </label>
+                            <div className="input-group">
+                                <div className="custom-file">
+                                    <input
+                                        type="file"
+                                        className="form-control"
+                                        placeholder={t('sub_category_icon')}
+                                        name="SubCategoryIcon"
+                                        
+                                        onChange={handleImage} 
+                                    />
+                                    <img src={`http://localhost:8000/images/sub_catagories/${editSubMenu.SubCategoryIcon}`} width="70" alt=" " />
+
+                                </div>
+                            </div>
+                        </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('sub_category_name')}</strong> </label>
                             <input

@@ -195,6 +195,8 @@ const Variants = (props) => {
                             <div className="text-center">
                             <div className="profile-photo">
                                 <img
+                                    style={{with:'00px', height:'160px' ,objectFit: 'contain'}} 
+
                                     src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
                                     className="d-block w-100"
                                     alt=""

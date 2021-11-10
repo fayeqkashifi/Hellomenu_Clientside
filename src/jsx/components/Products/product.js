@@ -87,7 +87,7 @@ const Product = (props) => {
         axios.get(`/api/GetProducts/${subMenuId}`).then(res => {
             if(res.data.status === 200){
                 setFetchData(res.data.fetchData);
-                console.log(res.data.fetchData);
+                // console.log(res.data.fetchData);
             }
             setLoading(false);
           });

@@ -117,6 +117,7 @@
     "confirm": "Confirm",
     "currency": "Currency",
     "select_currency": "Select Currency",
-    "not_available": "Sorry, more then that is not available in stock."
+    "not_available": "Sorry, more then that is not available in stock.",
+    "sub_category_icon": "Sub Menu Icon"
 
 }
