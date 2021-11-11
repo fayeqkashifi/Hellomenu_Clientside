@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
@@ -20,7 +20,6 @@ const Registration = () => {
    // for localization
    const { t } = useTranslation();
 
-   const history = useHistory();
    const [registerstate, setRegisterstate] = useState({
       name:'',
       phone_number:'',

@@ -118,6 +118,7 @@
     "currency": "Currency",
     "select_currency": "Select Currency",
     "not_available": "Sorry, more then that is not available in stock.",
-    "sub_category_icon": "Sub Menu Icon"
+    "sub_category_icon": "Sub Menu Icon",
+    "display_mobile": "Display Mobile"
 
 }

@@ -1,8 +1,8 @@
-import React, { Fragment,useState,useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import PageTItle from "../../layouts/PageTitle";
 
-import { Button, Modal,  Form } from "react-bootstrap";
-import {Link} from "react-router-dom"
+import { Button, Modal, Form } from "react-bootstrap";
+import { Link } from "react-router-dom"
 // import profile from "../../../images/hellomenu/logo.svg";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
@@ -11,18 +11,21 @@ import QRCode from "react-qr-code";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CButton, CCloseButton, COffcanvas, COffcanvasBody, COffcanvasHeader, COffcanvasTitle } from '@coreui/react'
+
 const schema = yup.object().shape({
     BrancheName: yup.string().required("This field is a required field"),
     currencyID: yup.string().required("This field is a required field"),
 }).required();
 const Branches = () => {
     // validation
-  
-    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
-    resolver: yupResolver(schema)
+
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+        resolver: yupResolver(schema)
     });
     // localization
-	const { t } = useTranslation();
+    const { t } = useTranslation();
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     // edit modal
@@ -31,15 +34,15 @@ const Branches = () => {
     const [branchstate, setBranchstate] = useState([]);
     const handleInput = (e) => {
         e.preventDefault();
-        setBranchstate({...branchstate, [e.target.name]: e.target.value});
+        setBranchstate({ ...branchstate, [e.target.name]: e.target.value });
     };
-    const saveBranch =  (e) => {
+    const saveBranch = (e) => {
         // e.preventDefault();
-        axios.post("/api/InsertBranches", branchstate).then(res=>{
-            if(res.data.status === 200){
+        axios.post("/api/InsertBranches", branchstate).then(res => {
+            if (res.data.status === 200) {
                 setBranchstate([]);
                 reset();
-                swal("Success",res.data.message,"success");
+                swal("Success", res.data.message, "success");
                 setModalCentered(false)
             }
         });
@@ -48,136 +51,161 @@ const Branches = () => {
     const [editBranchstate, setEditBranchstate] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
-        setEditBranchstate({...editBranchstate, [e.target.name]: e.target.value});
+        setEditBranchstate({ ...editBranchstate, [e.target.name]: e.target.value });
     };
-    const editBranch = (e,id)=>{
+    const editBranch = (e, id) => {
         e.preventDefault();
-        axios.get(`/api/EditBranches/${id}`).then(res=>{
-            if(res.data.status === 200){
+        axios.get(`/api/EditBranches/${id}`).then(res => {
+            if (res.data.status === 200) {
                 setEditBranchstate(res.data.branch);
                 setEditModalCentered(true);
-            }else if(res.data.status === 404){
-                swal("Error",res.data.message,"error");
+            } else if (res.data.status === 404) {
+                swal("Error", res.data.message, "error");
             }
         });
 
     }
-    const updateBranch =  (e) => {
+    const updateBranch = (e) => {
         e.preventDefault();
         console.log(editBranchstate);
-        
-        axios.post("/api/UpdateBranches", editBranchstate).then(res=>{
-            if(res.data.status === 200){
+
+        axios.post("/api/UpdateBranches", editBranchstate).then(res => {
+            if (res.data.status === 200) {
                 // console.log(res.data.status);
                 setEditBranchstate([]);
-                swal("Success",res.data.message,"success");
+                swal("Success", res.data.message, "success");
                 setEditModalCentered(false)
                 //  this.props.history.push("/")
             }
         });
-        
+
     };
     //for retriving data using laravel API
-    const [branchdata,setBranchdata]=useState([]);
-    const [currency,setCurrency]=useState([]);
-    const [loading, setLoading]=useState(true);
-    
-    useEffect( () => {
+    const [branchdata, setBranchdata] = useState([]);
+    const [currency, setCurrency] = useState([]);
+    const [loading, setLoading] = useState(true);
+    // for mobile
+    const [visible, setVisible] = useState(false)
+
+    useEffect(() => {
         axios.get('/api/GetBranches').then(res => {
-            if(res.data.status === 200){
-            setBranchdata(res.data.branches);
+            if (res.data.status === 200) {
+                setBranchdata(res.data.branches);
             }
             setLoading(false);
-          });
-          axios.get('/api/GetCurrencies').then(res => {
-            if(res.data.status === 200){
+        });
+        axios.get('/api/GetCurrencies').then(res => {
+            if (res.data.status === 200) {
                 setCurrency(res.data.fetchData);
             }
-          });
-        
-      }, [branchstate,editBranchstate]);
+        });
 
+    }, [branchstate, editBranchstate]);
+    const [destinationLink, setDestinationLink] = useState("");
+
+    const phone = (e, srcLink) => {
+        e.preventDefault();
+        setDestinationLink(srcLink);
+        setVisible(true)
+    }
     var viewBranches_HTMLTABLE = "";
-    if(loading){
-        return <h4>{t('loading')}</h4>
-    }else{
-        viewBranches_HTMLTABLE = 
-        branchdata.map((item,i)=>{
-            return (
-                <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
-                    <div className="card overflow-hidden">
-                        <div className="card-body">
-                            <div className="text-center">
-                            <div className="profile-photo">
-                                <div  className="primary">
-                                    <Link
-                                        to={`show-branch-details/${btoa(item.id)}`}
-                                        target="_blank"
-                                    >
-                                        <QRCode value={`http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`} className="primary"/>
-                                    </Link>
-                                
-                                </div>
-                                {/* <img
+    if (loading) {
+        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        //  <h4>{t('loading')}</h4>
+
+    } else {
+        viewBranches_HTMLTABLE =
+            branchdata.map((item, i) => {
+                return (
+                    <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                        <div className="card overflow-hidden">
+                            <div className="card-body">
+                                <div className="text-center">
+                                    <div className="profile-photo">
+                                        <div className="primary">
+                                            <Link
+                                                to={`show-branch-details/${btoa(item.id)}`}
+                                                target="_blank"
+                                            >
+                                                <QRCode value={`http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`} className="primary" />
+                                            </Link>
+
+                                        </div>
+
+                                        {/* <img
                                     src={profile}
                                     width="100"
                                     className="img-fluid rounded-circle"
                                     alt=""
                                 /> */}
-                            </div>
-                            <h3 className="mt-4 mb-1"><Link to={{
-                            pathname: `/category/${item.id}`,
-                            branchName:item.BrancheName }} > {item.BrancheName}</Link></h3>
-                            <p className="text-muted"></p>
-                            <Link
-                                to=""
-                                onClick={(e)=>editBranch(e,item.id)}
-                                className="btn btn-primary btn-xxs shadow"
-                            >
-                                {t('edit')}
-                            </Link>
-                            <Link
-                                to=""
-                                onClick={(e)=>deleteBranch(e,item.id)}
-                                className="btn btn-outline-danger btn-xxs ml-1"
-                            >
-                              {t('delete')}
+                                    </div>
+                                    <h3 className="mt-4 mb-1"><Link to={{
+                                        pathname: `/category/${item.id}`,
+                                        branchName: item.BrancheName
+                                    }} > {item.BrancheName}</Link></h3>
+                                    <p className="text-muted">
+                                        <Link
 
-                            </Link>
+                                            data-toggle="tooltip" data-placement="right" title="To perview on mobile click this."
+                                            onClick={(e) => phone(e, `http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-phone-fill" viewBox="0 0 16 16">
+                                                <path d="M3 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V2zm6 11a1 1 0 1 0-2 0 1 1 0 0 0 2 0z" />
+                                            </svg>
+                                        </Link></p>
+
+
+                                    <Link
+                                        to=""
+                                        onClick={(e) => editBranch(e, item.id)}
+                                        className="btn btn-primary btn-xxs shadow"
+                                    >
+                                        {t('edit')}
+                                    </Link>
+                                    <Link
+                                        to=""
+                                        onClick={(e) => deleteBranch(e, item.id)}
+                                        className="btn btn-outline-danger btn-xxs ml-1"
+                                    >
+                                        {t('delete')}
+
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
-        
-                        <div className="card-footer pt-0 pb-0 text-center">
-                            <div className="row">
-                            
-                            <div className="col-4 pt-3 pb-3 border-right">
-                                <Link
-                                    to={{
-                                    pathname: `/service-area/${item.id}`,
-                                    branchName:item.BrancheName }}
-                                >
-                                    <span>{t('services')}</span>
-                                </Link>
-                            </div>
-                            <div className="col-3 pt-3 pb-3 border-right">
-                                <Link
-                                    to={{
-                                        pathname: `/unit/${item.id}`,
-                                        branchName:item.BrancheName }} 
-                                >
-                                    <span>{t('units')}</span>
-                                </Link>
-                            </div>
-                            <div className="col-5 pt-3 pb-3">
-                                <Link
-                                    to={{
-                                        pathname: `/inventory/${item.id}`,
-                                        branchName:item.BrancheName }}
-                                >
-                                    <span>{t('inventory')}</span>
-                                </Link>
-                            </div>
-                            {/* <div className="col-2 pt-3 pb-3">
+
+                            <div className="card-footer pt-0 pb-0 text-center">
+                                <div className="row">
+
+                                    <div className="col-4 pt-3 pb-3 border-right">
+                                        <Link
+                                            to={{
+                                                pathname: `/service-area/${item.id}`,
+                                                branchName: item.BrancheName
+                                            }}
+                                        >
+                                            <span>{t('services')}</span>
+                                        </Link>
+                                    </div>
+                                    <div className="col-3 pt-3 pb-3 border-right">
+                                        <Link
+                                            to={{
+                                                pathname: `/unit/${item.id}`,
+                                                branchName: item.BrancheName
+                                            }}
+                                        >
+                                            <span>{t('units')}</span>
+                                        </Link>
+                                    </div>
+                                    <div className="col-5 pt-3 pb-3">
+                                        <Link
+                                            to={{
+                                                pathname: `/inventory/${item.id}`,
+                                                branchName: item.BrancheName
+                                            }}
+                                        >
+                                            <span>{t('inventory')}</span>
+                                        </Link>
+                                    </div>
+                                    {/* <div className="col-2 pt-3 pb-3">
                                 <Link
                                     to={`show-branch-details/${btoa(item.id)}`}
                                     target="_blank"
@@ -185,16 +213,16 @@ const Branches = () => {
                                     <span>{t('demo')}</span>
                                 </Link>
                             </div> */}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )
-        })
+                )
+            })
 
     }
     // delete branch 
-    const deleteBranch= (e,id)=>{
+    const deleteBranch = (e, id) => {
         e.preventDefault();
         swal({
             title: "Are you sure?",
@@ -202,40 +230,40 @@ const Branches = () => {
             icon: "warning",
             buttons: [t('cancel'), t('confirm')],
             dangerMode: true,
-          })
-          .then((willDelete) => {
-            if (willDelete) {
-                axios.delete(`/api/DeleteBranches/${id}`).then(res=>{
-                    if(res.data.status === 200){
-                        swal("Success",res.data.message,"success");
-                        // thisClicked.closest("tr").remove();
-                    }else if(res.data.status === 404){
-                        swal("Success",res.data.message,"success");
-                    }
-                    setBranchstate([]);
-                });
-            } else {
-              swal("Your Data is safe now!");
-            }
-          });
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteBranches/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            // thisClicked.closest("tr").remove();
+                        } else if (res.data.status === 404) {
+                            swal("Success", res.data.message, "success");
+                        }
+                        setBranchstate([]);
+                    });
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
     }
     return (
-      <Fragment>
-         <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} />
-        {/* <!-- Insert  Modal --> */}
-        <Modal className="fade" show={modalCentered}>
-            <Form onSubmit={handleSubmit(saveBranch)} method= "POST" >
-                <Modal.Header>
-                    <Modal.Title>{t('add_branch')}</Modal.Title>
-                    <Button
-                        onClick={() => setModalCentered(false)}
-                        variant=""
-                        className="close"
-                    >
-                        <span>&times;</span>
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
+        <Fragment>
+            <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} />
+            {/* <!-- Insert  Modal --> */}
+            <Modal className="fade" show={modalCentered}>
+                <Form onSubmit={handleSubmit(saveBranch)} method="POST" >
+                    <Modal.Header>
+                        <Modal.Title>{t('add_branch')}</Modal.Title>
+                        <Button
+                            onClick={() => setModalCentered(false)}
+                            variant=""
+                            className="close"
+                        >
+                            <span>&times;</span>
+                        </Button>
+                    </Modal.Header>
+                    <Modal.Body>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('branch_name')}</strong> </label>
                             <input
@@ -244,10 +272,10 @@ const Branches = () => {
                                 className="form-control"
                                 placeholder={t('branch_name')}
                                 name="BrancheName"
-                                onChange={handleInput}  
+                                onChange={handleInput}
                                 value={branchstate.BrancheName}
                             />
-                             <div className="text-danger">
+                            <div className="text-danger">
                                 {errors.BrancheName?.message}
                             </div>
                         </div>
@@ -258,48 +286,48 @@ const Branches = () => {
 
                                 className="form-control"
                                 placeholder="currencyID"
-                                
+
                                 name="currencyID"
-                                onChange={handleInput}  
+                                onChange={handleInput}
                                 value={branchstate.currencyID}>
                                 <option value=''>{t('select_currency')}</option> )
                                 {
-                                currency.map( (item) => 
-                                <option value={item.id} key={item.id}>{item.currency_name +' / '+ item.currency_code}</option> )
-                            }</select>
+                                    currency.map((item) =>
+                                        <option value={item.id} key={item.id}>{item.currency_name + ' / ' + item.currency_code}</option>)
+                                }</select>
                             <div className="text-danger">
                                 {errors.currencyID?.message}
                             </div>
                         </div>
 
 
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        onClick={() => setModalCentered(false)}
-                        variant="danger light"
-                    >
-                        {t('close')}
-                    </Button>
-                    <Button variant="primary" type="submit">{t('save')} </Button>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            onClick={() => setModalCentered(false)}
+                            variant="danger light"
+                        >
+                            {t('close')}
+                        </Button>
+                        <Button variant="primary" type="submit">{t('save')} </Button>
 
-                </Modal.Footer>
-            </Form>
-        </Modal>
-         {/* Edit Modal */}
-         <Modal className="fade" show={editmodalCentered}>
-            <Form onSubmit={updateBranch} method= "POST" >
-                <Modal.Header>
-                    <Modal.Title>{t('edit_branch')}</Modal.Title>
-                    <Button
-                        onClick={() => setEditModalCentered(false)}
-                        variant=""
-                        className="close"
-                    >
-                        <span>&times;</span>
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            {/* Edit Modal */}
+            <Modal className="fade" show={editmodalCentered}>
+                <Form onSubmit={updateBranch} method="POST" >
+                    <Modal.Header>
+                        <Modal.Title>{t('edit_branch')}</Modal.Title>
+                        <Button
+                            onClick={() => setEditModalCentered(false)}
+                            variant=""
+                            className="close"
+                        >
+                            <span>&times;</span>
+                        </Button>
+                    </Modal.Header>
+                    <Modal.Body>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('id')}</strong> </label>
                             <input
@@ -309,7 +337,7 @@ const Branches = () => {
                                 // placeholder="Branch Name"
                                 name="id"
                                 required
-                                onChange={editHandleInput}  
+                                onChange={editHandleInput}
                                 value={editBranchstate.id}
                             />
                         </div>
@@ -321,7 +349,7 @@ const Branches = () => {
                                 placeholder={t('branch_name')}
                                 name="BrancheName"
                                 required
-                                onChange={editHandleInput}  
+                                onChange={editHandleInput}
                                 value={editBranchstate.BrancheName}
                             />
                         </div>
@@ -332,56 +360,84 @@ const Branches = () => {
                                 placeholder="currencyID"
                                 name="currencyID"
                                 required
-                                onChange={editHandleInput}  
+                                onChange={editHandleInput}
                                 value={editBranchstate.currencyID}>
                                 <option value=''>{t('select_currency')}</option> )
                                 {
-                                currency.map( (item) => 
-                                <option value={item.id} key={item.id}>{item.currency_name +' / '+ item.currency_code}</option> )
-                            }</select>
+                                    currency.map((item) =>
+                                        <option value={item.id} key={item.id}>{item.currency_name + ' / ' + item.currency_code}</option>)
+                                }</select>
                         </div>
 
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        onClick={() => setEditModalCentered(false)}
-                        variant="danger light"
-                    >
-                       {t('close')}
-                    </Button>
-                    <Button variant="primary" type="submit">{t('update')} </Button>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            onClick={() => setEditModalCentered(false)}
+                            variant="danger light"
+                        >
+                            {t('close')}
+                        </Button>
+                        <Button variant="primary" type="submit">{t('update')} </Button>
 
-                </Modal.Footer>
-            </Form>
-        </Modal>
-        <div className="row" >
-            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-				<div className="card">
-					<div className="card-header border-0">
-						<div>
-							<h4 className="card-title mb-2">{t('branches')}</h4>
-						</div>
-						<div className="dropdown">
-							<Button 
-                            variant="primary"
-                            type="button"
-                            className="mb-2 mr-2"
-                            onClick={() => setModalCentered(true)} >
-								{t('add_branch')}
-							</Button>
-						</div>
-					</div>
-				</div>
-			</div>
-         </div>
-         <div className="row" >
-            {viewBranches_HTMLTABLE}
-        </div>
-        {}
-        
-      </Fragment>
-      
-   );
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            {/* mobile modal */}
+
+            {/* <CButton onClick={() =>}>Toggle offcanvas</CButton> */}
+            <COffcanvas placement="end" className="fade bd-example-modal-lg" scroll visible={visible} onHide={() => setVisible(false)} >
+                <COffcanvasHeader >
+                    <COffcanvasTitle>{t('display_mobile')}</COffcanvasTitle>
+                    <CCloseButton className="text-reset" onClick={() => setVisible(false)} />
+                </COffcanvasHeader>
+                <COffcanvasBody >
+                    <div class="wrapper">
+                        <div class="iphone">
+                            <div class="power"></div>
+                            <div class="lock"></div>
+                            <div class="volume up"></div>
+                            <div class="volume down"></div>
+                            <div class="camera"></div>
+                            <div class="speaker"></div>
+                            <div class="screen">
+                                <iframe src={destinationLink} height="100%" width="100%" title="Devices"></iframe>
+                            </div>
+                            <div class="button">
+                                <div class="square"></div>
+                            </div>
+                        </div>
+                    </div>
+                </COffcanvasBody>
+            </COffcanvas>
+
+            <div className="row" >
+                <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                    <div className="card">
+                        <div className="card-header border-0">
+                            <div>
+                                <h4 className="card-title mb-2">{t('branches')}</h4>
+                            </div>
+                            <div className="dropdown">
+                                <Button
+                                    variant="primary"
+                                    type="button"
+                                    className="mb-2 mr-2"
+                                    onClick={() => setModalCentered(true)} >
+                                    {t('add_branch')}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row" >
+                {viewBranches_HTMLTABLE}
+            </div>
+            { }
+
+        </Fragment>
+
+    );
 };
 
 export default Branches;
