@@ -10,6 +10,8 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+
 const Category = (props) => {
     const schema = yup.object().shape({
         CategoryName: yup.string().required("This field is a required field"),
@@ -201,7 +203,11 @@ const Category = (props) => {
 
     return (
         <Fragment>
-            <PageTItle headingPara={t('categories')} activeMenu={t('add_category')} motherMenu={t('categories')} />
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches">{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem  active>{t('categories')}</CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('categories')} activeMenu={t('add_category')} motherMenu={t('categories')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveMenu)} method="POST" encType="multipart/form-data">

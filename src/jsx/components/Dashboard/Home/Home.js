@@ -1,12 +1,16 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PageTItle from "../../../layouts/PageTitle";
 
 
 const Home = () => {
 	const { t } = useTranslation();
    return (
       <Fragment>
+            <PageTItle headingPara={t('dashboard')} activeMenu={t('dashboard')} motherMenu={t('home')} />
+
+		  
          <div className="row">
 			<div className="col-xl-4 col-lg-6 col-sm-6">
 				<div className="card overflow-hidden">

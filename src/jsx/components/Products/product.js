@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
+// import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+
 const Product = (props) => {
     // validation
     const schema = yup.object().shape({
@@ -92,13 +94,16 @@ const Product = (props) => {
             setLoading(false);
         });
     }, [productInsert, editProduct, subMenuId]);
-
+    var branchID=0;
+    var CategoryID=0;
     var viewProducts_HTMLTABLE = "";
     if (loading) {
         return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
     } else {
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
+                branchID=item.branchID;
+                CategoryID=item.CategoryID;
                 return (
                     <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
                         <div className="card overflow-hidden">
@@ -192,7 +197,13 @@ const Product = (props) => {
 
     return (
         <Fragment>
-            <PageTItle headingPara={t('products')} activeMenu={t('add_product')} motherMenu={t('products')} />
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem  className="font-weight-bold" href="/branches/" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem  className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem  className="font-weight-bold" href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
+                <CBreadcrumbItem  active>{t('products')} </CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('products')} activeMenu={t('add_product')} motherMenu={t('products')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveProduct)} method="POST" >

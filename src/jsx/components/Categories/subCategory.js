@@ -8,6 +8,8 @@ import { Link } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+
 const SubCategory = (props) => {
     // validation
     const schema = yup.object().shape({
@@ -20,6 +22,7 @@ const SubCategory = (props) => {
     const { t } = useTranslation();
 
     const id = props.match.params.id;
+    // console.log(id);
 
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
@@ -113,6 +116,7 @@ const SubCategory = (props) => {
             setLoading(false);
         });
     }, [subCategoryInsert, editSubMenu, id]);
+    var branchID=0;
 
     var viewProducts_HTMLTABLE = "";
     if (loading) {
@@ -120,8 +124,9 @@ const SubCategory = (props) => {
     } else {
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
+                branchID=item.branchID;
                 return (
-                    <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                    <div className="col-xl-4 col-lg-6 col-sm-6" key={id}>
                         <div className="card overflow-hidden">
                             <div className="card-body">
                                 <div className="text-center">
@@ -171,8 +176,6 @@ const SubCategory = (props) => {
                                             <span>{t('products')}</span>
                                         </Link>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
@@ -210,8 +213,14 @@ const SubCategory = (props) => {
 
     }
     return (
+       
         <Fragment>
-            <PageTItle headingPara={t('sub_category')} activeMenu={t('add_sub_Category')} motherMenu={t('sub_category')} />
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem  className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem  active>{t('sub_category')}</CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('sub_category')} activeMenu={t('add_sub_Category')} motherMenu={t('sub_category')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveSubMenu)} method="POST" encType="multipart/form-data">

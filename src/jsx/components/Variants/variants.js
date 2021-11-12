@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
+// import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+
 const Variants = (props) => {
     // validation
     const schema = yup.object().shape({
@@ -182,12 +184,19 @@ const Variants = (props) => {
         });
 
     }, [id, variantInsert, editVariant]);
+    var branchID=0;
+    var CategoryID=0;
+    var sub_category_id=0;
     var viewProducts_HTMLTABLE = "";
     if (loading) {
         return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
     } else {
+
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
+                branchID=item.branchID;
+                CategoryID=item.CategoryID;
+                sub_category_id=item.sub_category_id;
                 return (
                     <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
                         <div className="card overflow-hidden">
@@ -281,7 +290,14 @@ const Variants = (props) => {
     }
     return (
         <Fragment>
-            <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} />
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem href="/branches/" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem  href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem  href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
+                <CBreadcrumbItem  href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>
+                <CBreadcrumbItem  active> {t('variants')} </CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade bd-example-modal-lg" show={modalCentered} size="lg">
                 <Form onSubmit={handleSubmit(saveInventory)} method="POST" encType="multipart/form-data">

@@ -1,10 +1,11 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
+// import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
 import { useTranslation } from "react-i18next";
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const Gallery = (props) => {
     // for localization
@@ -150,7 +151,14 @@ const Gallery = (props) => {
 
     return (
         <Fragment>
-            <PageTItle headingPara={t('gallery')} activeMenu={t('add_to_gallery')} motherMenu={t('gallery')} />
+             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches/" >{t('Branches')}</CBreadcrumbItem>
+                {/* <CBreadcrumbItem  href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem  href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
+                <CBreadcrumbItem  href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>
+                <CBreadcrumbItem  active> {t('variants')} </CBreadcrumbItem> */}
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('gallery')} activeMenu={t('add_to_gallery')} motherMenu={t('gallery')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade bd-example-modal-lg" show={modalCentered} >
                 <Form onSubmit={savePictures} method="POST" encType="multipart/form-data">

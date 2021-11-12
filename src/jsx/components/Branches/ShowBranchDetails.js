@@ -8,6 +8,7 @@ import { Link } from "react-router-dom"
 import 'react-awesome-slider/dist/styles.css';
 import { Row, Col, Card, Tab } from "react-bootstrap";
 
+import { CContainer, CNavbar, CNavbarBrand, CNavbarToggler, CCollapse, CNavbarNav, CNavItem, CNavLink } from '@coreui/react'
 
 // Import css files
 import "slick-carousel/slick/slick.css";
@@ -84,7 +85,7 @@ const ShowBranchDetails = (props) => {
    //     });
 
    // }
-
+   const [visible, setVisible] = useState(false)
    var viewShow_HTMLTABLE = "";
    if (loading) {
       return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
@@ -165,79 +166,98 @@ const ShowBranchDetails = (props) => {
       ]
    };
 
+
    return (
 
-      <div >
+      <div style={{ marginTop: -15 }}>
          <Fragment>
-            <Row>
-               <Col xl={12}>
-                  <Card>
-                     <Card.Header>
-                        {data.map((item, i) => (
-                           <Card.Title className="text-center text-uppercase font-weight-bold " key={i}>{item.BrancheName}</Card.Title>
 
-                        ))}
-                     </Card.Header>
-                     <Card.Body>
-                        {/* <!-- Nav tabs --> */}
-                        <div className="custom-tab-1">
-                           <Tab.Container
-                           // defaultActiveKey={categories[0].CategoryName.toLowerCase()}
-                           >
 
-                              <Nav as="ul" className="nav-tabs">
+            {/* <Row> */}
+
+            <Col xl={12}>
+               <div className="custom-tab-1">
+                  <Tab.Container
+                  // defaultActiveKey={categories[0].CategoryName.toLowerCase()}
+                  >
+                     <CNavbar expand="lg" colorScheme="light" className="bg-light">
+                        <CContainer fluid>
+                           {data.map((item, i) => (
+                              <CNavbarBrand href="#" className="text-center text-uppercase font-weight-bold " key={i}>{item.BrancheName}</CNavbarBrand>
+                           ))}
+                           <CNavbarToggler
+                              aria-label="Toggle navigation"
+                              aria-expanded={visible}
+                              onClick={() => setVisible(!visible)}
+                           />
+                           <CCollapse className="navbar-collapse" visible={visible}>
+                              <CNavbarNav>
+
+                                 {/* <Nav as="ul" className="nav-tabs"> */}
 
                                  {categories.map((data, i) => (
-                                    <Nav.Item as="li" key={i}>
-                                       <Nav.Link
+                                    <CNavItem as="li" key={i}>
+                                       <CNavLink href="#"
                                           onClick={() => filterCategory(data.id)}
                                           eventKey={data.CategoryName.toLowerCase()}
                                        >
                                           {data.CategoryName}
-                                       </Nav.Link>
-                                    </Nav.Item>
+                                       </CNavLink>
+                                    </CNavItem>
                                  ))}
-                              </Nav>
+                                 {/* </Nav> */}
+
+
+
+                              </CNavbarNav>
+                           </CCollapse>
+                        </CContainer>
+                     </CNavbar>
+
+                  </Tab.Container>
+               </div>
+               <Card>
+
+                  <Card.Body>
+                     {/* <!-- Nav tabs --> */}
+
+                     <Tab.Content className="" >
+                        <div className="custom-tab-1">
+
+                           <Tab.Container
+                           // defaultActiveKey={subcategories[0].SubCategoryName.toLowerCase()}
+                           >
+                              <div >
+
+                                 <Slider {...settings}>
+                                    {subcategories.map((item, i) => (
+                                       <div key={i} className="px-1 text-center text-capitalize" >
+                                          <Nav.Item as="li" >
+                                             <Nav.Link
+                                                onClick={() => filterProducts(item.sub_id)}
+                                                eventKey={item.SubCategoryName.toLowerCase()}
+                                             >
+                                                <div>
+                                                   <img className="w-100 img-thumbnail mt-1 mx-1" style={{ with: '100px', height: '150px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/sub_catagories/${item.SubCategoryIcon}`} alt="" />
+                                                </div>
+                                                <div className="mt-2">
+                                                   {item.SubCategoryName}
+                                                </div>
+                                             </Nav.Link>
+                                          </Nav.Item>
+                                       </div>
+                                    )
+                                    )}
+                                 </Slider>
+                              </div>
+
                            </Tab.Container>
                         </div>
-
-                        <Tab.Content className="" >
-                           <div className="custom-tab-1">
-
-                              <Tab.Container
-                              // defaultActiveKey={subcategories[0].SubCategoryName.toLowerCase()}
-                              >
-                                 <div >
-
-                                    <Slider {...settings}>
-                                       {subcategories.map((item, i) => (
-                                          <div key={i} className="px-1 text-center text-capitalize" >
-                                             <Nav.Item as="li" >
-                                                <Nav.Link
-                                                   onClick={() => filterProducts(item.sub_id)}
-                                                   eventKey={item.SubCategoryName.toLowerCase()}
-                                                >
-                                                   <div>
-                                                      <img className="w-100 img-thumbnail mt-1 mx-1" style={{ with: '100px', height: '150px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/sub_catagories/${item.SubCategoryIcon}`} alt="" />
-                                                   </div>
-                                                   <div className="mt-2">
-                                                      {item.SubCategoryName}
-                                                   </div>
-                                                </Nav.Link>
-                                             </Nav.Item>
-                                          </div>
-                                       )
-                                       )}
-                                    </Slider>
-                                 </div>
-
-                              </Tab.Container>
-                           </div>
-                        </Tab.Content>
-                     </Card.Body>
-                  </Card>
-               </Col>
-            </Row>
+                     </Tab.Content>
+                  </Card.Body>
+               </Card>
+            </Col>
+            {/* </Row> */}
          </Fragment>
 
          {/* <div className="text-center text-uppercase font-weight-bold " >
@@ -289,7 +309,7 @@ const ShowBranchDetails = (props) => {
             }) }
          </div> */}
 
-         <div className="row mt-2 mx-3">
+         <div className="row mt-2 mx-2">
             {viewShow_HTMLTABLE}
          </div>
 
