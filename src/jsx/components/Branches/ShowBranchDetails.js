@@ -13,8 +13,11 @@ import { CContainer, CNavbar, CNavbarBrand, CNavbarToggler, CCollapse, CNavbarNa
 // Import css files
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import InfiniteScroll from 'react-infinite-scroll-component';
+// import InfiniteScroll from 'react-infinite-scroller';
 import Slider from "react-slick";
+var hold = 1;
+
 const ShowBranchDetails = (props) => {
    const { t } = useTranslation();
    const branchId = atob(props.match.params.id);
@@ -25,9 +28,10 @@ const ShowBranchDetails = (props) => {
    const [subcategories, setSubCategories] = useState([])
    // const [products, setProducts]= useState([])
    const [variants, setVariants] = useState([])
+   const [activeCategory, setActiveCategory] = useState(0)
+   const [activeSubCategory, setActiveSubCategory] = useState(0)
 
    useEffect(() => {
-
       axios.get(`/api/GetBranchForShow/${branchId}`).then(res => {
          if (res.data.status === 200) {
             setData(res.data.data);
@@ -37,33 +41,72 @@ const ShowBranchDetails = (props) => {
       axios.get(`/api/GetCategories/${branchId}`).then(res => {
          if (res.data.status === 200) {
             setCategories(res.data.fetchData);
+
+            // setActiveCategory(res.data.fetchData[0].id);
          }
+
       });
       axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then(res => {
          if (res.data.status === 200) {
             // console.log(res.data.fetchData);
+            axios.get(`/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0].sub_id}`).then(res => {
+               if (res.data.status === 200) {
+                  setVariants(res.data.fetchData);
+                  setActiveSubCategory(res.data.fetchData[0].sub_category_id)
+               }
+            });
             setSubCategories(res.data.fetchData);
             // setProducts([]);
             // setVariants([]);
          }
       });
-      axios.get(`/api/GetVariationsBasedOnBranch/${branchId}`).then(res => {
-         if (res.data.status === 200) {
-            setVariants(res.data.fetchData);
-            // console.log(res.data.fetchData);
-         }
-      });
+
    }, [branchId])
+   // const [hold, setHold] = useState(1)
+   const fetchMoreData = () => {
+      if (hold < subcategories.length) {
+         axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then(res => {
+            if (res.data.status === 200) {
+               // console.log(res.data.fetchData);
+               setActiveSubCategory(res.data.fetchData[hold].sub_id)
+               axios.get(`/api/GetProductsBasedOnSubCategory/${res.data.fetchData[hold].sub_id}`).then(res => {
+                  if (res.data.status === 200) {
+                     if (res.data.fetchData.length === 0) {
+                        hold = hold + 1
+                        // console.log(res.data.fetchData);
+                        fetchMoreData()
+                     } else {
+                        hold = hold + 1
+                        setVariants(variants.concat(res.data.fetchData))
+
+                     }
+
+
+                  }
+
+               });
+
+               setSubCategories(res.data.fetchData);
+
+            }
+         });
+      }
+      // console.log(hold);
+
+
+   }
    const filterCategory = (cateId) => {
       axios.get(`/api/GetSubCategories/${cateId}`).then(res => {
          if (res.data.status === 200) {
             // console.log(res.data.fetchData);
             setSubCategories(res.data.fetchData);
-            console.log(subcategories.length);
+            // console.log(subcategories.length);
             // setProducts([]);
             // setVariants([]);
          }
       });
+      setActiveCategory(cateId);
+
    }
    const filterProducts = (subCateID) => {
       //  const updateItem=variants.filter((curElem) => {
@@ -76,6 +119,7 @@ const ShowBranchDetails = (props) => {
             setVariants(res.data.fetchData)
          }
       });
+      setActiveSubCategory(subCateID);
    }
    // const filterVariants = (productID)=>{
    //    axios.get(`/api/Getvariations/${productID}`).then(res => {
@@ -95,6 +139,7 @@ const ShowBranchDetails = (props) => {
          variants.map((item, i) => {
 
             return (
+
                <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-4 col-half-offset" key={i}>
                   {item.ProductName === value ? <h5 className="row mt-2 mx-3 invisible">{item.ProductName}</h5> : <h5 className="row mt-2 mx-3">{item.ProductName}</h5>}
                   <h6 className="d-none">{value = item.ProductName}</h6>
@@ -104,7 +149,7 @@ const ShowBranchDetails = (props) => {
                         <div className="card-body">
                            <div className="new-arrival-product">
                               <div className="new-arrivals-img-contnent">
-                                 <img className="img-fluid" style={{ with: '100px', height: '180px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
+                                 <img className="img-fluid w-100" style={{ height: '100px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
                               </div>
                               <div className="new-arrival-content text-center mt-3">
                                  <h4>
@@ -117,6 +162,7 @@ const ShowBranchDetails = (props) => {
                         </div>
                      </div>
                   </div>
+
                </div>
             )
          })
@@ -129,14 +175,14 @@ const ShowBranchDetails = (props) => {
       infinite: true,
       swipeToSlide: true,
       centerPadding: "10px",
-      slidesToShow: subcategories.length,
+      slidesToShow: subcategories.length >= 7 ? 7 : subcategories.length,
       slidesToScroll: 1,
       speed: 1000,
       responsive: [
          {
             breakpoint: 1024,
             settings: {
-               slidesToShow: subcategories.length,
+               slidesToShow: subcategories.length >= 5 ? 5 : subcategories.length,
                slidesToScroll: 1,
                infinite: true,
                dots: true,
@@ -169,157 +215,84 @@ const ShowBranchDetails = (props) => {
 
    return (
 
-      <div style={{ marginTop: -15 }}>
+      <div style={{ marginTop: 5 }}>
          <Fragment>
 
+            <CNavbar expand="lg" colorScheme="light" className="bg-light" placement="sticky-top" >
+               <Row>
+                  <Col lg={12}>
+                     <CContainer fluid>
+                        {data.map((item, i) => (
+                           <CNavbarBrand className="text-center text-uppercase font-weight-bold text-primary" key={i}>{item.BrancheName}</CNavbarBrand>
+                        ))}
+                        <CNavbarToggler
+                           aria-label="Toggle navigation"
+                           aria-expanded={visible}
+                           onClick={() => setVisible(!visible)}
+                        />
+                        <CCollapse className="navbar-collapse" visible={visible}>
+                           <CNavbarNav>
+                              {categories.map((data, i) => (
+                                 <CNavItem as="li" key={i} >
+                                    <CNavLink href="#"
+                                       onClick={() => filterCategory(data.id)}
 
-            {/* <Row> */}
-
-            <Col xl={12}>
-               <div className="custom-tab-1">
-                  <Tab.Container
-                  // defaultActiveKey={categories[0].CategoryName.toLowerCase()}
-                  >
-                     <CNavbar expand="lg" colorScheme="light" className="bg-light">
-                        <CContainer fluid>
-                           {data.map((item, i) => (
-                              <CNavbarBrand href="#" className="text-center text-uppercase font-weight-bold " key={i}>{item.BrancheName}</CNavbarBrand>
-                           ))}
-                           <CNavbarToggler
-                              aria-label="Toggle navigation"
-                              aria-expanded={visible}
-                              onClick={() => setVisible(!visible)}
-                           />
-                           <CCollapse className="navbar-collapse" visible={visible}>
-                              <CNavbarNav>
-
-                                 {/* <Nav as="ul" className="nav-tabs"> */}
-
-                                 {categories.map((data, i) => (
-                                    <CNavItem as="li" key={i}>
-                                       <CNavLink href="#"
-                                          onClick={() => filterCategory(data.id)}
-                                          eventKey={data.CategoryName.toLowerCase()}
+                                       className={`text-capitalize font-weight-bold ${activeCategory === data.id ? "active bg-primary text-white" : " "}`}
+                                    >
+                                       {data.CategoryName}
+                                    </CNavLink>
+                                 </CNavItem>
+                              ))}
+                           </CNavbarNav>
+                        </CCollapse>
+                     </CContainer>
+                  </Col>
+                  <Col lg={12}>
+                     <Card  >
+                        <Card.Body>
+                           <Slider {...settings}>
+                              {subcategories.map((item, i) => (
+                                 <div key={i} className="px-1 text-center text-capitalize" >
+                                    <Nav.Item as="li" >
+                                       <Nav.Link
+                                          onClick={() => filterProducts(item.sub_id)}
+                                          eventKey={item.SubCategoryName.toLowerCase()}
+                                          className={`text-capitalize font-weight-bold ${activeSubCategory === item.sub_id ? "active border border-primary text-primary   " : " "}`}
                                        >
-                                          {data.CategoryName}
-                                       </CNavLink>
-                                    </CNavItem>
-                                 ))}
-                                 {/* </Nav> */}
-
-
-
-                              </CNavbarNav>
-                           </CCollapse>
-                        </CContainer>
-                     </CNavbar>
-
-                  </Tab.Container>
-               </div>
-               <Card>
-
-                  <Card.Body>
-                     {/* <!-- Nav tabs --> */}
-
-                     <Tab.Content className="" >
-                        <div className="custom-tab-1">
-
-                           <Tab.Container
-                           // defaultActiveKey={subcategories[0].SubCategoryName.toLowerCase()}
-                           >
-                              <div >
-
-                                 <Slider {...settings}>
-                                    {subcategories.map((item, i) => (
-                                       <div key={i} className="px-1 text-center text-capitalize" >
-                                          <Nav.Item as="li" >
-                                             <Nav.Link
-                                                onClick={() => filterProducts(item.sub_id)}
-                                                eventKey={item.SubCategoryName.toLowerCase()}
-                                             >
-                                                <div>
-                                                   <img className="w-100 img-thumbnail mt-1 mx-1" style={{ with: '100px', height: '150px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/sub_catagories/${item.SubCategoryIcon}`} alt="" />
-                                                </div>
-                                                <div className="mt-2">
-                                                   {item.SubCategoryName}
-                                                </div>
-                                             </Nav.Link>
-                                          </Nav.Item>
-                                       </div>
-                                    )
-                                    )}
-                                 </Slider>
-                              </div>
-
-                           </Tab.Container>
-                        </div>
-                     </Tab.Content>
-                  </Card.Body>
-               </Card>
-            </Col>
-            {/* </Row> */}
+                                          <div>
+                                             <img className="w-100 img-thumbnail mt-1 mx-1" style={{ height: '60px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/sub_catagories/${item.SubCategoryIcon}`} alt="" />
+                                          </div>
+                                          <div className="mt-2">
+                                             {item.SubCategoryName}
+                                          </div>
+                                       </Nav.Link>
+                                    </Nav.Item>
+                                 </div>
+                              )
+                              )}
+                           </Slider>
+                        </Card.Body>
+                     </Card>
+                  </Col>
+               </Row>
+            </CNavbar>
          </Fragment>
-
-         {/* <div className="text-center text-uppercase font-weight-bold " >
-            {data.map((item,i)=>{
-                  return(
-                     <Navbar.Brand className="text-primary" to="#" key={i}>{item.BrancheName}</Navbar.Brand>
-                  )
-               }) }
-         </div> */}
-
-         {/* <Navbar bg="primary" variant="dark" >
-           
-            <Nav className="me-auto">
-               {categories.map((item,i)=>{
-                  return(
-                     <Nav.Link  key={i} className="text-white bg-primary text-capitalize" to={item.CategoryName}  onClick={()=>filterCategory(item.id)}>{item.CategoryName}</Nav.Link>
-                  )
-               }) }
-            </Nav>
-         </Navbar>
-         */}
-
-         {/* <Slider {...settings}>
-               {subcategories.map((item, i) => {
-                  return (
-                     <div key={i} className="px-1 text-center text-capitalize " >
-                        <NavLink className="mt-1 mx-1 " to="#" onClick={() => filterProducts(item.sub_id)}
-                        >
-                           <div>
-                              <img className="w-100 img-thumbnail mt-1 mx-1" style={{ with: '100px', height: '150px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/sub_catagories/${item.SubCategoryIcon}`} alt="" />
-                           </div>
-                           <div className="mt-2">
-                              {item.SubCategoryName}
-                           </div>
-                        </NavLink>
-                     </div>
-                  )
-               })}
-            </Slider>
-     */}
-         {/* <div className="mt-1">
-            {products.map((item,i)=>{
-               return(
-                  // <div className="col-4 pt-3 pb-3 " key={i}>
-                     <button type="button" key={i} className="btn btn-outline-primary  mt-1 mx-2" onClick={()=>filterVariants(item.id)}>{item.ProductName}</button>
-                  // </div>
-                  
-               )
-            }) }
-         </div> */}
-
-         <div className="row mt-2 mx-2">
-            {viewShow_HTMLTABLE}
-         </div>
-
-         {/* <div  className="" style={{Overflow: "auto"}}>
-            <h1>fjsaklfjlakjflkjfldksjafslksfddjksjaflsjakjfsalkjfkslajlkfsa;ljlfaklfsdkdslfajlk</h1>
-         </div>  */}
-
+         <InfiniteScroll
+            dataLength={variants.length} //This is important field to render the next data
+            next={fetchMoreData}
+            hasMore={true}
+            loader={<h4>Loading...</h4>}
+            endMessage={
+               <p style={{ textAlign: 'center' }}>
+                  <b>Yay! You have seen it all</b>
+               </p>
+            }
+         >
+            <div className="row mt-2 mx-2">
+               {viewShow_HTMLTABLE}
+            </div>
+         </InfiniteScroll>
       </div>
-
-
    );
 
 };

@@ -4,6 +4,13 @@ import swal from "sweetalert"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import PageTItle from "../../layouts/PageTitle";
+// Import css files
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+import Slider from "react-slick";
+import {Nav } from "react-bootstrap";
+
 const VariantDetails = (props) => {
 
     // for localization
@@ -26,6 +33,8 @@ const VariantDetails = (props) => {
 
         setQuantity(prevCount => prevCount + 1);
     }
+   const [variants, setVariants] = useState([])
+
     // Quantity increment/decrement using hooks end
     useEffect(() => {
         axios.get(`/api/GetPictures/${id}`).then(res => {
@@ -38,6 +47,13 @@ const VariantDetails = (props) => {
         axios.get(`/api/Getvariant/${id}`).then(res => {
             if (res.data.status === 200) {
                 setVariantData(res.data.variantdata);
+                axios.get(`/api/Getvariations/${res.data.variantdata[0].product_id}`).then(res => {
+                    if(res.data.status === 200){
+                        setVariants(res.data.fetchData);
+                            // console.log();
+
+                    }
+                });
             }
         });
     }, [quantity, id]);
@@ -49,14 +65,13 @@ const VariantDetails = (props) => {
         viewImages_HTMLTABLE =
             fetchData.map((item, i) => {
                 return (
-                    <div className="col-xl-6 col-lg-6 col-sm-6" key={item.id}>
+                    <div className="col-xl-12 col-lg-12 col-sm-12 my-2" key={item.id}>
                         <div className="card overflow-hidden">
                             {/* <div className="card-body"> */}
                             <div className="text-center">
                                 <div className="profile-photo">
                                     <img
-                                        style={{ with: '100px', height: '200px', objectFit: 'contain' }}
-
+                                        style={{height: '200px', objectFit: 'contain' }}
                                         src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`}
                                         className="d-block w-100 img-thumbnail"
                                         alt=""
@@ -88,22 +103,59 @@ const VariantDetails = (props) => {
         });
 
     }
+    
     // add to basket end   
     return (
         <div className="container">
             <Fragment>
-                <PageTItle headingPara={t('variants')} activeMenu={t('variant_details')} motherMenu={t('variants')} />
+                {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_details')} motherMenu={t('variants')} /> */}
                 {/* <!-- Insert  Modal --> */}
-                <div className="row p" >
-                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                <div className="row" >
+                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 ">
                         <div className="row" >
-                            {viewImages_HTMLTABLE}
+                            {/* <div > */}
+                                <Slider dots={true} infinite={true} slidesToShow={1} slidesToScroll={1}>
+                                    {viewImages_HTMLTABLE}
+                                </Slider>
+                            {/* </div> */}
                         </div>
                     </div>
-                    <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                    
+                   
+                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mt-4">
+                        <div >
+                        {t('availability')} {variants.length}
+                        </div>                 
+                        <Slider dots={true} infinite={true} slidesToShow={variants.length>=4 ? 4: variants.length} slidesToScroll={1}>
+                        {variants.map((item, i) => (
+                            <div key={i} className="px-1 text-center text-capitalize " >
+                                {/* <Item as="li" > */}
+                                    <Link
+                                        to={`/variant-details/${item.variantID}`}
+                                        // eventKey={item.SubCategoryName.toLowerCase()}
+                                        className={`text-capitalize font-weight-bold ${id ==item.variantID ? "active text-primary": " "}`}
+                                    >
+                                    <div>
+                                        <img className={`w-100 img-thumbnail mt-1 mx-1 ${id ==item.variantID ? "border border-primary": " "}`} style={{height: '80px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
+                                    </div>
+                                    {/* <div className="">
+                                        {item.VariationName}
+                                    </div> */}
+                                    </Link>
+                                {/* </Item> */}
+                            </div>
+                        )
+                        )}
+                        </Slider>
+                    </div>
+
+                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                         {variantData.map((item, i) => {
                             return (
                                 <div className="card" key={i}>
+                                    <div className="card-header font-weight-bold">
+                                            Product Variation Details
+                                    </div>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col-xl-12 col-lg-12  col-md-12 col-xxl-12 col-sm-12">
@@ -176,8 +228,9 @@ const VariantDetails = (props) => {
                                 </div>
                             )
                         })}
-
                     </div>
+                    
+                    
                 </div>
             </Fragment>
         </div>

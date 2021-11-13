@@ -121,6 +121,7 @@
     "sub_category_icon": "Sub Menu Icon",
     "display_mobile": "Display Mobile",
     "home": "Hello Menu",
-    "preview": "Preview"
+    "preview": "Preview",
+    "number_of_related_products":"Number of related products:"
 
 }

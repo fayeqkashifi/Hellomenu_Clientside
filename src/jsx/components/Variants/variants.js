@@ -291,10 +291,10 @@ const Variants = (props) => {
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-                <CBreadcrumbItem href="/branches/" >{t('Branches')}</CBreadcrumbItem>
-                <CBreadcrumbItem  href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
-                <CBreadcrumbItem  href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
-                <CBreadcrumbItem  href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches/" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem  className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem  className="font-weight-bold" href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
+                <CBreadcrumbItem  className="font-weight-bold" href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>
                 <CBreadcrumbItem  active> {t('variants')} </CBreadcrumbItem>
             </CBreadcrumb>
             {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} /> */}
