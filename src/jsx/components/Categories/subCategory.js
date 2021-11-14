@@ -116,34 +116,35 @@ const SubCategory = (props) => {
             setLoading(false);
         });
     }, [subCategoryInsert, editSubMenu, id]);
-    var branchID=0;
+    var branchID = 0;
 
     var viewProducts_HTMLTABLE = "";
     if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        return <div className="spinner-border text-primary " role="status"><span className="sr-only" >{t('loading')}</span></div>
     } else {
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
-                branchID=item.branchID;
+                branchID = item.branchID;
                 return (
                     <div className="col-xl-4 col-lg-6 col-sm-6" key={id}>
                         <div className="card overflow-hidden">
                             <div className="card-body">
                                 <div className="text-center">
-                                    <div className="profile-photo">
-                                        {/* <img
-                                    src={`http://localhost:8000/images/catagories/${item.PicturesLocation}`}
-                                    className="d-block w-100"
-                                    alt=""
-                                /> */}
-                                    </div>
-                                    <h3 className="mt-4 mb-1"><Link to={{
-                                        pathname: `/products/${item.sub_id}`,
-                                        id: item.id,
-                                        ProductName: item.ProductName
-                                    }} > {item.SubCategoryName}</Link></h3>
-                                    <p className="text-muted"></p>
-                                    {/* <p className="text-muted">{item.SubCategoryName}</p> */}
+
+                                    <img
+                                        style={{ height: '100px', objectFit: 'contain' }}
+
+                                        src={`http://localhost:8000/images/sub_catagories/${item.SubCategoryIcon}`}
+                                        className="w-40"
+                                        alt=""
+                                    />
+
+                                    <h4 className="mt-4 mb-1">
+                                        <Link to={{
+                                            pathname: `/products/${item.sub_id}`,
+                                            id: item.id,
+                                            ProductName: item.ProductName
+                                        }} > {item.SubCategoryName}</Link></h4>
 
 
                                 </div>
@@ -170,7 +171,7 @@ const SubCategory = (props) => {
                                     <div className="col-4 pt-3 pb-3">
                                         <Link
                                             to={{
-                                                pathname: `/products/${item.id}`,
+                                                pathname: `/products/${item.sub_id}`,
                                             }}
                                         >
                                             <span>{t('products')}</span>
@@ -213,19 +214,19 @@ const SubCategory = (props) => {
 
     }
     return (
-       
+
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
                 <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
-                <CBreadcrumbItem  className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
-                <CBreadcrumbItem  active>{t('sub_category')}</CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem active>{t('sub_category')}</CBreadcrumbItem>
             </CBreadcrumb>
             {/* <PageTItle headingPara={t('sub_category')} activeMenu={t('add_sub_Category')} motherMenu={t('sub_category')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveSubMenu)} method="POST" encType="multipart/form-data">
                     <Modal.Header>
-                        <Modal.Title>Add A Sub Category</Modal.Title>
+                        <Modal.Title>{t('add_sub_Category')}</Modal.Title>
                         <Button
                             onClick={() => setModalCentered(false)}
                             variant=""
@@ -339,43 +340,23 @@ const SubCategory = (props) => {
                 </Form>
             </Modal>
             <div className="row" >
-                <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                    <div className="card">
-                        <div className="card-header border-0">
-                            <div>
-                                <h4 className="card-title mb-2">{t('sub_category')}</h4>
-                            </div>
-                            <div className="dropdown">
-                                <Button
-                                    variant="primary"
-                                    type="button"
-                                    className="mb-2 mr-2"
-                                    onClick={() => setModalCentered(true)} >
+                {viewProducts_HTMLTABLE}
+                <div className="col-xl-4 col-lg-4 col-sm-4 " >
+                    <div className="card overflow-hidden "  >
+                        <div className="card-body d-flex justify-content-center text-center" style={{ border: "2px dashed red" }}>
+                            <div className="align-self-center text-center">
+                                <button type="button" className="btn btn-outline-primary"
+                                    onClick={() => setModalCentered(true)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                    </svg>
                                     {t('add_sub_Category')}
-                                </Button>
+                                </button>
+
                             </div>
                         </div>
-                        {/* <div className="card-body p-0">
-						<div className="table-responsive ">
-							<table className="table ">
-                                <thead>
-                                    <tr>
-                                        <th>{t('number')}</th>
-                                        <th>{t('sub_category_name')}</th>
-                                        <th>{t('actions')}</th>
-                                    </tr>
-                                </thead>
-								<tbody>
-                                    {viewProducts_HTMLTABLE}
-							    </tbody>
-                            </table>
-						</div>
-					</div> */}
                     </div>
                 </div>
-            </div>
-            <div className="row" >
-                {viewProducts_HTMLTABLE}
             </div>
         </Fragment>
     );

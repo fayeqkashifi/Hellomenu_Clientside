@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+
 const Company = () => {
     // for validation start
     const schema = yup.object().shape({
@@ -91,7 +93,7 @@ const Company = () => {
 
     var viewCompanies_HTMLTABLE = "";
     if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        return <div className="spinner-border text-primary " role="status"><span className="sr-only" style={{position: 'fixed',top: '50%',  left: '50%'}}>{t('loading')}</span></div>
     } else {
         viewCompanies_HTMLTABLE =
             fetchData.map((item, i) => {
@@ -144,7 +146,11 @@ const Company = () => {
 
     return (
         <Fragment>
-            <PageTItle headingPara={t('companies')} activeMenu={t('add_company')} motherMenu={t('companies')} />
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem active>{t('companies')}</CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('companies')} activeMenu={t('add_company')} motherMenu={t('companies')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveCompany)} method="POST" >

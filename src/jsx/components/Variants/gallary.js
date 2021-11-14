@@ -32,7 +32,7 @@ const Gallery = (props) => {
 
     var viewImages_HTMLTABLE = "";
     if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        return <div className="spinner-border text-primary " role="status" style={{position: 'fixed',top: '50%',  left: '50%'}}><span className="sr-only">{t('loading')}</span></div>
     } else {
         viewImages_HTMLTABLE =
             fetchData.map((item, i) => {
@@ -151,8 +151,8 @@ const Gallery = (props) => {
 
     return (
         <Fragment>
-             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-                <CBreadcrumbItem className="font-weight-bold" href="/branches/" >{t('Branches')}</CBreadcrumbItem>
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
                 {/* <CBreadcrumbItem  href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
                 <CBreadcrumbItem  href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
                 <CBreadcrumbItem  href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>

@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+
 const Unit = (props) => {
     // validation
     const schema = yup.object().shape({
@@ -100,7 +102,7 @@ const Unit = (props) => {
 
     var viewProducts_HTMLTABLE = "";
     if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
     } else {
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
@@ -149,7 +151,11 @@ const Unit = (props) => {
     }
     return (
         <Fragment>
-            <PageTItle headingPara={t('units')} activeMenu={t('add_unit')} motherMenu={t('units')} />
+             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem active>{t('units')}</CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('units')} activeMenu={t('add_unit')} motherMenu={t('units')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveUnit)} method="POST" encType="multipart/form-data">

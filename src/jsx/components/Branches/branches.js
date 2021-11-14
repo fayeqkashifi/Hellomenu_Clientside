@@ -110,7 +110,7 @@ const Branches = () => {
     }
     var viewBranches_HTMLTABLE = "";
     if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
         //  <h4>{t('loading')}</h4>
 
     } else {

@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+
 const ServiceArea = (props) => {
     // validation
     const schema = yup.object().shape({
@@ -100,7 +102,7 @@ const ServiceArea = (props) => {
 
     var viewProducts_HTMLTABLE = "";
     if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
     } else {
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
@@ -150,7 +152,11 @@ const ServiceArea = (props) => {
     }
     return (
         <Fragment>
-            <PageTItle headingPara={t('services_area')} activeMenu={t('add_service_area')} motherMenu={t('services_area')} />
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem active>{t('services_area')}</CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <PageTItle headingPara={t('services_area')} activeMenu={t('add_service_area')} motherMenu={t('services_area')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveServiceAreas)} method="POST" encType="multipart/form-data">

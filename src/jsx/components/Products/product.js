@@ -94,16 +94,16 @@ const Product = (props) => {
             setLoading(false);
         });
     }, [productInsert, editProduct, subMenuId]);
-    var branchID=0;
-    var CategoryID=0;
+    var branchID = 0;
+    var CategoryID = 0;
     var viewProducts_HTMLTABLE = "";
     if (loading) {
         return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
     } else {
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
-                branchID=item.branchID;
-                CategoryID=item.CategoryID;
+                branchID = item.branchID;
+                CategoryID = item.CategoryID;
                 return (
                     <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
                         <div className="card overflow-hidden">
@@ -133,7 +133,7 @@ const Product = (props) => {
                                     <div className="col-4 pt-3 pb-3 border-right">
                                         <Link
                                             to=""
-                                            onClick={(e) => fetchProduct(e, item.id)}
+                                            onClick={(e) => fetchProduct(e, item.product_id)}
                                         >
                                             <span>{t('edit')}</span>
                                         </Link>
@@ -141,7 +141,7 @@ const Product = (props) => {
                                     <div className="col-4 pt-3 pb-3 border-right">
                                         <Link
                                             to=""
-                                            onClick={(e) => deleteProduct(e, item.id)}
+                                            onClick={(e) => deleteProduct(e, item.product_id)}
                                         >
                                             <span>{t('delete')}</span>
                                         </Link>
@@ -198,10 +198,10 @@ const Product = (props) => {
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-                <CBreadcrumbItem  className="font-weight-bold" href="/branches/" >{t('Branches')}</CBreadcrumbItem>
-                <CBreadcrumbItem  className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
-                <CBreadcrumbItem  className="font-weight-bold" href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
-                <CBreadcrumbItem  active>{t('products')} </CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
+                <CBreadcrumbItem active>{t('products')} </CBreadcrumbItem>
             </CBreadcrumb>
             {/* <PageTItle headingPara={t('products')} activeMenu={t('add_product')} motherMenu={t('products')} /> */}
             {/* <!-- Insert  Modal --> */}
@@ -299,29 +299,25 @@ const Product = (props) => {
                     </Modal.Footer>
                 </Form>
             </Modal>
-            <div className="row" >
-                <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                    <div className="card">
-                        <div className="card-header border-0">
-                            <div>
-                                <h4 className="card-title mb-2">{t('products')}</h4>
-                            </div>
-                            <div className="dropdown">
-                                <Button
-                                    variant="primary"
-                                    type="button"
-                                    className="mb-2 mr-2"
-                                    onClick={() => setModalCentered(true)} >
-                                    {t('add_product')}
-                                </Button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+            
             <div className="row" >
                 {viewProducts_HTMLTABLE}
+                <div className="col-xl-4 col-lg-4 col-sm-4 " >
+                    <div className="card overflow-hidden "  >
+                        <div className="card-body d-flex justify-content-center text-center" style={{ border: "2px dashed red" }}>
+                            <div className="align-self-center text-center">
+                                <button type="button" className="btn btn-outline-primary"
+                                    onClick={() => setModalCentered(true)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                    </svg>
+                                    {t('add_product')}
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </Fragment>
     );

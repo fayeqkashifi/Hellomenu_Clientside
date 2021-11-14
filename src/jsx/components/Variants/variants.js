@@ -184,36 +184,35 @@ const Variants = (props) => {
         });
 
     }, [id, variantInsert, editVariant]);
-    var branchID=0;
-    var CategoryID=0;
-    var sub_category_id=0;
+    var branchID = 0;
+    var CategoryID = 0;
+    var sub_category_id = 0;
     var viewProducts_HTMLTABLE = "";
     if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div>
+        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
     } else {
 
         viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
-                branchID=item.branchID;
-                CategoryID=item.CategoryID;
-                sub_category_id=item.sub_category_id;
+                branchID = item.branchID;
+                CategoryID = item.CategoryID;
+                sub_category_id = item.sub_category_id;
                 return (
-                    <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
+                    <div className="col-xl-3 col-lg-4 col-sm-6" key={i}>
                         <div className="card overflow-hidden">
                             <div className="card-body">
                                 <div className="text-center">
-                                    <div className="profile-photo">
-                                        <img
-                                            style={{ with: '00px', height: '160px', objectFit: 'contain' }}
 
-                                            src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
-                                            className="d-block w-100"
-                                            alt=""
-                                        />
-                                    </div>
-                                    <h3 className="mt-4 mb-1"><Link to={`/gallery/${item.variantID}`}> {item.VariationName}</Link></h3>
-                                    <p className="text-muted">{item.Description} </p>
-                                    {/* <p className="text-muted">{item.SubCategoryName}</p> */}
+                                    <img
+                                        style={{ height: '100px', objectFit: 'contain' }}
+
+                                        src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
+                                        className=" w-40"
+                                        alt=""
+                                    />
+
+                                    <h4 className="mt-4 mb-1"><Link to={`/gallery/${item.variantID}`}> {item.VariationName}</Link></h4>
+                                    <span className="text-muted">{item.Description} </span>
 
 
                                 </div>
@@ -291,11 +290,11 @@ const Variants = (props) => {
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-                <CBreadcrumbItem className="font-weight-bold" href="/branches/" >{t('Branches')}</CBreadcrumbItem>
-                <CBreadcrumbItem  className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
-                <CBreadcrumbItem  className="font-weight-bold" href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
-                <CBreadcrumbItem  className="font-weight-bold" href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>
-                <CBreadcrumbItem  active> {t('variants')} </CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
+                <CBreadcrumbItem className="font-weight-bold" href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>
+                <CBreadcrumbItem active> {t('variants')} </CBreadcrumbItem>
             </CBreadcrumb>
             {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} /> */}
             {/* <!-- Insert  Modal --> */}
@@ -694,30 +693,23 @@ const Variants = (props) => {
                 </Form>
             </Modal>
             <div className="row" >
-                <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                    <div className="card">
-                        <div className="card-header border-0">
-                            <div>
-                                <h4 className="card-title mb-2">{t('variant_list')}</h4>
-                            </div>
-                            <div className="dropdown">
-                                <div className="dropdown">
-                                    <Button
-                                        variant="primary"
-                                        type="button"
-                                        className="mb-2 mr-2"
-                                        onClick={() => setModalCentered(true)} >
-                                        {t('add_variant')}
-                                    </Button>
-                                </div>
+                {viewProducts_HTMLTABLE}
+                <div className="col-xl-3 col-lg-3 col-sm-4 " >
+                    <div className="card overflow-hidden "  >
+                        <div className="card-body d-flex justify-content-center text-center" style={{ border: "2px dashed red" }}>
+                            <div className="align-self-center text-center">
+                                <button type="button" className="btn btn-outline-primary"
+                                    onClick={() => setModalCentered(true)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                    </svg>
+                                    {t('add_variant')}
+                                </button>
+
                             </div>
                         </div>
-
                     </div>
                 </div>
-            </div>
-            <div className="row" >
-                {viewProducts_HTMLTABLE}
             </div>
         </Fragment>
     );

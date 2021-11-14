@@ -60,7 +60,7 @@ const VariantDetails = (props) => {
 
     var viewImages_HTMLTABLE = "";
     if (loading) {
-        return <div className="container "><div className="spinner-border text-primary " role="status"><span className="sr-only">{t('loading')}</span></div></div>
+        return <div className="container "><div className="spinner-border text-primary " role="status" style={{position: 'fixed',top: '50%',  left: '50%'}}><span className="sr-only">{t('loading')}</span></div></div>
     } else {
         viewImages_HTMLTABLE =
             fetchData.map((item, i) => {
