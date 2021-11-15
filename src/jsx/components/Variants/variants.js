@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+import { CBreadcrumb, CBreadcrumbItem, CDropdownMenu, CDropdownToggle, CDropdown } from '@coreui/react'
 
 const Variants = (props) => {
     // validation
@@ -102,6 +102,9 @@ const Variants = (props) => {
         for (let i = 0; i < imageState.image.length; i++) {
             formData.append("file[]", imageState.image[i]);
         }
+        // for (let i = 0; i < form.length; i++) {
+        //     formData.append("form[]", form[i]);
+        // }
         // formData.append('file', imageState.PicturesLocation	);
         formData.append('variant_name', variantInsert.variant_name);
         formData.append('Buyingquantity', variantInsert.Buyingquantity);
@@ -115,7 +118,7 @@ const Variants = (props) => {
         formData.append('sub_categoryID', variantInsert.sub_categoryID);
         formData.append('ProductName', variantInsert.ProductName);
         formData.append('branch_id', barchid);
-        // console.log(formData);
+        formData.append('form', JSON.stringify(form));
         axios.post(`/api/InsertInventory/${id}`, formData).then(res => {
             if (res.data.status === 200) {
                 setVariantInsert({
@@ -132,8 +135,11 @@ const Variants = (props) => {
                     sub_categoryID: '',
                     branch_id: barchid
                 });
+
+
                 reset();
                 swal("Success", res.data.message, "success");
+                setForm([]);
                 setModalCentered(false)
                 setSelectedFiles([]);
             }
@@ -184,6 +190,88 @@ const Variants = (props) => {
         });
 
     }, [id, variantInsert, editVariant]);
+
+    const [form, setForm] = useState([]);
+
+    const prevIsValid = () => {
+        if (form.length === 0) {
+            return true;
+        }
+
+        const someEmpty = form.some(
+            (item) => item.value === "" || item.name === ""
+        );
+
+        if (someEmpty) {
+            form.map((item, index) => {
+                const allPrev = [...form];
+
+                if (form[index].name === "") {
+                    allPrev[index].errors.name = "Name is required";
+                }
+
+                if (form[index].value === "") {
+                    allPrev[index].errors.value = "Value is required";
+                }
+                setForm(allPrev);
+            });
+        }
+
+        return !someEmpty;
+    };
+
+    const handleAddLink = (e) => {
+        e.preventDefault();
+        const inputState = {
+            name: "",
+            value: "",
+
+            errors: {
+                name: null,
+                value: null,
+            },
+        };
+
+        if (prevIsValid()) {
+            setForm((prev) => [...prev, inputState]);
+        }
+    };
+
+    const onChange = (index, event) => {
+        event.preventDefault();
+        event.persist();
+
+        setForm((prev) => {
+            return prev.map((item, i) => {
+                if (i !== index) {
+                    return item;
+                }
+
+                return {
+                    ...item,
+                    [event.target.name]: event.target.value,
+
+                    errors: {
+                        ...item.errors,
+                        [event.target.name]:
+                            event.target.value.length > 0
+                                ? null
+                                : [event.target.name] + " Is required",
+                    },
+                };
+            });
+        });
+    };
+
+    const handleRemoveField = (e, index) => {
+        e.preventDefault();
+
+        setForm((prev) => prev.filter((item) => item !== prev[index]));
+    };
+
+
+
+
     var branchID = 0;
     var CategoryID = 0;
     var sub_category_id = 0;
@@ -207,38 +295,69 @@ const Variants = (props) => {
                                         style={{ height: '100px', objectFit: 'contain' }}
 
                                         src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
-                                        className=" w-40"
+                                        className=" w-40 img-thumbnail"
                                         alt=""
                                     />
 
-                                    <h4 className="mt-4 mb-1"><Link to={`/gallery/${item.variantID}`}> {item.VariationName}</Link></h4>
-                                    <span className="text-muted">{item.Description} </span>
+                                    <h4 className="mt-4 mb-1"> {item.VariationName}</h4>
+                                    <p className="text-muted">{item.Description} </p>
+                                    <CDropdown variant="btn-group">
+                                        {/* <CButton color="primary" size="sm"></CButton> */}
+                                        <CDropdownToggle color="primary" size="lg" split="hover" shape="rounded" caret={false}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
+                                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                                        </svg></CDropdownToggle>
+                                        <CDropdownMenu>
+                                            <div className="mx-3 my-2">
+
+                                                <Link
+                                                    to=""
+                                                    onClick={(e) => fetchVariant(e, item.variantID)}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                        <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                    </svg>
+                                                    <span> {t('edit')}</span>
+                                                </Link>
+                                            </div>
+
+                                            <div className="mx-3 my-2">
+
+                                                <Link
+                                                    to=""
+                                                    onClick={(e) => deleteVariant(e, item.variantID)}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                        <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                    </svg>
+                                                    <span> {t('delete')}</span>
+
+
+                                                </Link>
+                                            </div>
+
+                                            <div className="mx-3 my-2">
+                                                <Link to={`/gallery/${item.variantID}`}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-images" viewBox="0 0 16 16">
+                                                    <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                                                    <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z" />
+                                                </svg> <span> {t('gallery')}</span></Link>
+                                            </div>
+                                            <div className="mx-3 my-2">
+                                                <Link to={`/show_variant_detials/${item.variantID}`}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ticket-detailed" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6V4.5ZM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5h-13ZM4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5ZM5 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H5Z" />
+                                                </svg> <span> {t('details')}</span></Link>
+                                            </div>
+
+                                        </CDropdownMenu>
+                                    </CDropdown>
+
 
 
                                 </div>
                             </div>
 
-                            <div className="card-footer pt-0 pb-0 text-center">
-                                <div className="row">
-                                    <div className="col-6 pt-3 pb-3 border-right">
-                                        <Link
-                                            onClick={(e) => fetchVariant(e, item.variantID)}
-                                        >
-                                            <span>{t('edit')}</span>
-                                        </Link>
-                                    </div>
-                                    <div className="col-6 pt-3 pb-3">
-                                        <Link
-                                            onClick={(e) => deleteVariant(e, item.variantID)}
-                                        >
-                                            <span>{t('delete')}</span>
-                                        </Link>
-                                    </div>
 
-
-
-                                </div>
-                            </div>
                         </div>
                     </div>
                 )
@@ -287,6 +406,7 @@ const Variants = (props) => {
 
 
     }
+
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
@@ -529,22 +649,62 @@ const Variants = (props) => {
                                 {/* </div> */}
                             </div>
                             <div className="result">{renderPhotos(selectedFiles)}</div>
+                            {form.map((item, index) => (
+                                <div className="row my-1" key={`item-${index}`}>
+                                    <div className="col-xl-5 col-xxl-5 col-lg-5 col-sm-12 ">
+                                        <input
+                                            type="text"
+                                            className={
+                                                item.errors.name
+                                                    ? "form-control  is-invalid"
+                                                    : "form-control"
+                                            }
+                                            name="name"
+                                            placeholder="name"
+                                            value={item.name}
+                                            onChange={(e) => onChange(index, e)}
+                                        />
 
-                            {/* <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>Selling Quantity</strong> </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="SellingQuantity"
-                                        name="SellingQuantity"
-                                        required
-                                        onChange={handleInput}  
-                                        value={variantInsert.SellingQuantity}
-                                    />
+                                        {item.errors.name && (
+                                            <div className="invalid-feedback">{item.errors.name}</div>
+                                        )}
+                                    </div>
+
+                                    <div className="col-xl-5 col-xxl-5 col-lg-5 col-sm-12 mt-1">
+                                        <input
+                                            type="text"
+                                            className={
+                                                item.errors.value
+                                                    ? "form-control  is-invalid"
+                                                    : "form-control"
+                                            }
+                                            name="value"
+                                            placeholder="value"
+                                            value={item.value}
+                                            onChange={(e) => onChange(index, e)}
+                                        />
+
+                                        {item.errors.value && (
+                                            <div className="invalid-feedback">{item.errors.value}</div>
+                                        )}
+                                    </div>
+                                    <div className="col-xl-2 col-xxl-2 col-lg-2 col-sm-12 mt-1">
+                                        <button
+                                            className="btn btn-warning "
+                                            onClick={(e) => handleRemoveField(e, index)}
+                                        >
+                                            X
+                                        </button>
+                                    </div>
                                 </div>
-                            </div> */}
+                            ))}
+                            <div className="col-xl-4 col-xxl-4 col-lg-3 col-sm-12">
+                                <button className="btn btn-primary mt-2" onClick={handleAddLink}>
+                                    {t('add_variant_details')}
+                                </button>
+                            </div>
                         </div>
+
                     </Modal.Body>
                     <Modal.Footer>
                         <Button
@@ -693,14 +853,13 @@ const Variants = (props) => {
                 </Form>
             </Modal>
             <div className="row" >
-                {viewProducts_HTMLTABLE}
                 <div className="col-xl-3 col-lg-3 col-sm-4 " >
                     <div className="card overflow-hidden "  >
                         <div className="card-body d-flex justify-content-center text-center" style={{ border: "2px dashed red" }}>
                             <div className="align-self-center text-center">
                                 <button type="button" className="btn btn-outline-primary"
                                     onClick={() => setModalCentered(true)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                     </svg>
                                     {t('add_variant')}
@@ -710,6 +869,8 @@ const Variants = (props) => {
                         </div>
                     </div>
                 </div>
+                {viewProducts_HTMLTABLE}
+
             </div>
         </Fragment>
     );

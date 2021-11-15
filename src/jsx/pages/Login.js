@@ -51,6 +51,7 @@ const Login = () => {
    };  
    return (
          <div className="row justify-content-center h-100 align-items-center h-80">
+            
             <div className="col-md-4 ">
                <div className="authincation-content">
                   <div className="row no-gutters">

@@ -123,6 +123,13 @@
     "home": "Hello Menu",
     "preview": "Preview",
     "number_of_related_products":"Number of related products:",
-    "yay_you_have_seen_it_all":"Yay! You have seen it all"
+    "yay_you_have_seen_it_all":"Yay! You have seen it all",
+    "add_variant_details": "Add Variant Details",
+    "public_link": "Public Link",
+    "details": "Details",
+    "value": "Value",
+    "name": "Name",
+    "edit_variant_detail": "Edit Variant Detail",
+    "hello_menu": "Hello Menu"
 
 }

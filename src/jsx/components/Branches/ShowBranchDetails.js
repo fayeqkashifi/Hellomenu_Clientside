@@ -3,7 +3,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { Navbar, Nav } from "react-bootstrap";
-// import { Link } from "react-router-dom"
+import { Link as RLink } from "react-router-dom"
 
 import 'react-awesome-slider/dist/styles.css';
 import { Row, Col, Card, Tab } from "react-bootstrap";
@@ -152,16 +152,18 @@ const ShowBranchDetails = (props) => {
                      <div className="card">
                         <div className="card-body">
                            <div className="new-arrival-product">
+                           <RLink to={`/variant-details/${item.variantID}`} className="text-black">
                               <div className="new-arrivals-img-contnent">
                                  <img className="img-fluid w-100" style={{ height: '100px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
                               </div>
                               <div className="new-arrival-content text-center mt-3">
                                  <h4>
-                                    <Link to={`/variant-details/${item.variantID}`} className="text-black "> {item.VariationName}</Link>
+                                     {item.VariationName}
                                  </h4>
                                  <span className="price">{item.CurrentPrice + ' ' + item.currency_code}</span>
                                  <s className="ms-2">{item.OldPrice + ' ' + item.currency_code}</s>
                               </div>
+                              </RLink>
                            </div>
                         </div>
                      </div>

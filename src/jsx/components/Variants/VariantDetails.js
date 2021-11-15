@@ -1,240 +1,329 @@
 import React, { Fragment, useState, useEffect } from "react";
+import PageTItle from "../../layouts/PageTitle";
+import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
-import { Link } from "react-router-dom"
-import { useTranslation } from "react-i18next"
-import PageTItle from "../../layouts/PageTitle";
-// Import css files
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
-import Slider from "react-slick";
-import {Nav } from "react-bootstrap";
-
-const VariantDetails = (props) => {
-
+const ShowVariantDetails = (props) => {
+    // validation
+    const schema = yup.object().shape({
+        name: yup.string().required("This field is a required field"),
+        value: yup.string().required("This field is a required field"),
+    }).required();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     // for localization
     const { t } = useTranslation();
-    // let { id } = useParams();
+    // ID
     const id = props.match.params.id;
+    // insert modal
+    const [modalCentered, setModalCentered] = useState(false);
+    // edit modal
+    const [editmodalCentered, setEditModalCentered] = useState(false);
+    // insert a section
+    const [variantDetailInsert, setVariantDetailInsert] = useState({
+        name: '',
+        value: '',
+        VariantID: id
+    });
+    const handleInput = (e) => {
+        e.persist();
+        setVariantDetailInsert({ ...variantDetailInsert, [e.target.name]: e.target.value });
+    };
+
+    const saveVariantdetail = (e) => {
+        // e.preventDefault();
+        axios.post("/api/InsertVariatDetails", variantDetailInsert).then(res => {
+            if (res.data.status === 200) {
+                setVariantDetailInsert({
+                    name: '',
+                    value: '',
+                    VariantID: id
+                });
+                reset();
+
+                swal("Success", res.data.message, "success");
+                setModalCentered(false)
+                //  this.props.history.push("/")
+            }
+        });
+    };
+    // edit code
+    const [editVariantDetail, setEditVariantDetail] = useState([]);
+    const editHandleInput = (e) => {
+        e.persist();
+        setEditVariantDetail({ ...editVariantDetail, [e.target.name]: e.target.value });
+    };
+    const fetchVariantDetail = (e, id) => {
+        e.preventDefault();
+        axios.get(`/api/EditVariatDetails/${id}`).then(res => {
+            if (res.data.status === 200) {
+                setEditVariantDetail(res.data.Details);
+                setEditModalCentered(true);
+            } else if (res.data.status === 404) {
+                swal("Error", res.data.message, "error");
+            }
+
+        });
+
+    }
+    const updateVariantDetail = (e) => {
+        e.preventDefault();
+        axios.post("/api/UpdateVariatDetails", editVariantDetail).then(res => {
+            if (res.data.status === 200) {
+                setEditVariantDetail('');
+                swal("Success", res.data.message, "success");
+                setEditModalCentered(false)
+                //  this.props.history.push("/")
+            } else if (res.data.status === 404) {
+                swal("Error", res.data.message, "error");
+
+            }
+        });
+
+    };
+
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
-    const [variantData, setVariantData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Quantity increment/decrement using hooks start
-    const [quantity, setQuantity] = useState(1);
-    const handleDecrement = () => {
-        if (quantity > 1) {
-            setQuantity(prevCount => prevCount - 1);
-        }
-    }
-    const handelIncrement = () => {
-
-        setQuantity(prevCount => prevCount + 1);
-    }
-   const [variants, setVariants] = useState([])
-
-    // Quantity increment/decrement using hooks end
     useEffect(() => {
-        axios.get(`/api/GetPictures/${id}`).then(res => {
+        axios.get(`/api/GetVarinatDetails/${id}`).then(res => {
             if (res.data.status === 200) {
+                // console.log(res.data.fetchData);
                 setFetchData(res.data.fetchData);
             }
             setLoading(false);
         });
+    }, [variantDetailInsert, editVariantDetail, id]);
 
-        axios.get(`/api/Getvariant/${id}`).then(res => {
-            if (res.data.status === 200) {
-                setVariantData(res.data.variantdata);
-                axios.get(`/api/Getvariations/${res.data.variantdata[0].product_id}`).then(res => {
-                    if(res.data.status === 200){
-                        setVariants(res.data.fetchData);
-                            // console.log();
-
-                    }
-                });
-            }
-        });
-    }, [quantity, id]);
-
-    var viewImages_HTMLTABLE = "";
+    var viewProducts_HTMLTABLE = "";
     if (loading) {
-        return <div className="container "><div className="spinner-border text-primary " role="status" style={{position: 'fixed',top: '50%',  left: '50%'}}><span className="sr-only">{t('loading')}</span></div></div>
+        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
     } else {
-        viewImages_HTMLTABLE =
+        viewProducts_HTMLTABLE =
             fetchData.map((item, i) => {
                 return (
-                    <div className="col-xl-12 col-lg-12 col-sm-12 my-2" key={item.id}>
-                        <div className="card overflow-hidden">
-                            {/* <div className="card-body"> */}
-                            <div className="text-center">
-                                <div className="profile-photo">
-                                    <img
-                                        style={{height: '200px', objectFit: 'contain' }}
-                                        src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`}
-                                        className="d-block w-100 img-thumbnail"
-                                        alt=""
-                                    />
-                                </div>
-                            </div>
-                            {/* </div> */}
-                        </div>
-                    </div>
+                    <tr key={item.id}>
+                        <td>{i + 1}</td>
+
+                        <td> {item.name}</td>
+                        <td> {item.value}</td>
+                        <td>
+                            <button type="button" onClick={(e) => fetchVariantDetail(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" onClick={(e) => deleteVariantDetail(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
+                        </td>
+                    </tr>
                 )
             })
 
     }
-    // add to basket start   
-    const addBaskets = (e) => {
+    // delete section 
+    const deleteVariantDetail = (e, id) => {
         e.preventDefault();
-        const basket = {
-            VariantQuantity: quantity,
-        }
-        axios.post(`/api/InsertBasket/${id}`, basket).then(res => {
-            if (res.data.status === 200) {
-                setQuantity(1);
-                // setVariantData([]);
-                swal("Success", res.data.message, "success");
-                // thisClicked.closest("tr").remove();
-            } else if (res.data.status === 404) {
-                swal("Success", res.data.message, "success");
-            }
-        });
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteVariatDetails/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            setVariantDetailInsert({
+                                name: '',
+                                value: '',
+                                VariantID: id
+                            });
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
 
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
     }
-    
-    // add to basket end   
     return (
-        <div className="container">
-            <Fragment>
-                {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_details')} motherMenu={t('variants')} /> */}
-                {/* <!-- Insert  Modal --> */}
-                <div className="row" >
-                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 ">
-                        <div className="row" >
-                            {/* <div > */}
-                                <Slider dots={true} infinite={true} slidesToShow={1} slidesToScroll={1}>
-                                    {viewImages_HTMLTABLE}
-                                </Slider>
-                            {/* </div> */}
+        <Fragment>
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
+                <CBreadcrumbItem active>{t('variant_details')}</CBreadcrumbItem>
+            </CBreadcrumb>
+            {/* <!-- Insert  Modal --> */}
+            <Modal className="fade" show={modalCentered}>
+                <Form onSubmit={handleSubmit(saveVariantdetail)} method="POST" encType="multipart/form-data">
+                    <Modal.Header>
+                        <Modal.Title>{t('add_variant_details')}</Modal.Title>
+                        <Button
+                            onClick={() => setModalCentered(false)}
+                            variant=""
+                            className="close"
+                        >
+                            <span>&times;</span>
+                        </Button>
+                    </Modal.Header>
+                    <Modal.Body>
+                     
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('name')} </strong> </label>
+                            <input
+                                type="text"
+                                {...register("name")}
+
+                                className={
+                                    errors.name?.message
+                                        ? "form-control  is-invalid"
+                                        : "form-control"
+                                }
+                                placeholder={t('name')}
+                                name="name"
+                                onChange={handleInput}
+                                value={variantDetailInsert.name}
+                            />
+                             {errors.name?.message && (
+                                            <div className="invalid-feedback">{errors.name?.message}</div>
+                                        )}
+                            {/* <div className="text-danger">
+                                {errors.name?.message}
+                            </div> */}
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('value')} </strong> </label>
+                            <input
+                                type="text"
+                                {...register("value")}
+
+                                className={
+                                    errors.value?.message
+                                        ? "form-control  is-invalid"
+                                        : "form-control"
+                                }
+                                placeholder={t('value')}
+                                name="value"
+                                onChange={handleInput}
+                                value={variantDetailInsert.value}
+                            />
+                             {errors.value?.message && (
+                                            <div className="invalid-feedback">{errors.value?.message}</div>
+                                        )}
+                            {/* <div className="text-danger">
+                                {errors.value?.message}
+                            </div> */}
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            onClick={() => setModalCentered(false)}
+                            variant="danger light"
+                        >
+                            {t('close')}
+                        </Button>
+                        <Button variant="primary" type="submit">{t('save')}</Button>
+
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            {/* Edit Modal */}
+            <Modal className="fade" show={editmodalCentered}>
+                <Form onSubmit={updateVariantDetail} method="POST" >
+                    <Modal.Header>
+                        <Modal.Title>{t('edit_variant_detail')} </Modal.Title>
+                        <Button
+                            onClick={() => setEditModalCentered(false)}
+                            variant=""
+                            className="close"
+                        >
+                            <span>&times;</span>
+                        </Button>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('name')}</strong> </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder={t('name')}
+                                name="name"
+                                required
+                                onChange={editHandleInput}
+                                value={editVariantDetail.name}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('value')}</strong> </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder={t('value')}
+                                name="value"
+                                required
+                                onChange={editHandleInput}
+                                value={editVariantDetail.value}
+                            />
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            onClick={() => setEditModalCentered(false)}
+                            variant="danger light"
+                        >
+                            {t('close')}
+                        </Button>
+                        <Button variant="primary" type="submit">{t('update')} </Button>
+
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            <div className="row" >
+                <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                    <div className="card">
+                        <div className="card-header border-0">
+                            <div>
+                                <h4 className="card-title mb-2">{t('variant_details')}</h4>
+                            </div>
+                            <div className="dropdown">
+                                <Button
+                                    variant="primary"
+                                    type="button"
+                                    className="mb-2 mr-2"
+                                    onClick={() => setModalCentered(true)} >
+                                    {t('add_variant_details')}
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="card-body p-0">
+                            <div className="table-responsive ">
+                                <table className="table text-center ">
+                                    <thead>
+                                        <tr>
+                                            <th>{t('number')}</th>
+                                            <th>{t('name')}</th>
+                                            <th>{t('value')}</th>
+                                            <th>{t('actions')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {viewProducts_HTMLTABLE}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    
-                   
-                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mt-4">
-                        <div >
-                        {t('availability')} {variants.length}
-                        </div>                 
-                        <Slider dots={true} infinite={true} slidesToShow={variants.length>=4 ? 4: variants.length} slidesToScroll={1}>
-                        {variants.map((item, i) => (
-                            <div key={i} className="px-1 text-center text-capitalize " >
-                                {/* <Item as="li" > */}
-                                    <Link
-                                        to={`/variant-details/${item.variantID}`}
-                                        // eventKey={item.SubCategoryName.toLowerCase()}
-                                        className={`text-capitalize font-weight-bold ${id ==item.variantID ? "active text-primary": " "}`}
-                                    >
-                                    <div>
-                                        <img className={`w-100 img-thumbnail mt-1 mx-1 ${id ==item.variantID ? "border border-primary": " "}`} style={{height: '80px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
-                                    </div>
-                                    {/* <div className="">
-                                        {item.VariationName}
-                                    </div> */}
-                                    </Link>
-                                {/* </Item> */}
-                            </div>
-                        )
-                        )}
-                        </Slider>
-                    </div>
-
-                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                        {variantData.map((item, i) => {
-                            return (
-                                <div className="card" key={i}>
-                                    <div className="card-header font-weight-bold">
-                                            Product Variation Details
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <div className="col-xl-12 col-lg-12  col-md-12 col-xxl-12 col-sm-12">
-                                                <div className="product-detail-content">
-                                                    <div className="new-arrival-content pr">
-                                                        <h4 >{item.VariationName}</h4>
-                                                        <div className="star-rating d-inline mb-2">
-                                                            {item.ProductName}
-                                                        </div>
-                                                        <br></br>
-                                                        <p className="price">{item.CurrentPrice + ' ' + item.currency_code}</p>
-                                                        <br></br>
-                                                        <br></br>
-                                                        <p>
-                                                            {t('availability')}:
-                                                            <span className="item">
-                                                                {item.IsAvailable === 0 ? ' Yes ' : ' No '}
-                                                                <i className="fa fa-shopping-basket"></i>
-                                                            </span>
-
-                                                        </p>
-
-                                                        <p>
-                                                            {t('variant_code')}:
-                                                            <span className="item">{id}</span>
-                                                        </p>
-                                                        <p>
-                                                            {t('unit')}: <span className="item">{item.UnitName}</span>
-                                                        </p>
-                                                        <h4 className="m-b-15">{t('description')}</h4>
-                                                        <p className="text-content"> {item.Description}</p>
-                                                        <h4 className="m-b-15">{t('advice')}</h4>
-                                                        <p className="text-content"> {item.Advice}</p>
-                                                        <div className="col-6 px-0 mt-3">
-                                                            <div className="input-group">
-                                                                <button type="button" onClick={handleDecrement} className="input-group-text">{t('minus')}</button>
-                                                                <div className="form-control text-center"> {quantity}</div>
-
-                                                                <button type="button" onClick={handelIncrement} className="input-group-text" disabled={item.Buyingquantity - item.SellingQuantity === quantity ? 'disabled' : ''}>{t('plus')} </button>
-                                                            </div>
-                                                            {item.Buyingquantity - item.SellingQuantity === quantity
-                                                                ?
-                                                                <div className="text-danger">
-                                                                    {t('not_available')}
-                                                                </div>
-                                                                : ""
-                                                            }
-                                                        </div>
-                                                        <div className="shopping-cart mt-5">
-                                                            <Link
-                                                                to="/page-login"
-                                                                className="btn btn-primary btn-lg">
-                                                                <i className="fa fa-shopping-basket mr-2"></i>
-                                                                {t('add_to_basket')}
-                                                            </Link>
-                                                            {/* <button
-                                                type="button"
-                                                onClick={addBaskets}
-                                                className="btn btn-primary btn-lg">
-                                                <i className="fa fa-shopping-basket mr-2"></i>
-                                                    {t('add_to_basket')}
-                                            </button>
-                                         */}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    
-                    
                 </div>
-            </Fragment>
-        </div>
+            </div>
+        </Fragment>
     );
 };
 
-export default VariantDetails;
+export default ShowVariantDetails;

@@ -12,7 +12,7 @@ import PublicRoute from './jsx/components/PublicRoute';
 import axios from "axios"
 import ShowBranchDetails from "./jsx/components/Branches/ShowBranchDetails";
 // import Variants from "./jsx/components/Variants/Variants";
-import VariantDetails from "./jsx/components/Variants/VariantDetails";
+import VariantDetailsForPublicLink from "./jsx/components/Variants/VariantDetailsForPublicLink";
 
 // axios.defaults.baseURL="http://127.0.0.1:8000";
 axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -34,7 +34,7 @@ const App = () => {
             <PublicRoute restricted={true} component={Login} path="/page-login" exact />
             <PublicRoute restricted={false} component={Registration} path="/user-register" exact />
             <PublicRoute exact component={ShowBranchDetails} path="/show-branch-details/:id" />
-            <PublicRoute exact component={VariantDetails} path="/variant-details/:id" />
+            <PublicRoute exact component={VariantDetailsForPublicLink} path="/variant-details/:id" />
             {/* {localStorage.getItem('auth_token') ? <Markup /> : <Redirect to="/page-login" />} */}
             <Markup />
          </Switch>

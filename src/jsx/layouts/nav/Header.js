@@ -98,7 +98,7 @@ const Header = ({ toggle, onProfile,onNotification}) => {
                            data-toggle="dropdown"
                         >
                            <div className="header-info">
-								<small>HELLO MENU</small>
+								<small>{t('hello_menu')}</small>
 								<span>{localStorage.getItem('auth_name')}</span>
                            </div>
                            <img src={profile} width="10"  alt="" />

@@ -130,7 +130,12 @@ const SubCategory = (props) => {
                         <div className="card overflow-hidden">
                             <div className="card-body">
                                 <div className="text-center">
-
+                                <Link to={{
+                                            pathname: `/products/${item.sub_id}`,
+                                            id: item.id,
+                                            ProductName: item.ProductName
+                                        }} > 
+                                    <span>
                                     <img
                                         style={{ height: '100px', objectFit: 'contain' }}
 
@@ -138,13 +143,11 @@ const SubCategory = (props) => {
                                         className="w-40"
                                         alt=""
                                     />
+                                    </span>
 
                                     <h4 className="mt-4 mb-1">
-                                        <Link to={{
-                                            pathname: `/products/${item.sub_id}`,
-                                            id: item.id,
-                                            ProductName: item.ProductName
-                                        }} > {item.SubCategoryName}</Link></h4>
+                                        {item.SubCategoryName}</h4>
+                                        </Link>
 
 
                                 </div>
