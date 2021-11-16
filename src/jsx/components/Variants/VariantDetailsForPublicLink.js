@@ -223,11 +223,10 @@ const VariantDetailsForPublicLink = (props) => {
                                                             </tbody>
                                                         </Table>
 
-                                                        <div className="col-6 px-0 mt-3">
+                                                        <div className="col-2 px-0 mt-2">
                                                             <div className="input-group">
-                                                                <button type="button" onClick={handleDecrement} className="input-group-text">{t('minus')}</button>
-                                                                <div className="form-control text-center"> {quantity}</div>
-
+                                                                <button type="button" onClick={handleDecrement} className="input-group-text ">{t('minus')}</button>
+                                                                    <div className="input-group-text bg-white "> {quantity}</div>
                                                                 <button type="button" onClick={handelIncrement} className="input-group-text" disabled={item.Buyingquantity - item.SellingQuantity === quantity ? 'disabled' : ''}>{t('plus')} </button>
                                                             </div>
                                                             {item.Buyingquantity - item.SellingQuantity === quantity

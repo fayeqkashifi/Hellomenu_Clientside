@@ -6,9 +6,9 @@ import { Navbar, Nav } from "react-bootstrap";
 import { Link as RLink } from "react-router-dom"
 
 import 'react-awesome-slider/dist/styles.css';
-import { Row, Col, Card, Tab } from "react-bootstrap";
+import { Row, Col, Card, Tab, Button } from "react-bootstrap";
 
-import { CContainer, CNavbar, CNavbarBrand, CNavbarToggler, CCollapse, CNavbarNav, CNavItem, CNavLink } from '@coreui/react'
+import { CContainer, CFooter, CLink, CNavbar, CNavbarBrand, CNavbarToggler, CCollapse, CNavbarNav, CNavItem, CNavLink } from '@coreui/react'
 
 // Import css files
 import "slick-carousel/slick/slick.css";
@@ -17,6 +17,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 // import InfiniteScroll from 'react-infinite-scroller';
 import Slider from "react-slick";
 import { Link } from 'react-scroll'
+// import Button from "@restart/ui/esm/Button";
 
 var hold = 1;
 
@@ -43,7 +44,6 @@ const ShowBranchDetails = (props) => {
       axios.get(`/api/GetCategories/${branchId}`).then(res => {
          if (res.data.status === 200) {
             setCategories(res.data.fetchData);
-
             // setActiveCategory(res.data.fetchData[0].id);
          }
 
@@ -94,7 +94,7 @@ const ShowBranchDetails = (props) => {
 
             }
          });
-      }else{
+      } else {
          setChangeState(false);
       }
       // console.log(hold);
@@ -135,10 +135,33 @@ const ShowBranchDetails = (props) => {
    //     });
 
    // }
+
+   const [quantity, setQuantity] = useState(1);
+   const [show, setShow] = useState(false);
+   const handleDecrement = (e,variant_id) => {
+      e.preventDefault();
+
+      if (quantity > 1) {
+         setQuantity(prevCount => prevCount - 1);
+      } else if (quantity === 1) {
+         setShow(false)
+      }
+   }
+   const handelIncrement = (e,variant_id) => {
+      e.preventDefault();
+         variants.map((item) =>{
+          return (item.variantID === variant_id ? setQuantity(prevCount => prevCount + 1): item)
+         }
+      )
+
+      // setQuantity(prevCount => prevCount + 1);
+   }
+
+
    const [visible, setVisible] = useState(false)
    var viewShow_HTMLTABLE = "";
    if (loading) {
-      return <div className="spinner-border text-primary " role="status" style={{position: 'fixed',top: '50%',  left: '50%'}}><span className="sr-only">{t('loading')}</span></div>
+      return <div className="spinner-border text-primary " role="status" style={{ position: 'fixed', top: '50%', left: '50%' }}><span className="sr-only">{t('loading')}</span></div>
    } else {
       var value;
       viewShow_HTMLTABLE =
@@ -152,18 +175,43 @@ const ShowBranchDetails = (props) => {
                      <div className="card">
                         <div className="card-body">
                            <div className="new-arrival-product">
-                           <RLink to={`/variant-details/${item.variantID}`} className="text-black">
-                              <div className="new-arrivals-img-contnent">
-                                 <img className="img-fluid w-100" style={{ height: '100px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
-                              </div>
-                              <div className="new-arrival-content text-center mt-3">
-                                 <h4>
-                                     {item.VariationName}
-                                 </h4>
-                                 <span className="price">{item.CurrentPrice + ' ' + item.currency_code}</span>
-                                 <s className="ms-2">{item.OldPrice + ' ' + item.currency_code}</s>
-                              </div>
+                              <RLink to={`/variant-details/${item.variantID}`} className="text-black">
+                                 <div className="text-center bg-white">
+                                    <img className="img-fluid w-100 img-thumbnail" style={{ height: '100px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
+
+
+
+                                 </div>
+                                 <div className="new-arrival-content text-center mt-3">
+                                    <h4>
+                                       {item.VariationName}
+                                    </h4>
+
+                                    <span className="price">{item.CurrentPrice + ' ' + item.currency_code}</span>
+                                    <s className="ms-2">{item.OldPrice + ' ' + item.currency_code}</s>
+                                 </div>
                               </RLink>
+                              <RLink onClick={() => setShow(!show)} className={`${show === false ? " " : "d-none"}`}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-plus-square-dotted text-success mt-2" viewBox="0 0 16 16">
+                                 <path d="M2.5 0c-.166 0-.33.016-.487.048l.194.98A1.51 1.51 0 0 1 2.5 1h.458V0H2.5zm2.292 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zm1.833 0h-.916v1h.916V0zm1.834 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zM13.5 0h-.458v1h.458c.1 0 .199.01.293.029l.194-.981A2.51 2.51 0 0 0 13.5 0zm2.079 1.11a2.511 2.511 0 0 0-.69-.689l-.556.831c.164.11.305.251.415.415l.83-.556zM1.11.421a2.511 2.511 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415L1.11.422zM16 2.5c0-.166-.016-.33-.048-.487l-.98.194c.018.094.028.192.028.293v.458h1V2.5zM.048 2.013A2.51 2.51 0 0 0 0 2.5v.458h1V2.5c0-.1.01-.199.029-.293l-.981-.194zM0 3.875v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 5.708v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 7.542v.916h1v-.916H0zm15 .916h1v-.916h-1v.916zM0 9.375v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .916v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .917v.458c0 .166.016.33.048.487l.98-.194A1.51 1.51 0 0 1 1 13.5v-.458H0zm16 .458v-.458h-1v.458c0 .1-.01.199-.029.293l.981.194c.032-.158.048-.32.048-.487zM.421 14.89c.183.272.417.506.69.689l.556-.831a1.51 1.51 0 0 1-.415-.415l-.83.556zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373c.158.032.32.048.487.048h.458v-1H2.5c-.1 0-.199-.01-.293-.029l-.194.981zM13.5 16c.166 0 .33-.016.487-.048l-.194-.98A1.51 1.51 0 0 1 13.5 15h-.458v1h.458zm-9.625 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zm1.834-1v1h.916v-1h-.916zm1.833 1h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+                              </svg>
+                              </RLink>
+
+                              <div className={`input-group ${show === true ? " " : "d-none"}`}>
+                                 <RLink  onClick={(e)=>handleDecrement(e,item.variantID)} className="input-group-text ">{quantity === 1 ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                    <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                 </svg> : t('minus')} </RLink>
+                                 <div className="input-group-text bg-white "> {quantity}</div>
+                                 <RLink  onClick={(e)=>handelIncrement(e,item.variantID)} className="input-group-text" disabled={item.Buyingquantity - item.SellingQuantity === quantity ? 'disabled' : ''}>{t('plus')} </RLink>
+                              </div>
+                              
+                              {item.Buyingquantity - item.SellingQuantity === quantity
+                                 ?
+                                 <div className="text-danger">
+                                    {t('not_available')}
+                                 </div>
+                                 : ""
+                              }
                            </div>
                         </div>
                      </div>
@@ -227,89 +275,111 @@ const ShowBranchDetails = (props) => {
 
             <CNavbar expand="lg" colorScheme="light" className="bg-light" placement="sticky-top" >
                {/* <Row> */}
-                  {/* <Col lg={12}> */}
-                     <CContainer fluid>
-                        {data.map((item, i) => (
-                           <CNavbarBrand className="text-center text-uppercase font-weight-bold text-primary" key={i}>{item.BrancheName}</CNavbarBrand>
-                        ))}
-                        <CNavbarToggler
-                           aria-label="Toggle navigation"
-                           aria-expanded={visible}
-                           onClick={() => setVisible(!visible)}
-                        />
-                        <CCollapse className="navbar-collapse" visible={visible}>
-                           <CNavbarNav>
-                              {categories.map((data, i) => (
-                                 <CNavItem as="li" key={i} >
-                                    <CNavLink href="#"
-                                       onClick={() => filterCategory(data.id)}
+               {/* <Col lg={12}> */}
+               <CContainer fluid>
+                  {data.map((item, i) => (
+                     <CNavbarBrand className="text-center text-uppercase font-weight-bold text-primary" key={i}>{item.BrancheName}</CNavbarBrand>
+                  ))}
+                  <CNavbarToggler
+                     aria-label="Toggle navigation"
+                     aria-expanded={visible}
+                     onClick={() => setVisible(!visible)}
+                  />
+                  <CCollapse className="navbar-collapse" visible={visible}>
+                     <CNavbarNav>
+                        {categories.map((data, i) => (
+                           <CNavItem as="li" key={i} >
+                              <CNavLink href="#"
+                                 onClick={() => filterCategory(data.id)}
 
-                                       className={`text-capitalize font-weight-bold ${activeCategory === data.id ? "active bg-primary text-white" : " "}`}
-                                    >
-                                       {data.CategoryName}
-                                    </CNavLink>
-                                 </CNavItem>
-                              ))}
-                           </CNavbarNav>
-                        </CCollapse>
-                     </CContainer>
-                  {/* </Col> */}
-                  
+                                 className={`text-capitalize font-weight-bold ${activeCategory === data.id ? "active bg-primary text-white" : " "}`}
+                              >
+                                 {data.CategoryName}
+                              </CNavLink>
+                           </CNavItem>
+                        ))}
+                     </CNavbarNav>
+                  </CCollapse>
+               </CContainer>
+               {/* </Col> */}
+
                {/* </Row> */}
             </CNavbar>
-            <CNavbar expand="lg" colorScheme="light" className="bg-light" placement="sticky-top" >
+            <CNavbar colorScheme="light" className="bg-white" placement="sticky-top" >
 
-            <Col lg={12}>
-                     <Card  >
-                        <Card.Body>
-                           <Slider {...settings}>
-                              {subcategories.map((item, i) => (
-                                 <div key={i} className="px-1 text-center text-capitalize" >
-                                    <Nav.Item as="li"  >
-                                       <Link
-                                          onClick={() => filterProducts(item.sub_id)}
-                                          smooth={true}
-                                          duration={1000}
-                                          to={`${item.SubCategoryName}`}
-                                          // eventKey={item.SubCategoryName.toLowerCase()}
-                                          className={`text-capitalize font-weight-bold ${activeSubCategory === item.sub_id ? "active border border-primary text-primary   " : " "}`}
-                                       >
-                                          <div>
-                                             <img className={`w-100 img-thumbnail mt-1 mx-1 ${activeSubCategory === item.sub_id ? "border border-primary" : " "}`} style={{ height: '60px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/sub_catagories/${item.SubCategoryIcon}`} alt="" />
-                                          </div>
-                                          <div className="mt-2">
-                                             {item.SubCategoryName}
-                                          </div>
-                                       </Link>
-                                    </Nav.Item>
-                                 </div>
-                              )
-                              )}
-                           </Slider>
-                        </Card.Body>
-                     </Card>
-                  </Col>
+               {/* <Col lg={12}> */}
+               <Card  >
+                  <Card.Body>
+                     <Slider {...settings}>
+                        {subcategories.map((item, i) => (
+                           <div key={i} className="px-1 text-center text-capitalize" >
+                              <Nav.Item as="li"  >
+                                 <Link
+                                    onClick={() => filterProducts(item.sub_id)}
+                                    smooth={true}
+                                    duration={1000}
+                                    to={`${item.SubCategoryName}`}
+                                    // eventKey={item.SubCategoryName.toLowerCase()}
+                                    className={`text-capitalize font-weight-bold ${activeSubCategory === item.sub_id ? "active border border-primary text-primary   " : " "}`}
+                                 >
+                                    <div>
+                                       <img className={`w-100 img-thumbnail mt-1 mx-1 ${activeSubCategory === item.sub_id ? "border border-primary" : " "}`} style={{ height: '60px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/sub_catagories/${item.SubCategoryIcon}`} alt="" />
+                                    </div>
+                                    <div className="mt-2">
+                                       {item.SubCategoryName}
+                                    </div>
+                                 </Link>
+                              </Nav.Item>
+                           </div>
+                        )
+                        )}
+                     </Slider>
+                  </Card.Body>
+               </Card>
+               {/* </Col> */}
             </CNavbar>
 
          </Fragment>
+         <div className="row mt-2 mx-2">
 
+            {viewShow_HTMLTABLE}
+         </div>
          <InfiniteScroll
             dataLength={variants.length} //This is important field to render the next data
             next={fetchMoreData}
             hasMore={changeState}
-            loader={<p className="text-center"><b>{t('loading')}</b></p>}
+            loader={<p className="text-center pt-5" style={{ height: 120 }}><b>{t('loading')}</b></p>}
             endMessage={
-               <p style={{ textAlign: 'center' }}>
+               <p style={{ textAlign: 'center ', height: 120 }} >
                   <b>{t('yay_you_have_seen_it_all')}</b>
                </p>
             }
          >
-            <div className="row mt-2 mx-2">
 
-               {viewShow_HTMLTABLE}
-            </div>
          </InfiniteScroll>
+         <CNavbar expand="lg" colorScheme="light" className="row bg-light text-center" placement="fixed-bottom" >
+
+            <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12 ">
+               <strong>{t('grand_total')}</strong>
+               <p className="text-dark">Free</p>
+
+            </div>
+            <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12 ">
+               <strong>{t('delivery_fee')}</strong>
+               <p className="text-dark">Free</p>
+            </div>
+            <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12 ">
+               <Button variant="outline-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-whatsapp" viewBox="0 0 16 16">
+                  <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+               </svg>  {t('order_now_by_whatsapp')}
+               </Button>
+
+            </div>
+         </CNavbar>
+
       </div>
+
+
    );
 
 };

@@ -31,6 +31,7 @@ import Basket from "./components/Orders/Basket";
 // import VariantDetails from "./components/Variants/VariantDetails";
 import ShowBranchDetails from "./components/Branches/ShowBranchDetails";
 import ShowVariantDetails from "./components/Variants/VariantDetails";
+import Tables from "./components/Branches/Tables";
 
 const Markup = () => {
    const routes = [
@@ -52,6 +53,8 @@ const Markup = () => {
 		// { url: "variant-details/:id", component: VariantDetails },
 		{ url: "show-branch-details/:id", component: ShowBranchDetails },
 		{ url: "show_variant_detials/:id", component: ShowVariantDetails },
+		{ url: "tables/:id", component: Tables },
+
 
    ];
 

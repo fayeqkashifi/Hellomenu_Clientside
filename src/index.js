@@ -27,7 +27,7 @@ i18n
   });
 const loadingMarkup=(
       <div className="py-4 text-center">
-          <div class="spinner-border text-primary " role="status" style={{position: 'fixed',top: '50%',  left: '50%'}}><span class="sr-only">Loading...</span></div>
+          <div className="spinner-border text-primary " role="status" style={{position: 'fixed',top: '50%',  left: '50%'}}><span className="sr-only">Loading...</span></div>
 
       </div>
 )

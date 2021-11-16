@@ -178,7 +178,7 @@ const Gallery = (props) => {
 
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>{t('images')}</strong> </label>
-                                    {/* <div class="file-loading"> */}
+                                    {/* <div className="file-loading"> */}
                                     <input
                                         type="file"
                                         name="file"

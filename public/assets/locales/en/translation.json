@@ -130,6 +130,15 @@
     "value": "Value",
     "name": "Name",
     "edit_variant_detail": "Edit Variant Detail",
-    "hello_menu": "Hello Menu"
+    "hello_menu": "Hello Menu",
+    "tables": "Tables",
+    "add_table": "Add Table",
+    "table_id": "Table ID",
+    "table_name": "Table Name",
+    "edit_table": "Edit Table",
+    "download_qr_code":"Download QR Code",
+    "order_now_by_whatsapp": "Order Now By WhatsApp",
+    "delivery_fee": "Delivery Fee",
+    "grand_total": "Grand Total"
 
 }

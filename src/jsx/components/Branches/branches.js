@@ -7,11 +7,13 @@ import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert"
-import QRCode from "react-qr-code";
+import QRCode from "qrcode.react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { CBreadcrumb, CDropdownMenu, CDropdownDivider, CDropdown, CDropdownToggle, CDropdownItem, CBreadcrumbItem, CButton, CCloseButton, COffcanvas, COffcanvasBody, COffcanvasHeader, COffcanvasTitle } from '@coreui/react'
+import ReactWhatsapp from 'react-whatsapp';
+import FloatingWhatsApp from 'react-floating-whatsapp'
 
 const schema = yup.object().shape({
     BrancheName: yup.string().required("This field is a required field"),
@@ -108,6 +110,20 @@ const Branches = () => {
         setDestinationLink(srcLink);
         setVisible(true)
     }
+    const downloadQRCode = (e, id) => {
+        e.preventDefault();
+        // console.log(id)
+
+        const qrCodeURL = document.getElementById(id)
+            .toDataURL("image/png")
+            .replace("image/png", "image/octet-stream");
+        let aEl = document.createElement("a");
+        aEl.href = qrCodeURL;
+        aEl.download = "Branch_QR_Code.png";
+        document.body.appendChild(aEl);
+        aEl.click();
+        document.body.removeChild(aEl);
+    }
     var viewBranches_HTMLTABLE = "";
     if (loading) {
         return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
@@ -122,23 +138,29 @@ const Branches = () => {
                             <div className="card-body">
                                 {/* <div className="profile-photo"> */}
                                 {/* <div className="primary"> */}
-                                <span className="text-left mx-2">
+                                {/* <span className="text-left mx-2">
                                     <Link
                                         to={`show-branch-details/${btoa(item.id)}`}
                                         target="_blank"
                                     >
                                         {t('public_link')}
                                     </Link>
-                                </span>
+                                </span> */}
                                 <div className="text-center">
                                     <Link to={{
                                         pathname: `/category/${item.id}`,
                                         branchName: item.BrancheName
                                     }} >
-                                        <QRCode value={`http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`} className="primary" />
+                                        <QRCode id={btoa(item.id)} level={'H'} size={256} fgColor="#f50b65" value={`http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`} className="primary" />
+                                        <Link
+                                            to=""
+                                            onClick={(e) => downloadQRCode(e, btoa(item.id))}
+                                        > <p>{t('download_qr_code')}</p></Link>
                                         <h3 className="mt-4 mb-1"> {item.BrancheName}</h3>
                                     </Link>
+
                                     {/* </div> */}
+
 
                                     {/* <img
                                     src={profile}
@@ -149,10 +171,11 @@ const Branches = () => {
                                     {/* </div> */}
                                     <CDropdown variant="btn-group">
                                         {/* <CButton color="primary" size="sm"></CButton> */}
-                                        <CDropdownToggle color="primary" size="lg" split="hover" shape="rounded" caret={false}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
+                                        <CDropdownToggle color="primary" size="lg" split shape="rounded" caret={false}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
                                             <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                                         </svg></CDropdownToggle>
                                         <CDropdownMenu>
+
                                             <div className="mx-3 my-2">
 
                                                 <Link
@@ -185,6 +208,7 @@ const Branches = () => {
                                             <div className="mx-3 my-2">
 
                                                 <Link
+                                                    to=""
                                                     data-toggle="tooltip" data-placement="right" title="To perview on mobile click this."
                                                     onClick={(e) => phone(e, `http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-phone-fill" viewBox="0 0 16 16">
@@ -212,7 +236,6 @@ const Branches = () => {
                                             </div>
                                             <div className="mx-3 my-2">
                                                 <Link
-
                                                     to={{
                                                         pathname: `/unit/${item.id}`,
                                                         branchName: item.BrancheName
@@ -240,6 +263,32 @@ const Branches = () => {
                                                     <span> {t('inventory')}</span>
                                                 </Link>
                                             </div>
+                                            <div className="mx-3 my-2">
+                                                <Link
+
+                                                    to={{
+                                                        pathname: `/tables/${item.id}`,
+                                                        branchName: item.BrancheName
+                                                    }}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-tablet" viewBox="0 0 16 16">
+                                                        <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z" />
+                                                        <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                                    </svg>
+                                                    <span> {t('tables')}</span>
+                                                </Link>
+                                            </div>
+                                            <span className="mx-3 my-2">
+                                                <Link
+                                                    to={`show-branch-details/${btoa(item.id)}`}
+                                                    target="_blank"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-square-dotted" viewBox="0 0 16 16">
+                                                        <path d="M2.5 0c-.166 0-.33.016-.487.048l.194.98A1.51 1.51 0 0 1 2.5 1h.458V0H2.5zm2.292 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zm1.833 0h-.916v1h.916V0zm1.834 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zM13.5 0h-.458v1h.458c.1 0 .199.01.293.029l.194-.981A2.51 2.51 0 0 0 13.5 0zm2.079 1.11a2.511 2.511 0 0 0-.69-.689l-.556.831c.164.11.305.251.415.415l.83-.556zM1.11.421a2.511 2.511 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415L1.11.422zM16 2.5c0-.166-.016-.33-.048-.487l-.98.194c.018.094.028.192.028.293v.458h1V2.5zM.048 2.013A2.51 2.51 0 0 0 0 2.5v.458h1V2.5c0-.1.01-.199.029-.293l-.981-.194zM0 3.875v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 5.708v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 7.542v.916h1v-.916H0zm15 .916h1v-.916h-1v.916zM0 9.375v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .916v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .917v.458c0 .166.016.33.048.487l.98-.194A1.51 1.51 0 0 1 1 13.5v-.458H0zm16 .458v-.458h-1v.458c0 .1-.01.199-.029.293l.981.194c.032-.158.048-.32.048-.487zM.421 14.89c.183.272.417.506.69.689l.556-.831a1.51 1.51 0 0 1-.415-.415l-.83.556zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373c.158.032.32.048.487.048h.458v-1H2.5c-.1 0-.199-.01-.293-.029l-.194.981zM13.5 16c.166 0 .33-.016.487-.048l-.194-.98A1.51 1.51 0 0 1 13.5 15h-.458v1h.458zm-9.625 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zm1.834-1v1h.916v-1h-.916zm1.833 1h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+                                                    </svg>
+                                                    <span> {t('public_link')} </span>
+                                                </Link>
+                                            </span>
                                         </CDropdownMenu>
                                     </CDropdown>
 
@@ -313,9 +362,9 @@ const Branches = () => {
                                 onChange={handleInput}
                                 value={branchstate.BrancheName}
                             />
-{errors.BrancheName?.message && (
-                                            <div className="invalid-feedback">{errors.BrancheName?.message}</div>
-                                        )}
+                            {errors.BrancheName?.message && (
+                                <div className="invalid-feedback">{errors.BrancheName?.message}</div>
+                            )}
                         </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('currency')}</strong> </label>
@@ -337,9 +386,9 @@ const Branches = () => {
                                     currency.map((item) =>
                                         <option value={item.id} key={item.id}>{item.currency_name + ' / ' + item.currency_code}</option>)
                                 }</select>
-                           {errors.currencyID?.message && (
-                                            <div className="invalid-feedback">{errors.currencyID?.message}</div>
-                                        )}
+                            {errors.currencyID?.message && (
+                                <div className="invalid-feedback">{errors.currencyID?.message}</div>
+                            )}
                         </div>
 
 
@@ -469,12 +518,26 @@ const Branches = () => {
                         </div>
                     </div>
                 </div>
+                <ReactWhatsapp number="93744647067" message="Hello World!!!" >WhatsApps</ReactWhatsapp>
+            </div>
+            <div className="App">
+                <FloatingWhatsApp
+                    phoneNumber="93744647067"
+                    accountName="Mohammad Faiq"
+                    allowClickAway
+                    // notification
+                    // notificationDelay={60000} // 1 minute
+                    // notificationSound
+                />
+                
             </div>
 
 
         </Fragment>
 
+
     );
+
 };
 
 export default Branches;
