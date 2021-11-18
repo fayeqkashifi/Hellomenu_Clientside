@@ -139,6 +139,23 @@
     "download_qr_code":"Download QR Code",
     "order_now_by_whatsapp": "Order Now By WhatsApp",
     "delivery_fee": "Delivery Fee",
-    "grand_total": "Grand Total"
+    "grand_total": "Grand Total",
+    "note": "Note",
+    "phone_number": "Phone Number",
+    "general_note": "General Note",
+    "send_order": "Send Order",
+    "clear_basket": "Clear Basket",
+    "order_id": "Order ID",
+    "address": "Address",
+    "buildingNo": "Building No",
+    "floor": "Floor",
+    "flat": "Flat",
+    "directions": "Directions",
+    "attributes": "Attributes",
+    "attribute_name": "Attribute Name",
+    "add_attribute" : "Add Attribute",
+    "edit_Attribute" : "Edit Attribute",
+    "products_list": "Products List",
+    "select_a_attributes": "Select Attributes"
 
 }

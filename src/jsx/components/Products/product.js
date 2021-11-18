@@ -203,6 +203,8 @@ const Product = (props) => {
                 <CBreadcrumbItem className="font-weight-bold" href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
                 <CBreadcrumbItem active>{t('products')} </CBreadcrumbItem>
             </CBreadcrumb>
+            <Link to={`/add-product/${subMenuId}`}>{t('add_product')} </Link>
+            {/* <Link to="/products">{t('product_list')}</Link> */}
             {/* <PageTItle headingPara={t('products')} activeMenu={t('add_product')} motherMenu={t('products')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
