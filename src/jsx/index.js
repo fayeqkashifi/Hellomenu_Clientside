@@ -34,6 +34,7 @@ import ShowVariantDetails from "./components/Variants/VariantDetails";
 import Tables from "./components/Branches/Tables";
 import Attributes from "./components/Attributes/Attributes";
 import AddProduct from "./components/Products/AddProduct";
+import Options from "./components/Attributes/Options";
 
 const Markup = () => {
    const routes = [
@@ -58,6 +59,7 @@ const Markup = () => {
 		{ url: "tables/:id", component: Tables },
 		{ url: "attributes", component: Attributes },
 		{ url: "add-product/:id", component: AddProduct },
+		{ url: "add-option/:id", component: Options },
 
 
    ];

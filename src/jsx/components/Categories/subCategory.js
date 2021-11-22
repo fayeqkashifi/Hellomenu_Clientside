@@ -126,7 +126,7 @@ const SubCategory = (props) => {
             fetchData.map((item, i) => {
                 branchID = item.branchID;
                 return (
-                    <div className="col-xl-4 col-lg-6 col-sm-6" key={id}>
+                    <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
                         <div className="card overflow-hidden">
                             <div className="card-body">
                                 <div className="text-center">

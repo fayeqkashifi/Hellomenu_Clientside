@@ -431,9 +431,9 @@ const Variants = (props) => {
                         </Button>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label className="mb-1 "> <strong>{t('branch_name')}: {props.location.branchName}</strong> </label>
-                        </div>
+                        </div> */}
                         <div className="row" >
                             {/* <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
                                 <div className="form-group">
@@ -652,7 +652,7 @@ const Variants = (props) => {
                             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
 
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('variant_details')}</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('attribute_variant_details')}</strong> </label>
                                     {/* <div className="file-loading"> */}
                                 </div>
 
@@ -671,7 +671,7 @@ const Variants = (props) => {
                                                     : "form-control"
                                             }
                                             name="name"
-                                            placeholder="Name"
+                                            placeholder={t('attributes')}
                                             value={item.name}
                                             onChange={(e) => onChange(index, e)}
                                         />
@@ -690,7 +690,7 @@ const Variants = (props) => {
                                                     : "form-control"
                                             }
                                             name="value"
-                                            placeholder="Value"
+                                            placeholder={t('Options')}
                                             value={item.value}
                                             onChange={(e) => onChange(index, e)}
                                         />
@@ -716,7 +716,7 @@ const Variants = (props) => {
 
                             <div className="col-xl-4 col-xxl-4 col-lg-3 col-sm-12">
                                 <button className="btn btn-primary mt-2" onClick={handleAddLink}>
-                                    {t('add_variant_details')}
+                                    {t('add_attribute')}
                                 </button>
                             </div>
                         </div>

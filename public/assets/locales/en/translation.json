@@ -156,6 +156,14 @@
     "add_attribute" : "Add Attribute",
     "edit_Attribute" : "Edit Attribute",
     "products_list": "Products List",
-    "select_a_attributes": "Select Attributes"
+    "select_a_attributes": "Select Attributes",
+    "option_name":"Option Name",
+    "add_option" : "Add Option",
+    "options" : "Options",
+    "edit_option": "Edit Option",
+    "download" : "Download",
+    "attribute_variant_details": "Attributes Variant Details",
+    "image": "Image",
+    "product_variation": "Product Variation"
 
 }

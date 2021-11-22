@@ -518,7 +518,7 @@ const Branches = () => {
                         </div>
                     </div>
                 </div>
-                <ReactWhatsapp number="93744647067" message="Hello World!!!" >WhatsApps</ReactWhatsapp>
+                {/* <ReactWhatsapp number="93744647067" message="Hello World!!!" >WhatsApps</ReactWhatsapp> */}
             </div>
             <div className="App">
                 <FloatingWhatsApp

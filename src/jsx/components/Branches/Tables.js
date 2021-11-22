@@ -329,7 +329,7 @@ const Tables = (props) => {
                                             {/* <th>{t('number')}</th> */}
                                             <th>{t('table_id')}</th>
                                             <th>{t('table_name')}</th>
-                                            <th>{t('table_name')}</th>
+                                            <th>{t('download')}</th>
                                             <th>{t('actions')}</th>
                                         </tr>
                                     </thead>

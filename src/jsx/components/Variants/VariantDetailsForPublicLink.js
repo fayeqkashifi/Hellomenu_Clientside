@@ -223,7 +223,7 @@ const VariantDetailsForPublicLink = (props) => {
                                                             </tbody>
                                                         </Table>
 
-                                                        <div className="col-2 px-0 mt-2">
+                                                        {/* <div className="col-2 px-0 mt-2">
                                                             <div className="input-group">
                                                                 <button type="button" onClick={handleDecrement} className="input-group-text ">{t('minus')}</button>
                                                                     <div className="input-group-text bg-white "> {quantity}</div>
@@ -236,14 +236,14 @@ const VariantDetailsForPublicLink = (props) => {
                                                                 </div>
                                                                 : ""
                                                             }
-                                                        </div>
-                                                        <div className="shopping-cart mt-5">
-                                                            <Link
+                                                        </div> */}
+                                                        {/* <div className="shopping-cart mt-5"> */}
+                                                            {/* <Link
                                                                 to="/page-login"
                                                                 className="btn btn-primary btn-lg">
                                                                 <i className="fa fa-shopping-basket mr-2"></i>
                                                                 {t('add_to_basket')}
-                                                            </Link>
+                                                            </Link> */}
                                                             {/* <button
                                                 type="button"
                                                 onClick={addBaskets}
@@ -252,7 +252,7 @@ const VariantDetailsForPublicLink = (props) => {
                                                     {t('add_to_basket')}
                                             </button>
                                          */}
-                                                        </div>
+                                                        {/* </div> */}
                                                     </div>
                                                 </div>
                                             </div>
