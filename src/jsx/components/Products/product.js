@@ -13,7 +13,9 @@ import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 const Product = (props) => {
     // validation
     const schema = yup.object().shape({
+        Description: yup.string().required("This field is a required field"),
         ProductName: yup.string().required("This field is a required field"),
+        UnitID: yup.string().required("This field is a required field"),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
@@ -37,17 +39,29 @@ const Product = (props) => {
     };
     const saveProduct = (e) => {
         // e.preventDefault();
-        axios.post(`/api/InsertProducts/${subMenuId}`, productInsert).then(res => {
+        const formData = new FormData();
+        // formData.append('image', subCategoryInsert.SubCategoryName);
+        formData.append('image', imageState.photo);
+
+        // formData.append('image', imageState.image);
+        formData.append('Description', productInsert.Description);
+        formData.append('ProductName', productInsert.ProductName);
+        formData.append('UnitID', productInsert.UnitID);
+
+        axios.post(`/api/InsertProducts/${subMenuId}`, formData).then(res => {
             if (res.data.status === 200) {
                 // console.log(res.data.status);
-                setProductInsert('');
+                setProductInsert({
+                    Description: '',
+                    ProductName: '',
+                    UnitID: ''
+                });
                 reset();
                 swal("Success", res.data.message, "success");
                 setModalCentered(false)
                 //  this.props.history.push("/")
             }
         });
-
     };
     // edit code
     const [editProduct, setEditProduct] = useState([]);
@@ -70,7 +84,16 @@ const Product = (props) => {
     }
     const updateProduct = (e) => {
         e.preventDefault();
-        axios.post("/api/UpdateProduct", editProduct).then(res => {
+         const formData = new FormData();
+         // formData.append('image', subCategoryInsert.SubCategoryName);
+         formData.append('image', imageState.photo);
+ 
+         // formData.append('image', imageState.image);
+         formData.append('Description', editProduct.Description);
+         formData.append('ProductName', editProduct.ProductName);
+         formData.append('UnitID', editProduct.UnitID);
+         formData.append('id', editProduct.id);
+        axios.post("/api/UpdateProduct", formData).then(res => {
             if (res.data.status === 200) {
                 // console.log(res.data.status);
                 setEditProduct('');
@@ -81,11 +104,23 @@ const Product = (props) => {
         });
 
     };
+    const [imageState, setImageState] = useState([]);
+
+    const handleImage = (e) => {
+        setImageState({ ...imageState, photo: e.target.files[0] });
+    };
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [unitData, setUnitData] = useState([]);
 
     useEffect(() => {
+        axios.get("/api/GetUnitsAll").then(res => {
+            if (res.data.status === 200) {
+                // console.log(res.data.fetchData)
+                setUnitData(res.data.fetchData);
+            }
+        });
         axios.get(`/api/GetProducts/${subMenuId}`).then(res => {
             if (res.data.status === 200) {
                 setFetchData(res.data.fetchData);
@@ -110,11 +145,11 @@ const Product = (props) => {
                             <div className="card-body">
                                 <div className="text-center">
                                     <div className="profile-photo">
-                                        {/* <img
-                                    src={`http://localhost:8000/images/catagories/${item.PicturesLocation}`}
+                                        <img
+                                    src={`http://localhost:8000/images/products/${item.image}`}
                                     className="d-block w-100"
                                     alt=""
-                                /> */}
+                                />
                                     </div>
                                     <h3 className="mt-4 mb-1"><Link to={{
                                         pathname: `/variants/${item.product_id}`,
@@ -123,8 +158,6 @@ const Product = (props) => {
                                     }} > {item.ProductName}</Link></h3>
                                     <p className="text-muted"></p>
                                     {/* <p className="text-muted">{item.SubCategoryName}</p> */}
-
-
                                 </div>
                             </div>
 
@@ -222,15 +255,77 @@ const Product = (props) => {
                             <input
                                 type="text"
                                 {...register("ProductName")}
-                                className="form-control"
+                                className={
+                                    errors.ProductName?.message
+                                        ? "form-control  is-invalid"
+                                        : "form-control"
+                                }
                                 placeholder={t('product_name')}
                                 name="ProductName"
                                 onChange={handleInput}
                                 value={productInsert.ProductName}
                             />
-                            <div className="text-danger">
-                                {errors.ProductName?.message}
-                            </div>
+                            {errors.ProductName?.message && (
+                                <div className="invalid-feedback">{errors.ProductName?.message}</div>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('unit')}</strong> </label>
+                            <select type="text"
+                                {...register("UnitID")}
+
+                                className={
+                                    errors.UnitID?.message
+                                        ? "form-control  is-invalid"
+                                        : "form-control"
+                                }
+                                placeholder="UnitID"
+                                name="UnitID"
+                                onChange={handleInput}
+                                value={productInsert.UnitID}>
+                                <option value="">{t('select_a_unit')}</option> )
+                                {
+                                    unitData.map((item) =>
+                                        <option value={item.id} key={item.id}>{item.UnitName}</option>)
+                                }</select>
+                            {errors.UnitID?.message && (
+                                <div className="invalid-feedback">{errors.UnitID?.message}</div>
+                            )}
+
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('description')}</strong> </label>
+                            <textarea
+                                type="text"
+                                {...register("Description")}
+                                className={
+                                    errors.Description?.message
+                                        ? "form-control  is-invalid"
+                                        : "form-control"
+                                }
+                                placeholder={t('description')}
+                                name="Description"
+                                onChange={handleInput}
+                                value={productInsert.Description}
+                            />
+                            {errors.Description?.message && (
+                                <div className="invalid-feedback">{errors.Description?.message}</div>
+                            )}
+
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('image')}</strong> </label>
+                            {/* <div className="file-loading"> */}
+                            <input
+                                        type="file"
+                                        className="form-control"
+                                        placeholder={t('image')}
+                                        name="photo"
+                                        required
+                                        onChange={handleImage}
+                                    />
+                            
+                            {/* </div> */}
                         </div>
 
                     </Modal.Body>
@@ -284,6 +379,53 @@ const Product = (props) => {
                                 value={editProduct.ProductName}
                             />
                         </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('unit')}</strong> </label>
+                            <select type="text"
+                                className= "form-control"
+                                placeholder="UnitID"
+                                name="UnitID"
+                                onChange={editHandleInput}
+                                value={editProduct.UnitID}>
+                                <option value="">{t('select_a_unit')}</option> )
+                                {
+                                    unitData.map((item) =>
+                                        <option value={item.id} key={item.id}>{item.UnitName}</option>)
+                                }</select>
+                            
+
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('description')}</strong> </label>
+                            <textarea
+                                type="text"
+                                className="form-control"
+                                placeholder={t('description')}
+                                name="Description"
+                                onChange={editHandleInput}
+                                value={editProduct.Description}
+                            />
+                            
+
+                        </div>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('image')}</strong> </label>
+                            <div className="input-group">
+                                <div className="custom-file">
+                                    <input
+                                        type="file"
+                                        className="form-control"
+                                        placeholder={t('image')}
+                                        name="photo"
+
+                                        onChange={handleImage}
+                                    />
+                                    <img src={`http://localhost:8000/images/products/${editProduct.image}`} width="70" alt=" " />
+
+                                </div>
+                            </div>
+                        </div>
+
 
                     </Modal.Body>
                     <Modal.Footer>
@@ -304,10 +446,10 @@ const Product = (props) => {
                     <div className="card overflow-hidden "  >
                         <div className="card-body d-flex justify-content-center text-center" style={{ border: "2px dashed red" }}>
                             <div className="align-self-center text-center">
-                                <Link  className="btn btn-outline-primary"
-                                to={`/add-product/${subMenuId}`}
-                                    // onClick={() => setModalCentered(true)}
-                                    >
+                                <Link className="btn btn-outline-primary"
+                                    // to={`/add-product/${subMenuId}`}
+                                    onClick={() => setModalCentered(true)}
+                                >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                     </svg>

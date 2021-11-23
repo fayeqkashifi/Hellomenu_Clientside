@@ -36,7 +36,7 @@ const ShowBranchDetails = (props) => {
    const [categories, setCategories] = useState([])
    const [subcategories, setSubCategories] = useState([])
    // const [products, setProducts]= useState([])
-   const [variants, setVariants] = useState([])
+   const [products, setProducts] = useState([])
    const [activeCategory, setActiveCategory] = useState(0)
    const [activeSubCategory, setActiveSubCategory] = useState(0)
    const [activeVariant, setActiveVariant] = useState(0)
@@ -61,7 +61,8 @@ const ShowBranchDetails = (props) => {
             // console.log(res.data.fetchData);
             axios.get(`/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0].sub_id}`).then(res => {
                if (res.data.status === 200) {
-                  setVariants(res.data.fetchData);
+                  console.log(res.data.fetchData);
+                  setProducts(res.data.fetchData);
 
                   setActiveSubCategory(res.data.fetchData[0].sub_category_id)
                }
@@ -88,7 +89,7 @@ const ShowBranchDetails = (props) => {
                         fetchMoreData()
                      } else {
                         hold = hold + 1
-                        setVariants(variants.concat(res.data.fetchData))
+                        setProducts(products.concat(res.data.fetchData))
 
                      }
 
@@ -233,7 +234,7 @@ const ShowBranchDetails = (props) => {
    } else {
       var value;
       viewShow_HTMLTABLE =
-         variants.map((item, i) => {
+         products.map((item, i) => {
 
             return (
                <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-4 col-half-offset" key={i} id={item.SubCategoryName} >
@@ -245,19 +246,20 @@ const ShowBranchDetails = (props) => {
                            <div className="new-arrival-product">
 
                               <div className="text-center bg-white">
-                                 <img className="img-fluid w-100 img-thumbnail" style={{ height: '100px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/variants_pics/${item.PicturesLocation}`} alt="" />
+                                 <img className="img-fluid w-100 img-thumbnail" style={{ height: '100px', objectFit: 'contain' }} src={`http://192.168.1.103/yesilik1/public/images/products/${item.image}`} alt="" />
                               </div>
-                              <Counter item={item} activeVariants={activeVariant => setActiveVariant(activeVariant)}
+                              {/* <Counter item={item} activeVariants={activeVariant => setActiveVariant(activeVariant)}
                                  // getGrandTotal={grandTotal => setGrandTotal(grandTotal)} 
-                                 />
-                              <RLink to={`/variant-details/${item.variantID}`} className="text-black">
+                                 /> */}
+                              <RLink to={`/product/${item.product_id}`} className="text-black">
                                  <div className="new-arrival-content text-center mt-3">
                                     <h4>
-                                       {item.VariationName}
+                                       {item.ProductName}
+                                       <p className="text-success">{item.UnitName}</p>
                                     </h4>
 
-                                    <span className="price">{item.CurrentPrice + ' ' + item.currency_code}</span>
-                                    <s className="ms-2">{item.OldPrice + ' ' + item.currency_code}</s>
+                                    {/* <span className="price">{item.CurrentPrice + ' ' + item.currency_code}</span>
+                                    <s className="ms-2">{item.OldPrice + ' ' + item.currency_code}</s> */}
                                  </div>
                               </RLink>
 
@@ -375,7 +377,7 @@ const ShowBranchDetails = (props) => {
             </CNavbar>
             <CNavbar colorScheme="light" className="bg-white" placement="sticky-top" >
 
-               {/* <Col lg={12}> */}
+               <Col lg={12}>
                <Card  >
                   <Card.Body>
                      <Slider {...settings}>
@@ -404,7 +406,7 @@ const ShowBranchDetails = (props) => {
                      </Slider>
                   </Card.Body>
                </Card>
-               {/* </Col> */}
+               </Col>
             </CNavbar>
 
          </Fragment>
@@ -413,7 +415,7 @@ const ShowBranchDetails = (props) => {
             {viewShow_HTMLTABLE}
          </div>
          <InfiniteScroll
-            dataLength={variants.length} //This is important field to render the next data
+            dataLength={products.length} //This is important field to render the next data
             next={fetchMoreData}
             hasMore={changeState}
             loader={<p className="text-center pt-5" style={{ height: 120 }}><b>{t('loading')}</b></p>}
@@ -439,7 +441,7 @@ const ShowBranchDetails = (props) => {
                   </Button>
                </Modal.Header>
                <Modal.Body>
-                  {variants.map((item, i) => {
+                  {products.map((item, i) => {
 
                      { var variant = JSON.parse(sessionStorage.getItem(`variant${item.variantID}`)) }
                      if (variant != null) {
@@ -618,9 +620,11 @@ const ShowBranchDetails = (props) => {
                <p className="text-dark">Free</p>
             </div> */}
             <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-4 ">
-               <Button variant="outline-success" onClick={() => setModalCentered(true)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-whatsapp" viewBox="0 0 16 16">
+               <Button variant="outline-success" onClick={() => setModalCentered(true)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-whatsapp" viewBox="0 0 16 16">
                   <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
-               </svg>  {t('order_now_by_whatsapp')}
+               </svg> 
+                {t('order_now_by_whatsapp')}
                </Button>
 
             </div>

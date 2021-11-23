@@ -106,7 +106,7 @@ const Attributes = (props) => {
 
                         <td> {item.attributeName}</td>
                         <td>
-                            <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp;
+                            {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
                             <button type="button" onClick={(e) => fetchAttribute(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
                             <button type="button" onClick={(e) => deleteAttribute(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
                         </td>

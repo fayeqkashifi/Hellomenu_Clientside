@@ -131,17 +131,19 @@ const Category = (props) => {
                             <Card.Header>
                                 <h4 className="card-intro-title">{item.CategoryName}</h4>
                             </Card.Header>
-                            <Card.Body className="p-4">
+                            <Card.Body >
+                                <div className="text-center">
                             <Link to={{pathname: `/sub-category/${item.id}`, CategoryName: item.CategoryName}}>
                                 <span>
                                 <img
                                     style={{ height: '100px', objectFit: 'contain' }}
                                     src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`}
-                                    className="d-block w-40"
+                                    className="w-40"
                                     alt="Menu"
                                 />
                                 </span>
                                 </Link>
+                                </div>
                             </Card.Body>
 
                             <Card.Footer className="text-center">

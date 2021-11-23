@@ -51,7 +51,7 @@ const VariantDetailsForPublicLink = (props) => {
                 axios.get(`/api/Getvariations/${res.data.variantdata[0].product_id}`).then(res => {
                     if (res.data.status === 200) {
                         setVariants(res.data.fetchData);
-                        // console.log();
+                        // console.log(res.data.fetchData);
 
                     }
                 });
@@ -193,9 +193,9 @@ const VariantDetailsForPublicLink = (props) => {
                                                             {t('unit')}: <span className="item">{item.UnitName}</span>
                                                         </p>
                                                         <h4 className="m-b-15">{t('description')}</h4>
-                                                        <p className="text-content"> {item.Description}</p>
+                                                        <p className="text-content"> {item.productDescription}</p>
                                                         <h4 className="m-b-15">{t('advice')}</h4>
-                                                        <p className="text-content"> {item.Advice}</p>
+                                                        <p className="text-content"> {item.productAdvice}</p>
                                                         <p>{t('variant_details')} </p>
 
                                                         <Table responsive striped bordered hover>

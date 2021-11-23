@@ -9,19 +9,19 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem, CDropdownMenu, CDropdownToggle, CDropdown } from '@coreui/react'
+import Select from 'react-select';
 
 const Variants = (props) => {
     // validation
     const schema = yup.object().shape({
         variant_name: yup.string().required("This field is a required field"),
-        Buyingquantity: yup.number().positive().integer().required().typeError('You must specify a number'),
-        buyingPrice: yup.number().positive().integer().required().typeError('You must specify a number'),
-        sellingPrice: yup.number().positive().integer().required().typeError('You must specify a number'),
+        quantity: yup.number().positive().integer().required().typeError('You must specify a number'),
         Description: yup.string().required("This field is a required field"),
+        sku: yup.string().required("This field is a required field"),
         Advice: yup.string().required("This field is a required field"),
         CurrentPrice: yup.number().positive().integer().required().typeError('You must specify a number'),
-        OldPrice: yup.number().positive().integer().required().typeError('You must specify a number'),
-        UnitID: yup.string().required("This field is a required field"),
+        // OldPrice: yup.number().positive().integer().required().typeError('You must specify a number'),
+        // UnitID: yup.string().required("This field is a required field"),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
@@ -29,22 +29,16 @@ const Variants = (props) => {
     // for localization
     const { t } = useTranslation();
     const id = props.match.params.id;
-
-
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a section
     const [modalCentered, setModalCentered] = useState(false);
-
-    const [barchid, setBranchId] = useState(0);
-
     // edit code
     const [editVariant, setEditVariant] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
         setEditVariant({ ...editVariant, [e.target.name]: e.target.value });
     };
-
     const fetchVariant = (e, id) => {
         e.preventDefault();
         axios.get(`/api/Editvariations/${id}`).then(res => {
@@ -73,21 +67,7 @@ const Variants = (props) => {
 
     };
     // insert a section
-    const [variantInsert, setVariantInsert] = useState({
-        variant_name: '',
-        // SellingQuantity: '',
-        Buyingquantity: '',
-        buyingPrice: '',
-        sellingPrice: '',
-        Description: '',
-        Advice: '',
-        CurrentPrice: '',
-        OldPrice: '',
-        UnitID: '',
-        sub_categoryID: '',
-        ProductName: '',
-        branch_id: barchid
-    });
+    const [variantInsert, setVariantInsert] = useState({});
     const handleInput = (e) => {
         e.persist();
         setVariantInsert({ ...variantInsert, [e.target.name]: e.target.value });
@@ -95,48 +75,26 @@ const Variants = (props) => {
     // insert
     const saveInventory = (e) => {
         // e.preventDefault();
-        // console.log(e.target[0].files);
+        console.log(displayValue[0]);
 
-        // var files = e.target[0].files;
         const formData = new FormData();
         for (let i = 0; i < imageState.image.length; i++) {
             formData.append("file[]", imageState.image[i]);
         }
-        // for (let i = 0; i < form.length; i++) {
-        //     formData.append("form[]", form[i]);
-        // }
-        // formData.append('file', imageState.PicturesLocation	);
         formData.append('variant_name', variantInsert.variant_name);
-        formData.append('Buyingquantity', variantInsert.Buyingquantity);
-        formData.append('buyingPrice', variantInsert.buyingPrice);
-        formData.append('sellingPrice', variantInsert.sellingPrice);
+        formData.append('quantity', variantInsert.quantity);
         formData.append('Description', variantInsert.Description);
         formData.append('Advice', variantInsert.Advice);
         formData.append('CurrentPrice', variantInsert.CurrentPrice);
-        formData.append('OldPrice', variantInsert.OldPrice);
-        formData.append('UnitID', variantInsert.UnitID);
-        formData.append('sub_categoryID', variantInsert.sub_categoryID);
-        formData.append('ProductName', variantInsert.ProductName);
-        formData.append('branch_id', barchid);
+        formData.append('sku', variantInsert.sku);
+        formData.append('attribute', JSON.stringify(displayValue));
+        formData.append('option', JSON.stringify(options));
         formData.append('form', JSON.stringify(form));
         axios.post(`/api/InsertInventory/${id}`, formData).then(res => {
             if (res.data.status === 200) {
-                setVariantInsert({
-                    variant_name: '',
-                    // SellingQuantity: '',
-                    Buyingquantity: '',
-                    buyingPrice: '',
-                    sellingPrice: '',
-                    Description: '',
-                    Advice: '',
-                    CurrentPrice: '',
-                    OldPrice: '',
-                    UnitID: '',
-                    sub_categoryID: '',
-                    branch_id: barchid
-                });
-
-
+                setVariantInsert({});
+                setDisplayValue([]);
+                setOptions([]);
                 reset();
                 swal("Success", res.data.message, "success");
                 setForm([]);
@@ -171,9 +129,8 @@ const Variants = (props) => {
     };
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
+    const [attributes, setAttributes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [unitData, setUnitData] = useState([]);
-    // const [unitData,setUnitData]=useState([]);
     useEffect(() => {
         axios.get(`/api/Getvariations/${id}`).then(res => {
             if (res.data.status === 200) {
@@ -182,15 +139,26 @@ const Variants = (props) => {
             }
             setLoading(false);
         });
-        axios.get(`/api/GetUnitsAll/${id}`).then(res => {
+        axios.get(`/api/GetAttributes`).then(res => {
             if (res.data.status === 200) {
-                setBranchId(res.data.fetchData[0].branchID);
-                setUnitData(res.data.fetchData);
+                setAttributes(res.data.fetchData);
             }
         });
-
     }, [id, variantInsert, editVariant]);
 
+    const [options, setOptions] = useState([]);
+    const selectOnChange = (index, event) => {
+        event.preventDefault();
+        event.persist();
+
+        setOptions({
+                    ...options,
+                    [event.target.name]: event.target.value,
+                
+        });
+        console.log(options);
+        console.log(displayValue);
+    };
     const [form, setForm] = useState([]);
 
     const prevIsValid = () => {
@@ -244,6 +212,8 @@ const Variants = (props) => {
         setForm((prev) => {
             return prev.map((item, i) => {
                 if (i !== index) {
+                    console.log(item);
+
                     return item;
                 }
 
@@ -269,9 +239,11 @@ const Variants = (props) => {
         setForm((prev) => prev.filter((item) => item !== prev[index]));
     };
 
-
-
-
+    // select input
+    const [displayValue, setDisplayValue] = useState([]);
+    const handleSelectEvent = (e) => {
+        setDisplayValue(Array.isArray(e) ? e.map(item => item.label) : {})
+    }
     var branchID = 0;
     var CategoryID = 0;
     var sub_category_id = 0;
@@ -300,7 +272,7 @@ const Variants = (props) => {
                                     />
 
                                     <h4 className="mt-4 mb-1"> {item.VariationName}</h4>
-                                    <p className="text-muted">{item.Description} </p>
+                                    {/* <p className="text-muted">{item.Description} </p> */}
                                     <CDropdown variant="btn-group">
                                         {/* <CButton color="primary" size="sm"></CButton> */}
                                         <CDropdownToggle color="primary" size="lg" split="hover" shape="rounded" caret={false}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
@@ -378,20 +350,7 @@ const Variants = (props) => {
                 if (willDelete) {
                     axios.delete(`/api/Deletevariations/${id}`).then(res => {
                         if (res.data.status === 200) {
-                            setVariantInsert({
-                                variant_name: '',
-                                // SellingQuantity: '',
-                                Buyingquantity: '',
-                                buyingPrice: '',
-                                sellingPrice: '',
-                                Description: '',
-                                Advice: '',
-                                CurrentPrice: '',
-                                OldPrice: '',
-                                UnitID: '',
-                                sub_categoryID: '',
-                                branch_id: id
-                            });
+                            setVariantInsert({});
                             swal("Success", res.data.message, "success");
                             // thisClicked.closest("tr").remove();
                         } else if (res.data.status === 404) {
@@ -406,7 +365,7 @@ const Variants = (props) => {
 
 
     }
-
+  
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
@@ -421,7 +380,7 @@ const Variants = (props) => {
             <Modal className="fade bd-example-modal-lg" show={modalCentered} size="lg">
                 <Form onSubmit={handleSubmit(saveInventory)} method="POST" encType="multipart/form-data">
                     <Modal.Header>
-                        <Modal.Title>{t('add_to_inventory')}</Modal.Title>
+                        <Modal.Title>{t('add_variants')}</Modal.Title>
                         <Button
                             onClick={() => setModalCentered(false)}
                             variant=""
@@ -431,46 +390,48 @@ const Variants = (props) => {
                         </Button>
                     </Modal.Header>
                     <Modal.Body>
-                        {/* <div className="form-group">
-                            <label className="mb-1 "> <strong>{t('branch_name')}: {props.location.branchName}</strong> </label>
-                        </div> */}
                         <div className="row" >
-                            {/* <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('product_name')}</strong> </label>
-                                    <select type="text"
-                                        className="form-control"
-                                        placeholder="ProductName"
-                                        name="ProductName"
-                                        required
-                                        onChange={handleInput}  
-                                        value={variantInsert.ProductName}>
-                                        <option value=''>{t('select_a_product')}</option> )
-                                        {
-                                        products.map( (item) => 
-                                        <option value={item.id} key={item.id}>{item.ProductName}</option> )
-                                    }</select>
-                                </div>
-                            </div> */}
-                            {/* <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong></strong> </label>
-                                    <select type="text"
-                                        className="form-control"
-                                        placeholder="sub_categoryID"
-                                        name="sub_categoryID"
-                                        required
-                                        onChange={handleInput}  
-                                        value={variantInsert.sub_categoryID}>
-                                        <option value="">{t('select_subCategory')}</option> )
-                                        
-                                        {
-                                        subCategoryData.map( (item) => 
-                                        <option value={item.id} key={item.id}>{item.SubCategoryName}</option> )
-                                    }</select>
-                                </div>
-                            </div> */}
+                        <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 ">
+                            <div className="form-group">
+                                <label className="mb-1 "> <strong>{t('attributes')}</strong> </label>
 
+                                <Select
+                                    // defaultValue={[colourOptions[2], colourOptions[3]]}
+                                    isMulti
+                                    name="colors"
+                                    options={attributes.map((o, i) => {
+                                        return { id: i, value: o.id, label: o.attributeName };
+                                    })}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select"
+                                    onChange={handleSelectEvent}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mt-3">
+                            {
+                                displayValue?.map((item, i) => {
+                                    return (
+                                        <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12" key={i}>
+                                            <div className="form-group">
+                                                <label className="mb-1 "> <strong>{item}</strong> </label>
+                                                <input
+                                            type="text"
+                                            className="form-control"
+                                            name={item}
+                                            placeholder={item}
+                                            value={options.option}
+                                            onChange={(e) => selectOnChange(i, e)}
+                                        />
+
+                                         
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>{t('variant_name')}</strong> </label>
@@ -490,53 +451,18 @@ const Variants = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('buying_quantity')}</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('quantity')}</strong> </label>
                                     <input
                                         type="text"
-                                        {...register("Buyingquantity")}
+                                        {...register("quantity")}
                                         className="form-control"
-                                        placeholder={t('buying_quantity')}
-                                        name="Buyingquantity"
+                                        placeholder={t('quantity')}
+                                        name="quantity"
                                         onChange={handleInput}
-                                        value={variantInsert.Buyingquantity}
+                                        value={variantInsert.quantity}
                                     />
                                     <div className="text-danger">
-                                        {errors.Buyingquantity?.message}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('buying_price')}</strong> </label>
-                                    <input
-                                        type="text"
-                                        {...register("buyingPrice")}
-                                        className="form-control"
-                                        placeholder={t('buying_price')}
-                                        name="buyingPrice"
-                                        onChange={handleInput}
-                                        value={variantInsert.buyingPrice}
-                                    />
-                                    <div className="text-danger">
-                                        {errors.buyingPrice?.message}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('selling_price')}</strong> </label>
-                                    <input
-                                        type="text"
-                                        {...register("sellingPrice")}
-                                        className="form-control"
-                                        placeholder={t('selling_price')}
-                                        name="sellingPrice"
-                                        onChange={handleInput}
-                                        value={variantInsert.sellingPrice}
-                                    />
-                                    <div className="text-danger">
-                                        {errors.sellingPrice?.message}
+                                        {errors.quantity?.message}
                                     </div>
                                 </div>
                             </div>
@@ -576,13 +502,13 @@ const Variants = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('current_price')}</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('price')}</strong> </label>
                                     <input
                                         type="text"
                                         {...register("CurrentPrice")}
 
                                         className="form-control"
-                                        placeholder={t('current_price')}
+                                        placeholder={t('price')}
                                         name="CurrentPrice"
                                         onChange={handleInput}
                                         value={variantInsert.CurrentPrice}
@@ -594,42 +520,23 @@ const Variants = (props) => {
                             </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('old_price')}</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('sku')}</strong> </label>
                                     <input
                                         type="text"
-                                        {...register("OldPrice")}
-                                        className="form-control"
-                                        placeholder={t('old_price')}
-                                        name="OldPrice"
-                                        onChange={handleInput}
-                                        value={variantInsert.OldPrice}
-                                    />
-                                    <div className="text-danger">
-                                        {errors.OldPrice?.message}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('unit')}</strong> </label>
-                                    <select type="text"
-                                        {...register("UnitID")}
+                                        {...register("sku")}
 
                                         className="form-control"
-                                        placeholder="UnitID"
-                                        name="UnitID"
+                                        placeholder={t('price')}
+                                        name="sku"
                                         onChange={handleInput}
-                                        value={variantInsert.UnitID}>
-                                        <option value="">{t('select_a_unit')}</option> )
-                                        {
-                                            unitData.map((item) =>
-                                                <option value={item.id} key={item.id}>{item.UnitName}</option>)
-                                        }</select>
+                                        value={variantInsert.sku}
+                                    />
                                     <div className="text-danger">
-                                        {errors.UnitID?.message}
+                                        {errors.sku?.message}
                                     </div>
                                 </div>
                             </div>
+                            
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
 
                                 <div className="form-group">
@@ -777,7 +684,7 @@ const Variants = (props) => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                            {/* <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>{t('unit')}</strong> </label>
                                     <select type="text"
@@ -793,7 +700,7 @@ const Variants = (props) => {
                                                 <option value={item.id} key={item.id}>{item.UnitName}</option>)
                                         }</select>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>{t('description')}</strong> </label>

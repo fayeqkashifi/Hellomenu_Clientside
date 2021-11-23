@@ -164,6 +164,10 @@
     "download" : "Download",
     "attribute_variant_details": "Attributes Variant Details",
     "image": "Image",
-    "product_variation": "Product Variation"
+    "product_variation": "Product Variation",
+    "add_variants": "Add Variants",
+    "quantity": "Quantity",
+    "price": "Price",
+    "vatiants": "Vatiants"
 
 }
