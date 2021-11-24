@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-// import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom"
 import axios from "axios";
@@ -10,70 +9,59 @@ import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 const Gallery = (props) => {
     // for localization
     const { t } = useTranslation();
-
-    const [modalCentered, setModalCentered] = useState(false);
     // get ID
     const id = props.match.params.id;
-
-    //for retriving data using laravel API
-    const [fetchData, setFetchData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    //  insert Start
+    const [modalCentered, setModalCentered] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
-    const [imageState, setImageState] = useState([]);
-    useEffect(() => {
-        axios.get(`/api/GetPictures/${id}`).then(res => {
-            if (res.data.status === 200) {
-                setFetchData(res.data.fetchData);
-            }
-            setLoading(false);
+
+    const handleImageChange = (e) => {
+        const imagesArray = [];
+        for (let i = 0; i < e.target.files.length; i++) {
+            imagesArray.push(e.target.files[i]);
+        }
+        setImageState({ ...imageState, image: imagesArray });
+
+        setSelectedFiles([]);
+        if (e.target.files) {
+            const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+            setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+            Array.from(e.target.files).map(
+                (file) => URL.revokeObjectURL(file)
+            );
+        }
+
+    };
+    const renderPhotos = (source) => {
+        return source.map((photo) => {
+            return <img className="p-2" src={photo} alt="" key={photo} style={{ width: "100", height: "100px" }} />;
         });
+    };
+    // insert Pictures
+    const savePictures = (e) => {
+        e.preventDefault();
+        // console.log(e.target[0].files);
 
-    }, [selectedFiles, id]);
+        // var files = e.target[0].files;
+        const formData = new FormData();
+        for (let i = 0; i < imageState.image.length; i++) {
+            formData.append("file[]", imageState.image[i]);
+        }
+        // formData.append('file', imageState.PicturesLocation	);
 
-    var viewImages_HTMLTABLE = "";
-    if (loading) {
-        return <div className="spinner-border text-primary " role="status" style={{position: 'fixed',top: '50%',  left: '50%'}}><span className="sr-only">{t('loading')}</span></div>
-    } else {
-        viewImages_HTMLTABLE =
-            fetchData.map((item, i) => {
-                return (
-                    <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
-                        <div className="card overflow-hidden">
-                            {/* <div className="card-body"> */}
-                            <div className="text-center">
-                                <div className="profile-photo">
-                                    <img
-                                        style={{ with: '100px', height: '250px', objectFit: 'contain' }}
-                                        src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
-                                        className="d-block w-100 img-thumbnail"
-                                        alt=""
-                                    />
-                                </div>
-                            </div>
-                            {/* </div> */}
+        formData.append('variantID', id);
+        // console.log(formData);
+        axios.post("/api/InsertPictures", formData).then(res => {
+            if (res.data.status === 200) {
+                swal("Success", res.data.message, "success");
+                setModalCentered(false)
+                setSelectedFiles([]);
+            }
+        });
+    };
+    // insert End
 
-                            <div className="card-footer pt-0 pb-0 text-center">
-                                <div className="row">
-
-                                    <div className="col-12 pt-3 pb-3">
-                                        <Link
-                                            onClick={(e) => deletePicture(e, item.id)}
-                                        >
-                                            <span>{t('delete')}</span>
-                                        </Link>
-                                    </div>
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )
-            })
-
-    }
-    // delete section 
+    // delete start 
     const deletePicture = (e, id) => {
         e.preventDefault();
         swal({
@@ -100,65 +88,62 @@ const Gallery = (props) => {
             });
 
     }
-    // insert 
+    // delete end  
 
-
-    const handleImageChange = (e) => {
-        const imagesArray = [];
-        for (let i = 0; i < e.target.files.length; i++) {
-            imagesArray.push(e.target.files[i]);
-        }
-        setImageState({ ...imageState, image: imagesArray });
-
-        setSelectedFiles([]);
-        if (e.target.files) {
-            const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-            setSelectedFiles((prevImages) => prevImages.concat(filesArray));
-            Array.from(e.target.files).map(
-                (file) => URL.revokeObjectURL(file)
-            );
-        }
-
-    };
-
-    const renderPhotos = (source) => {
-        return source.map((photo) => {
-            return <img className="p-2" src={photo} alt="" key={photo} style={{ width: "100", height: "100px" }} />;
-        });
-    };
-
-    const savePictures = (e) => {
-        e.preventDefault();
-        // console.log(e.target[0].files);
-
-        // var files = e.target[0].files;
-        const formData = new FormData();
-        for (let i = 0; i < imageState.image.length; i++) {
-            formData.append("file[]", imageState.image[i]);
-        }
-        // formData.append('file', imageState.PicturesLocation	);
-
-        formData.append('variantID', id);
-        // console.log(formData);
-        axios.post("/api/InsertPictures", formData).then(res => {
+    //for retriving data using laravel API
+    const [fetchData, setFetchData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [imageState, setImageState] = useState([]);
+    useEffect(() => {
+        axios.get(`/api/GetPictures/${id}`).then(res => {
             if (res.data.status === 200) {
-                swal("Success", res.data.message, "success");
-                setModalCentered(false)
-                setSelectedFiles([]);
+                setFetchData(res.data.fetchData);
             }
+            setLoading(false);
         });
-    };
 
+    }, [selectedFiles, id]);
+
+    var viewImages_HTMLTABLE = "";
+    if (loading) {
+        return <div className="spinner-border text-primary " role="status" style={{ position: 'fixed', top: '50%', left: '50%' }}><span className="sr-only">{t('loading')}</span></div>
+    } else {
+        viewImages_HTMLTABLE =
+            fetchData.map((item, i) => {
+                return (
+                    <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+                        <div className="card overflow-hidden">
+                            <div className="text-center">
+                                <div className="profile-photo">
+                                    <img
+                                        style={{ with: '100px', height: '250px', objectFit: 'contain' }}
+                                        src={`http://localhost:8000/images/variants_pics/${item.PicturesLocation}`}
+                                        className="d-block w-100 img-thumbnail"
+                                        alt=""
+                                    />
+                                </div>
+                            </div>
+                            <div className="card-footer pt-0 pb-0 text-center">
+                                <div className="row">
+                                    <div className="col-12 pt-3 pb-3">
+                                        <Link
+                                            onClick={(e) => deletePicture(e, item.id)}
+                                        >
+                                            <span>{t('delete')}</span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            })
+    }
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
                 <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
-                {/* <CBreadcrumbItem  href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
-                <CBreadcrumbItem  href={`/sub-category/${CategoryID}`} >{t('sub_category')}</CBreadcrumbItem>
-                <CBreadcrumbItem  href={`/products/${sub_category_id}`}>{t('products')} </CBreadcrumbItem>
-                <CBreadcrumbItem  active> {t('variants')} </CBreadcrumbItem> */}
             </CBreadcrumb>
-            {/* <PageTItle headingPara={t('gallery')} activeMenu={t('add_to_gallery')} motherMenu={t('gallery')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade bd-example-modal-lg" show={modalCentered} >
                 <Form onSubmit={savePictures} method="POST" encType="multipart/form-data">
@@ -175,7 +160,6 @@ const Gallery = (props) => {
                     <Modal.Body>
                         <div className="row" >
                             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>{t('images')}</strong> </label>
                                     {/* <div className="file-loading"> */}
@@ -189,25 +173,8 @@ const Gallery = (props) => {
                                         data-overwrite-initial="false"
                                         data-min-file-count="1" />
                                 </div>
-
-                                {/* </div> */}
                             </div>
                             <div className="result">{renderPhotos(selectedFiles)}</div>
-
-                            {/* <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                                <div className="form-group">
-                                    <label className="mb-1 "> <strong>Selling Quantity</strong> </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="SellingQuantity"
-                                        name="SellingQuantity"
-                                        required
-                                        onChange={handleInput}  
-                                        value={variantInsert.SellingQuantity}
-                                    />
-                                </div>
-                            </div> */}
                         </div>
                     </Modal.Body>
                     <Modal.Footer>

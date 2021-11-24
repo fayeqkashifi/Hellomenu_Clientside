@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
@@ -10,23 +9,20 @@ import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const Company = () => {
-    // for validation start
+    // validation start
     const schema = yup.object().shape({
         company: yup.string().required(),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
-    //   validation end
+    // validation end
 
     // for localization
     const { t } = useTranslation();
 
-    // insert modal
+    // insert start
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert section
     const [companyState, setCompanyState] = useState([]);
     const handleInput = (e) => {
         e.preventDefault();
@@ -43,9 +39,10 @@ const Company = () => {
                 //  this.props.history.push("/")
             }
         });
-
     };
-    // edit code
+    // insert end
+    // edit Start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editCompanystate, setEditCompanystate] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -60,9 +57,7 @@ const Company = () => {
             } else if (res.data.status === 404) {
                 swal("Error", res.data.message, "error");
             }
-
         });
-
     }
     const updateCompany = (e) => {
         e.preventDefault();
@@ -77,39 +72,7 @@ const Company = () => {
         });
 
     };
-
-    //for retriving data using laravel API
-    const [fetchData, setFetchData] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        axios.get('/api/GetCompanies').then(res => {
-            if (res.data.status === 200) {
-                setFetchData(res.data.fetchData);
-            }
-            setLoading(false);
-        });
-    }, [companyState, editCompanystate]);
-
-    var viewCompanies_HTMLTABLE = "";
-    if (loading) {
-        return <div className="spinner-border text-primary " role="status"><span className="sr-only" style={{position: 'fixed',top: '50%',  left: '50%'}}>{t('loading')}</span></div>
-    } else {
-        viewCompanies_HTMLTABLE =
-            fetchData.map((item, i) => {
-                return (
-                    <tr key={item.id}>
-                        <td>{i + 1}</td>
-                        <td>{item.company}</td>
-                        <td>
-                            <button type="button" onClick={(e) => editCompany(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
-                            <button type="button" onClick={(e) => deleteCompany(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
-                        </td>
-                    </tr>
-                )
-            })
-
-    }
+    // edit End 
     // delete section 
     const deleteCompany = (e, id) => {
         // e.preventDefault();
@@ -140,9 +103,42 @@ const Company = () => {
                     swal("Your Data is safe now!");
                 }
             });
+    }
+    // delete end 
 
+    //for retriving data using laravel API
+    const [fetchData, setFetchData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        axios.get('/api/GetCompanies').then(res => {
+            if (res.data.status === 200) {
+                setFetchData(res.data.fetchData);
+            }
+            setLoading(false);
+        });
+    }, [companyState, editCompanystate]);
+
+    var viewCompanies_HTMLTABLE = "";
+    if (loading) {
+        return <div className="spinner-border text-primary " role="status"><span className="sr-only" style={{ position: 'fixed', top: '50%', left: '50%' }}>{t('loading')}</span></div>
+    } else {
+        viewCompanies_HTMLTABLE =
+            fetchData.map((item, i) => {
+                return (
+                    <tr key={item.id}>
+                        <td>{i + 1}</td>
+                        <td>{item.company}</td>
+                        <td>
+                            <button type="button" onClick={(e) => editCompany(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" onClick={(e) => deleteCompany(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
+                        </td>
+                    </tr>
+                )
+            })
 
     }
+
 
     return (
         <Fragment>
@@ -150,7 +146,6 @@ const Company = () => {
                 <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
                 <CBreadcrumbItem active>{t('companies')}</CBreadcrumbItem>
             </CBreadcrumb>
-            {/* <PageTItle headingPara={t('companies')} activeMenu={t('add_company')} motherMenu={t('companies')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveCompany)} method="POST" >

@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 /// Bootstrap
 import { Row, Col, Card } from "react-bootstrap";
@@ -13,22 +12,22 @@ import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem, CDropdown, CDropdownToggle, CDropdownMenu } from '@coreui/react'
 
 const Category = (props) => {
+    // valiation start
     const schema = yup.object().shape({
         CategoryName: yup.string().required("This field is a required field"),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation end 
+
     // for localization
     const { t } = useTranslation();
-    // insert modal
+    // ID
     const id = props.match.params.id;
 
+    // insert Start
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
-
     const [categoryInsert, setCategoryInsert] = useState({
         CategoryName: '',
         branchID: id,
@@ -62,9 +61,10 @@ const Category = (props) => {
                 //  this.props.history.push("/")
             }
         });
-
     };
-    // edit code
+    // insert End 
+    // edit start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editMenu, setEditMenu] = useState('');
     const editHandleInput = (e) => {
         e.persist();
@@ -90,8 +90,6 @@ const Category = (props) => {
         formData.append('CategoryName', editMenu.CategoryName);
         formData.append('branchID', editMenu.branchID);
         formData.append('id', editMenu.id);
-
-
         axios.post("/api/UpdateCategories", formData).then(res => {
             if (res.data.status === 200) {
                 // console.log(res.data.status);
@@ -101,11 +99,38 @@ const Category = (props) => {
                 //  this.props.history.push("/")
             } else if (res.data.status === 404) {
                 swal("Error", res.data.message, "error");
-
             }
         });
-
     };
+    // edit end
+    // delete start 
+    const deleteMenu = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteCategories/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            setCategoryInsert([]);
+                            swal("Success", res.data.message, "success");
+                            // thisClicked.closest("tr").remove();
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
+
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete end 
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -133,23 +158,23 @@ const Category = (props) => {
                             </Card.Header>
                             <Card.Body >
                                 <div className="text-center">
-                            <Link to={{pathname: `/sub-category/${item.id}`, CategoryName: item.CategoryName}}>
-                                <span>
-                                <img
-                                    style={{ height: '100px', objectFit: 'contain' }}
-                                    src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`}
-                                    className="w-40"
-                                    alt="Menu"
-                                />
-                                </span>
-                                </Link>
+                                    <Link to={{ pathname: `/sub-category/${item.id}`, CategoryName: item.CategoryName }}>
+                                        <span>
+                                            <img
+                                                style={{ height: '100px', objectFit: 'contain' }}
+                                                src={`http://localhost:8000/images/catagories/${item.CategoryIcon}`}
+                                                className="w-40"
+                                                alt="Menu"
+                                            />
+                                        </span>
+                                    </Link>
                                 </div>
                             </Card.Body>
 
                             <Card.Footer className="text-center">
                                 <CDropdown variant="btn-group">
                                     {/* <CButton color="primary" size="sm"></CButton> */}
-                                    <CDropdownToggle color="primary" size="sm"  shape="rounded" caret={false}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
+                                    <CDropdownToggle color="primary" size="sm" shape="rounded" caret={false}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
                                         <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                                     </svg>
                                     </CDropdownToggle>
@@ -207,38 +232,7 @@ const Category = (props) => {
                     </Col>
                 )
             })
-
     }
-    // delete section 
-    const deleteMenu = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteCategories/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            setCategoryInsert([]);
-                            swal("Success", res.data.message, "success");
-                            // thisClicked.closest("tr").remove();
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
-
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-
-
-    }
-
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
@@ -395,9 +389,6 @@ const Category = (props) => {
                     </div>
                 </div>
             </Row>
-
-
-
         </Fragment>
     );
 };

@@ -6,14 +6,12 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from "react-router-dom"
-
 import * as yup from 'yup';
 import QRCode from "qrcode.react";
-
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const Tables = (props) => {
-    // validation
+    // validation start
     const schema = yup.object().shape({
         tableId: yup.string().required("This field is a required field"),
         tableName: yup.string().required("This field is a required field"),
@@ -21,15 +19,14 @@ const Tables = (props) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation end 
+    
     // for localization
     const { t } = useTranslation();
     // ID
     const id = props.match.params.id;
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
     const [tableInsert, setTableInsert] = useState({
         branchId: id
     });
@@ -37,7 +34,6 @@ const Tables = (props) => {
         e.persist();
         setTableInsert({ ...tableInsert, [e.target.name]: e.target.value });
     };
-
     const saveTable = (e) => {
         // e.preventDefault();
         axios.post("/api/InsertTable", tableInsert).then(res => {
@@ -53,7 +49,10 @@ const Tables = (props) => {
             }
         });
     };
-    // edit code
+    // insert end 
+
+    // edit modal
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editTable, setEditTable] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -68,9 +67,7 @@ const Tables = (props) => {
             } else if (res.data.status === 404) {
                 swal("Error", res.data.message, "error");
             }
-
         });
-
     }
     const updateTable = (e) => {
         e.preventDefault();
@@ -87,59 +84,7 @@ const Tables = (props) => {
         });
 
     };
-
-    //for retriving data using laravel API
-    const [fetchData, setFetchData] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        axios.get(`/api/GetTables/${id}`).then(res => {
-            if (res.data.status === 200) {
-                // console.log(res.data.fetchData);
-                setFetchData(res.data.fetchData);
-            }
-            setLoading(false);
-        });
-    }, [tableInsert, editTable, id]);
-    const downloadQRCode = (e,id) => {
-        e.preventDefault();
-        // console.log(id)
-
-        const qrCodeURL = document.getElementById(id)
-          .toDataURL("image/png")
-          .replace("image/png", "image/octet-stream");
-        let aEl = document.createElement("a");
-        aEl.href = qrCodeURL;
-        aEl.download = "Branch_QR_Code.png";
-        document.body.appendChild(aEl);
-        aEl.click();
-        document.body.removeChild(aEl);
-      }
-    var viewProducts_HTMLTABLE = "";
-    if (loading) {
-        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
-    } else {
-        viewProducts_HTMLTABLE =
-            fetchData.map((item, i) => {
-                return (
-                    <tr key={item.id}>
-                        <td> {item.tableId}</td>
-                        <td> {item.tableName}</td>
-                        <td> 
-                            <QRCode  id={btoa(item.id)} level={'H'} size={256} fgColor="red" value={`http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`} className="primary d-none" />
-                                        <Link
-                                        to=""
-                                        onClick={(e) =>downloadQRCode(e,btoa(item.id))}
-                                    > {t('download_qr_code')}</Link></td>
-                        <td>
-                            <button type="button" onClick={(e) => fetchTable(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
-                            <button type="button" onClick={(e) => deleteTable(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
-                        </td>
-                    </tr>
-                )
-            })
-
-    }
+    // edit end 
     // delete section 
     const deleteTable = (e, id) => {
         e.preventDefault();
@@ -168,6 +113,58 @@ const Tables = (props) => {
                 }
             });
     }
+    // delete end
+    //for retriving data using laravel API
+    const [fetchData, setFetchData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        axios.get(`/api/GetTables/${id}`).then(res => {
+            if (res.data.status === 200) {
+                // console.log(res.data.fetchData);
+                setFetchData(res.data.fetchData);
+            }
+            setLoading(false);
+        });
+    }, [tableInsert, editTable, id]);
+    // download QRcode
+    const downloadQRCode = (e, id) => {
+        e.preventDefault();
+        // console.log(id)
+
+        const qrCodeURL = document.getElementById(id)
+            .toDataURL("image/png")
+            .replace("image/png", "image/octet-stream");
+        let aEl = document.createElement("a");
+        aEl.href = qrCodeURL;
+        aEl.download = "Branch_QR_Code.png";
+        document.body.appendChild(aEl);
+        aEl.click();
+        document.body.removeChild(aEl);
+    }
+    var viewProducts_HTMLTABLE = "";
+    if (loading) {
+        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
+    } else {
+        viewProducts_HTMLTABLE =
+            fetchData.map((item, i) => {
+                return (
+                    <tr key={item.id}>
+                        <td> {item.tableId}</td>
+                        <td> {item.tableName}</td>
+                        <td>
+                            <QRCode id={btoa(item.id)} level={'H'} size={256} fgColor="red" value={`http://192.168.1.103:3000/show-branch-details/${btoa(item.id)}`} className="primary d-none" />
+                            <Link
+                                to=""
+                                onClick={(e) => downloadQRCode(e, btoa(item.id))}
+                            > {t('download_qr_code')}</Link></td>
+                        <td>
+                            <button type="button" onClick={(e) => fetchTable(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" onClick={(e) => deleteTable(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
+                        </td>
+                    </tr>
+                )
+            })
+    }
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
@@ -188,7 +185,7 @@ const Tables = (props) => {
                         </Button>
                     </Modal.Header>
                     <Modal.Body>
-                     
+
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('table_id')} </strong> </label>
                             <input
@@ -205,9 +202,9 @@ const Tables = (props) => {
                                 onChange={handleInput}
                                 value={tableInsert.tableId}
                             />
-                             {errors.tableId?.message && (
-                                            <div className="invalid-feedback">{errors.tableId?.message}</div>
-                                        )}
+                            {errors.tableId?.message && (
+                                <div className="invalid-feedback">{errors.tableId?.message}</div>
+                            )}
                             {/* <div className="text-danger">
                                 {errors.name?.message}
                             </div> */}
@@ -228,9 +225,9 @@ const Tables = (props) => {
                                 onChange={handleInput}
                                 value={tableInsert.tableName}
                             />
-                             {errors.tableName?.message && (
-                                            <div className="invalid-feedback">{errors.tableName?.message}</div>
-                                        )}
+                            {errors.tableName?.message && (
+                                <div className="invalid-feedback">{errors.tableName?.message}</div>
+                            )}
                             {/* <div className="text-danger">
                                 {errors.value?.message}
                             </div> */}
@@ -263,9 +260,9 @@ const Tables = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="form-group text-center">
-                            <QRCode   level={'H'} size={256} fgColor="#f50b65" value={`http://192.168.1.103:3000/show-branch-details/${btoa(editTable.tableId)}`} />
-                             
-                           
+                            <QRCode level={'H'} size={256} fgColor="#f50b65" value={`http://192.168.1.103:3000/show-branch-details/${btoa(editTable.tableId)}`} />
+
+
                         </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('table_id')}</strong> </label>

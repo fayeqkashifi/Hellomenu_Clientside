@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 const Registration = () => {
+   // validation start
    const schema = yup.object().shape({
       name: yup.string().required(),
       phone_number: yup.string().required(),
@@ -17,9 +18,12 @@ const Registration = () => {
    const { register, handleSubmit, reset, formState: { errors } } = useForm({
       resolver: yupResolver(schema)
    });
+   // validation end 
+
    // for localization
    const { t } = useTranslation();
-
+   
+   // add user start
    const [registerstate, setRegisterstate] = useState({
       name: '',
       phone_number: '',
@@ -54,6 +58,7 @@ const Registration = () => {
       });
 
    };
+   // add user end 
    return (
       <div className="row justify-content-center  h-200 align-items-center h-80">
          <div className="col-md-4">

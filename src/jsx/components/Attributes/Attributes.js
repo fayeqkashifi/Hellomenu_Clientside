@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -8,32 +7,30 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
-import {Link } from "react-router-dom"
 
 const Attributes = (props) => {
-    // validation
+    // validation start
     const schema = yup.object().shape({
         attributeName: yup.string().required("This field is a required field"),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation end 
+    
     // for localization
     const { t } = useTranslation();
-    // ID
+    // get ID from URL
     const id = props.match.params.id;
-    // insert modal
+
+    // insert Attribute start 
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
     const [attributeInsert, setAttributeInsert] = useState([]);
     const handleInput = (e) => {
         e.persist();
         setAttributeInsert({ ...attributeInsert, [e.target.name]: e.target.value });
     };
-
-    const saveAttribute= (e) => {
+    const saveAttribute = (e) => {
         // e.preventDefault();
         axios.post("/api/InsertAttribute", attributeInsert).then(res => {
             if (res.data.status === 200) {
@@ -46,12 +43,16 @@ const Attributes = (props) => {
             }
         });
     };
-    // edit code
+    // insert Attribute end 
+
+    // edit Attribute start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editAttribute, setEditAttribute] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
         setEditAttribute({ ...editAttribute, [e.target.name]: e.target.value });
     };
+    // fetch the exact Attribute 
     const fetchAttribute = (e, id) => {
         e.preventDefault();
         axios.get(`/api/EditAttribute/${id}`).then(res => {
@@ -63,6 +64,7 @@ const Attributes = (props) => {
             }
         });
     }
+    // update the Attribute 
     const updateAttribute = (e) => {
         e.preventDefault();
         axios.post("/api/UpdateAttribute", editAttribute).then(res => {
@@ -77,13 +79,40 @@ const Attributes = (props) => {
 
             }
         });
-
     };
+    // edit Attribute end 
 
-    //for retriving data using laravel API
+    // delete Attribute Start
+    const deleteAttribute = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteAttribute/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            setAttributeInsert([]);
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
+
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete Attribute End
+
+    //retriving data using laravel API for show 
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         axios.get(`/api/GetAttributes`).then(res => {
             if (res.data.status === 200) {
@@ -113,37 +142,11 @@ const Attributes = (props) => {
                     </tr>
                 )
             })
-
     }
-    // delete section 
-    const deleteAttribute = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteAttribute/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            swal("Success", res.data.message, "success");
-                            setAttributeInsert([]);
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
 
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-    }
     return (
         <Fragment>
-             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
                 <CBreadcrumbItem active>{t('attributes')}</CBreadcrumbItem>
             </CBreadcrumb>
             <Modal className="fade" show={modalCentered}>

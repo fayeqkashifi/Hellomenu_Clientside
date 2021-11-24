@@ -1,21 +1,18 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom"
 import axios from "axios";
 import swal from "sweetalert"
 import { useTranslation } from "react-i18next";
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
-import { CSmartTable, CBadge, CCollapse, CButton, CCardBody } from '@coreui/react-pro'
+import { CSmartTable} from '@coreui/react-pro'
 const Inventory = (props) => {
     // for localization
     const { t } = useTranslation();
+
     const id = props.match.params.id;
-    // insert modal
-    // const [modalCentered, setModalCentered] = useState(false);
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
-    // edit code
     const [editIventory, setEditInventory] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -47,6 +44,34 @@ const Inventory = (props) => {
             }
         });
     };
+    // edit End 
+    // delete start 
+    const deleteInventory = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteInventory/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            setEditInventory([]);
+                            swal("Success", res.data.message, "success");
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
+
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete end 
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -89,8 +114,8 @@ const Inventory = (props) => {
     } else {
         viewInventory_HTMLTABLE =
             // fetchData.map((item, i) => {
-                // return (
-                    <CSmartTable
+            // return (
+            <CSmartTable
                 activePage={1}
                 cleaner
                 // clickableRows
@@ -136,50 +161,21 @@ const Inventory = (props) => {
                 //   color: 'primary',
                 // }}
                 tableProps={{
-                      striped: true,
+                    striped: true,
                     hover: true,
                 }}
             />
-            //     )
-            // })
+        //     )
+        // })
 
     }
-    // delete section 
-    const deleteInventory = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteInventory/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            setEditInventory([]);
-                            swal("Success", res.data.message, "success");
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
-
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-
-    }
-
+    
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
                 <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
                 <CBreadcrumbItem active>{t('inventory')}</CBreadcrumbItem>
             </CBreadcrumb>
-            {/* <PageTItle headingPara={t('inventory')} activeMenu={t('add_variant')} motherMenu={t('inventory')} /> */}
-
             {/* Edit Modal */}
             <Modal className="fade bd-example-modal-lg" show={editmodalCentered} size="lg">
                 <Form onSubmit={updateInventory} method="POST" >
@@ -276,41 +272,9 @@ const Inventory = (props) => {
                     </Modal.Footer>
                 </Form>
             </Modal>
-            {/* <div className="row" >
-                <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                    <div className="card">
-                        <div className="card-header border-0">
-                            <div>
-                                <h4 className="card-title mb-2">{t('inventory')}</h4>
-                            </div>
-                        </div>
-                        <div className="card-body p-0">
-                            <div className="table-responsive ">
-                                <table className="table ">
-                                    <thead>
-                                        <tr>
-                                            <th>{t('number')}</th>
-                                            <th>{t('variant_name')}</th>
-                                            <th>{t('buying_quantity')}</th>
-                                            <th>{t('selling_quantity')}</th>
-                                            <th>{t('buying_price')}</th>
-                                            <th>{t('selling_price')}</th>
-                                            <th>{t('actions')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {viewProducts_HTMLTABLE}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
+           
             {viewInventory_HTMLTABLE}
-            
         </Fragment>
-
     );
 };
 

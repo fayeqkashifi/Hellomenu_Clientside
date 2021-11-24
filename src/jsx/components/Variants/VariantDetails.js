@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -10,7 +9,7 @@ import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const ShowVariantDetails = (props) => {
-    // validation
+    // validation start
     const schema = yup.object().shape({
         name: yup.string().required("This field is a required field"),
         value: yup.string().required("This field is a required field"),
@@ -18,15 +17,13 @@ const ShowVariantDetails = (props) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation End
     // for localization
     const { t } = useTranslation();
     // ID
     const id = props.match.params.id;
-    // insert modal
+    // insert start
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
     const [variantDetailInsert, setVariantDetailInsert] = useState({
         name: '',
         value: '',
@@ -54,7 +51,9 @@ const ShowVariantDetails = (props) => {
             }
         });
     };
-    // edit code
+    // start ENd
+    // edit start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editVariantDetail, setEditVariantDetail] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -88,43 +87,8 @@ const ShowVariantDetails = (props) => {
         });
 
     };
-
-    //for retriving data using laravel API
-    const [fetchData, setFetchData] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        axios.get(`/api/GetVarinatDetails/${id}`).then(res => {
-            if (res.data.status === 200) {
-                // console.log(res.data.fetchData);
-                setFetchData(res.data.fetchData);
-            }
-            setLoading(false);
-        });
-    }, [variantDetailInsert, editVariantDetail, id]);
-
-    var viewProducts_HTMLTABLE = "";
-    if (loading) {
-        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
-    } else {
-        viewProducts_HTMLTABLE =
-            fetchData.map((item, i) => {
-                return (
-                    <tr key={item.id}>
-                        <td>{i + 1}</td>
-
-                        <td> {item.name}</td>
-                        <td> {item.value}</td>
-                        <td>
-                            <button type="button" onClick={(e) => fetchVariantDetail(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
-                            <button type="button" onClick={(e) => deleteVariantDetail(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
-                        </td>
-                    </tr>
-                )
-            })
-
-    }
-    // delete section 
+    // edit End
+    // delete Start 
     const deleteVariantDetail = (e, id) => {
         e.preventDefault();
         swal({
@@ -154,6 +118,41 @@ const ShowVariantDetails = (props) => {
                 }
             });
     }
+    // delete End
+    //for retriving data using laravel API
+    const [fetchData, setFetchData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        axios.get(`/api/GetVarinatDetails/${id}`).then(res => {
+            if (res.data.status === 200) {
+                // console.log(res.data.fetchData);
+                setFetchData(res.data.fetchData);
+            }
+            setLoading(false);
+        });
+    }, [variantDetailInsert, editVariantDetail, id]);
+
+    var viewProducts_HTMLTABLE = "";
+    if (loading) {
+        return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
+    } else {
+        viewProducts_HTMLTABLE =
+            fetchData.map((item, i) => {
+                return (
+                    <tr key={item.id}>
+                        <td>{i + 1}</td>
+
+                        <td> {item.name}</td>
+                        <td> {item.value}</td>
+                        <td>
+                            <button type="button" onClick={(e) => fetchVariantDetail(e, item.id)} className="btn btn-outline-danger btn-sm">{t('edit')}</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" onClick={(e) => deleteVariantDetail(e, item.id)} className="btn btn-outline-warning btn-sm">{t('delete')}</button>
+                        </td>
+                    </tr>
+                )
+            })
+    }
+
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
@@ -174,7 +173,7 @@ const ShowVariantDetails = (props) => {
                         </Button>
                     </Modal.Header>
                     <Modal.Body>
-                     
+
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('name')} </strong> </label>
                             <input
@@ -191,9 +190,9 @@ const ShowVariantDetails = (props) => {
                                 onChange={handleInput}
                                 value={variantDetailInsert.name}
                             />
-                             {errors.name?.message && (
-                                            <div className="invalid-feedback">{errors.name?.message}</div>
-                                        )}
+                            {errors.name?.message && (
+                                <div className="invalid-feedback">{errors.name?.message}</div>
+                            )}
                             {/* <div className="text-danger">
                                 {errors.name?.message}
                             </div> */}
@@ -214,9 +213,9 @@ const ShowVariantDetails = (props) => {
                                 onChange={handleInput}
                                 value={variantDetailInsert.value}
                             />
-                             {errors.value?.message && (
-                                            <div className="invalid-feedback">{errors.value?.message}</div>
-                                        )}
+                            {errors.value?.message && (
+                                <div className="invalid-feedback">{errors.value?.message}</div>
+                            )}
                             {/* <div className="text-danger">
                                 {errors.value?.message}
                             </div> */}

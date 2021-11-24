@@ -1,19 +1,15 @@
 import React from "react";
-
 /// React router dom
 import { BrowserRouter as Router, Switch, Redirect} from "react-router-dom";
 import PrivateRoute from './components/PrivateRoute';
 // import PublicRoute from './components/PublicRoute';
-
 /// Css
 import "./index.css";
 import "./chart.css";
-
 /// Layout
 import Nav from "./layouts/nav";
 import Footer from "./layouts/Footer";
 /// Deshboard
-
 import Home from "./components/Dashboard/Home/Home";
 import Branches from "./components/Branches/Branches";
 import Menu from "./components/Categories/Category";
@@ -29,11 +25,11 @@ import Variants from "./components/Variants/Variants";
 import Gallery from "./components/Variants/Gallary";
 import Basket from "./components/Orders/Basket";
 // import VariantDetails from "./components/Variants/VariantDetails";
-import ShowBranchDetails from "./components/Branches/ShowBranchDetails";
-import ShowVariantDetails from "./components/Variants/VariantDetails";
+// import ShowBranchDetails from "./components/Public Link/ShowBranchDetails";
+import VariantDetails from "./components/Variants/VariantDetails";
 import Tables from "./components/Branches/Tables";
 import Attributes from "./components/Attributes/Attributes";
-import AddProduct from "./components/Products/AddProduct";
+// import AddProduct from "./components/Products/AddProduct";
 import Options from "./components/Attributes/Options";
 
 const Markup = () => {
@@ -54,11 +50,11 @@ const Markup = () => {
 		{ url: "variants/:id", component: Variants },
 		{ url: "gallery/:id", component: Gallery },
 		// { url: "variant-details/:id", component: VariantDetails },
-		{ url: "show-branch-details/:id", component: ShowBranchDetails },
-		{ url: "show_variant_detials/:id", component: ShowVariantDetails },
+		// { url: "show-branch-details/:id", component: ShowBranchDetails },
+		{ url: "show_variant_detials/:id", component: VariantDetails },
 		{ url: "tables/:id", component: Tables },
 		{ url: "attributes", component: Attributes },
-		{ url: "add-product/:id", component: AddProduct },
+		// { url: "add-product/:id", component: AddProduct },
 		{ url: "add-option/:id", component: Options },
 
 

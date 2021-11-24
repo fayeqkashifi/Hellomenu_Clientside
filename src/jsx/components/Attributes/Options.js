@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -7,10 +7,10 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
+import { CBreadcrumb } from '@coreui/react'
 
 const Options = (props) => {
-    // validation
+    // validation start
     const schema = yup.object().shape({
         optionName: yup.string().required("This field is a required field"),
         description: yup.string().required("This field is a required field"),
@@ -18,15 +18,16 @@ const Options = (props) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation end 
+
     // for localization
     const { t } = useTranslation();
+
     // ID
     const id = props.match.params.id;
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
     const [Insert, setInsert] = useState({
         optionName: '',
         description: '',
@@ -37,7 +38,7 @@ const Options = (props) => {
         setInsert({ ...Insert, [e.target.name]: e.target.value });
     };
 
-    const save= (e) => {
+    const save = (e) => {
         // e.preventDefault();
         axios.post("/api/InsertOption", Insert).then(res => {
             if (res.data.status === 200) {
@@ -54,7 +55,10 @@ const Options = (props) => {
             }
         });
     };
-    // edit code
+    // insert end 
+
+    // edit modal
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [edit, setUnit] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -88,11 +92,43 @@ const Options = (props) => {
         });
 
     };
+    // edit end 
+
+    // delete start 
+    const deleteOption = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteOption/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            setInsert({
+                                optionName: '',
+                                description: '',
+                                attribute_id: id
+                            });
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
+
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete end 
 
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         axios.get(`/api/GetOptions/${id}`).then(res => {
             if (res.data.status === 200) {
@@ -124,41 +160,12 @@ const Options = (props) => {
             })
 
     }
-    // delete section 
-    const deleteOption = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteOption/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            swal("Success", res.data.message, "success");
-                            setInsert({
-                                optionName: '',
-                                description: '',
-                                attribute_id: id
-                            });
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
 
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-    }
     return (
         <Fragment>
-             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-                <Link className="font-weight-bold" to="/branches" >{t('Branches')} </Link> / 
-                <Link className="font-weight-bold" to="/attributes" >{t('attributes')} </Link>  / 
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+                <Link className="font-weight-bold" to="/branches" >{t('Branches')} </Link> /
+                <Link className="font-weight-bold" to="/attributes" >{t('attributes')} </Link>  /
                 <Link active>{t('options')}</Link>
             </CBreadcrumb>
             {/* <PageTItle headingPara={t('units')} activeMenu={t('add_unit')} motherMenu={t('units')} /> */}
@@ -195,14 +202,14 @@ const Options = (props) => {
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('description')} </strong> </label>
                             <textarea
-                                    type="text"
-                                    {...register("description")}
-                                    className="form-control"
-                                    placeholder={t('description')}
-                                    name="description"
-                                    onChange={handleInput}
-                                    value={Insert.description}
-                                />
+                                type="text"
+                                {...register("description")}
+                                className="form-control"
+                                placeholder={t('description')}
+                                name="description"
+                                onChange={handleInput}
+                                value={Insert.description}
+                            />
                             <div className="text-danger">
                                 {errors.description?.message}
                             </div>
@@ -249,14 +256,14 @@ const Options = (props) => {
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('description')} </strong> </label>
                             <textarea
-                                    type="text"
-                                    className="form-control"
-                                    placeholder={t('description')}
-                                    name="description"
-                                    onChange={editHandleInput}
-                                    value={edit.description}
-                                />
-                           
+                                type="text"
+                                className="form-control"
+                                placeholder={t('description')}
+                                name="description"
+                                onChange={editHandleInput}
+                                value={edit.description}
+                            />
+
                         </div>
                     </Modal.Body>
                     <Modal.Footer>

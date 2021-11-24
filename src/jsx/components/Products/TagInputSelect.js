@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import TagsInput from 'react-tagsinput'
 import 'react-tagsinput/react-tagsinput.css' // If using WebPack and style-loader.
 
@@ -11,8 +11,8 @@ const TagInputSelect = (props) => {
     // console.log(state);
 
     // if(item===props.item ){
-      props.setfunction([...props.arr, tags])
-      console.log(state);
+      // props.setfunction([...props.arr, tags])
+      // console.log(state);
     // }else{
     //   console.log("tet");
     // }

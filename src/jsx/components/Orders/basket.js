@@ -7,8 +7,6 @@ import PageTItle from "../../layouts/PageTitle";
 const Basket = () => {
     // for localization
     const { t } = useTranslation();
-
-
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -111,8 +109,6 @@ const Basket = () => {
     return (
         <Fragment>
             <PageTItle headingPara={t('basket')} activeMenu={t('basket_list')} motherMenu={t('basket')} />
-
-
             <div className="col-12">
                 <div className="card">
                     <div className="card-header">

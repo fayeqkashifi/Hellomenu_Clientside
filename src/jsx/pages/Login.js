@@ -9,6 +9,7 @@ import * as yup from 'yup';
 
 
 const Login = () => {
+   // Valivation start
    const schema = yup.object().shape({
       email: yup.string().email().required(),
       password: yup.string().required().min(6),
@@ -18,11 +19,13 @@ const Login = () => {
    const { register, handleSubmit, reset, formState: { errors } } = useForm({
       resolver: yupResolver(schema)
    });
+   // validation end 
 
    // for localization
    const { t } = useTranslation();
 
    const history = useHistory();
+   // check the auth Start
    const [loginstate, setLoginstate] = useState({
       email: '',
       password: '',
@@ -49,6 +52,7 @@ const Login = () => {
       });
 
    };
+   // check the auth end
    return (
       <div className="row justify-content-center h-100 align-items-center h-80">
 

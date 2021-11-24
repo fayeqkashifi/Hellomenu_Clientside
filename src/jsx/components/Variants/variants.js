@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-// import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -12,7 +11,7 @@ import { CBreadcrumb, CBreadcrumbItem, CDropdownMenu, CDropdownToggle, CDropdown
 import Select from 'react-select';
 
 const Variants = (props) => {
-    // validation
+    // validation start
     const schema = yup.object().shape({
         variant_name: yup.string().required("This field is a required field"),
         quantity: yup.number().positive().integer().required().typeError('You must specify a number'),
@@ -26,13 +25,13 @@ const Variants = (props) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation end 
     // for localization
     const { t } = useTranslation();
     const id = props.match.params.id;
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a section
-    const [modalCentered, setModalCentered] = useState(false);
 
     // edit code
     const [editVariant, setEditVariant] = useState([]);
@@ -67,101 +66,29 @@ const Variants = (props) => {
         });
 
     };
-    // insert a section
+    // edit End
+    // insert Start
+    const [modalCentered, setModalCentered] = useState(false);
     const [variantInsert, setVariantInsert] = useState({});
     const handleInput = (e) => {
         e.persist();
         setVariantInsert({ ...variantInsert, [e.target.name]: e.target.value });
     };
-    // insert
-    const saveInventory = (e) => {
-        // e.preventDefault();
-        console.log(displayValue[0]);
-
-        const formData = new FormData();
-        for (let i = 0; i < imageState.image.length; i++) {
-            formData.append("file[]", imageState.image[i]);
-        }
-        formData.append('variant_name', variantInsert.variant_name);
-        formData.append('quantity', variantInsert.quantity);
-        formData.append('Description', variantInsert.Description);
-        formData.append('Advice', variantInsert.Advice);
-        formData.append('CurrentPrice', variantInsert.CurrentPrice);
-        formData.append('sku', variantInsert.sku);
-        formData.append('attribute', JSON.stringify(displayValue));
-        formData.append('option', JSON.stringify(options));
-        formData.append('form', JSON.stringify(form));
-        axios.post(`/api/InsertInventory/${id}`, formData).then(res => {
-            if (res.data.status === 200) {
-                setVariantInsert({});
-                setDisplayValue([]);
-                setOptions([]);
-                reset();
-                swal("Success", res.data.message, "success");
-                setForm([]);
-                setModalCentered(false)
-                setSelectedFiles([]);
-            }
-        });
-    };
-    const [selectedFiles, setSelectedFiles] = useState([]);
-    const [imageState, setImageState] = useState([]);
-    const handleImageChange = (e) => {
-        const imagesArray = [];
-        for (let i = 0; i < e.target.files.length; i++) {
-            imagesArray.push(e.target.files[i]);
-        }
-        setImageState({ ...imageState, image: imagesArray });
-
-        setSelectedFiles([]);
-        if (e.target.files) {
-            const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-            setSelectedFiles((prevImages) => prevImages.concat(filesArray));
-            Array.from(e.target.files).map(
-                (file) => URL.revokeObjectURL(file)
-            );
-        }
-
-    };
-    const renderPhotos = (source) => {
-        return source.map((photo) => {
-            return <img className="p-2" src={photo} alt="" key={photo} style={{ width: "100", height: "100px" }} />;
-        });
-    };
-    //for retriving data using laravel API
-    const [fetchData, setFetchData] = useState([]);
-    const [attributes, setAttributes] = useState([]);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        axios.get(`/api/Getvariations/${id}`).then(res => {
-            if (res.data.status === 200) {
-                setFetchData(res.data.fetchData);
-                // console.log(fetchData);
-            }
-            setLoading(false);
-        });
-        axios.get(`/api/GetAttributes`).then(res => {
-            if (res.data.status === 200) {
-                setAttributes(res.data.fetchData);
-            }
-        });
-    }, [id, variantInsert,attributes, editVariant]);
-
     const [options, setOptions] = useState([]);
     const selectOnChange = (index, event) => {
         event.preventDefault();
         event.persist();
 
         setOptions({
-                    ...options,
-                    [event.target.name]: event.target.value,
-                
-        });
-        console.log(options);
-        console.log(displayValue);
-    };
-    const [form, setForm] = useState([]);
+            ...options,
+            [event.target.name]: event.target.value,
 
+        });
+        // console.log(options);
+        // console.log(displayValue);
+    };
+    // for add details start
+    const [form, setForm] = useState([]);
     const prevIsValid = () => {
         if (form.length === 0) {
             return true;
@@ -239,20 +166,98 @@ const Variants = (props) => {
 
         setForm((prev) => prev.filter((item) => item !== prev[index]));
     };
+    // end 
+    const saveInventory = (e) => {
+        // e.preventDefault();
+        console.log(displayValue[0]);
 
-    // select input
+        const formData = new FormData();
+        for (let i = 0; i < imageState.image.length; i++) {
+            formData.append("file[]", imageState.image[i]);
+        }
+        formData.append('variant_name', variantInsert.variant_name);
+        formData.append('quantity', variantInsert.quantity);
+        formData.append('Description', variantInsert.Description);
+        formData.append('Advice', variantInsert.Advice);
+        formData.append('CurrentPrice', variantInsert.CurrentPrice);
+        formData.append('sku', variantInsert.sku);
+        formData.append('attribute', JSON.stringify(displayValue));
+        formData.append('option', JSON.stringify(options));
+        formData.append('form', JSON.stringify(form));
+        axios.post(`/api/InsertInventory/${id}`, formData).then(res => {
+            if (res.data.status === 200) {
+                setVariantInsert({});
+                setDisplayValue([]);
+                setOptions([]);
+                reset();
+                swal("Success", res.data.message, "success");
+                setForm([]);
+                setModalCentered(false)
+                setSelectedFiles([]);
+            }
+        });
+    };
+    // for Pictures start
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [imageState, setImageState] = useState([]);
+    const handleImageChange = (e) => {
+        const imagesArray = [];
+        for (let i = 0; i < e.target.files.length; i++) {
+            imagesArray.push(e.target.files[i]);
+        }
+        setImageState({ ...imageState, image: imagesArray });
+
+        setSelectedFiles([]);
+        if (e.target.files) {
+            const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+            setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+            Array.from(e.target.files).map(
+                (file) => URL.revokeObjectURL(file)
+            );
+        }
+
+    };
+    const renderPhotos = (source) => {
+        return source.map((photo) => {
+            return <img className="p-2" src={photo} alt="" key={photo} style={{ width: "100", height: "100px" }} />;
+        });
+    };
+    // for Pictures End
+
+    //for retriving data using laravel API
+    const [fetchData, setFetchData] = useState([]);
+    const [attributes, setAttributes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        axios.get(`/api/Getvariations/${id}`).then(res => {
+            if (res.data.status === 200) {
+                setFetchData(res.data.fetchData);
+                // console.log(fetchData);
+            }
+            setLoading(false);
+        });
+        axios.get(`/api/GetAttributes`).then(res => {
+            if (res.data.status === 200) {
+                setAttributes(res.data.fetchData);
+            }
+        });
+    }, [id, variantInsert, attributes, editVariant]);
+
+
+    // select box 
     const [displayValue, setDisplayValue] = useState([]);
     const handleSelectEvent = (e) => {
         setDisplayValue(Array.isArray(e) ? e.map(item => item.label) : [])
     }
+
+    // insert Attribute Start
     const [attributeInsert, setAttributeInsert] = useState([]);
     const [attributeModal, setAttributeModal] = useState(false);
-
     const handleInputAttribute = (e) => {
         e.persist();
         setAttributeInsert({ ...attributeInsert, [e.target.name]: e.target.value });
     };
-    const saveAttribute= (e) => {
+    const saveAttribute = (e) => {
         e.preventDefault();
         axios.post("/api/InsertAttribute", attributeInsert).then(res => {
             if (res.data.status === 200) {
@@ -265,6 +270,36 @@ const Variants = (props) => {
             }
         });
     };
+    // insert Attribute End
+
+    // delete variant Start 
+    const deleteVariant = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/Deletevariations/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            setVariantInsert({});
+                            swal("Success", res.data.message, "success");
+                            // thisClicked.closest("tr").remove();
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
+
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete variant End
 
 
     var branchID = 0;
@@ -359,36 +394,6 @@ const Variants = (props) => {
             })
 
     }
-    // delete section 
-    const deleteVariant = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/Deletevariations/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            setVariantInsert({});
-                            swal("Success", res.data.message, "success");
-                            // thisClicked.closest("tr").remove();
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
-
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-
-
-    }
-  
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
@@ -399,7 +404,7 @@ const Variants = (props) => {
                 <CBreadcrumbItem active> {t('variants')} </CBreadcrumbItem>
             </CBreadcrumb>
             {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} /> */}
-            {/* <!-- Insert  Modal --> */}
+            {/* <!-- Insert  Modal for Attribute --> */}
             <Modal className="fade" show={attributeModal}>
                 <Form onSubmit={saveAttribute} method="POST" encType="multipart/form-data">
                     <Modal.Header>
@@ -424,7 +429,7 @@ const Variants = (props) => {
                                 onChange={handleInputAttribute}
                                 value={attributeInsert.attributeName}
                             />
-                            
+
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -439,7 +444,8 @@ const Variants = (props) => {
                     </Modal.Footer>
                 </Form>
             </Modal>
-
+            
+            {/* <!-- Insert  Modal for variant  --> */}
             <Modal className="fade bd-example-modal-lg" show={modalCentered} size="lg">
                 <Form onSubmit={handleSubmit(saveInventory)} method="POST" encType="multipart/form-data">
                     <Modal.Header>
@@ -454,55 +460,55 @@ const Variants = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row" >
-                        <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 ">
-                            <div className="form-group">
-                                <div className="d-flex justify-content-between">
-                                <label className="mb-1 "> <strong>{t('attributes')}</strong> </label>
-                                <label className=" "> {t('attributes_add_note')}   
-                                <Link
-                                onClick={() => setAttributeModal(true)}
-                                >
-                                 {t('add_attribute')}
-                                </Link>
-                                </label>
+                            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 ">
+                                <div className="form-group">
+                                    <div className="d-flex justify-content-between">
+                                        <label className="mb-1 "> <strong>{t('attributes')}</strong> </label>
+                                        <label className=" "> {t('attributes_add_note')}
+                                            <Link
+                                                onClick={() => setAttributeModal(true)}
+                                            >
+                                                {t('add_attribute')}
+                                            </Link>
+                                        </label>
+                                    </div>
+                                    <Select
+                                        // defaultValue={[colourOptions[2], colourOptions[3]]}
+                                        isMulti
+                                        name="colors"
+                                        options={attributes.map((o, i) => {
+                                            return { id: i, value: o.id, label: o.attributeName };
+                                        })}
+                                        className="basic-multi-select"
+                                        classNamePrefix="select"
+                                        onChange={handleSelectEvent}
+                                    />
                                 </div>
-                                <Select
-                                    // defaultValue={[colourOptions[2], colourOptions[3]]}
-                                    isMulti
-                                    name="colors"
-                                    options={attributes.map((o, i) => {
-                                        return { id: i, value: o.id, label: o.attributeName };
-                                    })}
-                                    className="basic-multi-select"
-                                    classNamePrefix="select"
-                                    onChange={handleSelectEvent}
-                                />
                             </div>
-                        </div>
-                        
-                        <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mt-3">
-                            {
-                                displayValue?.map((item, i) => {
-                                    return (
-                                        <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12" key={i}>
-                                            <div className="form-group">
-                                                <label className="mb-1 "> <strong>{item}</strong> </label>
-                                                <input
-                                            type="text"
-                                            className="form-control"
-                                            name={item}
-                                            placeholder={item}
-                                            value={options.option}
-                                            onChange={(e) => selectOnChange(i, e)}
-                                        />
 
-                                         
+                            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mt-3">
+                                {
+                                    displayValue?.map((item, i) => {
+                                        return (
+                                            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12" key={i}>
+                                                <div className="form-group">
+                                                    <label className="mb-1 "> <strong>{item}</strong> </label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name={item}
+                                                        placeholder={item}
+                                                        value={options.option}
+                                                        onChange={(e) => selectOnChange(i, e)}
+                                                    />
+
+
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+                                        )
+                                    })
+                                }
+                            </div>
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                                 <div className="form-group">
                                     <label className="mb-1 "> <strong>{t('variant_name')}</strong> </label>
@@ -607,7 +613,7 @@ const Variants = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
 
                                 <div className="form-group">
@@ -638,58 +644,58 @@ const Variants = (props) => {
                             </div>
                             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
 
-                            {form.map((item, index) => (
-                                <div className="row my-1" key={`item-${index}`}>
-                                    <div className="col-xl-5 col-xxl-5 col-lg-5 col-sm-12 ">
-                                        <input
-                                            type="text"
-                                            className={
-                                                item.errors.name
-                                                    ? "form-control  is-invalid"
-                                                    : "form-control"
-                                            }
-                                            name="name"
-                                            placeholder={t('name')}
-                                            value={item.name}
-                                            onChange={(e) => onChange(index, e)}
-                                        />
+                                {form.map((item, index) => (
+                                    <div className="row my-1" key={`item-${index}`}>
+                                        <div className="col-xl-5 col-xxl-5 col-lg-5 col-sm-12 ">
+                                            <input
+                                                type="text"
+                                                className={
+                                                    item.errors.name
+                                                        ? "form-control  is-invalid"
+                                                        : "form-control"
+                                                }
+                                                name="name"
+                                                placeholder={t('name')}
+                                                value={item.name}
+                                                onChange={(e) => onChange(index, e)}
+                                            />
 
-                                        {item.errors.name && (
-                                            <div className="invalid-feedback">{item.errors.name}</div>
-                                        )}
-                                    </div>
+                                            {item.errors.name && (
+                                                <div className="invalid-feedback">{item.errors.name}</div>
+                                            )}
+                                        </div>
 
-                                    <div className="col-xl-5 col-xxl-5 col-lg-5 col-sm-12 mt-1">
-                                        <input
-                                            type="text"
-                                            className={
-                                                item.errors.value
-                                                    ? "form-control  is-invalid"
-                                                    : "form-control"
-                                            }
-                                            name="value"
-                                            placeholder={t('value')}
-                                            value={item.value}
-                                            onChange={(e) => onChange(index, e)}
-                                        />
+                                        <div className="col-xl-5 col-xxl-5 col-lg-5 col-sm-12 mt-1">
+                                            <input
+                                                type="text"
+                                                className={
+                                                    item.errors.value
+                                                        ? "form-control  is-invalid"
+                                                        : "form-control"
+                                                }
+                                                name="value"
+                                                placeholder={t('value')}
+                                                value={item.value}
+                                                onChange={(e) => onChange(index, e)}
+                                            />
 
-                                        {item.errors.value && (
-                                            <div className="invalid-feedback">{item.errors.value}</div>
-                                        )}
+                                            {item.errors.value && (
+                                                <div className="invalid-feedback">{item.errors.value}</div>
+                                            )}
+                                        </div>
+                                        <div className="col-xl-2 col-xxl-2 col-lg-2 col-sm-12 mt-1">
+                                            <button
+                                                className="btn btn-warning "
+                                                onClick={(e) => handleRemoveField(e, index)}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-x-lg" viewBox="0 0 16 16">
+                                                    <path fillRule="evenodd" d="M13.854 2.146a.5.5 0 0 1 0 .708l-11 11a.5.5 0 0 1-.708-.708l11-11a.5.5 0 0 1 .708 0Z" />
+                                                    <path fillRule="evenodd" d="M2.146 2.146a.5.5 0 0 0 0 .708l11 11a.5.5 0 0 0 .708-.708l-11-11a.5.5 0 0 0-.708 0Z" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="col-xl-2 col-xxl-2 col-lg-2 col-sm-12 mt-1">
-                                        <button
-                                            className="btn btn-warning "
-                                            onClick={(e) => handleRemoveField(e, index)}
-                                        >
-                                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-x-lg" viewBox="0 0 16 16">
-                                                <path fillRule="evenodd" d="M13.854 2.146a.5.5 0 0 1 0 .708l-11 11a.5.5 0 0 1-.708-.708l11-11a.5.5 0 0 1 .708 0Z"/>
-                                                <path fillRule="evenodd" d="M2.146 2.146a.5.5 0 0 0 0 .708l11 11a.5.5 0 0 0 .708-.708l-11-11a.5.5 0 0 0-.708 0Z"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
                             </div>
 
                             <div className="col-xl-4 col-xxl-4 col-lg-3 col-sm-12">
@@ -864,7 +870,6 @@ const Variants = (props) => {
                     </div>
                 </div>
                 {viewProducts_HTMLTABLE}
-
             </div>
         </Fragment>
     );

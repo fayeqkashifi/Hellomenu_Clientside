@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -11,24 +10,20 @@ import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const SubCategory = (props) => {
-    // validation
+    // validation start
     const schema = yup.object().shape({
         SubCategoryName: yup.string().required("This field is a required field"),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation end 
     // for localization
     const { t } = useTranslation();
-
     const id = props.match.params.id;
-    // console.log(id);
 
-    // insert modal
+    // insert start
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
     const [subCategoryInsert, setSubCategoryInsert] = useState({
         SubCategoryName: '',
         CategoryID: id
@@ -62,7 +57,10 @@ const SubCategory = (props) => {
             }
         });
     };
-    // edit code
+    // insert End
+
+    // edit start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editSubMenu, setEditSubMenu] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -103,11 +101,40 @@ const SubCategory = (props) => {
         });
 
     };
+    // edit end 
+    // delete start 
+    const deleteSubMenu = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteSubCategories/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            setSubCategoryInsert([]);
+                            swal("Success", res.data.message, "success");
+                            // thisClicked.closest("tr").remove();
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
+
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+
+    }
+    // delete end 
 
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         axios.get(`/api/GetSubCategories/${id}`).then(res => {
             if (res.data.status === 200) {
@@ -130,24 +157,24 @@ const SubCategory = (props) => {
                         <div className="card overflow-hidden">
                             <div className="card-body">
                                 <div className="text-center">
-                                <Link to={{
-                                            pathname: `/products/${item.sub_id}`,
-                                            id: item.id,
-                                            ProductName: item.ProductName
-                                        }} > 
-                                    <span>
-                                    <img
-                                        style={{ height: '100px', objectFit: 'contain' }}
+                                    <Link to={{
+                                        pathname: `/products/${item.sub_id}`,
+                                        id: item.id,
+                                        ProductName: item.ProductName
+                                    }} >
+                                        <span>
+                                            <img
+                                                style={{ height: '100px', objectFit: 'contain' }}
 
-                                        src={`http://localhost:8000/images/sub_catagories/${item.SubCategoryIcon}`}
-                                        className="w-40"
-                                        alt=""
-                                    />
-                                    </span>
+                                                src={`http://localhost:8000/images/sub_catagories/${item.SubCategoryIcon}`}
+                                                className="w-40"
+                                                alt=""
+                                            />
+                                        </span>
 
-                                    <h4 className="mt-4 mb-1">
-                                        {item.SubCategoryName}</h4>
-                                        </Link>
+                                        <h4 className="mt-4 mb-1">
+                                            {item.SubCategoryName}</h4>
+                                    </Link>
 
 
                                 </div>
@@ -188,34 +215,7 @@ const SubCategory = (props) => {
             })
 
     }
-    // delete section 
-    const deleteSubMenu = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteSubCategories/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            setSubCategoryInsert([]);
-                            swal("Success", res.data.message, "success");
-                            // thisClicked.closest("tr").remove();
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
 
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-
-    }
     return (
 
         <Fragment>
@@ -224,7 +224,6 @@ const SubCategory = (props) => {
                 <CBreadcrumbItem className="font-weight-bold" href={`/category/${branchID}`} >{t('categories')}</CBreadcrumbItem>
                 <CBreadcrumbItem active>{t('sub_category')}</CBreadcrumbItem>
             </CBreadcrumb>
-            {/* <PageTItle headingPara={t('sub_category')} activeMenu={t('add_sub_Category')} motherMenu={t('sub_category')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveSubMenu)} method="POST" encType="multipart/form-data">
@@ -312,7 +311,6 @@ const SubCategory = (props) => {
                                         onChange={handleImage}
                                     />
                                     <img src={`http://localhost:8000/images/sub_catagories/${editSubMenu.SubCategoryIcon}`} width="70" alt=" " />
-
                                 </div>
                             </div>
                         </div>
@@ -355,7 +353,6 @@ const SubCategory = (props) => {
                                     </svg>
                                     {t('add_sub_Category')}
                                 </button>
-
                             </div>
                         </div>
                     </div>

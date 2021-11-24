@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -10,23 +9,20 @@ import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const ServiceArea = (props) => {
-    // validation
+    // Validation Start
     const schema = yup.object().shape({
         AreaName: yup.string().required("This field is a required field"),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // Validation End
     // for localization
     const { t } = useTranslation();
     //ID
     const id = props.match.params.id;
-
-    // insert modal
+    // insert Start
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
     const [serviceAreaInsert, setServiceAreaInsert] = useState({
         AreaName: '',
         BranchID: id
@@ -35,7 +31,6 @@ const ServiceArea = (props) => {
         e.persist();
         setServiceAreaInsert({ ...serviceAreaInsert, [e.target.name]: e.target.value });
     };
-
     const saveServiceAreas = (e) => {
         // e.preventDefault();
         axios.post("/api/InsertServicAreas", serviceAreaInsert).then(res => {
@@ -51,7 +46,9 @@ const ServiceArea = (props) => {
             }
         });
     };
-    // edit code
+    // insert End
+    // edit Start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editServiceAreas, setEditServiceAreas] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -84,8 +81,40 @@ const ServiceArea = (props) => {
 
             }
         });
-
     };
+    // Edit End
+    
+    // delete Start 
+    const deleteServiceArea = (e, id) => {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteServiceAreas/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            setServiceAreaInsert({
+                                AreaName: '',
+                                BranchID: id
+                            })
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+
+                    });
+
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+
+    }
+    // delete End 
 
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
@@ -118,37 +147,6 @@ const ServiceArea = (props) => {
                     </tr>
                 )
             })
-
-    }
-    // delete section 
-    const deleteServiceArea = (e, id) => {
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteServiceAreas/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            swal("Success", res.data.message, "success");
-                            setServiceAreaInsert({
-                                AreaName: '',
-                                BranchID: id
-                            })
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-
-                    });
-
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-
     }
     return (
         <Fragment>
@@ -156,7 +154,6 @@ const ServiceArea = (props) => {
                 <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
                 <CBreadcrumbItem active>{t('services_area')}</CBreadcrumbItem>
             </CBreadcrumb>
-            {/* <PageTItle headingPara={t('services_area')} activeMenu={t('add_service_area')} motherMenu={t('services_area')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveServiceAreas)} method="POST" encType="multipart/form-data">

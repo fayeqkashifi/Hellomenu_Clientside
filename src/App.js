@@ -10,13 +10,13 @@ import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
 // import PrivateRoute from './jsx/components/PrivateRoute';
 import PublicRoute from './jsx/components/PublicRoute';
 import axios from "axios"
-import ShowBranchDetails from "./jsx/components/Branches/ShowBranchDetails";
+import BranchDetails from "./jsx/components/Public Link/BranchDetails";
 // import Variants from "./jsx/components/Variants/Variants";
-import VariantDetailsForPublicLink from "./jsx/components/Variants/VariantDetailsForPublicLink";
-import ShowProductPublicLink from "./jsx/components/Products/ShowProductPublicLink";
+import VariantDetails from "./jsx/components/Public Link/VariantDetails";
+import ShowProducts from "./jsx/components/Public Link/ShowProducts";
 
-// axios.defaults.baseURL="http://127.0.0.1:8000";
-axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
+axios.defaults.baseURL="http://127.0.0.1:8000";
+// axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
 axios.defaults.headers.post['Content-Type']='application/json'
 axios.defaults.headers.post['Accept']='application/json'
 axios.defaults.withcredentials= true;
@@ -34,9 +34,9 @@ const App = () => {
             </Route>
             <PublicRoute restricted={true} component={Login} path="/page-login" exact />
             <PublicRoute restricted={false} component={Registration} path="/user-register" exact />
-            <PublicRoute exact component={ShowBranchDetails} path="/show-branch-details/:id" />
-            <PublicRoute exact component={VariantDetailsForPublicLink} path="/variant-details/:id" />
-            <PublicRoute exact component={ShowProductPublicLink} path="/product/:id" />
+            <PublicRoute exact component={BranchDetails} path="/show-branch-details/:id" />
+            <PublicRoute exact component={VariantDetails} path="/variant-details/:id" />
+            <PublicRoute exact component={ShowProducts} path="/product/:id" />
             {/* {localStorage.getItem('auth_token') ? <Markup /> : <Redirect to="/page-login" />} */}
             <Markup />
          </Switch>

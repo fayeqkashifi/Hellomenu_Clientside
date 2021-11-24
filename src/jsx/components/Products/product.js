@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-// import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -11,7 +10,7 @@ import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const Product = (props) => {
-    // validation
+    // validation start
     const schema = yup.object().shape({
         Description: yup.string().required("This field is a required field"),
         ProductName: yup.string().required("This field is a required field"),
@@ -20,18 +19,22 @@ const Product = (props) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation End
+
     // for localization
     const { t } = useTranslation();
+    // ID
     const subMenuId = props.match.params.id;
 
 
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
 
+    const [imageState, setImageState] = useState([]);
 
+    const handleImage = (e) => {
+        setImageState({ ...imageState, photo: e.target.files[0] });
+    };
     const [productInsert, setProductInsert] = useState('');
     const handleInput = (e) => {
         e.persist();
@@ -63,7 +66,9 @@ const Product = (props) => {
             }
         });
     };
-    // edit code
+    // insert End
+    // edit Start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editProduct, setEditProduct] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -80,19 +85,18 @@ const Product = (props) => {
             }
 
         });
-
     }
     const updateProduct = (e) => {
         e.preventDefault();
-         const formData = new FormData();
-         // formData.append('image', subCategoryInsert.SubCategoryName);
-         formData.append('image', imageState.photo);
- 
-         // formData.append('image', imageState.image);
-         formData.append('Description', editProduct.Description);
-         formData.append('ProductName', editProduct.ProductName);
-         formData.append('UnitID', editProduct.UnitID);
-         formData.append('id', editProduct.id);
+        const formData = new FormData();
+        // formData.append('image', subCategoryInsert.SubCategoryName);
+        formData.append('image', imageState.photo);
+
+        // formData.append('image', imageState.image);
+        formData.append('Description', editProduct.Description);
+        formData.append('ProductName', editProduct.ProductName);
+        formData.append('UnitID', editProduct.UnitID);
+        formData.append('id', editProduct.id);
         axios.post("/api/UpdateProduct", formData).then(res => {
             if (res.data.status === 200) {
                 // console.log(res.data.status);
@@ -104,16 +108,39 @@ const Product = (props) => {
         });
 
     };
-    const [imageState, setImageState] = useState([]);
+    // edit ENd
+    // delete section 
+    const deleteProduct = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteProducts/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            setProductInsert([]);
+                            // thisClicked.closest("tr").remove();
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
 
-    const handleImage = (e) => {
-        setImageState({ ...imageState, photo: e.target.files[0] });
-    };
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete End
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [unitData, setUnitData] = useState([]);
-
     useEffect(() => {
         axios.get("/api/GetUnitsAll").then(res => {
             if (res.data.status === 200) {
@@ -146,10 +173,10 @@ const Product = (props) => {
                                 <div className="text-center">
                                     <div className="profile-photo">
                                         <img
-                                    src={`http://localhost:8000/images/products/${item.image}`}
-                                    className="d-block w-100"
-                                    alt=""
-                                />
+                                            src={`http://localhost:8000/images/products/${item.image}`}
+                                            className="d-block w-100"
+                                            alt=""
+                                        />
                                     </div>
                                     <h3 className="mt-4 mb-1"><Link to={{
                                         pathname: `/variants/${item.product_id}`,
@@ -160,7 +187,6 @@ const Product = (props) => {
                                     {/* <p className="text-muted">{item.SubCategoryName}</p> */}
                                 </div>
                             </div>
-
                             <div className="card-footer pt-0 pb-0 text-center">
                                 <div className="row">
                                     <div className="col-4 pt-3 pb-3 border-right">
@@ -190,43 +216,14 @@ const Product = (props) => {
                                             <span>{t('variants')} </span>
                                         </Link>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 )
             })
-
     }
-    // delete section 
-    const deleteProduct = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteProducts/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            swal("Success", res.data.message, "success");
-                            setProductInsert([]);
-                            // thisClicked.closest("tr").remove();
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
 
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-    }
 
     return (
         <Fragment>
@@ -311,23 +308,20 @@ const Product = (props) => {
                             {errors.Description?.message && (
                                 <div className="invalid-feedback">{errors.Description?.message}</div>
                             )}
-
                         </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('image')}</strong> </label>
                             {/* <div className="file-loading"> */}
                             <input
-                                        type="file"
-                                        className="form-control"
-                                        placeholder={t('image')}
-                                        name="photo"
-                                        required
-                                        onChange={handleImage}
-                                    />
-                            
+                                type="file"
+                                className="form-control"
+                                placeholder={t('image')}
+                                name="photo"
+                                required
+                                onChange={handleImage}
+                            />
                             {/* </div> */}
                         </div>
-
                     </Modal.Body>
                     <Modal.Footer>
                         <Button
@@ -337,7 +331,6 @@ const Product = (props) => {
                             {t('close')}
                         </Button>
                         <Button variant="primary" type="submit">{t('save')} </Button>
-
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -382,7 +375,7 @@ const Product = (props) => {
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('unit')}</strong> </label>
                             <select type="text"
-                                className= "form-control"
+                                className="form-control"
                                 placeholder="UnitID"
                                 name="UnitID"
                                 onChange={editHandleInput}
@@ -392,8 +385,6 @@ const Product = (props) => {
                                     unitData.map((item) =>
                                         <option value={item.id} key={item.id}>{item.UnitName}</option>)
                                 }</select>
-                            
-
                         </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('description')}</strong> </label>
@@ -405,8 +396,6 @@ const Product = (props) => {
                                 onChange={editHandleInput}
                                 value={editProduct.Description}
                             />
-                            
-
                         </div>
                         <div className="form-group">
                             <label className="mb-1 "> <strong>{t('image')}</strong> </label>
@@ -425,8 +414,6 @@ const Product = (props) => {
                                 </div>
                             </div>
                         </div>
-
-
                     </Modal.Body>
                     <Modal.Footer>
                         <Button

@@ -1,9 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
-
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom"
-// import profile from "../../../images/hellomenu/logo.svg";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert"
@@ -11,28 +8,27 @@ import QRCode from "qrcode.react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CBreadcrumb, CDropdownMenu, CDropdownDivider, CDropdown, CDropdownToggle, CDropdownItem, CBreadcrumbItem, CButton, CCloseButton, COffcanvas, COffcanvasBody, COffcanvasHeader, COffcanvasTitle } from '@coreui/react'
-import ReactWhatsapp from 'react-whatsapp';
-import FloatingWhatsApp from 'react-floating-whatsapp'
+import { CBreadcrumb, CDropdownMenu, CDropdown, CDropdownToggle,  CBreadcrumbItem,  CCloseButton, COffcanvas, COffcanvasBody, COffcanvasHeader, COffcanvasTitle } from '@coreui/react'
+// import ReactWhatsapp from 'react-whatsapp';
+// import FloatingWhatsApp from 'react-floating-whatsapp'
 
-const schema = yup.object().shape({
-    BrancheName: yup.string().required("This field is a required field"),
-    currencyID: yup.string().required("This field is a required field"),
-}).required();
+
 const Branches = () => {
-    // validation
-
+    // validation start
+    const schema = yup.object().shape({
+        BrancheName: yup.string().required("This field is a required field"),
+        currencyID: yup.string().required("This field is a required field"),
+    }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // validation end 
+
     // localization
     const { t } = useTranslation();
 
-    // insert modal
+    // insert start
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a branch
     const [branchstate, setBranchstate] = useState([]);
     const handleInput = (e) => {
         e.preventDefault();
@@ -49,7 +45,11 @@ const Branches = () => {
             }
         });
     };
-    // edit code
+    // insert end 
+
+    // edit start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
+
     const [editBranchstate, setEditBranchstate] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -82,13 +82,40 @@ const Branches = () => {
         });
 
     };
+    // edit end 
+    // delete start 
+    const deleteBranch = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteBranches/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            // thisClicked.closest("tr").remove();
+                        } else if (res.data.status === 404) {
+                            swal("Success", res.data.message, "success");
+                        }
+                        setBranchstate([]);
+                    });
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete end 
     //for retriving data using laravel API
     const [branchdata, setBranchdata] = useState([]);
     const [currency, setCurrency] = useState([]);
     const [loading, setLoading] = useState(true);
     // for mobile
     const [visible, setVisible] = useState(false)
-
     useEffect(() => {
         axios.get('/api/GetBranches').then(res => {
             if (res.data.status === 200) {
@@ -103,13 +130,15 @@ const Branches = () => {
         });
 
     }, [branchstate, editBranchstate]);
+    // to display public link inside phone
     const [destinationLink, setDestinationLink] = useState("");
-
     const phone = (e, srcLink) => {
         e.preventDefault();
         setDestinationLink(srcLink);
         setVisible(true)
     }
+
+    // for download QRCode
     const downloadQRCode = (e, id) => {
         e.preventDefault();
         // console.log(id)
@@ -124,11 +153,10 @@ const Branches = () => {
         aEl.click();
         document.body.removeChild(aEl);
     }
+
     var viewBranches_HTMLTABLE = "";
     if (loading) {
         return <div className="spinner-border text-primary " role="status" ><span className="sr-only">{t('loading')}</span></div>
-        //  <h4>{t('loading')}</h4>
-
     } else {
         viewBranches_HTMLTABLE =
             branchdata.map((item, i) => {
@@ -136,16 +164,6 @@ const Branches = () => {
                     <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
                         <div className="card overflow-hidden">
                             <div className="card-body">
-                                {/* <div className="profile-photo"> */}
-                                {/* <div className="primary"> */}
-                                {/* <span className="text-left mx-2">
-                                    <Link
-                                        to={`show-branch-details/${btoa(item.id)}`}
-                                        target="_blank"
-                                    >
-                                        {t('public_link')}
-                                    </Link>
-                                </span> */}
                                 <div className="text-center">
                                     <Link to={{
                                         pathname: `/category/${item.id}`,
@@ -158,26 +176,13 @@ const Branches = () => {
                                         > <p>{t('download_qr_code')}</p></Link>
                                         <h3 className="mt-4 mb-1"> {item.BrancheName}</h3>
                                     </Link>
-
-                                    {/* </div> */}
-
-
-                                    {/* <img
-                                    src={profile}
-                                    width="100"
-                                    className="img-fluid rounded-circle"
-                                    alt=""
-                                    /> */}
-                                    {/* </div> */}
                                     <CDropdown variant="btn-group">
                                         {/* <CButton color="primary" size="sm"></CButton> */}
                                         <CDropdownToggle color="primary" size="lg" split shape="rounded" caret={false}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
                                             <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                                         </svg></CDropdownToggle>
                                         <CDropdownMenu>
-
                                             <div className="mx-3 my-2">
-
                                                 <Link
                                                     to=""
                                                     onClick={(e) => editBranch(e, item.id)}
@@ -189,9 +194,7 @@ const Branches = () => {
                                                     <span> {t('edit')}</span>
                                                 </Link>
                                             </div>
-
                                             <div className="mx-3 my-2">
-
                                                 <Link
                                                     to=""
                                                     onClick={(e) => deleteBranch(e, item.id)}
@@ -201,16 +204,13 @@ const Branches = () => {
                                                         <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
                                                     </svg>
                                                     <span> {t('delete')}</span>
-
-
                                                 </Link>
                                             </div>
                                             <div className="mx-3 my-2">
-
                                                 <Link
                                                     to=""
                                                     data-toggle="tooltip" data-placement="right" title="To perview on mobile click this."
-                                                    onClick={(e) => phone(e, `http://localhost:3002/show-branch-details/${btoa(item.id)}`)}>
+                                                    onClick={(e) => phone(e, `http://localhost:3000/show-branch-details/${btoa(item.id)}`)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-phone-fill" viewBox="0 0 16 16">
                                                         <path d="M3 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V2zm6 11a1 1 0 1 0-2 0 1 1 0 0 0 2 0z" />
                                                     </svg>
@@ -301,32 +301,7 @@ const Branches = () => {
             })
 
     }
-    // delete branch 
-    const deleteBranch = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteBranches/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            swal("Success", res.data.message, "success");
-                            // thisClicked.closest("tr").remove();
-                        } else if (res.data.status === 404) {
-                            swal("Success", res.data.message, "success");
-                        }
-                        setBranchstate([]);
-                    });
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-    }
+
     return (
         <Fragment>
             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
@@ -473,7 +448,6 @@ const Branches = () => {
                     </Modal.Footer>
                 </Form>
             </Modal>
-            {/* mobile modal */}
 
             {/* <CButton onClick={() =>}>Toggle offcanvas</CButton> */}
             <COffcanvas placement="end" className="fade bd-example-modal-lg" scroll visible={visible} onHide={() => setVisible(false)} >
@@ -518,9 +492,8 @@ const Branches = () => {
                         </div>
                     </div>
                 </div>
-                {/* <ReactWhatsapp number="93744647067" message="Hello World!!!" >WhatsApps</ReactWhatsapp> */}
             </div>
-            <div className="App">
+            {/* <div className="App">
                 <FloatingWhatsApp
                     phoneNumber="93744647067"
                     accountName="Mohammad Faiq"
@@ -529,13 +502,8 @@ const Branches = () => {
                     // notificationDelay={60000} // 1 minute
                     // notificationSound
                 />
-                
-            </div>
-
-
+            </div> */}
         </Fragment>
-
-
     );
 
 };

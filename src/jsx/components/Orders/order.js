@@ -79,7 +79,6 @@ const Order = () => {
 
         <Fragment>
             <PageTItle headingPara={t('orders')} activeMenu={t('add_to_basket')} motherMenu={t('orders')} />
-
             <div className="row">
                 {viewVariants_HTMLTABLE}
             </div>

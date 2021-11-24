@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import PageTItle from "../../layouts/PageTitle";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert"
@@ -10,22 +9,20 @@ import * as yup from 'yup';
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const Unit = (props) => {
-    // validation
+    // validation Start
     const schema = yup.object().shape({
         UnitName: yup.string().required("This field is a required field"),
     }).required();
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    // Validation End
     // for localization
     const { t } = useTranslation();
     // ID
     const id = props.match.params.id;
-    // insert modal
+    // Insert Start
     const [modalCentered, setModalCentered] = useState(false);
-    // edit modal
-    const [editmodalCentered, setEditModalCentered] = useState(false);
-    // insert a section
     const [unitInsert, setUnitInsert] = useState({
         UnitName: '',
         brancheID: id
@@ -34,7 +31,6 @@ const Unit = (props) => {
         e.persist();
         setUnitInsert({ ...unitInsert, [e.target.name]: e.target.value });
     };
-
     const saveUnit = (e) => {
         // e.preventDefault();
         axios.post("/api/InsertUnits", unitInsert).then(res => {
@@ -51,7 +47,9 @@ const Unit = (props) => {
             }
         });
     };
-    // edit code
+    // insert End
+    // edit Start
+    const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editUnit, setEditUnit] = useState([]);
     const editHandleInput = (e) => {
         e.persist();
@@ -85,7 +83,37 @@ const Unit = (props) => {
         });
 
     };
+    // Edit End
+    // delete Start 
+    const deleteUnit = (e, id) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: [t('cancel'), t('confirm')],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    axios.delete(`/api/DeleteUnits/${id}`).then(res => {
+                        if (res.data.status === 200) {
+                            swal("Success", res.data.message, "success");
+                            setUnitInsert({
+                                UnitName: '',
+                                brancheID: id
+                            });
+                        } else if (res.data.status === 404) {
+                            swal("Error", res.data.message, "error");
+                        }
+                    });
 
+                } else {
+                    swal("Your Data is safe now!");
+                }
+            });
+    }
+    // delete End
     //for retriving data using laravel API
     const [fetchData, setFetchData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -120,42 +148,13 @@ const Unit = (props) => {
             })
 
     }
-    // delete section 
-    const deleteUnit = (e, id) => {
-        e.preventDefault();
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: [t('cancel'), t('confirm')],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios.delete(`/api/DeleteUnits/${id}`).then(res => {
-                        if (res.data.status === 200) {
-                            swal("Success", res.data.message, "success");
-                            setUnitInsert({
-                                UnitName: '',
-                                brancheID: id
-                            });
-                        } else if (res.data.status === 404) {
-                            swal("Error", res.data.message, "error");
-                        }
-                    });
-
-                } else {
-                    swal("Your Data is safe now!");
-                }
-            });
-    }
+    
     return (
         <Fragment>
-             <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
                 <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
                 <CBreadcrumbItem active>{t('units')}</CBreadcrumbItem>
             </CBreadcrumb>
-            {/* <PageTItle headingPara={t('units')} activeMenu={t('add_unit')} motherMenu={t('units')} /> */}
             {/* <!-- Insert  Modal --> */}
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveUnit)} method="POST" encType="multipart/form-data">
