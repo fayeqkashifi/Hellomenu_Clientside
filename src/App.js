@@ -19,8 +19,9 @@ import BranchDetails from "./jsx/components/Public Link/BranchDetails";
 // import Variants from "./jsx/components/Variants/Variants";
 import VariantDetails from "./jsx/components/Public Link/VariantDetails";
 import ShowProducts from "./jsx/components/Public Link/ShowProducts";
+import { base_url, port } from "./Consts";
 
-axios.defaults.baseURL = "http://192.168.1.40:8000";
+axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Accept"] = "application/json";
@@ -30,6 +31,24 @@ axios.interceptors.request.use(function (config) {
   config.headers.Authorization = token ? `Bearer ${token}` : "";
   return config;
 });
+//rember if there no user redriect them to login page
+
+axios.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    if (401 === error.response.status) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_name");
+      localStorage.removeItem("auth_id");
+      window.location = "/";
+
+      return error.response;
+    }
+  }
+);
+
 const App = () => {
   return (
     <Router>
