@@ -55,10 +55,11 @@
     "add_to_basket": "Add To Basket",
     "basket": "Basket",
     "basket_list": "Basket List",
-    "variant_details": "Variant Dtetails",
+    "variant_details": "Variant Details",
     "variant_list": "Variant List",
     "edit_variant": "Edit Variant",
-    
+    "add_details": "Add Details",
+    "attributes_add_note": "Click here to add your option if it isn't already there. : ",
 
 
     "actions":"Actions",

@@ -33,6 +33,7 @@ const Variants = (props) => {
     const [editmodalCentered, setEditModalCentered] = useState(false);
     // insert a section
     const [modalCentered, setModalCentered] = useState(false);
+
     // edit code
     const [editVariant, setEditVariant] = useState([]);
     const editHandleInput = (e) => {
@@ -144,7 +145,7 @@ const Variants = (props) => {
                 setAttributes(res.data.fetchData);
             }
         });
-    }, [id, variantInsert, editVariant]);
+    }, [id, variantInsert,attributes, editVariant]);
 
     const [options, setOptions] = useState([]);
     const selectOnChange = (index, event) => {
@@ -242,8 +243,30 @@ const Variants = (props) => {
     // select input
     const [displayValue, setDisplayValue] = useState([]);
     const handleSelectEvent = (e) => {
-        setDisplayValue(Array.isArray(e) ? e.map(item => item.label) : {})
+        setDisplayValue(Array.isArray(e) ? e.map(item => item.label) : [])
     }
+    const [attributeInsert, setAttributeInsert] = useState([]);
+    const [attributeModal, setAttributeModal] = useState(false);
+
+    const handleInputAttribute = (e) => {
+        e.persist();
+        setAttributeInsert({ ...attributeInsert, [e.target.name]: e.target.value });
+    };
+    const saveAttribute= (e) => {
+        e.preventDefault();
+        axios.post("/api/InsertAttribute", attributeInsert).then(res => {
+            if (res.data.status === 200) {
+                setAttributeInsert([]);
+                reset();
+
+                swal("Success", res.data.message, "success");
+                setAttributeModal(false)
+                //  this.props.history.push("/")
+            }
+        });
+    };
+
+
     var branchID = 0;
     var CategoryID = 0;
     var sub_category_id = 0;
@@ -377,6 +400,46 @@ const Variants = (props) => {
             </CBreadcrumb>
             {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} /> */}
             {/* <!-- Insert  Modal --> */}
+            <Modal className="fade" show={attributeModal}>
+                <Form onSubmit={saveAttribute} method="POST" encType="multipart/form-data">
+                    <Modal.Header>
+                        <Modal.Title>{t('add_attribute')}</Modal.Title>
+                        <Button
+                            onClick={() => setAttributeModal(false)}
+                            variant=""
+                            className="close"
+                        >
+                            <span>&times;</span>
+                        </Button>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="form-group">
+                            <label className="mb-1 "> <strong>{t('attribute_name')} </strong> </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder={t('attribute_name')}
+                                name="attributeName"
+                                required
+                                onChange={handleInputAttribute}
+                                value={attributeInsert.attributeName}
+                            />
+                            
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            onClick={() => setAttributeModal(false)}
+                            variant="danger light"
+                        >
+                            {t('close')}
+                        </Button>
+                        <Button variant="primary" type="submit">{t('save')}</Button>
+
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
             <Modal className="fade bd-example-modal-lg" show={modalCentered} size="lg">
                 <Form onSubmit={handleSubmit(saveInventory)} method="POST" encType="multipart/form-data">
                     <Modal.Header>
@@ -393,8 +456,16 @@ const Variants = (props) => {
                         <div className="row" >
                         <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 ">
                             <div className="form-group">
+                                <div className="d-flex justify-content-between">
                                 <label className="mb-1 "> <strong>{t('attributes')}</strong> </label>
-
+                                <label className=" "> {t('attributes_add_note')}   
+                                <Link
+                                onClick={() => setAttributeModal(true)}
+                                >
+                                 {t('add_attribute')}
+                                </Link>
+                                </label>
+                                </div>
                                 <Select
                                     // defaultValue={[colourOptions[2], colourOptions[3]]}
                                     isMulti
@@ -559,7 +630,7 @@ const Variants = (props) => {
                             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
 
                                 <div className="form-group">
-                                    <label className="mb-1 "> <strong>{t('attribute_variant_details')}</strong> </label>
+                                    <label className="mb-1 "> <strong>{t('variant_details')}</strong> </label>
                                     {/* <div className="file-loading"> */}
                                 </div>
 
@@ -578,7 +649,7 @@ const Variants = (props) => {
                                                     : "form-control"
                                             }
                                             name="name"
-                                            placeholder={t('attributes')}
+                                            placeholder={t('name')}
                                             value={item.name}
                                             onChange={(e) => onChange(index, e)}
                                         />
@@ -597,7 +668,7 @@ const Variants = (props) => {
                                                     : "form-control"
                                             }
                                             name="value"
-                                            placeholder={t('Options')}
+                                            placeholder={t('value')}
                                             value={item.value}
                                             onChange={(e) => onChange(index, e)}
                                         />
@@ -623,7 +694,7 @@ const Variants = (props) => {
 
                             <div className="col-xl-4 col-xxl-4 col-lg-3 col-sm-12">
                                 <button className="btn btn-primary mt-2" onClick={handleAddLink}>
-                                    {t('add_attribute')}
+                                    {t('add_details')}
                                 </button>
                             </div>
                         </div>

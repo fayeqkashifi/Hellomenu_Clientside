@@ -121,7 +121,7 @@ const VariantDetailsForPublicLink = (props) => {
                     <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 ">
                         <div className="row" >
                             {/* <div > */}
-                            <Slider dots={true} infinite={true} slidesToShow={1} slidesToScroll={1}>
+                            <Slider dots={false} infinite={true} slidesToShow={1} slidesToScroll={1}>
                                 {viewImages_HTMLTABLE}
                             </Slider>
                             {/* </div> */}
@@ -133,7 +133,7 @@ const VariantDetailsForPublicLink = (props) => {
                         <div >
                             {t('availability')} {variants.length}
                         </div>
-                        <Slider dots={true} infinite={true} slidesToShow={variants.length >= 4 ? 4 : variants.length} slidesToScroll={1}>
+                        <Slider dots={false} infinite={true} slidesToShow={variants.length >= 4 ? 4 : variants.length} slidesToScroll={1}>
                             {variants.map((item, i) => (
                                 <div key={i} className="px-1 text-center text-capitalize " >
                                     {/* <Item as="li" > */}
@@ -238,13 +238,13 @@ const VariantDetailsForPublicLink = (props) => {
                                                             }
                                                         </div> */}
                                                         {/* <div className="shopping-cart mt-5"> */}
-                                                            {/* <Link
+                                                        {/* <Link
                                                                 to="/page-login"
                                                                 className="btn btn-primary btn-lg">
                                                                 <i className="fa fa-shopping-basket mr-2"></i>
                                                                 {t('add_to_basket')}
                                                             </Link> */}
-                                                            {/* <button
+                                                        {/* <button
                                                 type="button"
                                                 onClick={addBaskets}
                                                 className="btn btn-primary btn-lg">
