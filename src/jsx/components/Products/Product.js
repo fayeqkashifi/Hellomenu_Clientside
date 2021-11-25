@@ -499,9 +499,11 @@ const Product = (props) => {
               style={{ border: "2px dashed red" }}
             >
               <div className="align-self-center text-center">
-                <Link
+                //why use Use Link here you can use anything and just add a
+                onClick Event //if you use Link with out to property the system
+                will crash
+                <div
                   className="btn btn-outline-primary"
-                  // to={`/add-product/${subMenuId}`}
                   onClick={() => setModalCentered(true)}
                 >
                   <svg
@@ -515,7 +517,7 @@ const Product = (props) => {
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                   </svg>
                   {t("add_product")}
-                </Link>
+                </div>
               </div>
             </div>
           </div>

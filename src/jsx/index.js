@@ -12,6 +12,7 @@ import Footer from "./layouts/Footer";
 /// Deshboard
 import Home from "./components/Dashboard/Home/Home";
 import Branches from "./components/Branches/Branches";
+
 import Menu from "./components/Categories/Category";
 import Company from "./components/Companies/Company";
 import Product from "./components/Products/Product";
