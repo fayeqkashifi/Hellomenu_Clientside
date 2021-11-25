@@ -499,9 +499,9 @@ const Product = (props) => {
               style={{ border: "2px dashed red" }}
             >
               <div className="align-self-center text-center">
-                //why use Use Link here you can use anything and just add a
-                onClick Event //if you use Link with out to property the system
-                will crash
+                {/* why use Use Link here you can use anything and just add a
+                onClick Event if you use Link with out to property the system
+                will crash */}
                 <div
                   className="btn btn-outline-primary"
                   onClick={() => setModalCentered(true)}
