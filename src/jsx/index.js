@@ -12,7 +12,6 @@ import Footer from "./layouts/Footer";
 /// Deshboard
 import Home from "./components/Dashboard/Home/Home";
 import Branches from "./components/Branches/Branches";
-
 import Menu from "./components/Categories/Category";
 import Company from "./components/Companies/Company";
 import Product from "./components/Products/Product";
@@ -48,7 +47,7 @@ const Markup = () => {
     { url: "profile", component: Profile },
     { url: "orders", component: Order },
     { url: "baskets", component: Basket },
-    { url: "variants/:id", component: Variants },
+    { url: "variants", component: Variants },
     { url: "gallery/:id", component: Gallery },
     // { url: "variant-details/:id", component: VariantDetails },
     // { url: "show-branch-details/:id", component: ShowBranchDetails },

@@ -147,7 +147,6 @@ const Product = (props) => {
   useEffect(() => {
     axios.get("/api/GetUnitsAll").then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.fetchData)
         setUnitData(res.data.fetchData);
       }
     });
@@ -218,9 +217,10 @@ const Product = (props) => {
                 <div className="col-4 pt-3 pb-3">
                   <Link
                     to={{
-                      pathname: `/variants/${item.product_id}`,
+                      pathname: `/variants`,
                       id: item.id,
                       ProductName: item.ProductName,
+                      state: { id: item.product_id },
                     }}
                   >
                     <span>{t("variants")} </span>
