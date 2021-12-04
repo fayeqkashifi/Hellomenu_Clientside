@@ -80,11 +80,7 @@ const Markup = () => {
             </Switch>
           </div>
         </div>
-        {localStorage.getItem("auth_token") ? (
-          <Footer />
-        ) : (
-          <Redirect to="/page-login" />
-        )}
+        {localStorage.getItem("auth_token") ? <Footer /> : <Redirect to="/" />}
       </div>
     </Router>
   );

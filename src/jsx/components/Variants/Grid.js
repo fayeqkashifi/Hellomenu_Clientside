@@ -1,9 +1,14 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 const VariantsLine = (props) => {
   const { items, attributes, productid, setVarantGrid } = props;
   const [values, setValues] = useState(items);
   let [errors, setErrors] = useState({});
+  useEffect(() => {
+    setVarantGrid({
+      ...values,
+    });
+  }, [values]);
   const genrateSku = () => {
     let sku = productid + "-";
     let c = 1;
@@ -17,6 +22,7 @@ const VariantsLine = (props) => {
       }
       c++;
     });
+
     return sku;
   };
   const Change = (event) => {
@@ -50,8 +56,12 @@ const VariantsLine = (props) => {
         ...values,
         sku: sku,
       });
-      setVarantGrid(values);
     }
+    console.log({
+      [event.target.name]: event.target.value,
+      ...values,
+      sku: sku,
+    });
   };
   const outputs = [];
   for (const [key, value] of Object.entries(values)) {
@@ -84,16 +94,38 @@ const VariantsLine = (props) => {
   );
 };
 const VariantsGrid = (props) => {
-  const { attributes, numberOfVar, productid, getJSONVaraints } = props;
+  const { attributes, numberOfVar, productid, getJSONVaraints, recheck } =
+    props;
   const [varintGrid, setVariantGrid] = useState([]);
+
+  useEffect(() => {
+    if (numberOfVar.length !== 0) {
+      setVariantGrid(numberOfVar);
+    }
+  }, [numberOfVar]);
+  const vars = numberOfVar.map((item) => (
+    <VariantsLine
+      recheck={recheck}
+      key={item.postion}
+      setVarantGrid={(item) => setVarantGrid(item)}
+      items={item}
+      productid={productid}
+      attributes={attributes}
+    ></VariantsLine>
+  ));
+
   const setVarantGrid = (item) => {
     if (item.sku !== "") {
       let modifyVariant = varintGrid;
+
       modifyVariant[item.postion] = item;
       setVariantGrid(modifyVariant);
+      getJSONVaraints(JSON.stringify(varintGrid));
+    } else {
+      console.log("fssds");
     }
-    getJSONVaraints(JSON.stringify(varintGrid));
   };
+
   return (
     <Fragment>
       <div class="col-xl-12 col-lg-12 col-sm-12 ">
@@ -106,15 +138,7 @@ const VariantsGrid = (props) => {
             <div class="col-md-2  p-4">{sec.attributeName}</div>
           ))}
         </div>
-        {numberOfVar.map((item) => (
-          <VariantsLine
-            key={item.postion}
-            setVarantGrid={(item) => setVarantGrid(item)}
-            items={item}
-            productid={productid}
-            attributes={attributes}
-          ></VariantsLine>
-        ))}
+        {vars}
       </div>
     </Fragment>
   );

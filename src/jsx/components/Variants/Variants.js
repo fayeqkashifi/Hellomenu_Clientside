@@ -14,7 +14,6 @@ const Variants = (props) => {
   // for localization
   const { t } = useTranslation();
   const id = props.history.location.state.id;
-  console.log(id);
 
   // edit modal
 
@@ -33,6 +32,7 @@ const Variants = (props) => {
   const [loading, setLoading] = useState(true);
   const [numberOfVar, setNumberOfVar] = useState([]);
   const [jsonVaraints, setJsonVaratis] = useState("");
+  const [check, setCheck] = useState(false);
   useEffect(() => {
     const getdata = async () => {
       const jsonvar = await axios({
@@ -115,7 +115,6 @@ const Variants = (props) => {
     if (numberOfVar.length > 0) {
       postion = numberOfVar.length;
     }
-    console.log("pos" + postion);
     setNumberOfVar([
       ...numberOfVar,
       {
@@ -137,21 +136,27 @@ const Variants = (props) => {
     setJsonVaratis(items);
   };
   const saveVaraiants = async () => {
-    console.log(jsonVaraints);
-    return;
-    const formdata = new FormData();
-    formdata.append("product_id", id);
-    formdata.append("vars", jsonVaraints);
-    const res = await axios({
-      method: "post",
-      data: formdata,
-      url: "/api/saveVars",
-    });
-    if (res.data.status === 200) {
-      swal("Success", res.data.message, "success");
+    if (numberOfVar.length === JSON.parse(jsonVaraints).length) {
+      const formdata = new FormData();
+      formdata.append("product_id", id);
+      formdata.append("vars", jsonVaraints);
+      const res = await axios({
+        method: "post",
+        data: formdata,
+        url: "/api/saveVars",
+      });
+      if (res.data.status === 200) {
+        swal("Success", res.data.message, "success");
+      } else {
+        swal("error", res.data.message, "error");
+      }
     } else {
-      swal("error", res.data.message, "error");
+      console.log(jsonVaraints);
+      return;
     }
+  };
+  const recheckitem = (item) => {
+    console.log(item);
   };
   var branchID = 0;
   var CategoryID = 0;
@@ -201,6 +206,9 @@ const Variants = (props) => {
             <div className="card ">
               <div className="col-xl-12 col-lg-12 col-sm-12 ">
                 <Grid
+                  recheck={(item) => {
+                    recheckitem(item);
+                  }}
                   getJSONVaraints={(items) => getJSONVaraints(items)}
                   numberOfVar={numberOfVar}
                   attributes={attributes}
