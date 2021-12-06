@@ -15,11 +15,18 @@ import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
 // import PrivateRoute from './jsx/components/PrivateRoute';
 import PublicRoute from "./jsx/components/PublicRoute";
 import axios from "axios";
-import BranchDetails from "./jsx/components/Public Link/BranchDetails";
+import StandardTemplate from "./jsx/components/Public Link/BranchDetails";
 // import Variants from "./jsx/components/Variants/Variants";
 import VariantDetails from "./jsx/components/Public Link/VariantDetails";
 import ShowProducts from "./jsx/components/Public Link/ShowProducts";
 import { base_url, port } from "./Consts";
+import Main from "./jsx/components/Design/Templates/First/Main";
+import DarkTemplate from "./jsx/components/Design/Templates/Dark/Main";
+import Thrid from "./jsx/components/Design/Templates/Thrid/Main";
+import ProductDetails from "./jsx/components/Design/Templates/Dark/ProductDetails";
+import OrderDetails from "./jsx/components/Design/Templates/Dark/OrderDetails";
+import SecondTemplate from "./jsx/components/Design/Templates/Second/Main";
+import CreateRoute from "./jsx/components/Branches/CreateRoute]";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -57,7 +64,7 @@ const App = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/">
+      <Route exact path="/">
           <Redirect to="/page-login" />
         </Route>
         <PublicRoute
@@ -66,6 +73,7 @@ const App = () => {
           path="/page-login"
           exact
         />
+
         <PublicRoute
           restricted={false}
           component={Registration}
@@ -74,17 +82,29 @@ const App = () => {
         />
         <PublicRoute
           exact
-          component={BranchDetails}
-          path="/show-branch-details/:id"
+          component={StandardTemplate}
+          path="/standard-template/:id"
         />
+        <PublicRoute component={DarkTemplate} path="/dark-template/:id" exact />
+        <PublicRoute component={SecondTemplate} path="/second-template/:id" exact />
+
         <PublicRoute
           exact
           component={VariantDetails}
           path="/variant-details/:id"
         />
+        <PublicRoute
+          exact
+          component={OrderDetails}
+          path="/order-details/:id"
+        />
         <PublicRoute exact component={ShowProducts} path="/product/:id" />
-        {/* {localStorage.getItem('auth_token') ? <Markup /> : <Redirect to="/page-login" />} */}
+        <PublicRoute exact component={ProductDetails} path="/product-details/:id" />
+        <PublicRoute component={Main} path="/template-first" exact />
+        <PublicRoute component={Thrid} path="/template-thrid" exact />
         <Markup />
+        {/* <CreateRoute /> */}
+
       </Switch>
     </Router>
   );

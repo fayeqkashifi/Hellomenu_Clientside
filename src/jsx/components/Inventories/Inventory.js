@@ -10,7 +10,8 @@ const Inventory = (props) => {
     // for localization
     const { t } = useTranslation();
 
-    const id = props.match.params.id;
+    const id = props.history.location.state.id;
+
     // edit modal
     const [editmodalCentered, setEditModalCentered] = useState(false);
     const [editIventory, setEditInventory] = useState([]);

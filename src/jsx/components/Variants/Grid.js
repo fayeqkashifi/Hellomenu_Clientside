@@ -1,23 +1,30 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
+
 const VariantsLine = (props) => {
-  const { items, attributes, productid, setVarantGrid } = props;
+  const { items, filerAttributes, productid, setVarantGrid } = props;
   const [values, setValues] = useState(items);
+  if (Object.keys(items).length !== Object.keys(values).length) {
+    setValues(items);
+  }
+
   let [errors, setErrors] = useState({});
   useEffect(() => {
     setVarantGrid({
       ...values,
     });
+    // setValues(items);
   }, [values]);
   const genrateSku = () => {
     let sku = productid + "-";
     let c = 1;
-    attributes.map((atter) => {
-      if (values[atter.attributeName] != "") {
-        if (c == attributes.length) {
-          sku += values[atter.attributeName];
+    filerAttributes.map((atter) => {
+      if (values[atter.label] != "") {
+        if (c == filerAttributes.length) {
+          sku += values[atter.label];
         } else {
-          sku += values[atter.attributeName] + "-";
+          sku += values[atter.label] + "-";
         }
       }
       c++;
@@ -26,15 +33,37 @@ const VariantsLine = (props) => {
     return sku;
   };
   const Change = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
+    if (event.target.name == "image") {
+      uploadImage(event, event.target.files[0]);
+      // console.log(event.target.files[0]);
+      // setValues({
+      //   ...values,
+      //   [event.target.name]: 'image',
+      // });
+    } else {
+      setValues({
+        ...values,
+        [event.target.name]: event.target.value,
+      });
+    }
+    console.log(values);
+  };
+  const uploadImage = (event, image) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    axios.post("/api/uploadImage", formData).then((res) => {
+      if (res.data.status === 200) {
+        setValues({
+          ...values,
+          [event.target.name]: res.data.filename,
+        });
+      }
     });
   };
   const changeSku = (event) => {
     const name = event.target.name;
-    const check = attributes.some((attribute) => {
-      return attribute.attributeName === name;
+    const check = filerAttributes.some((attribute) => {
+      return attribute.label === name;
     });
 
     if (!check) {
@@ -63,22 +92,26 @@ const VariantsLine = (props) => {
       sku: sku,
     });
   };
+
+  // console.log(items);
+  // console.log(values);
   const outputs = [];
   for (const [key, value] of Object.entries(values)) {
     if (key != "postion") {
       outputs.push(
-        <div className="col-xl-2 col-lg-2 col-sm-2 p-4">
+        <div className="col-xl-2 col-lg-2 col-sm-2 p-4  ">
           <input
             className={
               errors[key] ? " form-control is-invalid" : "form-control"
             }
             disabled={key == "sku"}
-            value={value}
+            value={key == "image" ? "" : value}
             onBlur={(event) => {
               changeSku(event);
             }}
             onChange={(event) => Change(event)}
             name={key}
+            type={key == "image" ? "file" : ""}
           ></input>
           {errors[key] ? (
             <div className="invalid-feedback">{errors[key + "message"]}</div>
@@ -93,8 +126,9 @@ const VariantsLine = (props) => {
     </div>
   );
 };
+
 const VariantsGrid = (props) => {
-  const { attributes, numberOfVar, productid, getJSONVaraints, recheck } =
+  const { filerAttributes, numberOfVar, productid, getJSONVaraints, recheck } =
     props;
   const [varintGrid, setVariantGrid] = useState([]);
 
@@ -110,7 +144,7 @@ const VariantsGrid = (props) => {
       setVarantGrid={(item) => setVarantGrid(item)}
       items={item}
       productid={productid}
-      attributes={attributes}
+      filerAttributes={filerAttributes}
     ></VariantsLine>
   ));
 
@@ -129,13 +163,14 @@ const VariantsGrid = (props) => {
   return (
     <Fragment>
       <div class="col-xl-12 col-lg-12 col-sm-12 ">
-        <div className="d-flex flex-row">
+        <div className="row">
           <div class="col-md-2  p-4">SKU</div>
           <div class="col-md-2  p-4">price</div>
           <div class="col-md-2  p-4">Stock</div>
+          <div class="col-md-2  p-4">Image</div>
 
-          {attributes.map((sec) => (
-            <div class="col-md-2  p-4">{sec.attributeName}</div>
+          {filerAttributes?.map((sec) => (
+            <div class="col-md-2  p-4">{sec.label}</div>
           ))}
         </div>
         {vars}

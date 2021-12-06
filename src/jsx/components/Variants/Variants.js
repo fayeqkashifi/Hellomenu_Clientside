@@ -6,29 +6,16 @@ import { useTranslation } from "react-i18next";
 import Grid from "./Grid";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
+import Select from "react-select";
 
 const Variants = (props) => {
-  // validation start
-
-  // validation end
   // for localization
   const { t } = useTranslation();
   const id = props.history.location.state.id;
 
-  // edit modal
-
-  // insert a section
-
-  // edit code
-
-  // edit End
-  // insert Start
-
-  // for Pictures End
-  //for retriving data using laravel API
-
   const [nameAttr, setNameAtter] = useState({});
   const [attributes, setAttributes] = useState([]);
+  const [filerAttributes, setfilerAttributes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [numberOfVar, setNumberOfVar] = useState([]);
   const [jsonVaraints, setJsonVaratis] = useState("");
@@ -66,17 +53,22 @@ const Variants = (props) => {
           sku: "",
           price: "",
           stock: "",
-          ...nameAtter,
+          image: "",
+          // ...nameAtter,
         });
-        setNumberOfVar(varLines);
+        // setNameAtter(nameAtter);
 
+        setNumberOfVar(varLines);
         setAttributes(res.data.fetchData);
       } else {
         const varLines = [];
 
         const arrayVar = JSON.parse(jsonvar.data.fetchData);
+        const AttNames = {};
 
         arrayVar.map((fetchData) => {
+          const attrFilterName = [];
+
           let line = {};
           let count = 0;
           for (const [key, value] of Object.entries(fetchData)) {
@@ -84,11 +76,18 @@ const Variants = (props) => {
               key == "postion" ||
               key == "sku" ||
               key == "price" ||
-              key == "stock"
+              key == "stock" ||
+              key == "image"
             ) {
               line[key] = value;
             } else if (nameAtter.hasOwnProperty(key)) {
               line[key] = value;
+              attrFilterName.push({
+                id: count,
+                value: value,
+                label: key,
+              });
+              AttNames[key] = "";
             } else {
               if (count < Object.keys(nameAtter).length) {
                 line[Object.keys(nameAtter)[count]] = value;
@@ -98,13 +97,14 @@ const Variants = (props) => {
           }
 
           varLines.push(line);
+          setfilerAttributes(attrFilterName);
         });
+        // console.log(AttNames);
+        setNameAtter(AttNames);
 
         setNumberOfVar(varLines);
-
         setAttributes(res.data.fetchData);
       }
-      setNameAtter(nameAtter);
     };
 
     getdata();
@@ -122,6 +122,7 @@ const Variants = (props) => {
         sku: "",
         price: "",
         stock: "",
+        image: "",
         ...nameAttr,
       },
     ]);
@@ -158,6 +159,35 @@ const Variants = (props) => {
   const recheckitem = (item) => {
     console.log(item);
   };
+
+  // select box
+  const handleSelectEvent = (e) => {
+    // e.map((item) =>
+    // {
+    setfilerAttributes(e);
+
+    // });
+    // console.log(filerAttributes);
+    // console.log(attributes);
+    const nameAtter = {};
+    e?.map((item) => {
+      nameAtter[item.label] = "";
+    });
+    const varLines = [];
+    varLines.push({
+      postion: 0,
+      sku: "",
+      price: "",
+      stock: "",
+      image: "",
+      ...nameAtter,
+    });
+    // console.log(nameAtter);
+    setNameAtter(nameAtter);
+
+    setNumberOfVar(varLines);
+  };
+
   var branchID = 0;
   var CategoryID = 0;
   var sub_category_id = 0;
@@ -194,13 +224,20 @@ const Variants = (props) => {
           </CBreadcrumbItem>
           <CBreadcrumbItem active> {t("variants")} </CBreadcrumbItem>
         </CBreadcrumb>
-        {/* <PageTItle headingPara={t('variants')} activeMenu={t('variant_list')} motherMenu={t('variants')} /> */}
-        {/* <!-- Insert  Modal for Attribute --> */}
 
-        {/* <!-- Insert  Modal for variant  --> */}
-
-        {/* Edit Modal */}
-
+        <div className="row">
+          <Select
+            // defaultValue={[colourOptions[2], colourOptions[3]]}
+            isMulti
+            options={attributes.map((o, i) => {
+              return { id: i, value: o.id, label: o.attributeName };
+            })}
+            onChange={handleSelectEvent}
+            name="attributeName"
+            className="basic-multi-select"
+            classNamePrefix="select"
+          />
+        </div>
         <div className="row">
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
@@ -211,7 +248,7 @@ const Variants = (props) => {
                   }}
                   getJSONVaraints={(items) => getJSONVaraints(items)}
                   numberOfVar={numberOfVar}
-                  attributes={attributes}
+                  filerAttributes={filerAttributes}
                   productid={id}
                 ></Grid>
               </div>

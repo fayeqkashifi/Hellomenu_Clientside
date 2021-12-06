@@ -28,7 +28,7 @@ const SubCategory = (props) => {
   // validation end
   // for localization
   const { t } = useTranslation();
-  const id = props.match.params.id;
+  const id = atob(props.match.params.id)
 
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
@@ -166,7 +166,7 @@ const SubCategory = (props) => {
               <div className="text-center">
                 <Link
                   to={{
-                    pathname: `/products/${item.sub_id}`,
+                    pathname: `/branches/category/sub-category/products/${btoa(item.sub_id)}`,
                     id: item.id,
                     ProductName: item.ProductName,
                   }}
@@ -200,7 +200,7 @@ const SubCategory = (props) => {
                 <div className="col-4 pt-3 pb-3">
                   <Link
                     to={{
-                      pathname: `/products/${item.sub_id}`,
+                      pathname: `/branches/category/sub-category/products/${btoa(item.sub_id)}`,
                     }}
                   >
                     <span>{t("products")}</span>

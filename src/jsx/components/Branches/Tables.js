@@ -24,7 +24,8 @@ const Tables = (props) => {
     // for localization
     const { t } = useTranslation();
     // ID
-    const id = props.match.params.id;
+    const id = props.history.location.state.id;
+
     // insert modal
     const [modalCentered, setModalCentered] = useState(false);
     const [tableInsert, setTableInsert] = useState({
@@ -167,11 +168,7 @@ const Tables = (props) => {
     }
     return (
         <Fragment>
-            <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
-                <CBreadcrumbItem active>{t('tables')}</CBreadcrumbItem>
-            </CBreadcrumb>
-            {/* <!-- Insert  Modal --> */}
+           
             <Modal className="fade" show={modalCentered}>
                 <Form onSubmit={handleSubmit(saveTable)} method="POST" encType="multipart/form-data">
                     <Modal.Header>

@@ -21,7 +21,7 @@ const ShowProducts = (props) => {
   const [variantsWithPictures, setVariantsWithPictures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [skuarray, setSkuArray] = useState([]);
-  const [productDetails, setProductDetails] = useState({ price: 0, stock: 0 });
+  const [productDetails, setProductDetails] = useState({ price: 0, stock: 0,image:fetchData.image });
   useEffect(() => {
     const getdata = async () => {
       const product = await axios({
@@ -77,10 +77,10 @@ const ShowProducts = (props) => {
     let productdetails = { price: 0, stock: 0 };
     if (priceList.length !== 0) {
       const line = priceList.pop();
-      const newProductDetails = { price: line.price, stock: line.stock };
+      const newProductDetails = { price: line.price, stock: line.stock, image: line.image };
       productdetails = newProductDetails;
     } else {
-      const newProductDetails = { price: 0, stock: "No Stock" };
+      const newProductDetails = { price: 0, stock: "No Stock", image: fetchData.image  };
       productdetails = newProductDetails;
     }
     // console.log(productdetails);
@@ -88,7 +88,7 @@ const ShowProducts = (props) => {
   };
   const parseVariants = (variantData) => {
     const variants = [];
-    const savePostion = ["postion", "sku", "price", "stock"];
+    const savePostion = ["postion", "sku", "price", "stock","image"];
     const varLine = variantData[0];
     const varlinekey = Object.keys(varLine);
     for (let i = 0; i < varlinekey.length; i++) {
@@ -138,7 +138,7 @@ const ShowProducts = (props) => {
               <div className="profile-photo">
                 <img
                   style={{ height: "200px", objectFit: "contain" }}
-                  src={`http://${base_url}:${port}/images/products/${fetchData.image}`}
+                  src={productDetails.stock==="No Stock"? `http://${base_url}:${port}/images/products/${productDetails.image}` : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`}
                   className="d-block w-100 img-thumbnail"
                   alt=""
                 />

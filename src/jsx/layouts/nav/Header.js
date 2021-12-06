@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link
+  // , useHistory 
+} from "react-router-dom";
 /// Image
 import i18next from "i18next";
 import profile from "../../../images/hellomenu/logo.svg";
@@ -12,7 +14,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
   const idleTimerRef = useRef(null);
   const { t } = useTranslation();
 
-  const history = useHistory();
+  // const history = useHistory();
   const logoutUser = (e) => {
     // e.preventDefault();
     axios.post("/api/logout").then((res) => {

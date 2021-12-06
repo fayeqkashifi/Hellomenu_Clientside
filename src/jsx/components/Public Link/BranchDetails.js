@@ -63,14 +63,12 @@ const BranchDetails = (props) => {
         // console.log(res.data.fetchData);
         axios
           .get(
-            `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0].sub_id}`
+            `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_id}`
           )
           .then((res) => {
             if (res.data.status === 200) {
-              console.log(res.data.fetchData);
-              setProducts(res.data.fetchData);
-
-              setActiveSubCategory(res.data.fetchData[0].sub_category_id);
+              setProducts(res.data.data);
+              setActiveSubCategory(res.data.data[0]?.sub_category_id);
             }
           });
         setSubCategories(res.data.fetchData);
@@ -92,13 +90,13 @@ const BranchDetails = (props) => {
             )
             .then((res) => {
               if (res.data.status === 200) {
-                if (res.data.fetchData.length === 0) {
+                if (res.data.data.length === 0) {
                   hold = hold + 1;
                   // console.log(res.data.fetchData);
                   fetchMoreData();
                 } else {
                   hold = hold + 1;
-                  setProducts(products.concat(res.data.fetchData));
+                  setProducts(products.concat(res.data.data));
                 }
               }
             });

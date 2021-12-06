@@ -12,13 +12,15 @@ import Footer from "./layouts/Footer";
 /// Deshboard
 import Home from "./components/Dashboard/Home/Home";
 import Branches from "./components/Branches/Branches";
-import Menu from "./components/Categories/Category";
+import BranchShow from "./components/Branches/Show";
+
+import Category from "./components/Categories/Category";
 import Company from "./components/Companies/Company";
 import Product from "./components/Products/Product";
 import SubMenu from "./components/Categories/SubCategory";
-import ServiceArea from "./components/Services/ServiceArea";
-import Unit from "./components/Units/Unit";
-import Inventory from "./components/Inventories/Inventory";
+// import ServiceArea from "./components/Services/ServiceArea";
+// import Unit from "./components/Units/Unit";
+// import Inventory from "./components/Inventories/Inventory";
 import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
 import Variants from "./components/Variants/Variants";
@@ -31,19 +33,26 @@ import Tables from "./components/Branches/Tables";
 import Attributes from "./components/Attributes/Attributes";
 // import AddProduct from "./components/Products/AddProduct";
 import Options from "./components/Attributes/Options";
+// import Design from "./components/Design/Design";
+import Theme from "./components/Design/Theme";
+import EditTheme from "./components/Design/EditTheme";
+// import Customization from "./components/Design/Templates/Dark/Customization";
+import CreateRoute from "./components/Branches/CreateRoute]";
 
 const Markup = () => {
   const routes = [
     /// Login
     { url: "dashboard", component: Home },
     { url: "branches", component: Branches },
-    { url: "category/:id", component: Menu },
+    { url: "branches/show", component: BranchShow },
+
+    { url: "branches/category", component: Category },
     { url: "companies", component: Company },
-    { url: "products/:id", component: Product },
-    { url: "sub-category/:id", component: SubMenu },
-    { url: "service-area/:id", component: ServiceArea },
-    { url: "unit/:id", component: Unit },
-    { url: "inventory/:id", component: Inventory },
+    { url: "branches/category/sub-category/products/:id", component: Product },
+    { url: "branches/category/sub-category/:id", component: SubMenu },
+    // { url: "branches/service-area", component: ServiceArea },
+    // { url: "branches/unit", component: Unit },
+    // { url: "branches/inventory", component: Inventory },
     { url: "profile", component: Profile },
     { url: "orders", component: Order },
     { url: "baskets", component: Basket },
@@ -52,10 +61,14 @@ const Markup = () => {
     // { url: "variant-details/:id", component: VariantDetails },
     // { url: "show-branch-details/:id", component: ShowBranchDetails },
     { url: "show_variant_detials/:id", component: VariantDetails },
-    { url: "tables/:id", component: Tables },
+    // { url: "branches/tables", component: Tables },
     { url: "attributes", component: Attributes },
     // { url: "add-product/:id", component: AddProduct },
     { url: "add-option/:id", component: Options },
+    { url: "branches/design/edit-theme/:id", component: EditTheme },
+    // { url: "branches/design", component: Design },
+    { url: "branches/design/add-theme/:id", component: Theme },
+    // { url: "branches/design/dark-template-customization", component: Customization },
   ];
 
   return (
@@ -77,7 +90,10 @@ const Markup = () => {
                   component={data.component}
                 />
               ))}
+
             </Switch>
+            {/* <CreateRoute /> */}
+
           </div>
         </div>
         {localStorage.getItem("auth_token") ? <Footer /> : <Redirect to="/" />}

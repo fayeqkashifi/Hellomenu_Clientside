@@ -20,7 +20,8 @@ const Unit = (props) => {
     // for localization
     const { t } = useTranslation();
     // ID
-    const id = props.match.params.id;
+    const id = props.history.location.state.id;
+
     // Insert Start
     const [modalCentered, setModalCentered] = useState(false);
     const [unitInsert, setUnitInsert] = useState({

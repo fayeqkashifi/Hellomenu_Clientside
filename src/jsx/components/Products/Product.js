@@ -32,7 +32,7 @@ const Product = (props) => {
   // for localization
   const { t } = useTranslation();
   // ID
-  const subMenuId = props.match.params.id;
+  const subMenuId = atob(props.match.params.id)
 
   // insert modal
   const [modalCentered, setModalCentered] = useState(false);

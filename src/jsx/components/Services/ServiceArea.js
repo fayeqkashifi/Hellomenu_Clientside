@@ -20,7 +20,8 @@ const ServiceArea = (props) => {
     // for localization
     const { t } = useTranslation();
     //ID
-    const id = props.match.params.id;
+      const id = props.history.location.state.id;
+    
     // insert Start
     const [modalCentered, setModalCentered] = useState(false);
     const [serviceAreaInsert, setServiceAreaInsert] = useState({

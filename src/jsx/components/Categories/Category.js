@@ -39,8 +39,8 @@ const Category = (props) => {
   // for localization
   const { t } = useTranslation();
   // ID
-  const id = props.match.params.id;
-
+  const id = props.history.location.state.id;
+  const BrancheName = props.history.location.state.BrancheName;
   // insert Start
   const [modalCentered, setModalCentered] = useState(false);
   const [categoryInsert, setCategoryInsert] = useState({
@@ -174,7 +174,7 @@ const Category = (props) => {
               <div className="text-center">
                 <Link
                   to={{
-                    pathname: `/sub-category/${item.id}`,
+                    pathname: `/branches/category/sub-category/${btoa(item.id)}`,
                     CategoryName: item.CategoryName,
                   }}
                 >
