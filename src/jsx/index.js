@@ -1,6 +1,11 @@
 import React from "react";
 /// React router dom
-import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Redirect,
+  Route,
+} from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 // import PublicRoute from './components/PublicRoute';
 /// Css
@@ -16,11 +21,11 @@ import BranchShow from "./components/Branches/Show";
 
 import Category from "./components/Categories/Category";
 import Company from "./components/Companies/Company";
-import Product from "./components/Products/Product";
+// import Product from "./components/Products/Product";
 import SubMenu from "./components/Categories/SubCategory";
-// import ServiceArea from "./components/Services/ServiceArea";
-// import Unit from "./components/Units/Unit";
-// import Inventory from "./components/Inventories/Inventory";
+import ServiceArea from "./components/Services/ServiceArea";
+import Unit from "./components/Units/Unit";
+import Inventory from "./components/Inventories/Inventory";
 import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
 import Variants from "./components/Variants/Variants";
@@ -38,6 +43,7 @@ import Theme from "./components/Design/Theme";
 import EditTheme from "./components/Design/EditTheme";
 // import Customization from "./components/Design/Templates/Dark/Customization";
 import CreateRoute from "./components/Branches/CreateRoute]";
+import Error404 from "./pages/Error404";
 
 const Markup = () => {
   const routes = [
@@ -46,22 +52,26 @@ const Markup = () => {
     { url: "branches", component: Branches },
     { url: "branches/show", component: BranchShow },
 
-    { url: "branches/category", component: Category },
+    // { url: "branches/category", component: Category },
     { url: "companies", component: Company },
-    { url: "branches/category/sub-category/products/:id", component: Product },
-    { url: "branches/category/sub-category/:id", component: SubMenu },
-    // { url: "branches/service-area", component: ServiceArea },
-    // { url: "branches/unit", component: Unit },
-    // { url: "branches/inventory", component: Inventory },
+    // { url: "branches/category/sub-category/products", component: Product },
+    {
+      url: "branches/category/sub-category/products/variants",
+      component: Variants,
+    },
+
+    // { url: "branches/category/sub-category", component: SubMenu },
+    { url: "branches/service-area", component: ServiceArea },
+    { url: "branches/unit", component: Unit },
+    { url: "branches/inventory", component: Inventory },
     { url: "profile", component: Profile },
     { url: "orders", component: Order },
     { url: "baskets", component: Basket },
-    { url: "variants", component: Variants },
     { url: "gallery/:id", component: Gallery },
     // { url: "variant-details/:id", component: VariantDetails },
     // { url: "show-branch-details/:id", component: ShowBranchDetails },
     { url: "show_variant_detials/:id", component: VariantDetails },
-    // { url: "branches/tables", component: Tables },
+    { url: "branches/tables", component: Tables },
     { url: "attributes", component: Attributes },
     // { url: "add-product/:id", component: AddProduct },
     { url: "add-option/:id", component: Options },
@@ -90,10 +100,10 @@ const Markup = () => {
                   component={data.component}
                 />
               ))}
-
+              <Route component={Error404} />
             </Switch>
-            {/* <CreateRoute /> */}
 
+            {/* <CreateRoute /> */}
           </div>
         </div>
         {localStorage.getItem("auth_token") ? <Footer /> : <Redirect to="/" />}

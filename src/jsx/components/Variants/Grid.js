@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 
 const VariantsLine = (props) => {
+
   const { items, filerAttributes, productid, setVarantGrid } = props;
   const [values, setValues] = useState(items);
   if (Object.keys(items).length !== Object.keys(values).length) {
@@ -128,6 +129,8 @@ const VariantsLine = (props) => {
 };
 
 const VariantsGrid = (props) => {
+  const { t } = useTranslation();
+
   const { filerAttributes, numberOfVar, productid, getJSONVaraints, recheck } =
     props;
   const [varintGrid, setVariantGrid] = useState([]);
@@ -162,16 +165,21 @@ const VariantsGrid = (props) => {
 
   return (
     <Fragment>
+    
       <div class="col-xl-12 col-lg-12 col-sm-12 ">
+      
         <div className="row">
-          <div class="col-md-2  p-4">SKU</div>
-          <div class="col-md-2  p-4">price</div>
-          <div class="col-md-2  p-4">Stock</div>
-          <div class="col-md-2  p-4">Image</div>
+        
+          <div class="col-md-2  p-4">{t('sku')}</div>
+          <div class="col-md-2  p-4">{t('price')}</div>
+          <div class="col-md-2  p-4">{t('stock')}</div>
+          <div class="col-md-2  p-4">{t('image')}</div>
 
           {filerAttributes?.map((sec) => (
             <div class="col-md-2  p-4">{sec.label}</div>
           ))}
+       
+
         </div>
         {vars}
       </div>

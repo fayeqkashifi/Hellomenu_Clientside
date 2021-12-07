@@ -6,26 +6,42 @@ import PrivateRoute from "../PrivateRoute";
 import ServiceArea from "../Services/ServiceArea";
 import Unit from "../Units/Unit";
 import Tables from "./Tables";
-import { BrowserRouter as Router, Switch } from "react-router-dom"
+import {
+  BrowserRouter as Router,
+  Switch,
+  useRouteMatch,
+} from "react-router-dom";
 import Customization from "../Design/Templates/Dark/Customization";
+import SubCategory from "../Categories/SubCategory";
+import Product from "../Products/Product";
 
 const CreateRoute = () => {
+  const { path, url } = useRouteMatch();
+
   return (
-   
-      <Switch>
-        {/* <PrivateRoute exact path="/branches/show" component={Category} /> */}
-        <PrivateRoute exact path="/branches/category" component={Category} />
-        <PrivateRoute
-          exact
-          path="/branches/service-area"
-          component={ServiceArea}
-        />
-        <PrivateRoute exact path="/branches/unit" component={Unit} />
-        <PrivateRoute exact path="/branches/inventory" component={Inventory} />
-        <PrivateRoute exact path="/branches/design" component={Design} />
-        <PrivateRoute exact path="/branches/tables" component={Tables} />
-        <PrivateRoute exact path="/branches/design/dark-template-customization" component={Customization} />
-      </Switch>
+    <Switch>
+      <PrivateRoute exact path="/branches/show" component={Category} />
+      <PrivateRoute path={`${path}/category`} component={Category} />
+      <PrivateRoute path={`${path}/sub-category`} component={SubCategory} />
+      <PrivateRoute
+        path="/branches/category/sub-category/products"
+        component={Product}
+      />
+      <PrivateRoute
+        path="/branches/category/sub-category/products/variants"
+        component={Product}
+      />
+      <PrivateRoute path="/branches/service-area" component={ServiceArea} />
+      <PrivateRoute exact path="/branches/unit" component={Unit} />
+      <PrivateRoute exact path="/branches/inventory" component={Inventory} />
+      <PrivateRoute exact path={`${path}/design`} component={Design} />
+      <PrivateRoute exact path="/branches/tables" component={Tables} />
+      <PrivateRoute
+        exact
+        path="/branches/design/dark-template-customization"
+        component={Customization}
+      />
+    </Switch>
   );
 };
 

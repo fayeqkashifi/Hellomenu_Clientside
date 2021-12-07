@@ -26,7 +26,7 @@ import Thrid from "./jsx/components/Design/Templates/Thrid/Main";
 import ProductDetails from "./jsx/components/Design/Templates/Dark/ProductDetails";
 import OrderDetails from "./jsx/components/Design/Templates/Dark/OrderDetails";
 import SecondTemplate from "./jsx/components/Design/Templates/Second/Main";
-import CreateRoute from "./jsx/components/Branches/CreateRoute]";
+import Error404 from "./jsx/pages/Error404";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -64,7 +64,7 @@ const App = () => {
   return (
     <Router>
       <Switch>
-      <Route exact path="/">
+        <Route exact path="/">
           <Redirect to="/page-login" />
         </Route>
         <PublicRoute
@@ -86,25 +86,29 @@ const App = () => {
           path="/standard-template/:id"
         />
         <PublicRoute component={DarkTemplate} path="/dark-template/:id" exact />
-        <PublicRoute component={SecondTemplate} path="/second-template/:id" exact />
+        <PublicRoute
+          component={SecondTemplate}
+          path="/second-template/:id"
+          exact
+        />
 
         <PublicRoute
           exact
           component={VariantDetails}
           path="/variant-details/:id"
         />
+        <PublicRoute exact component={OrderDetails} path="/order-details/:id" />
+        <PublicRoute exact component={ShowProducts} path="/product/:id" />
         <PublicRoute
           exact
-          component={OrderDetails}
-          path="/order-details/:id"
+          component={ProductDetails}
+          path="/product-details/:id"
         />
-        <PublicRoute exact component={ShowProducts} path="/product/:id" />
-        <PublicRoute exact component={ProductDetails} path="/product-details/:id" />
         <PublicRoute component={Main} path="/template-first" exact />
         <PublicRoute component={Thrid} path="/template-thrid" exact />
-        <Markup />
-        {/* <CreateRoute /> */}
+        {/* <Route component={Error404} /> */}
 
+        <Markup />
       </Switch>
     </Router>
   );

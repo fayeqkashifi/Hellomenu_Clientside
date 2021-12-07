@@ -32,7 +32,8 @@ const Product = (props) => {
   // for localization
   const { t } = useTranslation();
   // ID
-  const subMenuId = atob(props.match.params.id)
+  // const subMenuId = atob(props.match.params.id)
+  const subMenuId = props.history.location.state.id;
 
   // insert modal
   const [modalCentered, setModalCentered] = useState(false);
@@ -183,18 +184,7 @@ const Product = (props) => {
                     alt=""
                   />
                 </div>
-                <h3 className="mt-4 mb-1">
-                  <Link
-                    to={{
-                      pathname: `/variants/${item.product_id}`,
-
-                      ProductName: item.ProductName,
-                    }}
-                  >
-                    {" "}
-                    {item.ProductName}
-                  </Link>
-                </h3>
+                <h3 className="mt-4 mb-1">{item.ProductName}</h3>
                 <p className="text-muted"></p>
                 {/* <p className="text-muted">{item.SubCategoryName}</p> */}
               </div>
@@ -217,7 +207,7 @@ const Product = (props) => {
                 <div className="col-4 pt-3 pb-3">
                   <Link
                     to={{
-                      pathname: `/variants`,
+                      pathname: `products/variants`,
                       id: item.id,
                       ProductName: item.ProductName,
                       state: { id: item.product_id },
@@ -237,18 +227,21 @@ const Product = (props) => {
   return (
     <Fragment>
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem className="font-weight-bold" href="/branches">
+        <CBreadcrumbItem
+          className="font-weight-bold"
+          // href="/branches"
+        >
           {t("Branches")}
         </CBreadcrumbItem>
         <CBreadcrumbItem
           className="font-weight-bold"
-          href={`/category/${branchID}`}
+          // href={`category`}
         >
           {t("categories")}
         </CBreadcrumbItem>
         <CBreadcrumbItem
           className="font-weight-bold"
-          href={`/sub-category/${CategoryID}`}
+          // href={`/sub-category`}
         >
           {t("sub_category")}
         </CBreadcrumbItem>

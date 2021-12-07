@@ -186,14 +186,14 @@ const Branches = () => {
                 <Link
                   // to={`branches/category/${btoa(item.id)}`}
                   // // to={`/branches/show/${btoa(item.id)}`}
+                  to={{
+                    pathname: `/branches/show`,
+                    state: { id: item.id, BrancheName: item.BrancheName },
+                  }}
                   // to={{
-                  //   pathname: `/branches/show`,
+                  //   pathname: `/branches/category`,
                   //   state: { id: item.id,BrancheName: item.BrancheName },
                   // }}
-                  to={{
-                    pathname: `/branches/category`,
-                    state: { id: item.id,BrancheName: item.BrancheName },
-                  }}
                 >
                   <QRCode
                     id={btoa(item.id)}
@@ -270,7 +270,7 @@ const Branches = () => {
                         <span> {t("delete")}</span>
                       </Link>
                     </div>
-                    <div className="mx-3 my-2">
+                    {/* <div className="mx-3 my-2">
                       <Link
                         to=""
                         data-toggle="tooltip"
@@ -408,7 +408,7 @@ const Branches = () => {
 
                         <span> {t("design")} </span>
                       </Link>
-                    </span>
+                    </span> */}
                   </CDropdownMenu>
                 </CDropdown>
               </div>

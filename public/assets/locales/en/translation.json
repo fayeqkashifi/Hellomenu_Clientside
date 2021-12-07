@@ -224,5 +224,7 @@
     "mode": "Mode",
     "font": "Font",
     "back": "Back",
-    "reset_to_default": "Reset to Default"
+    "reset_to_default": "Reset to Default",
+    "sku": "SKU",
+    "stock": "Stock"
 }

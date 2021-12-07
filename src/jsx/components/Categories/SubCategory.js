@@ -3,13 +3,17 @@ import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
+
 const SubCategory = (props) => {
+  const history = useHistory();
+  const { path, url } = useRouteMatch();
+
   // validation start
   const schema = yup
     .object()
@@ -28,8 +32,8 @@ const SubCategory = (props) => {
   // validation end
   // for localization
   const { t } = useTranslation();
-  const id = atob(props.match.params.id)
-
+  const id = props.history.location.state.id;
+  const CategoryName = props.history.location.state.CategoryName;
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
   const [subCategoryInsert, setSubCategoryInsert] = useState({
@@ -166,9 +170,8 @@ const SubCategory = (props) => {
               <div className="text-center">
                 <Link
                   to={{
-                    pathname: `/branches/category/sub-category/products/${btoa(item.sub_id)}`,
-                    id: item.id,
-                    ProductName: item.ProductName,
+                    pathname: `${url}/products`,
+                    state: { id: item.sub_id },
                   }}
                 >
                   <span>
@@ -200,7 +203,8 @@ const SubCategory = (props) => {
                 <div className="col-4 pt-3 pb-3">
                   <Link
                     to={{
-                      pathname: `/branches/category/sub-category/products/${btoa(item.sub_id)}`,
+                      pathname: `${url}/products`,
+                      state: { id: item.sub_id },
                     }}
                   >
                     <span>{t("products")}</span>
@@ -217,12 +221,9 @@ const SubCategory = (props) => {
   return (
     <Fragment>
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem className="font-weight-bold" href="/branches">
-          {t("Branches")}
-        </CBreadcrumbItem>
         <CBreadcrumbItem
           className="font-weight-bold"
-          href={`/category/${branchID}`}
+          // onClick={() => history.goBack()}
         >
           {t("categories")}
         </CBreadcrumbItem>

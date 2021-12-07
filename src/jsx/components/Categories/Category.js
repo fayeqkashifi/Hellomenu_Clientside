@@ -3,7 +3,12 @@ import { Button, Modal, Form } from "react-bootstrap";
 import { base_url, port } from "../../../Consts";
 /// Bootstrap
 import { Row, Col, Card } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useRouteMatch,
+  Switch,
+  BrowserRouter as Router,
+} from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
@@ -17,8 +22,12 @@ import {
   CDropdownToggle,
   CDropdownMenu,
 } from "@coreui/react";
+import PrivateRoute from "../PrivateRoute";
+import SubCategory from "./SubCategory";
 
 const Category = (props) => {
+  const { path, url } = useRouteMatch();
+
   // valiation start
   const schema = yup
     .object()
@@ -174,8 +183,8 @@ const Category = (props) => {
               <div className="text-center">
                 <Link
                   to={{
-                    pathname: `/branches/category/sub-category/${btoa(item.id)}`,
-                    CategoryName: item.CategoryName,
+                    pathname: `${url}/sub-category`,
+                    state: { id: item.id, CategoryName: item.CategoryName },
                   }}
                 >
                   <span>
@@ -253,8 +262,8 @@ const Category = (props) => {
                   <div className="mx-3 my-2">
                     <Link
                       to={{
-                        pathname: `/sub-category/${item.id}`,
-                        CategoryName: item.CategoryName,
+                        pathname: `${url}/sub-category`,
+                        state: { id: item.id, CategoryName: item.CategoryName },
                       }}
                     >
                       <svg
@@ -281,13 +290,10 @@ const Category = (props) => {
   return (
     <Fragment>
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem className="font-weight-bold" href="/branches">
-          {t("Branches")}
-        </CBreadcrumbItem>
-        <CBreadcrumbItem active>{t("categories")}</CBreadcrumbItem>
+        <Link className="font-weight-bold">{t("categories")}</Link>
       </CBreadcrumb>
-      {/* <PageTItle headingPara={t('categories')} activeMenu={t('add_category')} motherMenu={t('categories')} /> */}
       {/* <!-- Insert  Modal --> */}
+
       <Modal className="fade" show={modalCentered}>
         <Form
           onSubmit={handleSubmit(saveMenu)}

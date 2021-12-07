@@ -201,24 +201,27 @@ const Variants = (props) => {
     return (
       <Fragment>
         <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-          <CBreadcrumbItem className="font-weight-bold" href="/branches">
+          <CBreadcrumbItem
+            className="font-weight-bold"
+            // href="/branches"
+          >
             {t("Branches")}
           </CBreadcrumbItem>
           <CBreadcrumbItem
             className="font-weight-bold"
-            href={`/category/${branchID}`}
+            // href={`/category/${branchID}`}
           >
             {t("categories")}
           </CBreadcrumbItem>
           <CBreadcrumbItem
             className="font-weight-bold"
-            href={`/sub-category/${CategoryID}`}
+            // href={`/sub-category/${CategoryID}`}
           >
             {t("sub_category")}
           </CBreadcrumbItem>
           <CBreadcrumbItem
             className="font-weight-bold"
-            href={`/products/${sub_category_id}`}
+            // href={`/products/${sub_category_id}`}
           >
             {t("products")}{" "}
           </CBreadcrumbItem>
@@ -226,18 +229,25 @@ const Variants = (props) => {
         </CBreadcrumb>
 
         <div className="row">
-          <Select
-            // defaultValue={[colourOptions[2], colourOptions[3]]}
-            isMulti
-            options={attributes.map((o, i) => {
-              return { id: i, value: o.id, label: o.attributeName };
-            })}
-            onChange={handleSelectEvent}
-            name="attributeName"
-            className="basic-multi-select"
-            classNamePrefix="select"
-          />
+          <div className="col-xl-12 col-lg-12 col-sm-12 ">
+            <div className="card ">
+              <Select
+                defaultValue={filerAttributes?.map((sec) => {
+                  return sec.label;
+                })}
+                isMulti
+                options={attributes.map((o, i) => {
+                  return { id: i, value: o.id, label: o.attributeName };
+                })}
+                onChange={handleSelectEvent}
+                name="attributeName"
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
+            </div>
+          </div>
         </div>
+
         <div className="row">
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
