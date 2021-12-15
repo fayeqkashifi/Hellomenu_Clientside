@@ -17,7 +17,7 @@ import {
 import { useTranslation } from "react-i18next";
 import palette from "../../../images/hellomenu/palette.svg";
 import SingleFileAutoSubmit from "./SingleFileAutoSubmit";
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import QRCode from "qrcode.react";
 import axios from "axios";
 import { Form } from "react-bootstrap";
@@ -36,6 +36,8 @@ import CardActions from "@mui/material/CardActions";
 import Grid from "@mui/material/Grid";
 import Box, { BoxProps } from "@mui/material/Box";
 const Design = (props) => {
+  const { path, url } = useRouteMatch();
+
   const { t } = useTranslation();
   // const branchId = atob(props.match.params.id);
   const branchId = props.history.location.state.id;
@@ -176,7 +178,12 @@ const Design = (props) => {
             <CCardBody>
               <CCardText>
                 {/* <div className="row"> */}
-                <Link to={`edit-theme/${btoa(item.id)}`}>
+                <Link
+                  to={{
+                    pathname: `${url}/edit-theme`,
+                    state: { id: branchId },
+                  }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -255,7 +262,7 @@ const Design = (props) => {
       <CNav variant="pills" role="tablist">
         <CNavItem>
           <CNavLink
-            // href="#"
+            style={{ cursor: "pointer" }}
             active={activeKey === 1}
             onClick={() => setActiveKey(1)}
           >
@@ -265,6 +272,7 @@ const Design = (props) => {
         <CNavItem>
           <CNavLink
             // href="#"
+            style={{ cursor: "pointer" }}
             active={activeKey === 2}
             onClick={() => setActiveKey(2)}
           >
@@ -278,7 +286,7 @@ const Design = (props) => {
           aria-labelledby="profile-tab"
           visible={activeKey === 1}
         >
-          <div className="container overflow-hidden border">
+          <div className=" overflow-hidden border">
             <Grid container spacing={2}>
               {templates.map((item) => {
                 return (
@@ -300,11 +308,10 @@ const Design = (props) => {
                           <Grid container spacing={2}>
                             <Grid item xs={8} className="mt-2">
                               <Link
-
-                                to={{ 
-                                  pathname: `/branches/design/${item.CustomizationURL}`,
+                                to={{
+                                  pathname: `${url}/${item.CustomizationURL}`,
                                   state: { id: item.id },
-                                  }}
+                                }}
                               >
                                 Customization
                               </Link>
@@ -336,7 +343,7 @@ const Design = (props) => {
           aria-labelledby="home-tab"
           visible={activeKey === 2}
         >
-          <div className="container overflow-hidden border">
+          <div className=" overflow-hidden border">
             {/* {fetchData.map((item, i) => { 
                          if(item.Status == '1'){
                         return ( */}
@@ -627,36 +634,37 @@ const Design = (props) => {
             {/* // )
                         // }
                         // })} */}
-
           </div>
-          <div className="container overflow-hidden border">
-              {viewThemes_HTMLTABLE}
+          <div className="row mt-2">
+            {viewThemes_HTMLTABLE}
 
-              <div className="col-xl-4 col-lg-4 col-sm-6">
-                <div className="card overflow-hidden ">
-                  <div
-                    className="card-body d-flex justify-content-center text-center"
-                    style={{ border: "2px dashed pink" }}
-                  >
-                    <div className="align-self-center text-center">
-                      <div>
-                        <img src={palette} alt="" />
-                      </div>
-                      <div className="pt-3">
-                        <Link
-                          className="btn btn-outline-primary"
-                          to={`add-theme/${btoa(branchId)}`}
-                        >
-                          {t("new_theme")}
-                        </Link>
-                      </div>
+            <div className="col-xl-4 col-lg-4 col-sm-6">
+              <div className="card overflow-hidden ">
+                <div
+                  className="card-body d-flex justify-content-center text-center"
+                  style={{ border: "2px dashed pink" }}
+                >
+                  <div className="align-self-center text-center">
+                    <div>
+                      <img src={palette} alt="" />
+                    </div>
+                    <div className="pt-3">
+                      <Link
+                        className="btn btn-outline-primary"
+                        to={{
+                          pathname: `${url}/add-theme`,
+                          state: { id: branchId },
+                        }}
+                      >
+                        {t("new_theme")}
+                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
         </CTabPane>
-        
       </CTabContent>
     </>
   );

@@ -8,12 +8,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 
-const Unit = (props) => {
-  // validation Start
+const Ingredients = (props) => {
+  // validation start
   const schema = yup
     .object()
     .shape({
-      UnitName: yup.string().required("This field is a required field"),
+      name: yup.string().required("This field is a required field"),
     })
     .required();
   const {
@@ -24,74 +24,68 @@ const Unit = (props) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  // Validation End
+  // validation end
+
   // for localization
   const { t } = useTranslation();
-  // ID
-  const id = props.history.location.state.id;
-
-  // Insert Start
+  // get ID from URL
+  // insert start
   const [modalCentered, setModalCentered] = useState(false);
-  const [unitInsert, setUnitInsert] = useState({
-    UnitName: "",
-    brancheID: id,
-  });
+  const [insert, setInsert] = useState([]);
   const handleInput = (e) => {
     e.persist();
-    setUnitInsert({ ...unitInsert, [e.target.name]: e.target.value });
+    setInsert({ ...insert, [e.target.name]: e.target.value });
   };
-  const saveUnit = (e) => {
-    // e.preventDefault();
-    axios.post("/api/InsertUnits", unitInsert).then((res) => {
+  const save = (e) => {
+    axios.post("/api/InsertIngredient", insert).then((res) => {
       if (res.data.status === 200) {
-        setUnitInsert({
-          UnitName: "",
-          brancheID: id,
-        });
+        setInsert([]);
         reset();
-
-        swal("Success", res.data.message, "success");
         setModalCentered(false);
-        //  this.props.history.push("/")
+        swal("Success", res.data.message, "success");
       }
     });
   };
-  // insert End
-  // edit Start
+  // insert end
+  // edit Attribute start
   const [editmodalCentered, setEditModalCentered] = useState(false);
-  const [editUnit, setEditUnit] = useState([]);
+  const [edit, setEdit] = useState([]);
   const editHandleInput = (e) => {
     e.persist();
-    setEditUnit({ ...editUnit, [e.target.name]: e.target.value });
+    setEdit({ ...edit, [e.target.name]: e.target.value });
   };
-  const fetchUnit = (e, id) => {
+  // fetch
+  const fetch = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/EditUnits/${id}`).then((res) => {
+    axios.get(`/api/EditIngredient/${id}`).then((res) => {
       if (res.data.status === 200) {
-        setEditUnit(res.data.unit);
+        setEdit(res.data.item);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
       }
     });
   };
-  const updateUnit = (e) => {
+  // update
+  const update = (e) => {
     e.preventDefault();
-    axios.post("/api/UpdateUnit", editUnit).then((res) => {
+    axios.post("/api/UpdateIngredient", edit).then((res) => {
       if (res.data.status === 200) {
-        setEditUnit([]);
-        setUnitInsert([]);
-        swal("Success", res.data.message, "success");
+        setEdit([]);
+        setInsert([]);
         setEditModalCentered(false);
+
+        swal("Success", res.data.message, "success");
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
       }
     });
   };
-  // Edit End
+  // edit end
+
   // delete Start
-  const deleteUnit = (e, id) => {
+  const deleteIngredient = (e, id) => {
     e.preventDefault();
     swal({
       title: "Are you sure?",
@@ -101,13 +95,10 @@ const Unit = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteUnits/${id}`).then((res) => {
+        axios.delete(`/api/DeleteIngredient/${id}`).then((res) => {
           if (res.data.status === 200) {
             swal("Success", res.data.message, "success");
-            setUnitInsert({
-              UnitName: "",
-              brancheID: id,
-            });
+            setInsert([]);
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
           }
@@ -118,19 +109,19 @@ const Unit = (props) => {
     });
   };
   // delete End
-  //for retriving data using laravel API
+
+  //retriving data using laravel API for show
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    axios.get(`/api/GetUnits/${id}`).then((res) => {
+    axios.post(`/api/GetIngredient`).then((res) => {
       if (res.data.status === 200) {
         // console.log(res.data.fetchData);
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
-  }, [unitInsert]);
+  }, [insert]);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -145,11 +136,12 @@ const Unit = (props) => {
         <tr key={item.id}>
           <td>{i + 1}</td>
 
-          <td> {item.UnitName}</td>
+          <td> {item.name}</td>
           <td>
+            {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
             <button
               type="button"
-              onClick={(e) => fetchUnit(e, item.id)}
+              onClick={(e) => fetch(e, item.id)}
               className="btn btn-outline-danger btn-sm"
             >
               {t("edit")}
@@ -157,7 +149,7 @@ const Unit = (props) => {
             &nbsp;&nbsp;&nbsp;
             <button
               type="button"
-              onClick={(e) => deleteUnit(e, item.id)}
+              onClick={(e) => deleteIngredient(e, item.id)}
               className="btn btn-outline-warning btn-sm"
             >
               {t("delete")}
@@ -167,18 +159,20 @@ const Unit = (props) => {
       );
     });
   }
-
   return (
     <Fragment>
-      {/* <!-- Insert  Modal --> */}
+      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
+        <CBreadcrumbItem active>{t("ingredients")}</CBreadcrumbItem>
+      </CBreadcrumb>
+      {/* insert */}
       <Modal className="fade" show={modalCentered}>
         <Form
-          onSubmit={handleSubmit(saveUnit)}
+          onSubmit={handleSubmit(save)}
           method="POST"
           encType="multipart/form-data"
         >
           <Modal.Header>
-            <Modal.Title>{t("add_unit")}</Modal.Title>
+            <Modal.Title>{t("add_ingredient")}</Modal.Title>
             <Button
               onClick={() => setModalCentered(false)}
               variant=""
@@ -191,18 +185,18 @@ const Unit = (props) => {
             <div className="form-group">
               <label className="mb-1 ">
                 {" "}
-                <strong>{t("unit_name")} </strong>{" "}
+                <strong>{t("name")} </strong>{" "}
               </label>
               <input
                 type="text"
-                {...register("UnitName")}
+                {...register("name")}
                 className="form-control"
-                placeholder={t("unit_name")}
-                name="UnitName"
+                placeholder={t("name")}
+                name="name"
                 onChange={handleInput}
-                value={unitInsert.UnitName}
+                value={insert.name}
               />
-              <div className="text-danger">{errors.UnitName?.message}</div>
+              <div className="text-danger">{errors.name?.message}</div>
             </div>
           </Modal.Body>
           <Modal.Footer>
@@ -220,9 +214,9 @@ const Unit = (props) => {
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={updateUnit} method="POST">
+        <Form onSubmit={update} method="POST">
           <Modal.Header>
-            <Modal.Title>{t("edit_unit")} </Modal.Title>
+            <Modal.Title>{t("edit_ingredient")} </Modal.Title>
             <Button
               onClick={() => setEditModalCentered(false)}
               variant=""
@@ -235,16 +229,16 @@ const Unit = (props) => {
             <div className="form-group">
               <label className="mb-1 ">
                 {" "}
-                <strong>{t("unit_name")}</strong>{" "}
+                <strong>{t("name")}</strong>{" "}
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder={t("unit_name")}
-                name="UnitName"
+                placeholder={t("name")}
+                name="name"
                 required
                 onChange={editHandleInput}
-                value={editUnit.UnitName}
+                value={edit.name}
               />
             </div>
           </Modal.Body>
@@ -266,7 +260,7 @@ const Unit = (props) => {
           <div className="card">
             <div className="card-header border-0">
               <div>
-                <h4 className="card-title mb-2">{t("units")}</h4>
+                <h4 className="card-title mb-2">{t("ingredients")}</h4>
               </div>
               <div className="dropdown">
                 <Button
@@ -275,17 +269,17 @@ const Unit = (props) => {
                   className="mb-2 mr-2"
                   onClick={() => setModalCentered(true)}
                 >
-                  {t("add_unit")}
+                  {t("add_ingredient")}
                 </Button>
               </div>
             </div>
             <div className="card-body p-0">
               <div className="table-responsive ">
-                <table className="table ">
+                <table className="table text-center">
                   <thead>
                     <tr>
                       <th>{t("number")}</th>
-                      <th>{t("unit_name")}</th>
+                      <th>{t("name")}</th>
                       <th>{t("actions")}</th>
                     </tr>
                   </thead>
@@ -299,5 +293,4 @@ const Unit = (props) => {
     </Fragment>
   );
 };
-
-export default Unit;
+export default Ingredients;

@@ -19,16 +19,15 @@ import Home from "./components/Dashboard/Home/Home";
 import Branches from "./components/Branches/Branches";
 import BranchShow from "./components/Branches/Show";
 
-import Category from "./components/Categories/Category";
+// import Category from "./components/Categories/Category";
 import Company from "./components/Companies/Company";
 // import Product from "./components/Products/Product";
-import SubMenu from "./components/Categories/SubCategory";
+// import SubMenu from "./components/Categories/SubCategory";
 import ServiceArea from "./components/Services/ServiceArea";
 import Unit from "./components/Units/Unit";
 import Inventory from "./components/Inventories/Inventory";
 import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
-import Variants from "./components/Variants/Variants";
 import Gallery from "./components/Variants/Gallary";
 import Basket from "./components/Orders/Basket";
 // import VariantDetails from "./components/Variants/VariantDetails";
@@ -42,25 +41,19 @@ import Options from "./components/Attributes/Options";
 import Theme from "./components/Design/Theme";
 import EditTheme from "./components/Design/EditTheme";
 // import Customization from "./components/Design/Templates/Dark/Customization";
-import CreateRoute from "./components/Branches/CreateRoute]";
+// import CreateRoute from "./components/Branches/CreateRoute]";
 import Error404 from "./pages/Error404";
+import Ingredients from "./components/Products/Ingredients";
+import Extra from "./components/Products/Extra";
 
 const Markup = () => {
   const routes = [
     /// Login
     { url: "dashboard", component: Home },
     { url: "branches", component: Branches },
-    { url: "branches/show", component: BranchShow },
-
-    // { url: "branches/category", component: Category },
+    { url: "ingredients", component: Ingredients },
+    { url: "extras", component: Extra },
     { url: "companies", component: Company },
-    // { url: "branches/category/sub-category/products", component: Product },
-    {
-      url: "branches/category/sub-category/products/variants",
-      component: Variants,
-    },
-
-    // { url: "branches/category/sub-category", component: SubMenu },
     { url: "branches/service-area", component: ServiceArea },
     { url: "branches/unit", component: Unit },
     { url: "branches/inventory", component: Inventory },
@@ -68,17 +61,12 @@ const Markup = () => {
     { url: "orders", component: Order },
     { url: "baskets", component: Basket },
     { url: "gallery/:id", component: Gallery },
-    // { url: "variant-details/:id", component: VariantDetails },
-    // { url: "show-branch-details/:id", component: ShowBranchDetails },
     { url: "show_variant_detials/:id", component: VariantDetails },
     { url: "branches/tables", component: Tables },
     { url: "attributes", component: Attributes },
-    // { url: "add-product/:id", component: AddProduct },
     { url: "add-option/:id", component: Options },
-    { url: "branches/design/edit-theme/:id", component: EditTheme },
-    // { url: "branches/design", component: Design },
-    { url: "branches/design/add-theme/:id", component: Theme },
-    // { url: "branches/design/dark-template-customization", component: Customization },
+    // { url: "branches/design/edit-theme/:id", component: EditTheme },
+    // { url: "branches/design/add-theme/:id", component: Theme },
   ];
 
   return (
@@ -100,6 +88,8 @@ const Markup = () => {
                   component={data.component}
                 />
               ))}
+              <PrivateRoute path={`/branches/show`} component={BranchShow} />
+
               <Route component={Error404} />
             </Switch>
 

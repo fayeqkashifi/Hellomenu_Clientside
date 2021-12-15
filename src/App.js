@@ -98,7 +98,11 @@ const App = () => {
           path="/variant-details/:id"
         />
         <PublicRoute exact component={OrderDetails} path="/order-details/:id" />
-        <PublicRoute exact component={ShowProducts} path="/product/:id" />
+        <PublicRoute
+          exact
+          component={ShowProducts}
+          path="/standard-template/product/:id"
+        />
         <PublicRoute
           exact
           component={ProductDetails}

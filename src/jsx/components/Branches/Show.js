@@ -19,22 +19,19 @@ import {
 } from "@coreui/react";
 import Customization from "../Design/Templates/Dark/Customization";
 import SubCategory from "../Categories/SubCategory";
-import Product from "../Products/Product";
 import Category from "../Categories/Category";
-import Design from "../Design/Design";
 import Inventory from "../Inventories/Inventory";
 import PrivateRoute from "../PrivateRoute";
 import ServiceArea from "../Services/ServiceArea";
 import Unit from "../Units/Unit";
 import Tables from "./Tables";
-import Variants from "../Variants/Variants";
+import ProductShow from "../Products/Show";
+import DesignShow from "../Design/Show";
 const Show = (props) => {
   const { t } = useTranslation();
   const id = props.history.location.state.id;
   const BrancheName = props.history.location.state.BrancheName;
   const { path, url } = useRouteMatch();
-  console.log(path);
-  console.log(url);
   const tabData = [
     {
       name: t("categories"),
@@ -208,9 +205,9 @@ const Show = (props) => {
           <PrivateRoute path={`${path}/sub-category`} component={SubCategory} />
 
           {/* <PrivateRoute path={`${path}/category`} component={Category} /> */}
-          <PrivateRoute path={`${path}/design`} component={Design} />
-          <PrivateRoute path={`${path}/products`} component={Product} />
-          <PrivateRoute path={`${path}/variants`} component={Variants} />
+          <PrivateRoute path={`${path}/design`} component={DesignShow} />
+          <PrivateRoute path={`${path}/products`} component={ProductShow} />
+
           <PrivateRoute path={`${path}/service-area`} component={ServiceArea} />
           <PrivateRoute path={`${path}/unit`} component={Unit} />
           <PrivateRoute path={`${path}/inventory`} component={Inventory} />

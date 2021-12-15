@@ -25,7 +25,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
-const Customization = (props) => {
+const DefaultCustomization = (props) => {
   const { t } = useTranslation();
   // const templateId = atob(props.match.params.id);
   const templateId = props.history.location.state.id;
@@ -580,4 +580,4 @@ const Customization = (props) => {
   );
 };
 
-export default Customization;
+export default DefaultCustomization;

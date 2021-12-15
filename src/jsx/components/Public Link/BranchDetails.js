@@ -44,8 +44,13 @@ const BranchDetails = (props) => {
   const [activeSubCategory, setActiveSubCategory] = useState(0);
   const [activeVariant, setActiveVariant] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
-
+  const [themes, setThemes] = useState([]);
   useEffect(() => {
+    axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setThemes(res.data.fetchData[0].Customization);
+      }
+    });
     axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setData(res.data.data);
@@ -241,14 +246,6 @@ const BranchDetails = (props) => {
           key={i}
           id={item.SubCategoryName}
         >
-          {item.ProductName === value ? (
-            <h5 className="row mt-2 mx-3 invisible">{item.ProductName}</h5>
-          ) : (
-            <h5 className="row mt-2 mx-3 text-uppercase font-weight-bold text-black">
-              {item.ProductName}
-            </h5>
-          )}
-          <h6 className="d-none">{(value = item.ProductName)}</h6>
           <div>
             <div
               className={`card ${
@@ -269,36 +266,28 @@ const BranchDetails = (props) => {
                                  // getGrandTotal={grandTotal => setGrandTotal(grandTotal)} 
                                  /> */}
                   <RLink
-                    to={`/product/${item.product_id}`}
+                    to={{
+                      pathname: `/standard-template/product/${btoa(item.id)}`,
+                      state: { themes: themes },
+                    }}
                     className="text-black"
                   >
                     <div className="new-arrival-content text-center mt-3">
                       <h4>
                         {item.ProductName}
-                        <p className="text-success">{item.UnitName}</p>
+                        <p className="text-success" style={{ fontSize: 10 }}>
+                          {item.UnitName}
+                        </p>
                       </h4>
 
-                      {/* <span className="price">{item.CurrentPrice + ' ' + item.currency_code}</span>
-                                    <s className="ms-2">{item.OldPrice + ' ' + item.currency_code}</s> */}
+                      <span className="price">
+                        {item.price + " " + item.currency_code}
+                      </span>
+                      {/* <s className="ms-2">
+                        {item.OldPrice + " " + item.currency_code}
+                      </s> */}
                     </div>
                   </RLink>
-
-                  {/* <div id={item.variantID}  className={`input-group`}>
-                                 <RLink  onClick={(e)=>handleDecrement(e,item.variantID)} className="input-group-text ">{quantity === 1 ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
-                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                    <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                                 </svg> : t('minus')} </RLink>
-                                 <div className="input-group-text bg-white "> {quantity}</div>
-                                 <RLink  onClick={(e)=>handelIncrement(e,item.variantID)} className="input-group-text" disabled={item.Buyingquantity - item.SellingQuantity === quantity ? 'disabled' : ''}>{t('plus')} </RLink>
-                              </div>
-                              
-                              {item.Buyingquantity - item.SellingQuantity === quantity
-                                 ?
-                                 <div className="text-danger">
-                                    {t('not_available')}
-                                 </div>
-                                 : ""
-                              } */}
                 </div>
               </div>
             </div>

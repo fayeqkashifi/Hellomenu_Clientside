@@ -77,7 +77,7 @@
 
 
     "units": "Units",
-    "select_a_unit": "Select A Unit",
+    "select_a_option": "Select A Option",
     "add_unit": "Add Unit",
     "unit_name": "Unit Name",
     "edit_unit": "Edit Unit",
@@ -226,5 +226,15 @@
     "back": "Back",
     "reset_to_default": "Reset to Default",
     "sku": "SKU",
-    "stock": "Stock"
+    "stock": "Stock",
+    "back_to_products_list": "Back to Products List",
+    "ingredients": "Ingredients",
+    "add_ingredient": "Add Ingredient",
+    "edit_ingredient": "Edit Ingredient",
+    "preparation_Time": "Preparation Time",
+    "extras": "Extras",
+    "add_extra": "Add Extra",
+    "edit_extra": "Edit Extra",
+    "recommendation_roducts": "Recommendation Products",
+    "show_preparation_time": "Display Preparation Time"
 }

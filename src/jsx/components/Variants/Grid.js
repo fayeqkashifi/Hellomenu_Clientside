@@ -1,10 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-
+import { base_url, port } from "../../../Consts";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 const VariantsLine = (props) => {
-
-  const { items, filerAttributes, productid, setVarantGrid } = props;
+  const { items, filterAttributes, productid, setVarantGrid } = props;
   const [values, setValues] = useState(items);
   if (Object.keys(items).length !== Object.keys(values).length) {
     setValues(items);
@@ -20,9 +22,9 @@ const VariantsLine = (props) => {
   const genrateSku = () => {
     let sku = productid + "-";
     let c = 1;
-    filerAttributes.map((atter) => {
+    filterAttributes.map((atter) => {
       if (values[atter.label] != "") {
-        if (c == filerAttributes.length) {
+        if (c == filterAttributes.length) {
           sku += values[atter.label];
         } else {
           sku += values[atter.label] + "-";
@@ -35,35 +37,52 @@ const VariantsLine = (props) => {
   };
   const Change = (event) => {
     if (event.target.name == "image") {
-      uploadImage(event, event.target.files[0]);
-      // console.log(event.target.files[0]);
-      // setValues({
-      //   ...values,
-      //   [event.target.name]: 'image',
-      // });
+      uploadImage(event);
     } else {
       setValues({
         ...values,
         [event.target.name]: event.target.value,
       });
     }
-    console.log(values);
+    // console.log(values);
   };
-  const uploadImage = (event, image) => {
+  const uploadImage = (event) => {
     const formData = new FormData();
-    formData.append("image", image);
+    for (let i = 0; i < event.target.files.length; i++) {
+      formData.append("file[]", event.target.files[i]);
+    }
+    const images = [];
+
     axios.post("/api/uploadImage", formData).then((res) => {
+      if (res.data.status === 200) {
+        values.image.map((item) => {
+          images.push(item);
+        });
+        res.data.filenames.map((item) => {
+          images.push(item);
+        });
+        setValues({
+          ...values,
+          image: images,
+        });
+      }
+    });
+  };
+  const removeImage = (e, image) => {
+    e.preventDefault();
+    axios.post(`/api/removeImage/${image}`).then((res) => {
       if (res.data.status === 200) {
         setValues({
           ...values,
-          [event.target.name]: res.data.filename,
+          image: values.image.filter((item) => item !== image),
         });
+        // setImagesName(imagesName.filter((item) => item !== image));
       }
     });
   };
   const changeSku = (event) => {
     const name = event.target.name;
-    const check = filerAttributes.some((attribute) => {
+    const check = filterAttributes.some((attribute) => {
       return attribute.label === name;
     });
 
@@ -113,6 +132,7 @@ const VariantsLine = (props) => {
             onChange={(event) => Change(event)}
             name={key}
             type={key == "image" ? "file" : ""}
+            multiple
           ></input>
           {errors[key] ? (
             <div className="invalid-feedback">{errors[key + "message"]}</div>
@@ -122,16 +142,53 @@ const VariantsLine = (props) => {
     }
   }
   return (
-    <div className="col-xl-12 col-lg-12 col-sm-12 ">
-      <div className="row">{outputs}</div>
-    </div>
+    <>
+      <div className="col-xl-12 col-lg-12 col-sm-12 ">
+        <div className="row">{outputs}</div>
+      </div>
+      <div className="col-xl-12 col-lg-12 col-sm-12 ">
+        <div className="row">
+          {values.image?.map((photo) => {
+            return (
+              <div className="col-xl-2 col-lg-2 col-sm-2" key={photo}>
+                <div className="card ">
+                  <div className="text-center">
+                    <img
+                      className="w-100"
+                      src={`http://${base_url}:${port}/images/variants_pics/${photo}`}
+                      alt=""
+                      key={photo}
+                      style={{
+                        // width: "100px",
+                        height: "100px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+
+                  <div className="card-footer pt-0 pb-0 text-center">
+                    <div className="row">
+                      <Tooltip title="Delete">
+                        <IconButton onClick={(e) => removeImage(e, photo)}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 };
 
 const VariantsGrid = (props) => {
   const { t } = useTranslation();
 
-  const { filerAttributes, numberOfVar, productid, getJSONVaraints, recheck } =
+  const { filterAttributes, numberOfVar, productid, getJSONVaraints, recheck } =
     props;
   const [varintGrid, setVariantGrid] = useState([]);
 
@@ -140,14 +197,15 @@ const VariantsGrid = (props) => {
       setVariantGrid(numberOfVar);
     }
   }, [numberOfVar]);
-  const vars = numberOfVar.map((item) => (
+  const vars = numberOfVar.map((item, i) => (
     <VariantsLine
+      key={i}
       recheck={recheck}
       key={item.postion}
       setVarantGrid={(item) => setVarantGrid(item)}
       items={item}
       productid={productid}
-      filerAttributes={filerAttributes}
+      filterAttributes={filterAttributes}
     ></VariantsLine>
   ));
 
@@ -165,21 +223,18 @@ const VariantsGrid = (props) => {
 
   return (
     <Fragment>
-    
-      <div class="col-xl-12 col-lg-12 col-sm-12 ">
-      
+      <div className="col-xl-12 col-lg-12 col-sm-12 ">
         <div className="row">
-        
-          <div class="col-md-2  p-4">{t('sku')}</div>
-          <div class="col-md-2  p-4">{t('price')}</div>
-          <div class="col-md-2  p-4">{t('stock')}</div>
-          <div class="col-md-2  p-4">{t('image')}</div>
+          <div className="col-md-2  p-4">{t("sku")}</div>
+          <div className="col-md-2  p-4">{t("price")}</div>
+          <div className="col-md-2  p-4">{t("stock")}</div>
+          <div className="col-md-2  p-4">{t("image")}</div>
 
-          {filerAttributes?.map((sec) => (
-            <div class="col-md-2  p-4">{sec.label}</div>
+          {filterAttributes?.map((sec, i) => (
+            <div className="col-md-2  p-4" key={i}>
+              {sec.label}
+            </div>
           ))}
-       
-
         </div>
         {vars}
       </div>

@@ -4,22 +4,24 @@ import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 import Grid from "./Grid";
-import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
-import { base_url, port } from "../../../Consts";
+import { CBreadcrumb } from "@coreui/react";
 import Select from "react-select";
+import { Link, useHistory } from "react-router-dom";
 
 const Variants = (props) => {
   // for localization
+  const history = useHistory();
+
   const { t } = useTranslation();
   const id = props.history.location.state.id;
 
   const [nameAttr, setNameAtter] = useState({});
   const [attributes, setAttributes] = useState([]);
-  const [filerAttributes, setfilerAttributes] = useState([]);
+  const [filterAttributes, setfilterAttributes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [numberOfVar, setNumberOfVar] = useState([]);
   const [jsonVaraints, setJsonVaratis] = useState("");
-  const [check, setCheck] = useState(false);
+
   useEffect(() => {
     const getdata = async () => {
       const jsonvar = await axios({
@@ -53,7 +55,7 @@ const Variants = (props) => {
           sku: "",
           price: "",
           stock: "",
-          image: "",
+          image: [],
           // ...nameAtter,
         });
         // setNameAtter(nameAtter);
@@ -83,8 +85,7 @@ const Variants = (props) => {
             } else if (nameAtter.hasOwnProperty(key)) {
               line[key] = value;
               attrFilterName.push({
-                id: count,
-                value: value,
+                value: key,
                 label: key,
               });
               AttNames[key] = "";
@@ -97,10 +98,10 @@ const Variants = (props) => {
           }
 
           varLines.push(line);
-          setfilerAttributes(attrFilterName);
+          setfilterAttributes(attrFilterName);
         });
-        // console.log(AttNames);
         setNameAtter(AttNames);
+        // console.log(nameAttr);
 
         setNumberOfVar(varLines);
         setAttributes(res.data.fetchData);
@@ -122,7 +123,7 @@ const Variants = (props) => {
         sku: "",
         price: "",
         stock: "",
-        image: "",
+        image: [],
         ...nameAttr,
       },
     ]);
@@ -162,35 +163,53 @@ const Variants = (props) => {
 
   // select box
   const handleSelectEvent = (e) => {
-    // e.map((item) =>
-    // {
-    setfilerAttributes(e);
-
-    // });
-    // console.log(filerAttributes);
-    // console.log(attributes);
     const nameAtter = {};
-    e?.map((item) => {
-      nameAtter[item.label] = "";
-    });
-    const varLines = [];
-    varLines.push({
-      postion: 0,
-      sku: "",
-      price: "",
-      stock: "",
-      image: "",
-      ...nameAtter,
-    });
-    // console.log(nameAtter);
+    // console.log(filterAttributes);
+    // console.log(e);
+
+    const inputFilter = filterAttributes?.length ? filterAttributes?.length : 0;
+    const input = e?.length ? e?.length : 0;
+    if (input > inputFilter) {
+      if (inputFilter === 0) {
+        e?.map((item) => {
+          nameAtter[item.label] = "";
+          numberOfVar.map((vars) => {
+            vars[item.label] = vars[item.label] ? vars[item.label] : "";
+          });
+        });
+      } else {
+        e?.map((item) => {
+          nameAtter[item.label] = "";
+          numberOfVar.map((vars) => {
+            vars[item.label] = vars[item.label] ? vars[item.label] : "";
+          });
+        });
+      }
+    } else if (input < inputFilter) {
+      if (input === 0) {
+        var uniqueResultOne = filterAttributes;
+      } else {
+        var uniqueResultOne = filterAttributes.filter(function (obj) {
+          return !e.some(function (obj2) {
+            return obj.value == obj2.value;
+          });
+        });
+      }
+      const label = uniqueResultOne[0].label;
+      numberOfVar.map((vars) => {
+        delete vars[label];
+      });
+      e?.map((item) => {
+        nameAtter[item.label] = "";
+      });
+    }
+
+    // Object.keys(vars).splice(index, 1);
+    //   console.log(vars);
+    setfilterAttributes(e);
     setNameAtter(nameAtter);
-
-    setNumberOfVar(varLines);
+    setNumberOfVar(numberOfVar);
   };
-
-  var branchID = 0;
-  var CategoryID = 0;
-  var sub_category_id = 0;
   if (loading) {
     return (
       <div className="spinner-border text-primary " role="status">
@@ -201,46 +220,26 @@ const Variants = (props) => {
     return (
       <Fragment>
         <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-          <CBreadcrumbItem
+          <Link
             className="font-weight-bold"
-            // href="/branches"
+            to=""
+            onClick={() => history.goBack()}
           >
-            {t("Branches")}
-          </CBreadcrumbItem>
-          <CBreadcrumbItem
-            className="font-weight-bold"
-            // href={`/category/${branchID}`}
-          >
-            {t("categories")}
-          </CBreadcrumbItem>
-          <CBreadcrumbItem
-            className="font-weight-bold"
-            // href={`/sub-category/${CategoryID}`}
-          >
-            {t("sub_category")}
-          </CBreadcrumbItem>
-          <CBreadcrumbItem
-            className="font-weight-bold"
-            // href={`/products/${sub_category_id}`}
-          >
-            {t("products")}{" "}
-          </CBreadcrumbItem>
-          <CBreadcrumbItem active> {t("variants")} </CBreadcrumbItem>
+            {t("back_to_products_list")}
+          </Link>
         </CBreadcrumb>
 
         <div className="row">
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
               <Select
-                defaultValue={filerAttributes?.map((sec) => {
-                  return sec.label;
-                })}
+                value={filterAttributes}
                 isMulti
                 options={attributes.map((o, i) => {
-                  return { id: i, value: o.id, label: o.attributeName };
+                  return { value: o.attributeName, label: o.attributeName };
                 })}
                 onChange={handleSelectEvent}
-                name="attributeName"
+                // name="attributeName"
                 className="basic-multi-select"
                 classNamePrefix="select"
               />
@@ -258,7 +257,7 @@ const Variants = (props) => {
                   }}
                   getJSONVaraints={(items) => getJSONVaraints(items)}
                   numberOfVar={numberOfVar}
-                  filerAttributes={filerAttributes}
+                  filterAttributes={filterAttributes}
                   productid={id}
                 ></Grid>
               </div>

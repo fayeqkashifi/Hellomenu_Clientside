@@ -20,7 +20,7 @@ const CreateRoute = () => {
 
   return (
     <Switch>
-      <PrivateRoute exact path="/branches/show" component={Category} />
+      <PrivateRoute path="/" component={Category} />
       <PrivateRoute path={`${path}/category`} component={Category} />
       <PrivateRoute path={`${path}/sub-category`} component={SubCategory} />
       <PrivateRoute
@@ -32,12 +32,11 @@ const CreateRoute = () => {
         component={Product}
       />
       <PrivateRoute path="/branches/service-area" component={ServiceArea} />
-      <PrivateRoute exact path="/branches/unit" component={Unit} />
-      <PrivateRoute exact path="/branches/inventory" component={Inventory} />
-      <PrivateRoute exact path={`${path}/design`} component={Design} />
-      <PrivateRoute exact path="/branches/tables" component={Tables} />
+      <PrivateRoute path="/branches/unit" component={Unit} />
+      <PrivateRoute path="/branches/inventory" component={Inventory} />
+      <PrivateRoute path={`${path}/design`} component={Design} />
+      <PrivateRoute path="/branches/tables" component={Tables} />
       <PrivateRoute
-        exact
         path="/branches/design/dark-template-customization"
         component={Customization}
       />

@@ -44,7 +44,7 @@ const Theme = (props) => {
   const history = useHistory();
 
   const { t } = useTranslation();
-  const branchId = atob(props.match.params.id);
+  const branchId = props.history.location.state.id;
 
   const [state, setState] = useState({ checked: false });
   const [homeScreen, setHomeScreen] = useState(false);
@@ -71,7 +71,12 @@ const Theme = (props) => {
     setThemes({ ...themes, [e.target.name]: e.target.value });
   };
   const changeColor = (first, second, thrid) => {
-    setThemes({ ...themes, TextColor: first, BackgroundColor: second, HighlightColor: thrid });
+    setThemes({
+      ...themes,
+      TextColor: first,
+      BackgroundColor: second,
+      HighlightColor: thrid,
+    });
   };
   const save = (e) => {
     e.preventDefault();
@@ -111,10 +116,7 @@ const Theme = (props) => {
   };
   return (
     <>
-      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <Link to="/design">{t("design")}</Link>
-      </CBreadcrumb>
-      <div className="container overflow-hidden border">
+      <div className=" overflow-hidden border">
         <Form onSubmit={save} method="POST" encType="multipart/form-data">
           <div className="row">
             <div className="col-12 mb-2">
@@ -156,17 +158,29 @@ const Theme = (props) => {
                             <Typography sx={{ color: "text.secondary" }}>
                               <AvatarGroup max={4}>
                                 <Avatar
-                                  sx={{ bgcolor: themes.TextColor, width: 20, height: 20 }}
+                                  sx={{
+                                    bgcolor: themes.TextColor,
+                                    width: 20,
+                                    height: 20,
+                                  }}
                                 >
                                   {" "}
                                 </Avatar>
                                 <Avatar
-                                  sx={{ bgcolor: themes.BackgroundColor, width: 20, height: 20 }}
+                                  sx={{
+                                    bgcolor: themes.BackgroundColor,
+                                    width: 20,
+                                    height: 20,
+                                  }}
                                 >
                                   {" "}
                                 </Avatar>
                                 <Avatar
-                                  sx={{ bgcolor:themes.HighlightColor, width: 20, height: 20 }}
+                                  sx={{
+                                    bgcolor: themes.HighlightColor,
+                                    width: 20,
+                                    height: 20,
+                                  }}
                                 >
                                   {" "}
                                 </Avatar>
@@ -179,7 +193,11 @@ const Theme = (props) => {
                         <Typography>
                           <List>
                             <ListItem disablePadding>
-                              <ListItemButton  onClick={()=>changeColor('red','green','black')}>
+                              <ListItemButton
+                                onClick={() =>
+                                  changeColor("red", "green", "black")
+                                }
+                              >
                                 <Grid container spacing={2}>
                                   <Grid item xs={6} md={8}>
                                     <ListItemText primary="First Color Theme" />
@@ -188,7 +206,7 @@ const Theme = (props) => {
                                     <Typography
                                       sx={{ color: "text.secondary" }}
                                     >
-                                      <AvatarGroup max={4} >
+                                      <AvatarGroup max={4}>
                                         <Avatar
                                           sx={{
                                             bgcolor: "red",
@@ -506,7 +524,11 @@ const Theme = (props) => {
             <button className="btn btn-primary" type="submit">
               {t("save")}
             </button>
-            <Link className="btn btn-light m-1" to="" onClick={() => history.goBack()}>
+            <Link
+              className="btn btn-light m-1"
+              to=""
+              onClick={() => history.goBack()}
+            >
               {t("back")}
             </Link>
           </div>
