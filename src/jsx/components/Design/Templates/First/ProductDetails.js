@@ -40,7 +40,7 @@ const ProductDetails = (props) => {
         // button background
         main: themeCustomization?.button_background_color
           ? themeCustomization.button_background_color
-          : "#ff751d",
+          : "#111",
       },
     },
     typography: {
@@ -62,7 +62,7 @@ const ProductDetails = (props) => {
           : 12,
         color: themeCustomization?.price_color
           ? themeCustomization.price_color
-          : "#f1fcfe",
+          : "#111",
       },
       // product Names
       button: {
@@ -71,7 +71,7 @@ const ProductDetails = (props) => {
           : 12,
         color: themeCustomization?.product_name_color
           ? themeCustomization.product_name_color
-          : "#ff751d",
+          : "#111",
       },
       // categories and sub categories
       overline: {
@@ -80,7 +80,7 @@ const ProductDetails = (props) => {
           : 12,
         color: themeCustomization?.categories_and_sub_categoies_color
           ? themeCustomization.categories_and_sub_categoies_color
-          : "#ff751d",
+          : "#111",
       },
       // branch Name
       h6: {
@@ -89,7 +89,7 @@ const ProductDetails = (props) => {
           : 14,
         color: themeCustomization?.branch_name_color
           ? themeCustomization.branch_name_color
-          : "#ff751d",
+          : "#111",
       },
     },
     components: {
@@ -104,7 +104,7 @@ const ProductDetails = (props) => {
                 : 12,
               color: themeCustomization?.button_text_color
                 ? themeCustomization.button_text_color
-                : "#f1fcfe",
+                : "#fff",
             },
           },
         ],
@@ -529,6 +529,8 @@ const ProductDetails = (props) => {
             {viewImages_HTMLTABLE}
           </Grid>
         </main>
+
+        <Footer title="Add to Card" />
       </Container>
     </ThemeProvider>
   );

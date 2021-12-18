@@ -10,17 +10,14 @@ import {
 import { useTranslation } from "react-i18next";
 // import Switch from "react-switch";
 
-import { Link } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
-import { Form } from "react-bootstrap";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
 import { useHistory } from "react-router-dom";
@@ -48,17 +45,6 @@ const DefaultCustomization = (props) => {
         }
       });
   };
-  // const save = () => {
-  //   const formData = new FormData();
-  //   formData.append("settings", JSON.stringify(settings));
-  //   axios
-  //     .post(`/api/InsertCustomization/${templateId}`, formData)
-  //     .then((res) => {
-  //       if (res.data.status === 200) {
-  //         setLoading(true);
-  //       }
-  //     });
-  // };
   const reset = (e) => {
     e.preventDefault();
     axios.get(`/api/ResetCustomization/${templateId}`).then((res) => {
@@ -75,8 +61,8 @@ const DefaultCustomization = (props) => {
   useEffect(() => {
     axios.get(`/api/GetTemplate/${templateId}`).then((res) => {
       if (res.data.status === 200) {
-        setSettings(res.data.fetchData[0].Customization);
-        setTemplate(res.data.fetchData[0]);
+        setSettings(res.data.fetchData.Customization);
+        setTemplate(res.data.fetchData);
       }
       setLoading(false);
     });
@@ -112,7 +98,7 @@ const DefaultCustomization = (props) => {
               <CardMedia
                 component="iframe"
                 height="600"
-                image={`/${template?.URL}/${btoa(3)}`}
+                image={`/${template?.URL}/${btoa(1)}`}
                 alt="template"
               />
             </CardActionArea>

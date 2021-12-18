@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 
 const ServiceArea = (props) => {
   // Validation Start

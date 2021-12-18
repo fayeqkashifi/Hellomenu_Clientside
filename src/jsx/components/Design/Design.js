@@ -16,7 +16,6 @@ import {
 } from "@coreui/react";
 import { useTranslation } from "react-i18next";
 import palette from "../../../images/hellomenu/palette.svg";
-import SingleFileAutoSubmit from "./SingleFileAutoSubmit";
 import { Link, useRouteMatch } from "react-router-dom";
 import QRCode from "qrcode.react";
 import axios from "axios";
@@ -31,10 +30,10 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
-import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
 import Grid from "@mui/material/Grid";
-import Box, { BoxProps } from "@mui/material/Box";
+// import profile from "";
+
 const Design = (props) => {
   const { path, url } = useRouteMatch();
 
@@ -286,27 +285,39 @@ const Design = (props) => {
           aria-labelledby="profile-tab"
           visible={activeKey === 1}
         >
-          <div className=" overflow-hidden border">
+          <div className=" overflow-hidden border mt-2">
             <Grid container spacing={2}>
               {templates.map((item) => {
                 return (
-                  <Grid item xs={6} sm={4} md={4} key={item.id}>
+                  <Grid item xs={4} sm={3} md={3} key={item.id}>
                     <Card>
                       <CardActionArea>
                         <CardMedia
-                          component="iframe"
-                          height="400"
-                          image={`/${item.URL}/${btoa(branchId)}`}
+                          component="img"
+                          height="200"
+                          image={`http://${base_url}:${port}/images/Templates/${item.ImageURL}`}
                           alt="template"
                         />
+
                         <CardContent>
-                          <Typography gutterBottom variant="h5" component="div">
+                          <Typography gutterBottom variant="h6" component="div">
                             {item.TemplateName}
                           </Typography>
                         </CardContent>
                         <CardActions>
                           <Grid container spacing={2}>
-                            <Grid item xs={8} className="mt-2">
+                            <Grid item xs={12}>
+                              <Link
+                                to={{
+                                  pathname: `/${item.URL}/${btoa(branchId)}`,
+                                  state: { id: item.id },
+                                }}
+                                target="_blank"
+                              >
+                                Preview
+                              </Link>
+                            </Grid>
+                            <Grid item xs={8}>
                               <Link
                                 to={{
                                   pathname: `${url}/${item.CustomizationURL}`,
@@ -344,9 +355,6 @@ const Design = (props) => {
           visible={activeKey === 2}
         >
           <div className=" overflow-hidden border">
-            {/* {fetchData.map((item, i) => { 
-                         if(item.Status == '1'){
-                        return ( */}
             <Form onSubmit={save} method="POST" encType="multipart/form-data">
               <div className="row">
                 <div className="col-6">
@@ -631,9 +639,6 @@ const Design = (props) => {
                 </button>
               </div>
             </Form>
-            {/* // )
-                        // }
-                        // })} */}
           </div>
           <div className="row mt-2">
             {viewThemes_HTMLTABLE}

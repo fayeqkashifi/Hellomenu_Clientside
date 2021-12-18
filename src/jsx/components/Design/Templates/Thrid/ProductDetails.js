@@ -1,25 +1,119 @@
-import React, { useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, SyntheticEvent } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { base_url, port } from "../../../Consts";
+// Import css files
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import Container from "@mui/material/Container";
+// import Slider from "react-slick";
+import { base_url, port } from "../../../../../Consts";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+
 import { Zoom } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { sty } from "./style.css";
-const ShowProducts = (props) => {
+import "../style.css";
+const ProductDetails = (props) => {
+  const [themeCustomization, setThemeCustomization] = useState([]);
+
+  const theme = createTheme({
+    palette: {
+      warning: {
+        // button background
+        main: themeCustomization?.button_background_color
+          ? themeCustomization.button_background_color
+          : "#ff751d",
+      },
+    },
+    typography: {
+      fontFamily: themeCustomization?.font
+        ? themeCustomization.font
+        : "sans-serif",
+      subtitle1: {
+        fontSize: themeCustomization?.product_discription_font_size
+          ? themeCustomization.product_discription_font_size
+          : 10,
+        color: themeCustomization?.product_discription_color
+          ? themeCustomization.product_discription_color
+          : "#777",
+      },
+      // price
+      body1: {
+        fontSize: themeCustomization?.price_font_size
+          ? themeCustomization.price_font_size
+          : 12,
+        color: themeCustomization?.price_color
+          ? themeCustomization.price_color
+          : "#f1fcfe",
+      },
+      // product Names
+      button: {
+        fontSize: themeCustomization?.product_name_font_size
+          ? themeCustomization.product_name_font_size
+          : 12,
+        color: themeCustomization?.product_name_color
+          ? themeCustomization.product_name_color
+          : "#ff751d",
+      },
+      // categories and sub categories
+      overline: {
+        fontSize: themeCustomization?.categories_and_sub_categoies_font_size
+          ? themeCustomization.categories_and_sub_categoies_font_size
+          : 12,
+        color: themeCustomization?.categories_and_sub_categoies_color
+          ? themeCustomization.categories_and_sub_categoies_color
+          : "#ff751d",
+      },
+      // branch Name
+      h6: {
+        fontSize: themeCustomization?.branch_name_font_size
+          ? themeCustomization.branch_name_font_size
+          : 14,
+        color: themeCustomization?.branch_name_color
+          ? themeCustomization.branch_name_color
+          : "#ff751d",
+      },
+    },
+    components: {
+      MuiButton: {
+        variants: [
+          {
+            // button
+            props: { variant: "contained" },
+            style: {
+              fontSize: themeCustomization?.button_text_font_size
+                ? themeCustomization.button_text_font_size
+                : 12,
+              color: themeCustomization?.button_text_color
+                ? themeCustomization.button_text_color
+                : "#f1fcfe",
+            },
+          },
+        ],
+      },
+    },
+  });
   // for localization
   const { t } = useTranslation();
-
   const id = atob(props.match.params.id);
+  //for retriving data using laravel API
   const themes = props.history.location.state.themes;
-
   let varData = [];
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
@@ -145,8 +239,8 @@ const ShowProducts = (props) => {
   };
 
   const zoomOutProperties = {
-    // duration: 5000,
-    transitionDuration: 100,
+    duration: 100,
+    transitionDuration: 5,
     canSwipe: true,
     indicators: true,
     scale: false,
@@ -182,10 +276,9 @@ const ShowProducts = (props) => {
     );
   } else {
     viewImages_HTMLTABLE = (
-      <div className="container p-2">
-        {/* <div className="row"> */}
-        <div className="col-xl-5 col-lg-5 col-sm-12">
-          <div className="row">
+      <Grid container>
+        <Grid item xs={12} sm={5} md={5} lg={5}>
+          <div className="row col-md-12 text-center ">
             <Zoom {...zoomOutProperties}>
               {(() => {
                 if (Array.isArray(productDetails.image)) {
@@ -214,13 +307,11 @@ const ShowProducts = (props) => {
                           productDetails?.stock === 0
                             ? `http://${base_url}:${port}/images/products/${
                                 productDetails.image
-                                  ? productDetails.image
-                                  : fetchData.image
+                                  ? productDetails?.image
+                                  : fetchData?.image
                               }`
                             : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
                         }
-                        // className="img-thumbnail"
-
                         style={{
                           height: "500px",
                           width: "100%",
@@ -234,24 +325,31 @@ const ShowProducts = (props) => {
               })()}
             </Zoom>
           </div>
-        </div>
+        </Grid>
 
-        <div className="col-xl-7 col-lg-7 col-sm-12">
-          <div className="card border">
+        <Grid item xs={12} sm={7} md={7} lg={7}>
+          <Card
+            sx={{
+              // height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <div className="row mx-3 mt-3">
-              <h4>
+              <Typography variant="overline" gutterBottom>
                 {t("product_name")}: {fetchData?.ProductName}
-              </h4>
-              <p>
+              </Typography>
+              <Typography variant="body2" gutterBottom>
                 {t("description")}: {fetchData?.Description}
-              </p>
-              <p>
+              </Typography>
+              <Typography variant="body2" gutterBottom>
                 {t("unit")}: {fetchData?.UnitName}
-              </p>
+              </Typography>
+
               {themes?.preparation_time != 0 ? (
-                <p>
+                <Typography variant="body2" gutterBottom>
                   {t("preparation_Time")}: {fetchData?.preparationTime} Minutes
-                </p>
+                </Typography>
               ) : (
                 " "
               )}
@@ -269,14 +367,16 @@ const ShowProducts = (props) => {
               </p>
             </div>
             <div className="row mx-3">
-              <h4> {t("ingredients")}</h4>
+              <Typography variant="overline" gutterBottom>
+                {t("ingredients")}
+              </Typography>
               <small>Please select the ingredients you want to remove.</small>
             </div>
             <div className="row mx-4">
               {JSON.parse(fetchData.ingredients)?.map((item, i) => {
                 return (
                   <div
-                    className="col-md-auto"
+                    className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto"
                     onClick={() => {
                       changeIngredients(item.label);
                     }}
@@ -316,49 +416,58 @@ const ShowProducts = (props) => {
                   aria-controls="panel1a-content"
                   id="panel1a-header"
                 >
-                  <Typography>{t("extras")}</Typography>
+                  <Typography variant="overline" gutterBottom>
+                    {t("extras")}
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>
-                    <FormGroup>
-                      {JSON.parse(fetchData.extras)?.map((item, i) => {
-                        return (
-                          <FormControlLabel
-                            key={i}
-                            control={
-                              <Checkbox
-                                onChange={(e) => {
-                                  extraHandlers(e, item.price);
-                                }}
-                                color="secondary"
-                              />
-                            }
-                            label={
-                              item.label + " ( +" + item.price + ".00" + " )"
-                            }
-                          />
-                        );
-                      })}
-                    </FormGroup>
-                  </Typography>
+                  <FormGroup>
+                    {JSON.parse(fetchData.extras)?.map((item, i) => {
+                      return (
+                        <FormControlLabel
+                          key={i}
+                          control={
+                            <Checkbox
+                              onChange={(e) => {
+                                extraHandlers(e, item.price);
+                              }}
+                              color="default"
+                              sx={{
+                                color: themeCustomization?.branch_name_color
+                                  ? themeCustomization.branch_name_color
+                                  : "#ff751d",
+                              }}
+                            />
+                          }
+                          label={
+                            <Typography variant="body2" gutterBottom>
+                              {item.label + " ( +" + item.price + ".00" + " )"}
+                            </Typography>
+                          }
+                        />
+                      );
+                    })}
+                  </FormGroup>
                 </AccordionDetails>
               </Accordion>
             </div>
 
             <div className="row m-3">
-              <h4> {t("vatiants")}</h4>
+              <Typography variant="overline" gutterBottom>
+                {t("vatiants")}
+              </Typography>
             </div>
 
             <div className="row mx-2">
               {Object.keys(showVaralint).map((list, i) => {
                 return (
-                  <div className="row" key={i}>
-                    <div className="col-md-12 ">
+                  <div className="row " key={i}>
+                    <div className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto">
                       {list}
-                      <div className="row ">
+                      <div className="row">
                         {showVaralint[list].map((variant) => {
                           return (
-                            <div className="col-md-2">
+                            <div className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto">
                               <div
                                 onClick={() => {
                                   changePrice(list, variant);
@@ -367,7 +476,8 @@ const ShowProducts = (props) => {
                                   skuarray[i] == variant
                                     ? {
                                         cursor: "pointer",
-                                        padding: "10px",
+                                        margin: "2px",
+                                        padding: "5px",
                                         border: "1px solid",
                                         textAlign: "center",
                                         borderRadius: "10px",
@@ -375,7 +485,9 @@ const ShowProducts = (props) => {
                                       }
                                     : {
                                         cursor: "pointer",
-                                        padding: "10px",
+                                        margin: "2px",
+
+                                        padding: "5px",
                                         border: "1px solid",
                                         textAlign: "center",
                                         borderRadius: "10px",
@@ -394,13 +506,23 @@ const ShowProducts = (props) => {
                 );
               })}
             </div>
-          </div>
-        </div>
-        {/* </div> */}
-      </div>
+          </Card>
+        </Grid>
+      </Grid>
     );
   }
-  return <> {viewImages_HTMLTABLE}</>;
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="lg" className="mt-5">
+        <main>
+          <Grid container spacing={2}>
+            {viewImages_HTMLTABLE}
+          </Grid>
+        </main>
+      </Container>
+    </ThemeProvider>
+  );
 };
 
-export default ShowProducts;
+export default ProductDetails;

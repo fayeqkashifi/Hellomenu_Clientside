@@ -13,7 +13,8 @@ import axios from "axios";
 import { base_url, port } from "../../../../../Consts";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 var hold = 1;
 export default function Main(props) {
@@ -30,8 +31,12 @@ export default function Main(props) {
   useEffect(() => {
     axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        setThemeCustomization(res.data.fetchData[0]?.Customization);
-        setMode(res.data.fetchData[0]?.Customization?.mode ? res.data.fetchData[0]?.Customization?.mode : "dark" )
+        setThemeCustomization(res.data.fetchData?.Customization);
+        setMode(
+          res.data.fetchData[0]?.Customization?.mode
+            ? res.data.fetchData[0]?.Customization?.mode
+            : "dark"
+        );
         // console.log(res.data.fetchData[0].Customization);
       }
     });
@@ -100,37 +105,61 @@ export default function Main(props) {
   const [mode, setMode] = useState("dark");
   const theme = createTheme({
     palette: {
-      mode:mode,
+      mode: mode,
       warning: {
         // button background
-        main: themeCustomization?.button_background_color ?themeCustomization.button_background_color: "#ff751d" ,
+        main: themeCustomization?.button_background_color
+          ? themeCustomization.button_background_color
+          : "#ff751d",
       },
     },
     typography: {
-      fontFamily: themeCustomization?.font?themeCustomization.font: "sans-serif",
+      fontFamily: themeCustomization?.font
+        ? themeCustomization.font
+        : "sans-serif",
       subtitle1: {
-        fontSize: themeCustomization?.product_discription_font_size?themeCustomization.product_discription_font_size: 10,
-        color: themeCustomization?.product_discription_color?themeCustomization.product_discription_color: "#777",
+        fontSize: themeCustomization?.product_discription_font_size
+          ? themeCustomization.product_discription_font_size
+          : 10,
+        color: themeCustomization?.product_discription_color
+          ? themeCustomization.product_discription_color
+          : "#777",
       },
       // price
       body1: {
-        fontSize: themeCustomization?.price_font_size?themeCustomization.price_font_size: 12,
-        color: themeCustomization?.price_color?themeCustomization.price_color: "#f1fcfe",
+        fontSize: themeCustomization?.price_font_size
+          ? themeCustomization.price_font_size
+          : 12,
+        color: themeCustomization?.price_color
+          ? themeCustomization.price_color
+          : "#f1fcfe",
       },
       // product Names
       button: {
-        fontSize: themeCustomization?.product_name_font_size?themeCustomization.product_name_font_size: 12,
-        color: themeCustomization?.product_name_color?themeCustomization.product_name_color: "#ff751d",
+        fontSize: themeCustomization?.product_name_font_size
+          ? themeCustomization.product_name_font_size
+          : 12,
+        color: themeCustomization?.product_name_color
+          ? themeCustomization.product_name_color
+          : "#ff751d",
       },
       // categories and sub categories
       overline: {
-        fontSize: themeCustomization?.categories_and_sub_categoies_font_size?themeCustomization.categories_and_sub_categoies_font_size: 12,
-        color: themeCustomization?.categories_and_sub_categoies_color?themeCustomization.categories_and_sub_categoies_color: "#ff751d",
+        fontSize: themeCustomization?.categories_and_sub_categoies_font_size
+          ? themeCustomization.categories_and_sub_categoies_font_size
+          : 12,
+        color: themeCustomization?.categories_and_sub_categoies_color
+          ? themeCustomization.categories_and_sub_categoies_color
+          : "#ff751d",
       },
       // branch Name
-      h6:{
-        fontSize: themeCustomization?.branch_name_font_size?themeCustomization.branch_name_font_size: 14,
-        color: themeCustomization?.branch_name_color?themeCustomization.branch_name_color: "#ff751d", 
+      h6: {
+        fontSize: themeCustomization?.branch_name_font_size
+          ? themeCustomization.branch_name_font_size
+          : 14,
+        color: themeCustomization?.branch_name_color
+          ? themeCustomization.branch_name_color
+          : "#ff751d",
       },
     },
     components: {
@@ -138,12 +167,16 @@ export default function Main(props) {
         variants: [
           {
             // button
-            props: { variant: 'contained' },
+            props: { variant: "contained" },
             style: {
-              fontSize: themeCustomization?.button_text_font_size?themeCustomization.button_text_font_size: 12,
-              color: themeCustomization?.button_text_color?themeCustomization.button_text_color: "#f1fcfe",
+              fontSize: themeCustomization?.button_text_font_size
+                ? themeCustomization.button_text_font_size
+                : 12,
+              color: themeCustomization?.button_text_color
+                ? themeCustomization.button_text_color
+                : "#f1fcfe",
             },
-          }
+          },
         ],
       },
     },
@@ -156,7 +189,7 @@ export default function Main(props) {
       <div
         className="spinner-border text-primary "
         role="status"
-        style={{position: "fixed", top: "50%", left: "50%" }}
+        style={{ position: "fixed", top: "50%", left: "50%" }}
       >
         <span className="sr-only">{t("loading")}</span>
       </div>
@@ -164,16 +197,26 @@ export default function Main(props) {
   } else {
     viewShow_HTMLTABLE = products?.map((item, i) => {
       return (
-        <Grid item xs={
-          themeCustomization?.number_of_products_in_each_row==1?12:
-          themeCustomization?.number_of_products_in_each_row==2?6:
-          themeCustomization?.number_of_products_in_each_row==3?4:
-          themeCustomization?.number_of_products_in_each_row==4?3:
-          themeCustomization?.number_of_products_in_each_row==5?3:
-          themeCustomization?.number_of_products_in_each_row==6?2:
-          6} 
-          // sm={2} md={2} 
-          key={i}>
+        <Grid
+          item
+          xs={
+            themeCustomization?.number_of_products_in_each_row == 1
+              ? 12
+              : themeCustomization?.number_of_products_in_each_row == 2
+              ? 6
+              : themeCustomization?.number_of_products_in_each_row == 3
+              ? 4
+              : themeCustomization?.number_of_products_in_each_row == 4
+              ? 3
+              : themeCustomization?.number_of_products_in_each_row == 5
+              ? 3
+              : themeCustomization?.number_of_products_in_each_row == 6
+              ? 2
+              : 6
+          }
+          // sm={2} md={2}
+          key={i}
+        >
           <Card
             sx={{
               // height: "100%",
@@ -187,17 +230,21 @@ export default function Main(props) {
               image={`http://${base_url}:${port}/images/products/${item.image}`}
               alt="Image"
             />
-            <Link to={`/product-details/${btoa(item.product_id)}`}>
+            <Link
+              to={{
+                pathname: `/dark-template/product/${btoa(item.id)}`,
+                state: { themes: themeCustomization },
+              }}
+            >
               <CardContent sx={{ flexGrow: 1 }}>
-                <Typography
-                  variant="button"
-                  display="block"
-                  gutterBottom
-                >
+                <Typography variant="button" display="block" gutterBottom>
                   {item.ProductName}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
                   {item.Description}
+                </Typography>
+                <Typography variant="button" gutterBottom>
+                  {item.price + " " + getSymbolFromCurrency(item.currency_code)}
                 </Typography>
               </CardContent>
             </Link>
@@ -216,10 +263,12 @@ export default function Main(props) {
           subcategories={subcategories}
           setSubCategories={setSubCategories}
           activeSubCategory={activeSubCategory}
+          setProducts={setProducts}
+          setActiveSubCategory={setActiveSubCategory}
           setMode={setMode}
           mode={mode}
         />
-        
+
         <main>
           <Grid container spacing={4}>
             {viewShow_HTMLTABLE}

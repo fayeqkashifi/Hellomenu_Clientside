@@ -1,120 +1,24 @@
-import React, { Fragment, useState, useEffect, SyntheticEvent } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-// Import css files
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Footer from "./Footer";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
-// import Slider from "react-slick";
-import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 
 import { Zoom } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import "../style.css";
-const ProductDetails = (props) => {
-  const [themeCustomization, setThemeCustomization] = useState([]);
-
-  const theme = createTheme({
-    palette: {
-      warning: {
-        // button background
-        main: themeCustomization?.button_background_color
-          ? themeCustomization.button_background_color
-          : "#ff751d",
-      },
-    },
-    typography: {
-      fontFamily: themeCustomization?.font
-        ? themeCustomization.font
-        : "sans-serif",
-      subtitle1: {
-        fontSize: themeCustomization?.product_discription_font_size
-          ? themeCustomization.product_discription_font_size
-          : 10,
-        color: themeCustomization?.product_discription_color
-          ? themeCustomization.product_discription_color
-          : "#777",
-      },
-      // price
-      body1: {
-        fontSize: themeCustomization?.price_font_size
-          ? themeCustomization.price_font_size
-          : 12,
-        color: themeCustomization?.price_color
-          ? themeCustomization.price_color
-          : "#f1fcfe",
-      },
-      // product Names
-      button: {
-        fontSize: themeCustomization?.product_name_font_size
-          ? themeCustomization.product_name_font_size
-          : 12,
-        color: themeCustomization?.product_name_color
-          ? themeCustomization.product_name_color
-          : "#ff751d",
-      },
-      // categories and sub categories
-      overline: {
-        fontSize: themeCustomization?.categories_and_sub_categoies_font_size
-          ? themeCustomization.categories_and_sub_categoies_font_size
-          : 12,
-        color: themeCustomization?.categories_and_sub_categoies_color
-          ? themeCustomization.categories_and_sub_categoies_color
-          : "#ff751d",
-      },
-      // branch Name
-      h6: {
-        fontSize: themeCustomization?.branch_name_font_size
-          ? themeCustomization.branch_name_font_size
-          : 14,
-        color: themeCustomization?.branch_name_color
-          ? themeCustomization.branch_name_color
-          : "#ff751d",
-      },
-    },
-    components: {
-      MuiButton: {
-        variants: [
-          {
-            // button
-            props: { variant: "contained" },
-            style: {
-              fontSize: themeCustomization?.button_text_font_size
-                ? themeCustomization.button_text_font_size
-                : 12,
-              color: themeCustomization?.button_text_color
-                ? themeCustomization.button_text_color
-                : "#f1fcfe",
-            },
-          },
-        ],
-      },
-    },
-  });
+const ShowProducts = (props) => {
   // for localization
   const { t } = useTranslation();
+
   const id = atob(props.match.params.id);
-  //for retriving data using laravel API
   const themes = props.history.location.state.themes;
   let varData = [];
   //for retriving data using laravel API
@@ -278,8 +182,8 @@ const ProductDetails = (props) => {
     );
   } else {
     viewImages_HTMLTABLE = (
-      <Grid container>
-        <Grid item xs={12} sm={5} md={5} lg={5}>
+      <div className="row p-2">
+        <div className="col-xl-5 col-lg-5 col-md-12 col-sm-12">
           <div className="row col-md-12 text-center ">
             <Zoom {...zoomOutProperties}>
               {(() => {
@@ -327,31 +231,24 @@ const ProductDetails = (props) => {
               })()}
             </Zoom>
           </div>
-        </Grid>
+        </div>
 
-        <Grid item xs={12} sm={7} md={7} lg={7}>
-          <Card
-            sx={{
-              // height: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+        <div className="col-xl-7 col-lg-7 col-sm-12">
+          <div className="card border">
             <div className="row mx-3 mt-3">
-              <Typography variant="overline" gutterBottom>
+              <h4>
                 {t("product_name")}: {fetchData?.ProductName}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
+              </h4>
+              <p>
                 {t("description")}: {fetchData?.Description}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
+              </p>
+              <p>
                 {t("unit")}: {fetchData?.UnitName}
-              </Typography>
-
+              </p>
               {themes?.preparation_time != 0 ? (
-                <Typography variant="body2" gutterBottom>
+                <p>
                   {t("preparation_Time")}: {fetchData?.preparationTime} Minutes
-                </Typography>
+                </p>
               ) : (
                 " "
               )}
@@ -369,9 +266,7 @@ const ProductDetails = (props) => {
               </p>
             </div>
             <div className="row mx-3">
-              <Typography variant="overline" gutterBottom>
-                {t("ingredients")}
-              </Typography>
+              <h4> {t("ingredients")}</h4>
               <small>Please select the ingredients you want to remove.</small>
             </div>
             <div className="row mx-4">
@@ -418,46 +313,37 @@ const ProductDetails = (props) => {
                   aria-controls="panel1a-content"
                   id="panel1a-header"
                 >
-                  <Typography variant="overline" gutterBottom>
-                    {t("extras")}
-                  </Typography>
+                  <Typography>{t("extras")}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <FormGroup>
-                    {JSON.parse(fetchData.extras)?.map((item, i) => {
-                      return (
-                        <FormControlLabel
-                          key={i}
-                          control={
-                            <Checkbox
-                              onChange={(e) => {
-                                extraHandlers(e, item.price);
-                              }}
-                              color="default"
-                              sx={{
-                                color: themeCustomization?.branch_name_color
-                                  ? themeCustomization.branch_name_color
-                                  : "#ff751d",
-                              }}
-                            />
-                          }
-                          label={
-                            <Typography variant="body2" gutterBottom>
-                              {item.label + " ( +" + item.price + ".00" + " )"}
-                            </Typography>
-                          }
-                        />
-                      );
-                    })}
-                  </FormGroup>
+                  <Typography>
+                    <FormGroup>
+                      {JSON.parse(fetchData.extras)?.map((item, i) => {
+                        return (
+                          <FormControlLabel
+                            key={i}
+                            control={
+                              <Checkbox
+                                onChange={(e) => {
+                                  extraHandlers(e, item.price);
+                                }}
+                                color="secondary"
+                              />
+                            }
+                            label={
+                              item.label + " ( +" + item.price + ".00" + " )"
+                            }
+                          />
+                        );
+                      })}
+                    </FormGroup>
+                  </Typography>
                 </AccordionDetails>
               </Accordion>
             </div>
 
             <div className="row m-3">
-              <Typography variant="overline" gutterBottom>
-                {t("vatiants")}
-              </Typography>
+              <h4> {t("vatiants")}</h4>
             </div>
 
             <div className="row mx-2">
@@ -508,30 +394,12 @@ const ProductDetails = (props) => {
                 );
               })}
             </div>
-          </Card>
-        </Grid>
-      </Grid>
+          </div>
+        </div>
+      </div>
     );
   }
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Container maxWidth="lg">
-        <Header
-          // title={branch[0]?.BrancheName}
-          categories={0}
-          subcategories={0}
-          // setSubCategories={setSubCategories}
-          // activeSubCategory={activeSubCategory}
-        />
-        <main>
-          <Grid container spacing={2}>
-            {viewImages_HTMLTABLE}
-          </Grid>
-        </main>
-      </Container>
-    </ThemeProvider>
-  );
+  return <> {viewImages_HTMLTABLE}</>;
 };
 
-export default ProductDetails;
+export default ShowProducts;

@@ -12,15 +12,13 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { base_url, port } from "../../../../../Consts";
 import { useTranslation } from "react-i18next";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import PhoneIcon from "@mui/icons-material/Phone";
-import Toolbar from "@mui/material/Toolbar";
 import HorizontalScroller from "react-horizontal-scroll-container";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 var hold = 1;
 export default function Main(props) {
@@ -33,8 +31,6 @@ export default function Main(props) {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const branchId = atob(props.match.params.id);
-  const [branch, setBranch] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [subcategories, setSubCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeSubCategory, setActiveSubCategory] = useState(0);
@@ -47,20 +43,12 @@ export default function Main(props) {
         // console.log(res.data.fetchData[0].Customization);
       }
     });
-    axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setBranch(res.data.data[0]);
-      }
-    });
-    axios.get(`/api/GetCategories/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setCategories(res.data.fetchData);
-      }
-    });
     axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.fetchData[0].sub_id);
         setSubCategories(res.data.fetchData);
+        setActiveSubCategory(res.data.fetchData[0]?.sub_id);
+        setSubName(res.data.fetchData[0].SubCategoryName);
+
         axios
           .get(
             `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_id}`
@@ -68,7 +56,6 @@ export default function Main(props) {
           .then((res) => {
             if (res.data.status === 200) {
               setProducts(res.data.data);
-              setActiveSubCategory(res.data.data[0]?.sub_category_id);
             }
           });
         setLoading(false);
@@ -114,7 +101,7 @@ export default function Main(props) {
           : 12,
         color: themeCustomization?.product_name_color
           ? themeCustomization.product_name_color
-          : "#ff751d",
+          : "#1f1d1f",
       },
       // categories and sub categories
       overline: {
@@ -126,13 +113,21 @@ export default function Main(props) {
           : "#ff751d",
       },
       // branch Name
-      h6: {
+      h4: {
         fontSize: themeCustomization?.branch_name_font_size
           ? themeCustomization.branch_name_font_size
-          : 14,
+          : 28,
         color: themeCustomization?.branch_name_color
           ? themeCustomization.branch_name_color
-          : "#ff751d",
+          : "#aa3f32",
+      },
+      h3: {
+        fontSize: themeCustomization?.branch_name_font_size
+          ? themeCustomization.branch_name_font_size
+          : 36,
+        color: themeCustomization?.branch_name_color
+          ? themeCustomization.branch_name_color
+          : "#1f1d1f",
       },
     },
     components: {
@@ -155,7 +150,17 @@ export default function Main(props) {
     },
   });
   // design end
-
+  let [subName, setSubName] = useState("");
+  const filterProducts = (subCateID, name) => {
+    axios.get(`/api/GetProductsBasedOnSubCategory/${subCateID}`).then((res) => {
+      if (res.data.status === 200) {
+        // console.log(res.data.data);
+        setProducts(res.data.data);
+      }
+    });
+    setSubName(name);
+    setActiveSubCategory(subCateID);
+  };
   var viewShow_HTMLTABLE = "";
   if (loading) {
     return (
@@ -170,11 +175,19 @@ export default function Main(props) {
   } else {
     viewShow_HTMLTABLE = products?.map((item, i) => {
       return (
-        <Grid item xs={12} sm={12} md={12} key={i}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          key={i}
+          sx={{ height: "500px" }}
+          className="center"
+        >
           <Card
             sx={{
               width: "300px",
-              height: "600px",
+              margin: "30px",
               display: "flex",
               flexDirection: "column",
             }}
@@ -185,13 +198,24 @@ export default function Main(props) {
               image={`http://${base_url}:${port}/images/products/${item.image}`}
               alt="Image"
             />
-            <Link to={`/product-details/${btoa(item.product_id)}`}>
+            <Link
+              to={{
+                pathname: `/second-template/product/${btoa(item.id)}`,
+                state: { themes: themeCustomization },
+              }}
+            >
               <CardContent sx={{ flexGrow: 1 }} className="text-center">
-                <Typography variant="button" display="block" gutterBottom>
+                <Typography
+                  variant="button"
+                  style={{ textTransform: "capitalize" }}
+                >
                   {item.ProductName}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
                   {item.Description}
+                </Typography>
+                <Typography variant="h4" gutterBottom>
+                  {item.price + " " + getSymbolFromCurrency(item.currency_code)}
                 </Typography>
               </CardContent>
             </Link>
@@ -204,7 +228,25 @@ export default function Main(props) {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="lg">
-        <Header title={branch?.BrancheName} />
+        <Typography
+          component="h2"
+          variant="h3"
+          align="left"
+          style={{
+            marginLeft: 200,
+            paddingBottom: "2px",
+            marginBottom: "10px",
+            borderBottomStyle: "solid",
+            borderottomWidth: "3.1px",
+            width: "fit-content",
+            borderColor: "#33cd6b",
+          }}
+          noWrap
+          sx={{ flex: 1 }}
+        >
+          {subName}
+        </Typography>
+
         <Card>
           <Grid container spacing={2}>
             <Grid item xs={2}>
@@ -213,7 +255,7 @@ export default function Main(props) {
                   flexGrow: 1,
                   bgcolor: "background.paper",
                   display: "flex",
-                  height: 600,
+                  height: 500,
                 }}
               >
                 <Tabs
@@ -223,8 +265,11 @@ export default function Main(props) {
                   variant="scrollable"
                   scrollButtons
                   aria-label="Vertical tabs example"
-                  textColor="secondary"
-                  indicatorColor="secondary"
+                  TabIndicatorProps={{
+                    style: {
+                      display: "none",
+                    },
+                  }}
                   sx={{
                     [`& .${tabsClasses.scrollButtons}`]: {
                       "&.Mui-disabled": { opacity: 0.3 },
@@ -232,10 +277,31 @@ export default function Main(props) {
                   }}
                 >
                   {subcategories?.map((section, i) => (
-                    <Tab 
-                    className="mb-2"
-                    
-                    // sx={{bgcolor:activeSubCategory === section.sub_id ? "green" : " "}}
+                    <Tab
+                      className="mb-2"
+                      onClick={() =>
+                        filterProducts(section.sub_id, section.SubCategoryName)
+                      }
+                      style={
+                        activeSubCategory == section.sub_id
+                          ? {
+                              cursor: "pointer",
+                              background: "#33cd6b",
+                              margin: "2px",
+                              padding: "5px",
+                              border: "1px solid",
+                              textAlign: "center",
+                              borderRadius: "10px",
+                              borderColor: "#33cd6b",
+                            }
+                          : {
+                              cursor: "pointer",
+                              margin: "2px",
+                              padding: "5px",
+                              textAlign: "center",
+                              borderRadius: "10px",
+                            }
+                      }
                       icon={
                         <img
                           style={{
@@ -246,7 +312,23 @@ export default function Main(props) {
                           src={`http://${base_url}:${port}/images/sub_catagories/${section.SubCategoryIcon}`}
                         />
                       }
-                      label={section.SubCategoryName}
+                      label={
+                        <Typography
+                          style={
+                            activeSubCategory == section.sub_id
+                              ? {
+                                  color: "white",
+                                  textTransform: "capitalize",
+                                }
+                              : {
+                                  color: "black",
+                                  textTransform: "capitalize",
+                                }
+                          }
+                        >
+                          {section.SubCategoryName}
+                        </Typography>
+                      }
                     />
                   ))}
                 </Tabs>

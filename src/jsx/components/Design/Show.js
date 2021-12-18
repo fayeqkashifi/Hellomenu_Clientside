@@ -1,7 +1,5 @@
-import React, { Fragment, useState } from "react";
-import { Tab, Nav } from "react-bootstrap";
+import React, { Fragment } from "react";
 import {
-  Link,
   BrowserRouter as Router,
   Switch,
   useRouteMatch,
@@ -13,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import Customization from "./Templates/Dark/Customization";
 import Theme from "./Theme";
 import EditTheme from "./EditTheme";
-import DefaultCustomization from "../Public Link/Customization";
+import DefaultCustomization from "./Templates/Default/Customization";
 
 const DesignShow = (props) => {
   const { path, url } = useRouteMatch();

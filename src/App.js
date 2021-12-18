@@ -12,21 +12,21 @@ import Login from "./jsx/pages/Login";
 /// Style
 import "./css/style.css";
 import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
-// import PrivateRoute from './jsx/components/PrivateRoute';
 import PublicRoute from "./jsx/components/PublicRoute";
 import axios from "axios";
-import StandardTemplate from "./jsx/components/Public Link/BranchDetails";
-// import Variants from "./jsx/components/Variants/Variants";
-import VariantDetails from "./jsx/components/Public Link/VariantDetails";
-import ShowProducts from "./jsx/components/Public Link/ShowProducts";
+import StandardTemplate from "./jsx/components/Design/Templates/Default/Main";
+import ShowProducts from "./jsx/components/Design/Templates/Default/ShowProducts";
 import { base_url, port } from "./Consts";
 import Main from "./jsx/components/Design/Templates/First/Main";
 import DarkTemplate from "./jsx/components/Design/Templates/Dark/Main";
 import Thrid from "./jsx/components/Design/Templates/Thrid/Main";
 import ProductDetails from "./jsx/components/Design/Templates/Dark/ProductDetails";
+import FirstProductDetails from "./jsx/components/Design/Templates/First/ProductDetails";
+import SecondProductDetails from "./jsx/components/Design/Templates/Second/ProductDetails";
+import ThridProductDetails from "./jsx/components/Design/Templates/Thrid/ProductDetails";
 import OrderDetails from "./jsx/components/Design/Templates/Dark/OrderDetails";
 import SecondTemplate from "./jsx/components/Design/Templates/Second/Main";
-import Error404 from "./jsx/pages/Error404";
+import ProductsList from "./jsx/components/Design/Templates/Thrid/ProductsList";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -92,11 +92,6 @@ const App = () => {
           exact
         />
 
-        <PublicRoute
-          exact
-          component={VariantDetails}
-          path="/variant-details/:id"
-        />
         <PublicRoute exact component={OrderDetails} path="/order-details/:id" />
         <PublicRoute
           exact
@@ -106,10 +101,30 @@ const App = () => {
         <PublicRoute
           exact
           component={ProductDetails}
-          path="/product-details/:id"
+          path="/dark-template/product/:id"
         />
-        <PublicRoute component={Main} path="/template-first" exact />
-        <PublicRoute component={Thrid} path="/template-thrid" exact />
+        <PublicRoute
+          exact
+          component={SecondProductDetails}
+          path="/second-template/product/:id"
+        />
+        <PublicRoute
+          exact
+          component={ProductsList}
+          path="/thrid-template/products-list/:id"
+        />
+        <PublicRoute
+          exact
+          component={ThridProductDetails}
+          path="/thrid-template/products-list/product-details/:id"
+        />
+        <PublicRoute
+          exact
+          component={FirstProductDetails}
+          path="/template-first/product/:id"
+        />
+        <PublicRoute component={Main} path="/template-first/:id" exact />
+        <PublicRoute component={Thrid} path="/template-thrid/:id" exact />
         {/* <Route component={Error404} /> */}
 
         <Markup />

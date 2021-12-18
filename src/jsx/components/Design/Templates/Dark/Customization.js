@@ -10,17 +10,14 @@ import {
 import { useTranslation } from "react-i18next";
 // import Switch from "react-switch";
 
-import { Link } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
-import { Form } from "react-bootstrap";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
 import { useHistory } from "react-router-dom";
@@ -75,8 +72,8 @@ const Customization = (props) => {
   useEffect(() => {
     axios.get(`/api/GetTemplate/${templateId}`).then((res) => {
       if (res.data.status === 200) {
-        setSettings(res.data.fetchData[0].Customization);
-        setTemplate(res.data.fetchData[0]);
+        setSettings(res.data.fetchData.Customization);
+        setTemplate(res.data.fetchData);
       }
       setLoading(false);
     });

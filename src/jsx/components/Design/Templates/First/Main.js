@@ -1,137 +1,294 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-// import CameraIcon from '@mui/icons-material/PhotoCamera';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { useState, useEffect } from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Header from "./Header";
+import Footer from "./Footer";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { base_url, port } from "../../../../../Consts";
+import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { Link } from "react-router-dom";
+import getSymbolFromCurrency from "currency-symbol-map";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+var hold = 1;
+export default function Main(props) {
+  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
+  const branchId = atob(props.match.params.id);
+  const [branch, setBranch] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [activeSubCategory, setActiveSubCategory] = useState(0);
+  const [themeCustomization, setThemeCustomization] = useState([]);
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  useEffect(() => {
+    axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setThemeCustomization(res.data.fetchData?.Customization);
 
-const theme = createTheme();
+        // console.log(res.data.fetchData[0].Customization);
+      }
+    });
+    axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setBranch(res.data.data);
+      }
+    });
+    axios.get(`/api/GetCategories/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setCategories(res.data.fetchData);
+      }
+    });
+    axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setSubCategories(res.data.fetchData);
+        setActiveSubCategory(res.data.fetchData[0].sub_id);
 
-export default function Main() {
+        axios
+          .get(
+            `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_id}`
+          )
+          .then((res) => {
+            if (res.data.status === 200) {
+              setProducts(res.data.data);
+            }
+          });
+        setLoading(false);
+      }
+    });
+  }, []);
+  const [changeState, setChangeState] = useState(true);
+  const fetchMoreData = () => {
+    if (hold < subcategories.length) {
+      axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
+        if (res.data.status === 200) {
+          setActiveSubCategory(res.data.fetchData[hold].sub_id);
+          // console.log(res.data.fetchData[hold].sub_id);
+
+          axios
+            .get(
+              `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[hold].sub_id}`
+            )
+            .then((res) => {
+              if (res.data.status === 200) {
+                if (res.data.data.length === 0) {
+                  hold = hold + 1;
+                  // console.log(res.data.data);
+                  fetchMoreData();
+                } else {
+                  hold = hold + 1;
+                  setProducts(products.concat(res.data.data));
+                }
+              }
+            });
+
+          setSubCategories(res.data.fetchData);
+        }
+      });
+    } else {
+      setChangeState(false);
+    }
+    // console.log(hold);
+  };
+  // design start
+  const theme = createTheme({
+    palette: {
+      warning: {
+        // button background
+        main: themeCustomization?.button_background_color
+          ? themeCustomization.button_background_color
+          : "#ff751d",
+      },
+    },
+    typography: {
+      fontFamily: themeCustomization?.font
+        ? themeCustomization.font
+        : "sans-serif",
+      subtitle1: {
+        fontSize: themeCustomization?.product_discription_font_size
+          ? themeCustomization.product_discription_font_size
+          : 10,
+        color: themeCustomization?.product_discription_color
+          ? themeCustomization.product_discription_color
+          : "#777",
+      },
+      // price
+      body1: {
+        fontSize: themeCustomization?.price_font_size
+          ? themeCustomization.price_font_size
+          : 12,
+        color: themeCustomization?.price_color
+          ? themeCustomization.price_color
+          : "#111",
+      },
+      // product Names
+      button: {
+        fontSize: themeCustomization?.product_name_font_size
+          ? themeCustomization.product_name_font_size
+          : 12,
+        color: themeCustomization?.product_name_color
+          ? themeCustomization.product_name_color
+          : "#111",
+      },
+      // categories and sub categories
+      overline: {
+        fontSize: themeCustomization?.categories_and_sub_categoies_font_size
+          ? themeCustomization.categories_and_sub_categoies_font_size
+          : 12,
+        color: themeCustomization?.categories_and_sub_categoies_color
+          ? themeCustomization.categories_and_sub_categoies_color
+          : "#ff751d",
+      },
+      // branch Name
+      h6: {
+        fontSize: themeCustomization?.branch_name_font_size
+          ? themeCustomization.branch_name_font_size
+          : 14,
+        color: themeCustomization?.branch_name_color
+          ? themeCustomization.branch_name_color
+          : "#ff751d",
+      },
+    },
+    components: {
+      MuiButton: {
+        variants: [
+          {
+            // button
+            props: { variant: "contained" },
+            style: {
+              fontSize: themeCustomization?.button_text_font_size
+                ? themeCustomization.button_text_font_size
+                : 12,
+              color: themeCustomization?.button_text_color
+                ? themeCustomization.button_text_color
+                : "#f1fcfe",
+            },
+          },
+        ],
+      },
+    },
+  });
+  // design end
+
+  var viewShow_HTMLTABLE = "";
+  if (loading) {
+    return (
+      <div
+        className="spinner-border text-primary "
+        role="status"
+        style={{ position: "fixed", top: "50%", left: "50%" }}
+      >
+        <span className="sr-only">{t("loading")}</span>
+      </div>
+    );
+  } else {
+    viewShow_HTMLTABLE = products?.map((item, i) => {
+      return (
+        <Grid
+          item
+          xs={
+            themeCustomization?.number_of_products_in_each_row == 1
+              ? 12
+              : themeCustomization?.number_of_products_in_each_row == 2
+              ? 6
+              : themeCustomization?.number_of_products_in_each_row == 3
+              ? 4
+              : themeCustomization?.number_of_products_in_each_row == 4
+              ? 3
+              : themeCustomization?.number_of_products_in_each_row == 5
+              ? 3
+              : themeCustomization?.number_of_products_in_each_row == 6
+              ? 2
+              : 6
+          }
+          // sm={2} md={2}
+          key={i}
+        >
+          <Card
+            sx={{
+              // height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CardMedia
+              component="img"
+              sx={{ height: "100px", objectFit: "contain" }}
+              image={`http://${base_url}:${port}/images/products/${item.image}`}
+              alt="Image"
+            />
+            <Link
+              to={{
+                pathname: `/template-first/product/${btoa(item.id)}`,
+                state: { themes: themeCustomization },
+              }}
+            >
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="button" display="block" gutterBottom>
+                  {item.ProductName}
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                  {item.preparationTime}
+                  {" Minutes"}
+                </Typography>
+                <Typography variant="button" gutterBottom>
+                  {item.price + " " + getSymbolFromCurrency(item.currency_code)}
+                </Typography>
+              </CardContent>
+            </Link>
+          </Card>
+        </Grid>
+      );
+    });
+  }
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          {/* <CameraIcon sx={{ mr: 2 }} /> */}
-          <Typography variant="h6" color="inherit" noWrap>
-            Album layout
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <main>
-        {/* Hero unit */}
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              Album layout
-            </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Something short and leading about the collection below—its contents,
-              the creator, etc. Make it short and sweet, but not too short so folks
-              don&apos;t simply skip over it entirely.
-            </Typography>
-            <Stack
-              sx={{ pt: 4 }}
-              direction="row"
-              spacing={2}
-              justifyContent="center"
-            >
-              <Button variant="contained">Main call to action</Button>
-              <Button variant="outlined">Secondary action</Button>
-            </Stack>
-          </Container>
-        </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      // 16:9
-                      pt: '56.25%',
-                    }}
-                    image="https://source.unsplash.com/random"
-                    alt="random"
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+      <Container maxWidth="lg">
+        <Header
+          title={branch[0]?.BrancheName}
+          subcategories={subcategories}
+          activeSubCategory={activeSubCategory}
+          setProducts={setProducts}
+          setActiveSubCategory={setActiveSubCategory}
+        />
+
+        <main>
+          <Grid container spacing={4} className="text-center">
+            {viewShow_HTMLTABLE}
           </Grid>
-        </Container>
-      </main>
-      {/* Footer */}
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </Box>
-      {/* End footer */}
+        </main>
+        <InfiniteScroll
+          dataLength={products.length} //This is important field to render the next data
+          next={fetchMoreData}
+          hasMore={changeState}
+          loader={
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              className="text-center pt-5"
+            >
+              <b>{t("loading")}</b>
+            </Typography>
+          }
+          endMessage={
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ textAlign: "center " }}
+            >
+              <b>{t("yay_you_have_seen_it_all")}</b>
+            </Typography>
+          }
+        ></InfiniteScroll>
+      </Container>
     </ThemeProvider>
   );
 }

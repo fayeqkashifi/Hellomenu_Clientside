@@ -1,10 +1,11 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
+import axios from "axios";
+
 import {
   Link,
   BrowserRouter as Router,
   Switch,
-  Route,
   useRouteMatch,
 } from "react-router-dom";
 
@@ -32,6 +33,14 @@ const Show = (props) => {
   const id = props.history.location.state.id;
   const BrancheName = props.history.location.state.BrancheName;
   const { path, url } = useRouteMatch();
+  const [template, setTemplate] = useState("");
+  useEffect(() => {
+    axios.get(`/api/GetTempBasedOnBranch/${id}`).then((res) => {
+      if (res.data.status === 200) {
+        setTemplate(res.data.fetchData);
+      }
+    });
+  }, []);
   const tabData = [
     {
       name: t("categories"),
@@ -91,7 +100,7 @@ const Show = (props) => {
     {
       name: t("public_link"),
       url: {
-        pathname: `/standard-template/${btoa(id)}`,
+        pathname: `/${template.URL}/${btoa(id)}`,
       },
     },
   ];

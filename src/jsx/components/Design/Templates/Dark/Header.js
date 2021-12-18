@@ -1,5 +1,4 @@
-import  React, {useState  } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -17,7 +16,17 @@ function Header(props) {
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState(0);
 
-  const { title, setMode, mode,categories ,subcategories , setSubCategories, activeSubCategory} = props;
+  const {
+    title,
+    setMode,
+    mode,
+    categories,
+    subcategories,
+    setSubCategories,
+    activeSubCategory,
+    setProducts,
+    setActiveSubCategory,
+  } = props;
   const handleChange = () => {
     mode === "dark" ? setMode("light") : setMode("dark");
   };
@@ -29,9 +38,21 @@ function Header(props) {
     });
     setActiveCategory(cateId);
   };
+  const filterProducts = (subCateID) => {
+    axios.get(`/api/GetProductsBasedOnSubCategory/${subCateID}`).then((res) => {
+      if (res.data.status === 200) {
+        // console.log(res.data.data);
+        setProducts(res.data.data);
+      }
+    });
+    setActiveSubCategory(subCateID);
+  };
   return (
     <React.Fragment>
-      <Toolbar sx={{ borderBottom: 1, borderColor: "divider" ,position:"sticky"}}  className="top-0 ">
+      <Toolbar
+        sx={{ borderBottom: 1, borderColor: "divider", position: "sticky" }}
+        className="top-0 "
+      >
         <IconButton onClick={() => history.goBack()}>
           <KeyboardBackspaceIcon />
         </IconButton>
@@ -51,61 +72,65 @@ function Header(props) {
           {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
       </Toolbar>
-      {categories===0 ? ' ' :
-      <div>
-      <Typography variant="overline" display="block" gutterBottom>
-        {t('public_categories')}:
-      </Typography>
-      <Toolbar
-        component="nav"
-        variant="dense"
-        className="border"
-        sx={{ justifyContent: "space-between", overflowX: "auto" }}
-      >
-        {categories?.map((section,i) => (
-          <Link
-            color={activeCategory === section.id ? "#f27d1e" : " "}
-            noWrap
-            key={i}
-            underline="hover"
-            variant="body2"
-            // className="active"
-            onClick={() => filterCategory(section.id)}
-            sx={{ p: 1, flexShrink: 0 }}
-          >
-            {section.CategoryName }
-          </Link>
-        ))}
-      </Toolbar>
-      </div>
-      }
-      {subcategories===0 ? ' ' :
-      <div>
+      {categories === 0 ? (
+        " "
+      ) : (
+        <div>
           <Typography variant="overline" display="block" gutterBottom>
-          {t('sub_categories')}: 
-        </Typography>
-        <Toolbar
-          component="nav"
-          variant="dense"
-          className="border mb-2"
-
-          sx={{ justifyContent: "space-between", overflowX: "auto" }}
-        >
-          {subcategories?.map((section,i) => (
-            <Link
-              color={activeSubCategory === section.sub_id ? "#f27d1e" : " "}
-              noWrap
-              key={i}
-              underline="hover"
-              variant="body2"
-              sx={{ p: 1, flexShrink: 0 }}
-            >
-              {section.SubCategoryName }
-            </Link>
-          ))}
-        </Toolbar>
-      </div>
-      }
+            {t("public_categories")}:
+          </Typography>
+          <Toolbar
+            component="nav"
+            variant="dense"
+            className="border"
+            sx={{ justifyContent: "space-between", overflowX: "auto" }}
+          >
+            {categories?.map((section, i) => (
+              <Link
+                color={activeCategory === section.id ? "#f27d1e" : " "}
+                noWrap
+                key={i}
+                underline="hover"
+                variant="body2"
+                // className="active"
+                onClick={() => filterCategory(section.id)}
+                sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+              >
+                {section.CategoryName}
+              </Link>
+            ))}
+          </Toolbar>
+        </div>
+      )}
+      {subcategories === 0 ? (
+        " "
+      ) : (
+        <div>
+          <Typography variant="overline" display="block" gutterBottom>
+            {t("sub_categories")}:
+          </Typography>
+          <Toolbar
+            component="nav"
+            variant="dense"
+            className="border mb-2"
+            sx={{ justifyContent: "space-between", overflowX: "auto" }}
+          >
+            {subcategories?.map((section, i) => (
+              <Link
+                color={activeSubCategory === section.sub_id ? "#f27d1e" : " "}
+                noWrap
+                key={i}
+                underline="hover"
+                variant="body2"
+                sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+                onClick={() => filterProducts(section.sub_id)}
+              >
+                {section.SubCategoryName}
+              </Link>
+            ))}
+          </Toolbar>
+        </div>
+      )}
     </React.Fragment>
   );
 }
