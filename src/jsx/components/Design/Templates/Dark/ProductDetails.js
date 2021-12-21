@@ -1,6 +1,5 @@
-import React, { Fragment, useState, useEffect, SyntheticEvent } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // Import css files
 import "slick-carousel/slick/slick.css";
@@ -14,30 +13,27 @@ import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 
-import { Zoom } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import getSymbolFromCurrency from "currency-symbol-map";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+// import { Carousel } from "react-responsive-carousel";
+import Carousel from "react-bootstrap/Carousel";
+
 import "../style.css";
+
 const ProductDetails = (props) => {
   const [themeCustomization, setThemeCustomization] = useState([]);
-  const [mode, setMode] = useState("dark");
 
+  // design start
   const theme = createTheme({
     palette: {
-      mode: mode,
+      mode: "dark",
       warning: {
         // button background
         main: themeCustomization?.button_background_color
@@ -55,25 +51,25 @@ const ProductDetails = (props) => {
           : 10,
         color: themeCustomization?.product_discription_color
           ? themeCustomization.product_discription_color
-          : "#777",
+          : "#fff",
       },
       // price
       body1: {
         fontSize: themeCustomization?.price_font_size
           ? themeCustomization.price_font_size
-          : 12,
+          : 16,
         color: themeCustomization?.price_color
           ? themeCustomization.price_color
-          : "#f1fcfe",
+          : "#fff",
       },
       // product Names
       button: {
         fontSize: themeCustomization?.product_name_font_size
           ? themeCustomization.product_name_font_size
-          : 12,
+          : 14,
         color: themeCustomization?.product_name_color
           ? themeCustomization.product_name_color
-          : "#ff751d",
+          : "#fff",
       },
       // categories and sub categories
       overline: {
@@ -91,7 +87,7 @@ const ProductDetails = (props) => {
           : 14,
         color: themeCustomization?.branch_name_color
           ? themeCustomization.branch_name_color
-          : "#ff751d",
+          : "#fff",
       },
     },
     components: {
@@ -113,11 +109,12 @@ const ProductDetails = (props) => {
       },
     },
   });
+  // design end
   // for localization
   const { t } = useTranslation();
   const id = atob(props.match.params.id);
   //for retriving data using laravel API
-  const themes = props.history.location.state.themes;
+  // const themes = props.history.location.state.themes;
   let varData = [];
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
@@ -143,6 +140,7 @@ const ProductDetails = (props) => {
         url: `/api/Getvariations/${id}`,
       });
       setFetchData(data[0]);
+
       if (res.data.fetchData !== "") {
         varData = JSON.parse(res.data.fetchData);
         parseVariants(varData);
@@ -230,41 +228,27 @@ const ProductDetails = (props) => {
     } else {
       setIntgredients([...ingredients, label]);
     }
+    // console.log(ingredients);
   };
   let [sum, setSum] = useState(0);
+  const [extraValue, setExtraValue] = useState([]);
 
   const extraHandlers = (e, price) => {
     if (e.target.checked) {
       // console.log((sum += parseInt(price)));
       setSum((sum += parseInt(price)));
+      setExtraValue([
+        ...extraValue,
+        {
+          value: e.target.value,
+        },
+      ]);
     } else {
       setSum((sum -= parseInt(price)));
+      setExtraValue(extraValue.filter((item) => item.value != e.target.value));
     }
+    console.log(extraValue);
   };
-
-  const zoomOutProperties = {
-    duration: 100,
-    transitionDuration: 5,
-    canSwipe: true,
-    indicators: true,
-    scale: false,
-    autoplay: false,
-    indicators: (i) => (
-      <div className="indicator">
-        <img
-          src={
-            productDetails?.stock === "No Stock" || productDetails?.stock === 0
-              ? `http://${base_url}:${port}/images/products/${fetchData?.image}`
-              : `http://${base_url}:${port}/images/variants_pics/${productDetails.image[i]}`
-          }
-          width="40px"
-          // className="p-1"
-          // style={{ width: "40px" }}
-        />
-      </div>
-    ),
-  };
-
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -280,55 +264,55 @@ const ProductDetails = (props) => {
     );
   } else {
     viewImages_HTMLTABLE = (
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={12} sm={5} md={5} lg={5}>
-          <div className="row col-md-12 text-center ">
-            <Zoom {...zoomOutProperties}>
-              {(() => {
-                if (Array.isArray(productDetails.image)) {
-                  return productDetails.image?.map((image) => {
-                    return (
-                      <div key={image} style={{ width: "100%" }}>
-                        <img
-                          src={`http://${base_url}:${port}/images/variants_pics/${image}`}
-                          style={{
-                            height: "500px",
-                            width: "100%",
-                            objectFit: "contain",
-                          }}
-                          // className="img-thumbnail"
-                          alt=""
-                        />
-                      </div>
-                    );
-                  });
-                } else {
+          <Carousel>
+            {(() => {
+              if (Array.isArray(productDetails.image)) {
+                return productDetails.image?.map((image) => {
                   return (
-                    <div style={{ width: "100%" }}>
+                    <Carousel.Item key={image}>
                       <img
-                        src={
-                          productDetails.stock === "No Stock" ||
-                          productDetails?.stock === 0
-                            ? `http://${base_url}:${port}/images/products/${
-                                productDetails.image
-                                  ? productDetails?.image
-                                  : fetchData?.image
-                              }`
-                            : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
-                        }
+                        src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                        // className="img-thumbnail"
+                        alt=""
                         style={{
-                          height: "500px",
+                          height: "200px",
                           width: "100%",
+                          borderRadius: "5%",
                           objectFit: "contain",
                         }}
-                        alt=""
                       />
-                    </div>
+                    </Carousel.Item>
                   );
-                }
-              })()}
-            </Zoom>
-          </div>
+                });
+              } else {
+                return (
+                  <Carousel.Item>
+                    <img
+                      style={{
+                        height: "200px",
+                        width: "100%",
+                        borderRadius: "5%",
+                        objectFit: "contain",
+                      }}
+                      src={
+                        productDetails.stock === "No Stock" ||
+                        productDetails?.stock === 0
+                          ? `http://${base_url}:${port}/images/products/${
+                              productDetails.image
+                                ? productDetails?.image
+                                : fetchData?.image
+                            }`
+                          : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
+                      }
+                      alt=""
+                    />
+                  </Carousel.Item>
+                );
+              }
+            })()}
+          </Carousel>
         </Grid>
 
         <Grid item xs={12} sm={7} md={7} lg={7}>
@@ -340,35 +324,49 @@ const ProductDetails = (props) => {
             }}
           >
             <div className="row mx-3 mt-3">
-              <Typography variant="overline" gutterBottom>
-                {t("product_name")}: {fetchData?.ProductName}
+              <Grid container spacing={2}>
+                <Grid item xs={10}>
+                  <Typography
+                    variant="button"
+                    style={{ textTransform: "capitalize" }}
+                    // className="font-weight-bold"
+                  >
+                    {fetchData.ProductName}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <FavoriteIcon sx={{ color: "#ff751d" }} />
+                </Grid>
+              </Grid>
+
+              <Typography variant="body2" gutterBottom>
+                {fetchData?.Description}
               </Typography>
               <Typography variant="body2" gutterBottom>
-                {t("description")}: {fetchData?.Description}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {t("unit")}: {fetchData?.UnitName}
+                {t("preparation_Time")}: {fetchData?.preparationTime} Minutes
               </Typography>
 
-              {themes?.preparation_time != 0 ? (
-                <Typography variant="body2" gutterBottom>
-                  {t("preparation_Time")}: {fetchData?.preparationTime} Minutes
-                </Typography>
-              ) : (
-                " "
-              )}
-              <p>
+              <Typography
+                variant="body1"
+                gutterBottom
+                className="font-weight-bold"
+              >
                 {t("price")} :{" "}
                 {productDetails.price === 0
                   ? fetchData?.price + sum
                   : parseInt(productDetails.price) + sum}
-              </p>
-              <p>
+                {"  " + getSymbolFromCurrency(fetchData.currency_code)}
+              </Typography>
+              <Typography
+                variant="body1"
+                gutterBottom
+                className="font-weight-bold"
+              >
                 {t("stock")}:{" "}
                 {productDetails.stock === 0
                   ? fetchData?.stock
                   : productDetails.stock}
-              </p>
+              </Typography>
             </div>
             <div className="row mx-3">
               <Typography variant="overline" gutterBottom>
@@ -393,9 +391,10 @@ const ProductDetails = (props) => {
                             margin: "2px",
                             border: "1px solid",
                             textAlign: "center",
-                            borderColor: "red",
+                            borderRadius: "5px",
+                            borderColor: "#ff751d",
                             textDecoration: "line-through",
-                            color: "red",
+                            color: "#ff751d",
                           }
                         : {
                             cursor: "pointer",
@@ -403,7 +402,7 @@ const ProductDetails = (props) => {
                             margin: "2px",
                             border: "1px solid",
                             textAlign: "center",
-                            // borderRadius: "10px",
+                            borderRadius: "5px",
                             borderColor: "black",
                           }
                     }
@@ -413,98 +412,93 @@ const ProductDetails = (props) => {
                 );
               })}
             </div>
-            <div className="row m-3">
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography variant="overline" gutterBottom>
-                    {t("extras")}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <FormGroup>
-                    {JSON.parse(fetchData.extras)?.map((item, i) => {
-                      return (
-                        <FormControlLabel
-                          key={i}
-                          control={
-                            <Checkbox
-                              onChange={(e) => {
-                                extraHandlers(e, item.price);
-                              }}
-                              color="default"
-                              sx={{
-                                color: themeCustomization?.branch_name_color
-                                  ? themeCustomization.branch_name_color
-                                  : "#ff751d",
-                              }}
-                            />
-                          }
-                          label={
-                            <Typography variant="body2" gutterBottom>
-                              {item.label + " ( +" + item.price + ".00" + " )"}
-                            </Typography>
+            <div className="row mx-3">
+              <Typography variant="overline" gutterBottom>
+                {t("extras")}
+              </Typography>
+              <FormGroup>
+                {JSON.parse(fetchData.extras)?.map((item, i) => {
+                  return (
+                    <FormControlLabel
+                      key={i}
+                      control={
+                        <Checkbox
+                          onChange={(e) => {
+                            extraHandlers(e, item.price);
+                          }}
+                          color="default"
+                          sx={{
+                            color: themeCustomization?.branch_name_color
+                              ? themeCustomization.branch_name_color
+                              : "#ff751d",
+                          }}
+                          value={
+                            item.label + " ( +" + item.price + ".00" + " )"
                           }
                         />
-                      );
-                    })}
-                  </FormGroup>
-                </AccordionDetails>
-              </Accordion>
+                      }
+                      label={
+                        <Typography variant="body2" gutterBottom>
+                          {item.label + " ( +" + item.price + ".00" + " )"}
+                        </Typography>
+                      }
+                    />
+                  );
+                })}
+              </FormGroup>
             </div>
 
-            <div className="row m-3">
+            <div className="row mx-3">
               <Typography variant="overline" gutterBottom>
                 {t("vatiants")}
               </Typography>
             </div>
 
-            <div className="row mx-2">
+            <div className="row mx-4 ">
               {Object.keys(showVaralint).map((list, i) => {
                 return (
-                  <div className="row " key={i}>
-                    <div className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto">
-                      {list}
-                      <div className="row">
-                        {showVaralint[list].map((variant) => {
-                          return (
-                            <div className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto">
-                              <div
-                                onClick={() => {
-                                  changePrice(list, variant);
-                                }}
-                                style={
-                                  skuarray[i] == variant
-                                    ? {
-                                        cursor: "pointer",
-                                        margin: "2px",
-                                        padding: "5px",
-                                        border: "1px solid",
-                                        textAlign: "center",
-                                        borderRadius: "10px",
-                                        borderColor: "red",
-                                      }
-                                    : {
-                                        cursor: "pointer",
-                                        margin: "2px",
-
-                                        padding: "5px",
-                                        border: "1px solid",
-                                        textAlign: "center",
-                                        borderRadius: "10px",
-                                        borderColor: "black",
-                                      }
-                                }
-                              >
-                                {variant}
-                              </div>
+                  <div className="row m-1" key={i}>
+                    {/* {list} */}
+                    <div
+                      className="row d-flex justify-content-around"
+                      style={{
+                        backgroundColor: "#2d3134",
+                        borderRadius: "50px",
+                        padding: "5px",
+                      }}
+                    >
+                      {showVaralint[list].map((variant) => {
+                        return (
+                          <div className="col">
+                            <div
+                              onClick={() => {
+                                changePrice(list, variant);
+                              }}
+                              style={
+                                skuarray[i] == variant
+                                  ? {
+                                      cursor: "pointer",
+                                      border: "1px solid",
+                                      textAlign: "center",
+                                      borderRadius: "50px",
+                                      borderColor: "black",
+                                      backgroundColor: "black",
+                                    }
+                                  : {
+                                      cursor: "pointer",
+                                      border: "1px solid",
+                                      textAlign: "center",
+                                      borderRadius: "50px",
+                                      borderColor: "#2d3134",
+                                      backgroundColor: "#2d3134",
+                                    }
+                              }
+                            >
+                              {variant}
                             </div>
-                          );
-                        })}
-                      </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -518,24 +512,36 @@ const ProductDetails = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth="lg">
-        <Header
-          // title={branch[0]?.BrancheName}
-          categories={0}
-          subcategories={0}
-          // setSubCategories={setSubCategories}
-          // activeSubCategory={activeSubCategory}
-          setMode={setMode}
-          mode={mode}
-        />
-        <main>
-          <Grid container spacing={2}>
-            {viewImages_HTMLTABLE}
-          </Grid>
-        </main>
-
-        <Footer title="Checkout" />
+      <Container maxWidth="lg" className="mb-2">
+        <Header subcategories={0} />
+        {viewImages_HTMLTABLE}
       </Container>
+      <Footer
+        title="Checkout"
+        url={{
+          pathname: `/dark-template/product/order-details/${btoa(id)}`,
+          state: {
+            productName: fetchData.ProductName,
+            picture: productDetails.image
+              ? Array.isArray(productDetails.image)
+                ? productDetails.image[0]
+                : productDetails?.image
+              : fetchData?.image,
+            stock: productDetails.stock,
+            price:
+              productDetails.price === 0
+                ? fetchData?.price + sum
+                : parseInt(productDetails.price) + sum,
+            countryCode: fetchData.currency_code,
+            extraValue: extraValue,
+            orignalPrice:
+              productDetails.price === 0
+                ? fetchData?.price
+                : productDetails.price,
+            ingredients: ingredients,
+          },
+        }}
+      />
     </ThemeProvider>
   );
 };

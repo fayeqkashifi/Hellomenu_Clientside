@@ -442,12 +442,16 @@ const AddProduct = (props) => {
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                 <div className="form-group">
                   <label className="mb-1 ">
-                    <strong>{t("recommendation_roducts")}</strong>
+                    <strong>{t("recommendation_products")}</strong>
                   </label>
                   <Select
                     isMulti
                     options={fetchData?.map((o, i) => {
-                      return { id: i, value: o.id, label: o.ProductName };
+                      return {
+                        price: o.price,
+                        value: o.id,
+                        label: o.ProductName,
+                      };
                     })}
                     onChange={handleSelectEventRecom}
                     className="basic-multi-select"

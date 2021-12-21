@@ -470,7 +470,11 @@ const EditProduct = (props) => {
                     defaultValue={productRecom}
                     isMulti
                     options={fetchData?.map((o, i) => {
-                      return { id: i, value: o.id, label: o.ProductName };
+                      return {
+                        price: o.price,
+                        value: o.id,
+                        label: o.ProductName,
+                      };
                     })}
                     onChange={handleSelectEventRecom}
                     className="basic-multi-select"

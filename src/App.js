@@ -85,24 +85,30 @@ const App = () => {
           component={StandardTemplate}
           path="/standard-template/:id"
         />
-        <PublicRoute component={DarkTemplate} path="/dark-template/:id" exact />
         <PublicRoute
           component={SecondTemplate}
           path="/second-template/:id"
           exact
         />
 
-        <PublicRoute exact component={OrderDetails} path="/order-details/:id" />
         <PublicRoute
           exact
           component={ShowProducts}
           path="/standard-template/product/:id"
         />
+        <PublicRoute component={DarkTemplate} path="/dark-template/:id" exact />
+
         <PublicRoute
           exact
           component={ProductDetails}
           path="/dark-template/product/:id"
         />
+        <PublicRoute
+          exact
+          component={OrderDetails}
+          path="/dark-template/product/order-details/:id"
+        />
+
         <PublicRoute
           exact
           component={SecondProductDetails}

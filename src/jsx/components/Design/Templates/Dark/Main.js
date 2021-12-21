@@ -7,7 +7,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { base_url, port } from "../../../../../Consts";
@@ -15,14 +14,15 @@ import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 import getSymbolFromCurrency from "currency-symbol-map";
-
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddIcon from "@mui/icons-material/Add";
 var hold = 1;
 export default function Main(props) {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const branchId = atob(props.match.params.id);
   const [branch, setBranch] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [subcategories, setSubCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeSubCategory, setActiveSubCategory] = useState(0);
@@ -32,11 +32,6 @@ export default function Main(props) {
     axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setThemeCustomization(res.data.fetchData?.Customization);
-        setMode(
-          res.data.fetchData[0]?.Customization?.mode
-            ? res.data.fetchData[0]?.Customization?.mode
-            : "dark"
-        );
         // console.log(res.data.fetchData[0].Customization);
       }
     });
@@ -45,15 +40,10 @@ export default function Main(props) {
         setBranch(res.data.data);
       }
     });
-    axios.get(`/api/GetCategories/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setCategories(res.data.fetchData);
-      }
-    });
     axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.fetchData[0].sub_id);
         setSubCategories(res.data.fetchData);
+        setActiveSubCategory(res.data.fetchData[0]?.sub_id);
         axios
           .get(
             `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_id}`
@@ -61,7 +51,7 @@ export default function Main(props) {
           .then((res) => {
             if (res.data.status === 200) {
               setProducts(res.data.data);
-              setActiveSubCategory(res.data.data[0]?.sub_category_id);
+              // console.log(res.data.data);
             }
           });
         setLoading(false);
@@ -102,10 +92,9 @@ export default function Main(props) {
     // console.log(hold);
   };
   // design start
-  const [mode, setMode] = useState("dark");
   const theme = createTheme({
     palette: {
-      mode: mode,
+      mode: "dark",
       warning: {
         // button background
         main: themeCustomization?.button_background_color
@@ -123,25 +112,25 @@ export default function Main(props) {
           : 10,
         color: themeCustomization?.product_discription_color
           ? themeCustomization.product_discription_color
-          : "#777",
+          : "#fff",
       },
       // price
       body1: {
         fontSize: themeCustomization?.price_font_size
           ? themeCustomization.price_font_size
-          : 12,
+          : 16,
         color: themeCustomization?.price_color
           ? themeCustomization.price_color
-          : "#f1fcfe",
+          : "#fff",
       },
       // product Names
       button: {
         fontSize: themeCustomization?.product_name_font_size
           ? themeCustomization.product_name_font_size
-          : 12,
+          : 14,
         color: themeCustomization?.product_name_color
           ? themeCustomization.product_name_color
-          : "#ff751d",
+          : "#fff",
       },
       // categories and sub categories
       overline: {
@@ -159,7 +148,7 @@ export default function Main(props) {
           : 14,
         color: themeCustomization?.branch_name_color
           ? themeCustomization.branch_name_color
-          : "#ff751d",
+          : "#fff",
       },
     },
     components: {
@@ -197,55 +186,69 @@ export default function Main(props) {
   } else {
     viewShow_HTMLTABLE = products?.map((item, i) => {
       return (
-        <Grid
-          item
-          xs={
-            themeCustomization?.number_of_products_in_each_row == 1
-              ? 12
-              : themeCustomization?.number_of_products_in_each_row == 2
-              ? 6
-              : themeCustomization?.number_of_products_in_each_row == 3
-              ? 4
-              : themeCustomization?.number_of_products_in_each_row == 4
-              ? 3
-              : themeCustomization?.number_of_products_in_each_row == 5
-              ? 3
-              : themeCustomization?.number_of_products_in_each_row == 6
-              ? 2
-              : 6
-          }
-          // sm={2} md={2}
-          key={i}
-        >
+        <Grid item xs={6} sm={4} md={3} key={i}>
           <Card
             sx={{
               // height: "100%",
               display: "flex",
               flexDirection: "column",
+              borderRadius: "5%",
+              backgroundColor: "#2d3134",
             }}
           >
-            <CardMedia
-              component="img"
-              sx={{ height: "100px", objectFit: "contain" }}
-              image={`http://${base_url}:${port}/images/products/${item.image}`}
-              alt="Image"
-            />
+            <div className="px-2 pt-2">
+              <FavoriteBorderIcon />
+              {/* <FavoriteIcon sx={{ color: "#ff751d" }} /> */}
+            </div>
+
             <Link
               to={{
                 pathname: `/dark-template/product/${btoa(item.id)}`,
-                state: { themes: themeCustomization },
+                // state: { themeCustomization: themeCustomization },
               }}
             >
               <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="button" display="block" gutterBottom>
-                  {item.ProductName}
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                  {item.Description}
-                </Typography>
-                <Typography variant="button" gutterBottom>
-                  {item.price + " " + getSymbolFromCurrency(item.currency_code)}
-                </Typography>
+                <div className="text-center">
+                  <img
+                    style={{
+                      height: "150px",
+                      width: "100%",
+                      borderRadius: "15%",
+                      // objectFit: "contain",
+                    }}
+                    src={`http://${base_url}:${port}/images/products/${item.image}`}
+                    alt="Image"
+                  />
+                </div>
+                <div className="mt-2">
+                  <Grid container spacing={2}>
+                    <Grid item xs={10}>
+                      <Typography
+                        variant="button"
+                        style={{ textTransform: "capitalize" }}
+                        // className="font-weight-bold"
+                      >
+                        {item.ProductName}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <AddIcon sx={{ color: "#fff" }} />
+                    </Grid>
+                  </Grid>
+
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    className="font-weight-bold"
+                  >
+                    {getSymbolFromCurrency(item.currency_code) +
+                      "  " +
+                      item.price}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    {item.Description}
+                  </Typography>
+                </div>
               </CardContent>
             </Link>
           </Card>
@@ -259,21 +262,17 @@ export default function Main(props) {
       <Container maxWidth="lg">
         <Header
           title={branch[0]?.BrancheName}
-          categories={categories}
           subcategories={subcategories}
-          setSubCategories={setSubCategories}
           activeSubCategory={activeSubCategory}
           setProducts={setProducts}
           setActiveSubCategory={setActiveSubCategory}
-          setMode={setMode}
-          mode={mode}
         />
 
-        <main>
-          <Grid container spacing={4}>
+        <Container className="mt-3 d-flex justify-content-center">
+          <Grid container spacing={2} className="d-flex justify-content-center">
             {viewShow_HTMLTABLE}
           </Grid>
-        </main>
+        </Container>
         <InfiniteScroll
           dataLength={products.length} //This is important field to render the next data
           next={fetchMoreData}
