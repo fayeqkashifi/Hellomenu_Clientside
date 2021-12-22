@@ -16,16 +16,15 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Checkbox from "@mui/material/Checkbox";
-import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Box from "@mui/material/Box";
 import getSymbolFromCurrency from "currency-symbol-map";
 import FormGroup from "@mui/material/FormGroup";
+import TextareaAutosize from "@mui/base/TextareaAutosize";
 
 const OrderDetails = (props) => {
   const [themeCustomization, setThemeCustomization] = useState([]);
-
   // design start
   const theme = createTheme({
     palette: {
@@ -128,7 +127,7 @@ const OrderDetails = (props) => {
         url: `/api/GetProduct/${id}`,
       });
       const data = product.data.fetchData;
-      setFetchData(data[0].recommendations);
+      setFetchData(JSON.parse(data[0].recommendations));
 
       setLoading(false);
     };
@@ -136,15 +135,47 @@ const OrderDetails = (props) => {
   }, [id]);
   let [sum, setSum] = useState(0);
 
-  const extraHandlers = (e, price) => {
+  const extraHandlers = (e, price, id, qty) => {
     if (e.target.checked) {
       // console.log((sum += parseInt(price)));
       setSum((sum += parseInt(price)));
+      setFetchData((fetchData) =>
+        fetchData.map((item) =>
+          id == item.value ? { ...item, show: true } : item
+        )
+      );
     } else {
-      setSum((sum -= parseInt(price)));
+      setSum((sum -= parseInt(price) * qty));
+      setFetchData((fetchData) =>
+        fetchData.map((item) =>
+          id == item.value ? { ...item, qty: 1, show: false } : item
+        )
+      );
     }
   };
 
+  const handleDecrement = (e, qty, id, price) => {
+    e.preventDefault();
+    if (qty > 1) {
+      setFetchData((fetchData) =>
+        fetchData.map((item) =>
+          id == item.value
+            ? { ...item, qty: item.qty - (item.qty > 0 ? 1 : 0) }
+            : item
+        )
+      );
+      setSum((sum -= parseInt(price)));
+    }
+  };
+  const handelIncrement = (e, qty, id, price) => {
+    e.preventDefault();
+    setFetchData((fetchData) =>
+      fetchData.map((item) =>
+        id == item.value ? { ...item, qty: item.qty + 1 } : item
+      )
+    );
+    setSum((sum += parseInt(price)));
+  };
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -159,34 +190,96 @@ const OrderDetails = (props) => {
       </div>
     );
   } else {
-    viewImages_HTMLTABLE = JSON.parse(fetchData)?.map((item, i) => {
+    viewImages_HTMLTABLE = fetchData?.map((item, i) => {
       return (
-        <FormControlLabel
-          key={i}
-          control={
-            <Checkbox
-              color="default"
-              onChange={(e) => {
-                extraHandlers(e, item.price);
-              }}
-              sx={{
-                color: themeCustomization?.branch_name_color
-                  ? themeCustomization.branch_name_color
-                  : "#ff751d",
-              }}
+        <Grid container spacing={2} key={i}>
+          <Grid item xs={8} sm={8} md={8}>
+            {/* {console.log(item)} */}
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="default"
+                  onChange={(e) => {
+                    extraHandlers(e, item.price, item.value, item.qty);
+                  }}
+                  sx={{
+                    color: themeCustomization?.branch_name_color
+                      ? themeCustomization.branch_name_color
+                      : "#ff751d",
+                  }}
+                />
+              }
+              label={
+                <Typography variant="body2" gutterBottom>
+                  {item.label +
+                    " ( +" +
+                    item.price * item.qty +
+                    ".00 " +
+                    getSymbolFromCurrency(countryCode) +
+                    " )"}
+                </Typography>
+              }
             />
-          }
-          label={
-            <Typography variant="body2" gutterBottom>
-              {item.label +
-                " ( +" +
-                item.price +
-                ".00 " +
-                getSymbolFromCurrency(countryCode) +
-                " )"}
-            </Typography>
-          }
-        />
+          </Grid>
+          {item?.show ? (
+            <Grid item xs={4} sm={4} md={4}>
+              <div className="row mt-2">
+                <div className={`row`}>
+                  <div className="col-4 ">
+                    <Typography
+                      onClick={(e) =>
+                        handleDecrement(e, item.qty, item.value, item.price)
+                      }
+                      style={{ cursor: "pointer" }}
+                      variant="overline"
+                      gutterBottom
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-dash-square-dotted  "
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2.5 0c-.166 0-.33.016-.487.048l.194.98A1.51 1.51 0 0 1 2.5 1h.458V0H2.5zm2.292 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zm1.833 0h-.916v1h.916V0zm1.834 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zM13.5 0h-.458v1h.458c.1 0 .199.01.293.029l.194-.981A2.51 2.51 0 0 0 13.5 0zm2.079 1.11a2.511 2.511 0 0 0-.69-.689l-.556.831c.164.11.305.251.415.415l.83-.556zM1.11.421a2.511 2.511 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415L1.11.422zM16 2.5c0-.166-.016-.33-.048-.487l-.98.194c.018.094.028.192.028.293v.458h1V2.5zM.048 2.013A2.51 2.51 0 0 0 0 2.5v.458h1V2.5c0-.1.01-.199.029-.293l-.981-.194zM0 3.875v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 5.708v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 7.542v.916h1v-.916H0zm15 .916h1v-.916h-1v.916zM0 9.375v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .916v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .917v.458c0 .166.016.33.048.487l.98-.194A1.51 1.51 0 0 1 1 13.5v-.458H0zm16 .458v-.458h-1v.458c0 .1-.01.199-.029.293l.981.194c.032-.158.048-.32.048-.487zM.421 14.89c.183.272.417.506.69.689l.556-.831a1.51 1.51 0 0 1-.415-.415l-.83.556zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373c.158.032.32.048.487.048h.458v-1H2.5c-.1 0-.199-.01-.293-.029l-.194.981zM13.5 16c.166 0 .33-.016.487-.048l-.194-.98A1.51 1.51 0 0 1 13.5 15h-.458v1h.458zm-9.625 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zm1.834 0h.916v-1h-.916v1zm1.833 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z" />
+                      </svg>
+                    </Typography>
+                  </div>
+                  <div className="col-4">
+                    <Typography variant="body2" gutterBottom className="mt-1">
+                      {item.qty}
+                    </Typography>
+                  </div>
+                  <div className="col-4">
+                    <Typography
+                      onClick={(e) =>
+                        handelIncrement(e, item.qty, item.value, item.price)
+                      }
+                      style={{ cursor: "pointer" }}
+                      variant="overline"
+                      gutterBottom
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-plus-square-dotted"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2.5 0c-.166 0-.33.016-.487.048l.194.98A1.51 1.51 0 0 1 2.5 1h.458V0H2.5zm2.292 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zm1.833 0h-.916v1h.916V0zm1.834 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zM13.5 0h-.458v1h.458c.1 0 .199.01.293.029l.194-.981A2.51 2.51 0 0 0 13.5 0zm2.079 1.11a2.511 2.511 0 0 0-.69-.689l-.556.831c.164.11.305.251.415.415l.83-.556zM1.11.421a2.511 2.511 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415L1.11.422zM16 2.5c0-.166-.016-.33-.048-.487l-.98.194c.018.094.028.192.028.293v.458h1V2.5zM.048 2.013A2.51 2.51 0 0 0 0 2.5v.458h1V2.5c0-.1.01-.199.029-.293l-.981-.194zM0 3.875v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 5.708v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 7.542v.916h1v-.916H0zm15 .916h1v-.916h-1v.916zM0 9.375v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .916v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .917v.458c0 .166.016.33.048.487l.98-.194A1.51 1.51 0 0 1 1 13.5v-.458H0zm16 .458v-.458h-1v.458c0 .1-.01.199-.029.293l.981.194c.032-.158.048-.32.048-.487zM.421 14.89c.183.272.417.506.69.689l.556-.831a1.51 1.51 0 0 1-.415-.415l-.83.556zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373c.158.032.32.048.487.048h.458v-1H2.5c-.1 0-.199-.01-.293-.029l-.194.981zM13.5 16c.166 0 .33-.016.487-.048l-.194-.98A1.51 1.51 0 0 1 13.5 15h-.458v1h.458zm-9.625 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zm1.834-1v1h.916v-1h-.916zm1.833 1h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+                      </svg>
+                    </Typography>
+                  </div>
+                </div>
+              </div>
+            </Grid>
+          ) : (
+            " "
+          )}
+        </Grid>
       );
     });
   }
@@ -199,7 +292,6 @@ const OrderDetails = (props) => {
         <Grid item xs={12} sm={12} md={12}>
           <Card
             sx={{
-              // height: "100%",
               display: "flex",
               flexDirection: "column",
             }}
@@ -227,7 +319,7 @@ const OrderDetails = (props) => {
               <Typography variant="body2" gutterBottom>
                 {ingredients?.map((item, i) => {
                   if (ingredients.length == i + 1) {
-                    return item + " - Not Includes";
+                    return item + " - Not Included";
                   } else {
                     return item + " , ";
                   }
@@ -236,7 +328,7 @@ const OrderDetails = (props) => {
               <Typography variant="body2" gutterBottom>
                 {extraValue?.map((item, i) => {
                   if (extraValue.length == i + 1) {
-                    return item.value + " - Includes";
+                    return item.value + " - Included";
                   } else {
                     return item.value + " , ";
                   }
@@ -247,6 +339,13 @@ const OrderDetails = (props) => {
                 {t("recommendation")}
               </Typography>
               <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
+
+              <TextareaAutosize
+                aria-label="empty textarea"
+                minRows={3}
+                placeholder="Note"
+                style={{ backgroundColor: "#2d3134", color: "#fff" }}
+              />
             </div>
           </Card>
         </Grid>
@@ -278,6 +377,7 @@ const OrderDetails = (props) => {
                 backgroundColor: "#ff751d",
                 color: "#f1fcfe",
               }}
+              to=""
             >
               Add
             </Link>

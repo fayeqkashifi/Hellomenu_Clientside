@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import { Link } from "react-router-dom";
 
 function Footer(props) {
-  const { title, url } = props;
+  const { title, url, theme } = props;
 
   return (
     <Box
@@ -18,8 +18,12 @@ function Footer(props) {
           className="col-12 btn "
           style={{
             textTransform: "capitalize",
-            backgroundColor: "#ff751d",
-            color: "#f1fcfe",
+            backgroundColor: theme?.button_background_color
+              ? theme.button_background_color
+              : "#ff751d",
+            color: theme?.button_text_color
+              ? theme.button_text_color
+              : "#f1fcfe",
           }}
           to={url}
         >

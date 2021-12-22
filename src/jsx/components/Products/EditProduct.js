@@ -474,6 +474,7 @@ const EditProduct = (props) => {
                         price: o.price,
                         value: o.id,
                         label: o.ProductName,
+                        qty: 1,
                       };
                     })}
                     onChange={handleSelectEventRecom}

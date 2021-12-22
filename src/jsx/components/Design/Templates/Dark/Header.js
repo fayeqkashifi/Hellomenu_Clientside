@@ -16,6 +16,7 @@ function Header(props) {
     activeSubCategory,
     setProducts,
     setActiveSubCategory,
+    theme,
   } = props;
 
   const filterProducts = (subCateID) => {
@@ -67,11 +68,15 @@ function Header(props) {
                         borderBottomStyle: "solid",
                         borderottomWidth: "2px",
                         width: "fit-content",
-                        borderColor: "#f27d1e",
-                        color: "#f27d1e",
+                        borderColor: theme?.menusColor
+                          ? theme.menusColor
+                          : "#f27d1e",
+
+                        // color: "#f27d1e",
                       }
                     : {
                         cursor: "pointer",
+                        color: "#fff",
                       }
                 }
                 key={i}

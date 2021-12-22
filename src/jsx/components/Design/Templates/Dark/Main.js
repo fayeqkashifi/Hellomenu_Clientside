@@ -22,17 +22,18 @@ export default function Main(props) {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const branchId = atob(props.match.params.id);
+
   const [branch, setBranch] = useState([]);
   const [subcategories, setSubCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeSubCategory, setActiveSubCategory] = useState(0);
-  const [themeCustomization, setThemeCustomization] = useState([]);
+  const [custom, setCustom] = useState([]);
 
   useEffect(() => {
     axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        setThemeCustomization(res.data.fetchData?.Customization);
-        // console.log(res.data.fetchData[0].Customization);
+        setCustom(res.data.fetchData?.Customization);
+        console.log(res.data.fetchData.Customization);
       }
     });
     axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
@@ -95,78 +96,27 @@ export default function Main(props) {
   const theme = createTheme({
     palette: {
       mode: "dark",
-      warning: {
-        // button background
-        main: themeCustomization?.button_background_color
-          ? themeCustomization.button_background_color
-          : "#ff751d",
-      },
     },
     typography: {
-      fontFamily: themeCustomization?.font
-        ? themeCustomization.font
-        : "sans-serif",
+      fontFamily: custom?.font ? custom.font : "sans-serif",
+      // discription
       subtitle1: {
-        fontSize: themeCustomization?.product_discription_font_size
-          ? themeCustomization.product_discription_font_size
-          : 10,
-        color: themeCustomization?.product_discription_color
-          ? themeCustomization.product_discription_color
+        color: custom?.product_discription_color
+          ? custom.product_discription_color
           : "#fff",
       },
       // price
       body1: {
-        fontSize: themeCustomization?.price_font_size
-          ? themeCustomization.price_font_size
-          : 16,
-        color: themeCustomization?.price_color
-          ? themeCustomization.price_color
-          : "#fff",
+        color: custom?.price_color ? custom.price_color : "#fff",
       },
       // product Names
       button: {
-        fontSize: themeCustomization?.product_name_font_size
-          ? themeCustomization.product_name_font_size
-          : 14,
-        color: themeCustomization?.product_name_color
-          ? themeCustomization.product_name_color
-          : "#fff",
+        color: custom?.product_name_color ? custom.product_name_color : "#fff",
       },
-      // categories and sub categories
-      overline: {
-        fontSize: themeCustomization?.categories_and_sub_categoies_font_size
-          ? themeCustomization.categories_and_sub_categoies_font_size
-          : 12,
-        color: themeCustomization?.categories_and_sub_categoies_color
-          ? themeCustomization.categories_and_sub_categoies_color
-          : "#ff751d",
-      },
-      // branch Name
+      // Menus
       h6: {
-        fontSize: themeCustomization?.branch_name_font_size
-          ? themeCustomization.branch_name_font_size
-          : 14,
-        color: themeCustomization?.branch_name_color
-          ? themeCustomization.branch_name_color
-          : "#fff",
-      },
-    },
-    components: {
-      MuiButton: {
-        variants: [
-          {
-            // button
-            props: { variant: "contained" },
-            style: {
-              fontSize: themeCustomization?.button_text_font_size
-                ? themeCustomization.button_text_font_size
-                : 12,
-              color: themeCustomization?.button_text_color
-                ? themeCustomization.button_text_color
-                : "#f1fcfe",
-            },
-          },
-        ],
+        fontSize: 14,
+        color: custom?.menusColor ? custom.menusColor : "#f27d1e",
       },
     },
   });
@@ -193,7 +143,9 @@ export default function Main(props) {
               display: "flex",
               flexDirection: "column",
               borderRadius: "5%",
-              backgroundColor: "#2d3134",
+              backgroundColor: custom?.cardBgColor
+                ? custom.cardBgColor
+                : "#2d3134",
             }}
           >
             <div className="px-2 pt-2">
@@ -214,10 +166,11 @@ export default function Main(props) {
                       height: "150px",
                       width: "100%",
                       borderRadius: "15%",
-                      // objectFit: "contain",
+                      objectFit: "contain",
                     }}
                     src={`http://${base_url}:${port}/images/products/${item.image}`}
                     alt="Image"
+                    // className="h-100"
                   />
                 </div>
                 <div className="mt-2">
@@ -266,6 +219,7 @@ export default function Main(props) {
           activeSubCategory={activeSubCategory}
           setProducts={setProducts}
           setActiveSubCategory={setActiveSubCategory}
+          theme={custom}
         />
 
         <Container className="mt-3 d-flex justify-content-center">
@@ -289,7 +243,7 @@ export default function Main(props) {
           }
         ></InfiniteScroll>
       </Container>
-      <Footer title="Checkout Order" />
+      <Footer title="Checkout Order" theme={custom}/>
     </ThemeProvider>
   );
 }

@@ -321,7 +321,7 @@ const Design = (props) => {
                               <Link
                                 to={{
                                   pathname: `${url}/${item.CustomizationURL}`,
-                                  state: { id: item.id },
+                                  state: { id: item.id, branchId: branchId },
                                 }}
                               >
                                 Customization

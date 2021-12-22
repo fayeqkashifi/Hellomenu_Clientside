@@ -26,6 +26,7 @@ const Customization = (props) => {
   const { t } = useTranslation();
   // const templateId = atob(props.match.params.id);
   const templateId = props.history.location.state.id;
+  const branchId = props.history.location.state.branchId;
 
   const history = useHistory();
 
@@ -109,7 +110,7 @@ const Customization = (props) => {
               <CardMedia
                 component="iframe"
                 height="600"
-                image={`/${template?.URL}/${btoa(3)}`}
+                image={`/${template?.URL}/${btoa(branchId)}`}
                 alt="template"
               />
             </CardActionArea>
@@ -141,83 +142,39 @@ const Customization = (props) => {
                   htmlFor="staticEmail"
                   className="col-sm-6 col-form-label"
                 >
-                  {t("branch_name_color")}
+                  {t("menusColor")}
                 </CFormLabel>
                 <CCol sm={2} className="text-left">
                   <input
                     type="color"
                     onChange={handleInput}
-                    value={settings?.branch_name_color}
-                    name="branch_name_color"
+                    value={settings?.menusColor}
+                    name="menusColor"
                   />
                 </CCol>
                 <CCol sm={4} className="text-center">
                   <input type="color" disabled value="#ff751d" />
                 </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-6 col-form-label"
-                >
-                  {t("branch_name_font_size")}
-                </CFormLabel>
-                <CCol sm={2}>
-                  <input
-                    className="form-control"
-                    onChange={handleInput}
-                    value={settings?.branch_name_font_size}
-                    type="number"
-                    name="branch_name_font_size"
-                  />
-                </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-4 col-form-label text-center"
-                >
-                  {t("14")}
-                </CFormLabel>
               </CRow>
-
               <CRow className="mb-2">
                 <CFormLabel
                   htmlFor="staticEmail"
                   className="col-sm-6 col-form-label"
                 >
-                  {t("categories_and_sub_categoies_color")}
+                  {t("cardBgColor")}
                 </CFormLabel>
-                <CCol sm={3} className="text-left">
+                <CCol sm={2} className="text-left">
                   <input
                     type="color"
                     onChange={handleInput}
-                    value={settings?.categories_and_sub_categoies_color}
-                    name="categories_and_sub_categoies_color"
+                    value={settings?.cardBgColor}
+                    name="cardBgColor"
                   />
                 </CCol>
-                <CCol sm={2} className="text-center">
-                  <input type="color" disabled value="#f1fcfe" />
+                <CCol sm={4} className="text-center">
+                  <input type="color" disabled value="#2d3134" />
                 </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-6 col-form-label"
-                >
-                  {t("categories_and_sub_categoies_font_size")}
-                </CFormLabel>
-                <CCol sm={2}>
-                  <input
-                    className="form-control"
-                    onChange={handleInput}
-                    value={settings?.categories_and_sub_categoies_font_size}
-                    type="number"
-                    name="categories_and_sub_categoies_font_size"
-                  />
-                </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-4 col-form-label text-center"
-                >
-                  {t("12")}
-                </CFormLabel>
               </CRow>
-
               <CRow className="mb-2">
                 <CFormLabel
                   htmlFor="staticEmail"
@@ -236,27 +193,6 @@ const Customization = (props) => {
                 <CCol sm={2} className="text-center">
                   <input type="color" disabled value="#ff751d" />
                 </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-6 col-form-label"
-                >
-                  {t("product_name_font_size")}
-                </CFormLabel>
-                <CCol sm={2}>
-                  <input
-                    className="form-control"
-                    onChange={handleInput}
-                    value={settings?.product_name_font_size}
-                    type="number"
-                    name="product_name_font_size"
-                  />
-                </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-4 col-form-label text-center"
-                >
-                  {t("12")}
-                </CFormLabel>
               </CRow>
               <CRow className="mb-2">
                 <CFormLabel
@@ -276,27 +212,6 @@ const Customization = (props) => {
                 <CCol sm={2} className="text-center">
                   <input type="color" disabled value="#777" />
                 </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-6 col-form-label"
-                >
-                  {t("product_discription_font_size")}
-                </CFormLabel>
-                <CCol sm={2}>
-                  <input
-                    className="form-control"
-                    onChange={handleInput}
-                    value={settings?.product_discription_font_size}
-                    type="number"
-                    name="product_discription_font_size"
-                  />
-                </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-4 col-form-label text-center"
-                >
-                  {t("10")}
-                </CFormLabel>
               </CRow>
               <CRow className="mb-2">
                 <CFormLabel
@@ -316,27 +231,6 @@ const Customization = (props) => {
                 <CCol sm={2} className="text-center">
                   <input type="color" disabled value="#ff751d" />
                 </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-6 col-form-label"
-                >
-                  {t("price_font_size")}
-                </CFormLabel>
-                <CCol sm={2}>
-                  <input
-                    className="form-control"
-                    onChange={handleInput}
-                    value={settings?.price_font_size}
-                    type="number"
-                    name="price_font_size"
-                  />
-                </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-4 col-form-label text-center"
-                >
-                  {t("12")}
-                </CFormLabel>
               </CRow>
               <CRow className="mb-2">
                 <CFormLabel
@@ -385,29 +279,8 @@ const Customization = (props) => {
                     value="#ff751d"
                   />
                 </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-6 col-form-label"
-                >
-                  {t("button_text_font_size")}
-                </CFormLabel>
-                <CCol sm={2}>
-                  <input
-                    className="form-control"
-                    onChange={handleInput}
-                    value={settings?.button_text_font_size}
-                    type="number"
-                    name="button_text_font_size"
-                  />
-                </CCol>
-                <CFormLabel
-                  htmlFor="inputPassword"
-                  className="col-sm-4 col-form-label text-center"
-                >
-                  {t("12")}
-                </CFormLabel>
               </CRow>
-              <CRow className="mb-2">
+              {/* <CRow className="mb-2">
                 <CFormLabel
                   htmlFor="inputPassword"
                   className="col-sm-6 col-form-label"
@@ -429,44 +302,8 @@ const Customization = (props) => {
                 >
                   {t("2")}
                 </CFormLabel>
-              </CRow>
-              <CRow>
-                <CFormLabel
-                  htmlFor="staticEmail"
-                  className="col-sm-6 col-form-label"
-                >
-                  {t("mode")}
-                </CFormLabel>
+              </CRow> */}
 
-                <CCol sm={2} className="text-left">
-                  <RadioGroup
-                    row
-                    aria-label="dark"
-                    defaultValue={settings?.mode ? settings.mode : "dark"}
-                    name="mode"
-                    onChange={handleInput}
-                  >
-                    <FormControlLabel
-                      value="light"
-                      control={<Radio />}
-                      label="Light"
-                    />
-                    <FormControlLabel
-                      value="dark"
-                      control={<Radio />}
-                      label="Dark"
-                    />
-                  </RadioGroup>
-                </CCol>
-                <CCol sm={4} className="text-center">
-                  <CFormLabel
-                    htmlFor="staticEmail"
-                    className="col-sm-6 col-form-label "
-                  >
-                    Dark
-                  </CFormLabel>
-                </CCol>
-              </CRow>
               <CRow>
                 <CFormLabel
                   htmlFor="staticEmail"
