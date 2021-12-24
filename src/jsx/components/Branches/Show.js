@@ -117,7 +117,7 @@ const Show = (props) => {
     <Fragment>
       <Router>
         <div className="row">
-          <div className="col-xl-9 col-xxl-12">
+          <div className="col-xl-12 col-xxl-12">
             <div className="row">
               <div className="col-xl-12">
                 <div className="card">

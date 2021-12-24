@@ -10,7 +10,7 @@ function Footer(props) {
   return (
     <Box
       component="footer"
-      sx={{ bgcolor: "light", position: "sticky" }}
+      sx={{ bgcolor: "light", position: "sticky", bottom: "0px" }}
       className="bottom-0 py-1"
     >
       <Container maxWidth="sm">
@@ -24,6 +24,7 @@ function Footer(props) {
             color: theme?.button_text_color
               ? theme.button_text_color
               : "#f1fcfe",
+            fontSize: theme?.bTextSize ? theme.bTextSize + "rem" : "1rem",
           }}
           to={url}
         >

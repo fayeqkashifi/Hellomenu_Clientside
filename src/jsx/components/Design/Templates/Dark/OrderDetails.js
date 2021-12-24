@@ -24,83 +24,40 @@ import FormGroup from "@mui/material/FormGroup";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
 
 const OrderDetails = (props) => {
-  const [themeCustomization, setThemeCustomization] = useState([]);
+  const custom = props.history.location.state.custom;
   // design start
   const theme = createTheme({
     palette: {
-      mode: "dark",
-      warning: {
-        // button background
-        main: themeCustomization?.button_background_color
-          ? themeCustomization.button_background_color
-          : "#ff751d",
+      background: {
+        default: custom?.bgColor ? custom.bgColor : "#22252a",
       },
     },
     typography: {
-      fontFamily: themeCustomization?.font
-        ? themeCustomization.font
-        : "sans-serif",
+      fontFamily: custom?.font ? custom.font : "sans-serif",
+      // discription
       subtitle1: {
-        fontSize: themeCustomization?.product_discription_font_size
-          ? themeCustomization.product_discription_font_size
-          : 10,
-        color: themeCustomization?.product_discription_color
-          ? themeCustomization.product_discription_color
+        fontSize: custom?.pDiscriptionSize
+          ? custom.pDiscriptionSize + "rem"
+          : "0.75rem",
+
+        color: custom?.product_discription_color
+          ? custom.product_discription_color
           : "#fff",
       },
       // price
       body1: {
-        fontSize: themeCustomization?.price_font_size
-          ? themeCustomization.price_font_size
-          : 16,
-        color: themeCustomization?.price_color
-          ? themeCustomization.price_color
-          : "#fff",
+        fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
+        color: custom?.price_color ? custom.price_color : "#fff",
       },
       // product Names
       button: {
-        fontSize: themeCustomization?.product_name_font_size
-          ? themeCustomization.product_name_font_size
-          : 14,
-        color: themeCustomization?.product_name_color
-          ? themeCustomization.product_name_color
-          : "#fff",
+        fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
+        color: custom?.product_name_color ? custom.product_name_color : "#fff",
       },
-      // categories and sub categories
-      overline: {
-        fontSize: themeCustomization?.categories_and_sub_categoies_font_size
-          ? themeCustomization.categories_and_sub_categoies_font_size
-          : 12,
-        color: themeCustomization?.categories_and_sub_categoies_color
-          ? themeCustomization.categories_and_sub_categoies_color
-          : "#ff751d",
-      },
-      // branch Name
+      // Menus
       h6: {
-        fontSize: themeCustomization?.branch_name_font_size
-          ? themeCustomization.branch_name_font_size
-          : 14,
-        color: themeCustomization?.branch_name_color
-          ? themeCustomization.branch_name_color
-          : "#fff",
-      },
-    },
-    components: {
-      MuiButton: {
-        variants: [
-          {
-            // button
-            props: { variant: "contained" },
-            style: {
-              fontSize: themeCustomization?.button_text_font_size
-                ? themeCustomization.button_text_font_size
-                : 12,
-              color: themeCustomization?.button_text_color
-                ? themeCustomization.button_text_color
-                : "#f1fcfe",
-            },
-          },
-        ],
+        fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
+        color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
       },
     },
   });
@@ -176,6 +133,10 @@ const OrderDetails = (props) => {
     );
     setSum((sum += parseInt(price)));
   };
+  const [cart, setCart] = useState(
+    JSON.parse(localStorage.getItem("cart")) || []
+  );
+
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -204,14 +165,14 @@ const OrderDetails = (props) => {
                     extraHandlers(e, item.price, item.value, item.qty);
                   }}
                   sx={{
-                    color: themeCustomization?.branch_name_color
-                      ? themeCustomization.branch_name_color
+                    color: custom?.menusAcriveColor
+                      ? custom.menusAcriveColor
                       : "#ff751d",
                   }}
                 />
               }
               label={
-                <Typography variant="body2" gutterBottom>
+                <Typography variant="subtitle1" gutterBottom>
                   {item.label +
                     " ( +" +
                     item.price * item.qty +
@@ -232,7 +193,7 @@ const OrderDetails = (props) => {
                         handleDecrement(e, item.qty, item.value, item.price)
                       }
                       style={{ cursor: "pointer" }}
-                      variant="overline"
+                      variant="h6"
                       gutterBottom
                     >
                       <svg
@@ -248,7 +209,11 @@ const OrderDetails = (props) => {
                     </Typography>
                   </div>
                   <div className="col-4">
-                    <Typography variant="body2" gutterBottom className="mt-1">
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      className="mt-1"
+                    >
                       {item.qty}
                     </Typography>
                   </div>
@@ -258,7 +223,7 @@ const OrderDetails = (props) => {
                         handelIncrement(e, item.qty, item.value, item.price)
                       }
                       style={{ cursor: "pointer" }}
-                      variant="overline"
+                      variant="h6"
                       gutterBottom
                     >
                       <svg
@@ -286,83 +251,113 @@ const OrderDetails = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth="lg">
-        <Header subcategories={0} />
+      <Container maxWidth="lg ">
+        <Header subcategories={0} cart={cart.length} />
 
-        <Grid item xs={12} sm={12} md={12}>
-          <Card
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <img
-              style={{ height: "250px", width: "100%", objectFit: "contain" }}
-              src={
-                stock === "No Stock" || stock === 0
-                  ? `http://${base_url}:${port}/images/products/${picture}`
-                  : `http://${base_url}:${port}/images/variants_pics/${picture}`
-              }
-              alt="Image"
-              // className="d-block w-100 img-thumbnail"
-            />
-            <FavoriteIcon sx={{ color: "#ff751d" }} className="mx-4 my-2" />
-
-            <div className="row mx-3">
-              <Typography
-                variant="button"
-                style={{ textTransform: "capitalize" }}
+        <Container className="mt-3 d-flex justify-content-center">
+          <Grid container spacing={2} className="d-flex justify-content-center">
+            <Grid item xs={12} sm={8} md={8}>
+              <Card
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  borderRadius: "5%",
+                  backgroundColor: custom?.cardBgColor
+                    ? custom.cardBgColor
+                    : "#2d3134",
+                }}
               >
-                {productName}{" "}
-                {orignalPrice + " " + getSymbolFromCurrency(countryCode)}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {ingredients?.map((item, i) => {
-                  if (ingredients.length == i + 1) {
-                    return item + " - Not Included";
-                  } else {
-                    return item + " , ";
+                <img
+                  style={{
+                    height: "250px",
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
+                  src={
+                    stock === "No Stock" || stock === 0
+                      ? `http://${base_url}:${port}/images/products/${picture}`
+                      : `http://${base_url}:${port}/images/variants_pics/${picture}`
                   }
-                })}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {extraValue?.map((item, i) => {
-                  if (extraValue.length == i + 1) {
-                    return item.value + " - Included";
-                  } else {
-                    return item.value + " , ";
-                  }
-                })}
-              </Typography>
+                  alt="Image"
+                  className="m-1"
+                />
+                <FavoriteIcon sx={{ color: "#ff751d" }} className="mx-4 my-2" />
 
-              <Typography variant="overline" gutterBottom>
-                {t("recommendation")}
-              </Typography>
-              <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
-
-              <TextareaAutosize
-                aria-label="empty textarea"
-                minRows={3}
-                placeholder="Note"
-                style={{ backgroundColor: "#2d3134", color: "#fff" }}
-              />
-            </div>
-          </Card>
-        </Grid>
+                <div className="row mx-3">
+                  <Typography
+                    variant="button"
+                    style={{ textTransform: "capitalize" }}
+                  >
+                    {productName}{" "}
+                    {orignalPrice + " " + getSymbolFromCurrency(countryCode)}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    {ingredients?.map((item, i) => {
+                      if (ingredients.length == i + 1) {
+                        return item + " - Not Included";
+                      } else {
+                        return item + " , ";
+                      }
+                    })}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    {extraValue?.map((item, i) => {
+                      if (extraValue.length == i + 1) {
+                        return item.value + " - Included";
+                      } else {
+                        return item.value + " , ";
+                      }
+                    })}
+                  </Typography>
+                  {custom?.show_recommendation == 0 ? (
+                    ""
+                  ) : (
+                    <>
+                      <Typography variant="h6" gutterBottom>
+                        {t("recommendation")}
+                      </Typography>
+                      <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
+                    </>
+                  )}
+                  <TextareaAutosize
+                    // aria-label="empty textarea"
+                    className="my-3"
+                    minRows={3}
+                    placeholder="Note"
+                    style={{
+                      backgroundColor: custom?.cardBgColor
+                        ? custom.cardBgColor
+                        : "#2d3134",
+                      color: custom?.menusDeactiveColor
+                        ? custom.menusDeactiveColor
+                        : "#fff",
+                      fontSize: 12,
+                      borderColor: custom?.menusAcriveColor
+                        ? custom.menusAcriveColor
+                        : "#ff751d",
+                    }}
+                  />
+                </div>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
       </Container>
       <Box
-        component="footer"
-        sx={{ bgcolor: "#2d3134", position: "sticky" }}
-        className="bottom-0 text-center py-1"
+        sx={{
+          borderRadius: "5%",
+          backgroundColor: "light",
+          position: "sticky",
+          bottom: "0px",
+        }}
+        className="bottom-0 text-center p-1"
       >
         <Grid container spacing={2}>
           <Grid item xs={7}>
             <Typography
-              className="col-12 btn"
-              style={{
-                textTransform: "capitalize",
-                color: "#ff751d",
-              }}
+              variant="body1"
+              gutterBottom
+              className="font-weight-bold text-center col-12 btn"
             >
               {getSymbolFromCurrency(countryCode) +
                 "  " +
@@ -374,8 +369,13 @@ const OrderDetails = (props) => {
               className="col-12 btn"
               style={{
                 textTransform: "capitalize",
-                backgroundColor: "#ff751d",
-                color: "#f1fcfe",
+                backgroundColor: custom?.button_background_color
+                  ? custom.button_background_color
+                  : "#ff751d",
+                color: custom?.button_text_color
+                  ? custom.button_text_color
+                  : "#f1fcfe",
+                fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1rem",
               }}
               to=""
             >

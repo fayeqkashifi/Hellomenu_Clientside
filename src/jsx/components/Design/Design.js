@@ -318,14 +318,18 @@ const Design = (props) => {
                               </Link>
                             </Grid>
                             <Grid item xs={8}>
-                              <Link
-                                to={{
-                                  pathname: `${url}/${item.CustomizationURL}`,
-                                  state: { id: item.id, branchId: branchId },
-                                }}
-                              >
-                                Customization
-                              </Link>
+                              {item.Status == 1 ? (
+                                <Link
+                                  to={{
+                                    pathname: `${url}/${item.CustomizationURL}`,
+                                    state: { id: item.id, branchId: branchId },
+                                  }}
+                                >
+                                  Customization
+                                </Link>
+                              ) : (
+                                "You must first activate the template before customization."
+                              )}
                             </Grid>
                             <Grid item xs={4}>
                               {item.Status == 1 ? (

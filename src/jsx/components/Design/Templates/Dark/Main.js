@@ -17,6 +17,8 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
+import IconButton from "@mui/material/IconButton";
+
 var hold = 1;
 export default function Main(props) {
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,6 @@ export default function Main(props) {
     axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setCustom(res.data.fetchData?.Customization);
-        console.log(res.data.fetchData.Customization);
       }
     });
     axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
@@ -65,8 +66,6 @@ export default function Main(props) {
       axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
         if (res.data.status === 200) {
           setActiveSubCategory(res.data.fetchData[hold].sub_id);
-          // console.log(res.data.fetchData[hold].sub_id);
-
           axios
             .get(
               `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[hold].sub_id}`
@@ -92,36 +91,63 @@ export default function Main(props) {
     }
     // console.log(hold);
   };
-  // design start
+
+  // theme start
   const theme = createTheme({
     palette: {
-      mode: "dark",
+      background: {
+        default: custom?.bgColor ? custom.bgColor : "#22252a",
+      },
     },
     typography: {
       fontFamily: custom?.font ? custom.font : "sans-serif",
       // discription
       subtitle1: {
+        fontSize: custom?.pDiscriptionSize
+          ? custom.pDiscriptionSize + "rem"
+          : "0.75rem",
+
         color: custom?.product_discription_color
           ? custom.product_discription_color
           : "#fff",
       },
       // price
       body1: {
+        fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
         color: custom?.price_color ? custom.price_color : "#fff",
       },
       // product Names
       button: {
+        fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
         color: custom?.product_name_color ? custom.product_name_color : "#fff",
       },
       // Menus
       h6: {
-        fontSize: 14,
-        color: custom?.menusColor ? custom.menusColor : "#f27d1e",
+        fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
+        color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
       },
     },
   });
-  // design end
-
+  // theme end
+  const [cart, setCart] = useState(
+    JSON.parse(localStorage.getItem("cart")) || []
+  );
+  const addItem = (id) => {
+    const check = cart.every((item) => {
+      return item.id !== id;
+    });
+    if (check) {
+      const data = products.filter((product) => {
+        return product.id === id;
+      });
+      // data.push(...data, { qty: 1 });
+      // console.log(data);
+      localStorage.setItem("cart", JSON.stringify(cart.concat(data)));
+      setCart(cart.concat(data));
+    } else {
+      alert("product has been already added to cart");
+    }
+  };
   var viewShow_HTMLTABLE = "";
   if (loading) {
     return (
@@ -136,7 +162,58 @@ export default function Main(props) {
   } else {
     viewShow_HTMLTABLE = products?.map((item, i) => {
       return (
-        <Grid item xs={6} sm={4} md={3} key={i}>
+        <Grid
+          item
+          xs={
+            custom?.numberProductInRowMobile
+              ? custom.numberProductInRowMobile == 1
+                ? 12
+                : custom.numberProductInRowMobile == 2
+                ? 6
+                : custom.numberProductInRowMobile == 3
+                ? 4
+                : custom.numberProductInRowMobile == 4 ||
+                  custom.numberProductInRowMobile == 5
+                ? 3
+                : custom.numberProductInRowMobile == 6
+                ? 2
+                : 6
+              : 6
+          }
+          sm={
+            custom?.numberProductInRowTablet
+              ? custom.numberProductInRowTablet == 1
+                ? 12
+                : custom.numberProductInRowTablet == 2
+                ? 6
+                : custom.numberProductInRowTablet == 3
+                ? 4
+                : custom.numberProductInRowTablet == 4 ||
+                  custom.numberProductInRowTablet == 5
+                ? 3
+                : custom.numberProductInRowTablet == 6
+                ? 2
+                : 4
+              : 4
+          }
+          md={
+            custom?.numberProductInRowComputer
+              ? custom.numberProductInRowComputer == 1
+                ? 12
+                : custom.numberProductInRowComputer == 2
+                ? 6
+                : custom.numberProductInRowComputer == 3
+                ? 4
+                : custom.numberProductInRowComputer == 4 ||
+                  custom.numberProductInRowComputer == 5
+                ? 3
+                : custom.numberProductInRowComputer == 6
+                ? 2
+                : 3
+              : 3
+          }
+          key={i}
+        >
           <Card
             sx={{
               // height: "100%",
@@ -149,17 +226,34 @@ export default function Main(props) {
             }}
           >
             <div className="px-2 pt-2">
-              <FavoriteBorderIcon />
-              {/* <FavoriteIcon sx={{ color: "#ff751d" }} /> */}
+              {cart.every((val) => {
+                return val.id !== item.id;
+              }) ? (
+                <FavoriteBorderIcon
+                  sx={{
+                    color: custom?.menusDeactiveColor
+                      ? custom.menusDeactiveColor
+                      : "#fff",
+                  }}
+                />
+              ) : (
+                <FavoriteIcon
+                  sx={{
+                    color: custom?.menusActiveColor
+                      ? custom.menusActiveColor
+                      : "#ff751d",
+                  }}
+                />
+              )}
             </div>
 
-            <Link
-              to={{
-                pathname: `/dark-template/product/${btoa(item.id)}`,
-                // state: { themeCustomization: themeCustomization },
-              }}
-            >
-              <CardContent sx={{ flexGrow: 1 }}>
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Link
+                to={{
+                  pathname: `/dark-template/product/${btoa(item.id)}`,
+                  state: { custom: custom },
+                }}
+              >
                 <div className="text-center">
                   <img
                     style={{
@@ -173,9 +267,17 @@ export default function Main(props) {
                     // className="h-100"
                   />
                 </div>
-                <div className="mt-2">
-                  <Grid container spacing={2}>
-                    <Grid item xs={10}>
+              </Link>
+
+              <div className="mt-2">
+                <Grid container spacing={2}>
+                  <Grid item xs={9}>
+                    <Link
+                      to={{
+                        pathname: `/dark-template/product/${btoa(item.id)}`,
+                        state: { custom: custom },
+                      }}
+                    >
                       <Typography
                         variant="button"
                         style={{ textTransform: "capitalize" }}
@@ -183,27 +285,47 @@ export default function Main(props) {
                       >
                         {item.ProductName}
                       </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <AddIcon sx={{ color: "#fff" }} />
-                    </Grid>
+                    </Link>
                   </Grid>
+                  <Grid item xs={3}>
+                    <IconButton onClick={() => addItem(item.id)}>
+                      {cart.every((val) => {
+                        return val.id !== item.id;
+                      }) ? (
+                        <AddIcon
+                          sx={{
+                            color: custom?.menusDeactiveColor
+                              ? custom.menusDeactiveColor
+                              : "#fff",
+                          }}
+                        />
+                      ) : (
+                        <AddIcon
+                          sx={{
+                            color: custom?.menusActiveColor
+                              ? custom.menusActiveColor
+                              : "#ff751d",
+                          }}
+                        />
+                      )}
+                    </IconButton>
+                  </Grid>
+                </Grid>
 
-                  <Typography
-                    variant="body1"
-                    gutterBottom
-                    className="font-weight-bold"
-                  >
-                    {getSymbolFromCurrency(item.currency_code) +
-                      "  " +
-                      item.price}
-                  </Typography>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {item.Description}
-                  </Typography>
-                </div>
-              </CardContent>
-            </Link>
+                <Typography
+                  variant="body1"
+                  gutterBottom
+                  className="font-weight-bold"
+                >
+                  {getSymbolFromCurrency(item.currency_code) +
+                    "  " +
+                    item.price}
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                  {item.Description}
+                </Typography>
+              </div>
+            </CardContent>
           </Card>
         </Grid>
       );
@@ -214,12 +336,13 @@ export default function Main(props) {
       <CssBaseline />
       <Container maxWidth="lg">
         <Header
+          cart={cart.length}
           title={branch[0]?.BrancheName}
           subcategories={subcategories}
           activeSubCategory={activeSubCategory}
           setProducts={setProducts}
           setActiveSubCategory={setActiveSubCategory}
-          theme={custom}
+          custom={custom}
         />
 
         <Container className="mt-3 d-flex justify-content-center">
@@ -243,7 +366,7 @@ export default function Main(props) {
           }
         ></InfiniteScroll>
       </Container>
-      <Footer title="Checkout Order" theme={custom}/>
+      <Footer title="Checkout Order" theme={custom} />
     </ThemeProvider>
   );
 }

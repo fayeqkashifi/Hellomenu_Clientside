@@ -28,93 +28,49 @@ import Carousel from "react-bootstrap/Carousel";
 import "../style.css";
 
 const ProductDetails = (props) => {
-  const [themeCustomization, setThemeCustomization] = useState([]);
-
-  // design start
-  const theme = createTheme({
-    palette: {
-      mode: "dark",
-      warning: {
-        // button background
-        main: themeCustomization?.button_background_color
-          ? themeCustomization.button_background_color
-          : "#ff751d",
-      },
-    },
-    typography: {
-      fontFamily: themeCustomization?.font
-        ? themeCustomization.font
-        : "sans-serif",
-      subtitle1: {
-        fontSize: themeCustomization?.product_discription_font_size
-          ? themeCustomization.product_discription_font_size
-          : 10,
-        color: themeCustomization?.product_discription_color
-          ? themeCustomization.product_discription_color
-          : "#fff",
-      },
-      // price
-      body1: {
-        fontSize: themeCustomization?.price_font_size
-          ? themeCustomization.price_font_size
-          : 16,
-        color: themeCustomization?.price_color
-          ? themeCustomization.price_color
-          : "#fff",
-      },
-      // product Names
-      button: {
-        fontSize: themeCustomization?.product_name_font_size
-          ? themeCustomization.product_name_font_size
-          : 14,
-        color: themeCustomization?.product_name_color
-          ? themeCustomization.product_name_color
-          : "#fff",
-      },
-      // categories and sub categories
-      overline: {
-        fontSize: themeCustomization?.categories_and_sub_categoies_font_size
-          ? themeCustomization.categories_and_sub_categoies_font_size
-          : 12,
-        color: themeCustomization?.categories_and_sub_categoies_color
-          ? themeCustomization.categories_and_sub_categoies_color
-          : "#ff751d",
-      },
-      // branch Name
-      h6: {
-        fontSize: themeCustomization?.branch_name_font_size
-          ? themeCustomization.branch_name_font_size
-          : 14,
-        color: themeCustomization?.branch_name_color
-          ? themeCustomization.branch_name_color
-          : "#fff",
-      },
-    },
-    components: {
-      MuiButton: {
-        variants: [
-          {
-            // button
-            props: { variant: "contained" },
-            style: {
-              fontSize: themeCustomization?.button_text_font_size
-                ? themeCustomization.button_text_font_size
-                : 12,
-              color: themeCustomization?.button_text_color
-                ? themeCustomization.button_text_color
-                : "#f1fcfe",
-            },
-          },
-        ],
-      },
-    },
-  });
-  // design end
   // for localization
   const { t } = useTranslation();
   const id = atob(props.match.params.id);
   //for retriving data using laravel API
-  // const themes = props.history.location.state.themes;
+  const custom = props.history.location.state.custom;
+  // design start
+  const theme = createTheme({
+    palette: {
+      background: {
+        default: custom?.bgColor ? custom.bgColor : "#22252a",
+      },
+    },
+    typography: {
+      fontFamily: custom?.font ? custom.font : "sans-serif",
+      // discription
+      subtitle1: {
+        fontSize: custom?.pDiscriptionSize
+          ? custom.pDiscriptionSize + "rem"
+          : "0.75rem",
+
+        color: custom?.product_discription_color
+          ? custom.product_discription_color
+          : "#fff",
+      },
+      // price
+      body1: {
+        fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
+        color: custom?.price_color ? custom.price_color : "#fff",
+      },
+      // product Names
+      button: {
+        fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
+        color: custom?.product_name_color ? custom.product_name_color : "#fff",
+      },
+      // Menus
+      h6: {
+        fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
+        color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
+      },
+    },
+  });
+  // design end
+
   let varData = [];
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
@@ -173,7 +129,6 @@ const ProductDetails = (props) => {
     const priceList = variantData.filter((item) => {
       return item.sku.replace(/\s+/g, "") == sku.replace(/\s+/g, "");
     });
-    console.log(newSkuArray);
     let productdetails = { price: 0, stock: 0 };
     if (priceList.length !== 0) {
       const line = priceList.pop();
@@ -249,6 +204,9 @@ const ProductDetails = (props) => {
     }
     console.log(extraValue);
   };
+  const [cart, setCart] = useState(
+    JSON.parse(localStorage.getItem("cart")) || []
+  );
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -321,6 +279,8 @@ const ProductDetails = (props) => {
               // height: "100%",
               display: "flex",
               flexDirection: "column",
+              borderRadius: "5%",
+              backgroundColor: custom?.BgColor ? custom.BgColor : "#22252a",
             }}
           >
             <div className="row mx-3 mt-3">
@@ -339,11 +299,18 @@ const ProductDetails = (props) => {
                 </Grid>
               </Grid>
 
-              <Typography variant="body2" gutterBottom>
+              <Typography variant="subtitle1" gutterBottom>
                 {fetchData?.Description}
               </Typography>
-              <Typography variant="body2" gutterBottom>
-                {t("preparation_Time")}: {fetchData?.preparationTime} Minutes
+              <Typography variant="subtitle1" gutterBottom>
+                {custom?.preparation_time == 0 ? (
+                  ""
+                ) : (
+                  <>
+                    {t("preparation_Time")}: {fetchData?.preparationTime}{" "}
+                    Minutes
+                  </>
+                )}
               </Typography>
 
               <Typography
@@ -368,142 +335,185 @@ const ProductDetails = (props) => {
                   : productDetails.stock}
               </Typography>
             </div>
-            <div className="row mx-3">
-              <Typography variant="overline" gutterBottom>
-                {t("ingredients")}
-              </Typography>
-              <small>Please select the ingredients you want to remove.</small>
-            </div>
-            <div className="row mx-4">
-              {JSON.parse(fetchData.ingredients)?.map((item, i) => {
-                return (
-                  <div
-                    className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto"
-                    onClick={() => {
-                      changeIngredients(item.label);
-                    }}
-                    style={
-                      ingredients.includes(item.label)
-                        ? {
-                            cursor: "pointer",
+            {custom?.show_ingredients == 0 ? (
+              ""
+            ) : (
+              <>
+                <div className="row mx-3">
+                  <Typography variant="h6" gutterBottom>
+                    {t("ingredients")}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Please select the ingredients you want to remove.
+                  </Typography>
+                </div>
+                <div className="row mx-4">
+                  {JSON.parse(fetchData.ingredients)?.map((item, i) => {
+                    return (
+                      <div
+                        className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto"
+                        onClick={() => {
+                          changeIngredients(item.label);
+                        }}
+                        style={
+                          ingredients.includes(item.label)
+                            ? {
+                                cursor: "pointer",
 
-                            padding: "3px",
-                            margin: "2px",
-                            border: "1px solid",
-                            textAlign: "center",
-                            borderRadius: "5px",
-                            borderColor: "#ff751d",
-                            textDecoration: "line-through",
-                            color: "#ff751d",
-                          }
-                        : {
-                            cursor: "pointer",
-                            padding: "3px",
-                            margin: "2px",
-                            border: "1px solid",
-                            textAlign: "center",
-                            borderRadius: "5px",
-                            borderColor: "black",
-                          }
-                    }
-                  >
-                    {item.label}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="row mx-3">
-              <Typography variant="overline" gutterBottom>
-                {t("extras")}
-              </Typography>
-              <FormGroup>
-                {JSON.parse(fetchData.extras)?.map((item, i) => {
-                  return (
-                    <FormControlLabel
-                      key={i}
-                      control={
-                        <Checkbox
-                          onChange={(e) => {
-                            extraHandlers(e, item.price);
-                          }}
-                          color="default"
-                          sx={{
-                            color: themeCustomization?.branch_name_color
-                              ? themeCustomization.branch_name_color
-                              : "#ff751d",
-                          }}
-                          value={
-                            item.label + " ( +" + item.price + ".00" + " )"
-                          }
-                        />
-                      }
-                      label={
-                        <Typography variant="body2" gutterBottom>
-                          {item.label + " ( +" + item.price + ".00" + " )"}
-                        </Typography>
-                      }
-                    />
-                  );
-                })}
-              </FormGroup>
-            </div>
-
-            <div className="row mx-3">
-              <Typography variant="overline" gutterBottom>
-                {t("vatiants")}
-              </Typography>
-            </div>
-
-            <div className="row mx-4 ">
-              {Object.keys(showVaralint).map((list, i) => {
-                return (
-                  <div className="row m-1" key={i}>
-                    {/* {list} */}
-                    <div
-                      className="row d-flex justify-content-around"
-                      style={{
-                        backgroundColor: "#2d3134",
-                        borderRadius: "50px",
-                        padding: "5px",
-                      }}
-                    >
-                      {showVaralint[list].map((variant) => {
-                        return (
-                          <div className="col">
-                            <div
-                              onClick={() => {
-                                changePrice(list, variant);
-                              }}
-                              style={
-                                skuarray[i] == variant
-                                  ? {
-                                      cursor: "pointer",
-                                      border: "1px solid",
-                                      textAlign: "center",
-                                      borderRadius: "50px",
-                                      borderColor: "black",
-                                      backgroundColor: "black",
-                                    }
-                                  : {
-                                      cursor: "pointer",
-                                      border: "1px solid",
-                                      textAlign: "center",
-                                      borderRadius: "50px",
-                                      borderColor: "#2d3134",
-                                      backgroundColor: "#2d3134",
-                                    }
+                                padding: "3px",
+                                margin: "2px",
+                                border: "1px solid",
+                                textAlign: "center",
+                                borderRadius: "5px",
+                                borderColor: custom?.menusAcriveColor
+                                  ? custom.menusAcriveColor
+                                  : "#f27d1e",
+                                textDecoration: "line-through",
+                                color: custom?.menusAcriveColor
+                                  ? custom.menusAcriveColor
+                                  : "#f27d1e",
+                                fontSize: custom?.pDiscriptionSize
+                                  ? custom.pDiscriptionSize + "rem"
+                                  : "0.75rem",
                               }
-                            >
-                              {variant}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                            : {
+                                cursor: "pointer",
+                                padding: "3px",
+                                margin: "2px",
+                                border: "1px solid",
+                                textAlign: "center",
+                                borderRadius: "5px",
+                                borderColor: custom?.menusDeactiveColor
+                                  ? custom.menusDeactiveColor
+                                  : "#fff",
+                                color: custom?.menusDeactiveColor
+                                  ? custom.menusDeactiveColor
+                                  : "#fff",
+                                fontSize: custom?.pDiscriptionSize
+                                  ? custom.pDiscriptionSize + "rem"
+                                  : "0.75rem",
+                              }
+                        }
+                      >
+                        {item.label}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            {custom?.show_extras == 0 ? (
+              ""
+            ) : (
+              <div className="row mx-3">
+                <Typography variant="h6" gutterBottom>
+                  {t("extras")}
+                </Typography>
+                <FormGroup>
+                  {JSON.parse(fetchData.extras)?.map((item, i) => {
+                    return (
+                      <FormControlLabel
+                        key={i}
+                        control={
+                          <Checkbox
+                            onChange={(e) => {
+                              extraHandlers(e, item.price);
+                            }}
+                            color="default"
+                            sx={{
+                              color: custom?.menusAcriveColor
+                                ? custom.menusAcriveColor
+                                : "#ff751d",
+                            }}
+                            value={
+                              item.label + " ( +" + item.price + ".00" + " )"
+                            }
+                          />
+                        }
+                        label={
+                          <Typography variant="subtitle1" gutterBottom>
+                            {item.label + " ( +" + item.price + ".00" + " )"}
+                          </Typography>
+                        }
+                      />
+                    );
+                  })}
+                </FormGroup>
+              </div>
+            )}
+            {custom?.show_variants == 0 ? (
+              ""
+            ) : (
+              <>
+                <div className="row mx-3">
+                  <Typography variant="h6" gutterBottom>
+                    {t("vatiants")}
+                  </Typography>
+                </div>
+
+                <div className="row mx-4 ">
+                  {Object.keys(showVaralint).map((list, i) => {
+                    return (
+                      <div className="row m-1" key={i}>
+                        {/* {list} */}
+                        <div
+                          className="row d-flex justify-content-around"
+                          style={{
+                            backgroundColor: custom?.cardBgColor
+                              ? custom.cardBgColor
+                              : "#2d3134",
+                            borderRadius: "50px",
+                            padding: "5px",
+                          }}
+                        >
+                          {showVaralint[list].map((variant) => {
+                            return (
+                              <div className="col">
+                                <div
+                                  onClick={() => {
+                                    changePrice(list, variant);
+                                  }}
+                                  style={
+                                    skuarray[i] == variant
+                                      ? {
+                                          cursor: "pointer",
+                                          border: "1px solid",
+                                          textAlign: "center",
+                                          borderRadius: "50px",
+                                          borderColor: "black",
+                                          backgroundColor:
+                                            custom?.menusAcriveColor
+                                              ? custom.menusAcriveColor
+                                              : "black",
+                                          color: custom?.menusDeactiveColor
+                                            ? custom.menusDeactiveColor
+                                            : "#fff",
+                                        }
+                                      : {
+                                          cursor: "pointer",
+                                          border: "1px solid",
+                                          textAlign: "center",
+                                          borderRadius: "50px",
+                                          borderColor: "#2d3134",
+                                          backgroundColor: "#2d3134",
+                                          color: custom?.menusDeactiveColor
+                                            ? custom.menusDeactiveColor
+                                            : "#fff",
+                                        }
+                                  }
+                                >
+                                  {variant}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </Card>
         </Grid>
       </Grid>
@@ -513,11 +523,12 @@ const ProductDetails = (props) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="lg" className="mb-2">
-        <Header subcategories={0} />
+        <Header subcategories={0} cart={cart.length} />
         {viewImages_HTMLTABLE}
       </Container>
       <Footer
         title="Checkout"
+        theme={custom}
         url={{
           pathname: `/dark-template/product/order-details/${btoa(id)}`,
           state: {
@@ -539,6 +550,7 @@ const ProductDetails = (props) => {
                 ? fetchData?.price
                 : productDetails.price,
             ingredients: ingredients,
+            custom: custom,
           },
         }}
       />

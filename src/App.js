@@ -27,6 +27,7 @@ import ThridProductDetails from "./jsx/components/Design/Templates/Thrid/Product
 import OrderDetails from "./jsx/components/Design/Templates/Dark/OrderDetails";
 import SecondTemplate from "./jsx/components/Design/Templates/Second/Main";
 import ProductsList from "./jsx/components/Design/Templates/Thrid/ProductsList";
+import Cart from "./jsx/components/Design/Templates/Dark/Cart";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -103,6 +104,7 @@ const App = () => {
           component={ProductDetails}
           path="/dark-template/product/:id"
         />
+        <PublicRoute exact component={Cart} path="/dark-templates/cart/" />
         <PublicRoute
           exact
           component={OrderDetails}

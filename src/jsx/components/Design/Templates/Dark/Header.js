@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import Badge from "@mui/material/Badge";
+import { Link } from "react-router-dom";
 function Header(props) {
   const history = useHistory();
 
@@ -16,7 +16,8 @@ function Header(props) {
     activeSubCategory,
     setProducts,
     setActiveSubCategory,
-    theme,
+    custom,
+    cart,
   } = props;
 
   const filterProducts = (subCateID) => {
@@ -32,7 +33,12 @@ function Header(props) {
     <React.Fragment>
       <Toolbar sx={{ position: "sticky" }} className="top-0">
         <IconButton onClick={() => history.goBack()}>
-          <KeyboardBackspaceIcon fontSize="small" />
+          <KeyboardBackspaceIcon
+            fontSize="small"
+            sx={{
+              color: "#fff",
+            }}
+          />
         </IconButton>
         <Typography
           // component="h2"
@@ -41,7 +47,34 @@ function Header(props) {
           sx={{ flex: 1 }}
         ></Typography>
         <IconButton>
-          <AddShoppingCartIcon fontSize="small" />
+          <Badge
+            badgeContent={cart}
+            sx={{
+              "& .MuiBadge-badge": {
+                color: custom?.menusDeactiveColor
+                  ? custom.menusDeactiveColor
+                  : "#fff",
+                backgroundColor: custom?.menusAcriveColor
+                  ? custom.menusAcriveColor
+                  : "#f27d1e",
+              },
+            }}
+            overlap="circular"
+          >
+            <Link
+              to={{
+                pathname: `/dark-templates/cart`,
+                state: { custom: custom },
+              }}
+            >
+              <AddShoppingCartIcon
+                fontSize="small"
+                sx={{
+                  color: "#fff",
+                }}
+              />
+            </Link>
+          </Badge>
         </IconButton>
       </Toolbar>
 
@@ -68,15 +101,17 @@ function Header(props) {
                         borderBottomStyle: "solid",
                         borderottomWidth: "2px",
                         width: "fit-content",
-                        borderColor: theme?.menusColor
-                          ? theme.menusColor
+                        borderColor: custom?.menusAcriveColor
+                          ? custom.menusAcriveColor
                           : "#f27d1e",
 
                         // color: "#f27d1e",
                       }
                     : {
                         cursor: "pointer",
-                        color: "#fff",
+                        color: custom?.menusDeactiveColor
+                          ? custom.menusDeactiveColor
+                          : "#fff",
                       }
                 }
                 key={i}
