@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 // import Switch from "react-switch";
 import circle_menu_button from "../../../images/hellomenu/circle_menu_button.png";
 import pill_menu_button from "../../../images/hellomenu/pill_menu_button.png";
-import SingleFileAutoSubmit from "./SingleFileAutoSubmit";
 import Avatar from "@mui/material/Avatar";
 import {
   AvatarGroup,
@@ -102,6 +101,7 @@ const Theme = (props) => {
     axios.post(`/api/InsertTheme/${branchId}`, formData).then((res) => {
       if (res.data.status === 200) {
         swal("Success", res.data.message, "success");
+        history.goBack();
         // setThemes([]);
         // setImageStateMenu([]);
         // setImageState([]);

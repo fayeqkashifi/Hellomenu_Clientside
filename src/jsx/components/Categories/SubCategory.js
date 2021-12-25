@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
+import DefaultPic from "../../../images/hellomenu/sub_category.svg";
 
 const SubCategory = (props) => {
   const history = useHistory();
@@ -33,7 +34,9 @@ const SubCategory = (props) => {
   // for localization
   const { t } = useTranslation();
   const id = props.history.location.state.id;
-  const CategoryName = props.history.location.state.CategoryName;
+
+  const [check, setCheck] = useState(true);
+
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
   const [subCategoryInsert, setSubCategoryInsert] = useState({
@@ -66,6 +69,8 @@ const SubCategory = (props) => {
           CategoryID: id,
         });
         reset();
+        setCheck(!check);
+
         swal("Success", res.data.message, "success");
         setModalCentered(false);
         //  this.props.history.push("/")
@@ -102,10 +107,14 @@ const SubCategory = (props) => {
     formData.append("id", editSubMenu.id);
     axios.post("/api/UpdateSubCategory", formData).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.status);
-        setEditSubMenu("");
+        setEditSubMenu({
+          SubCategoryName: "",
+          CategoryID: id,
+        });
         swal("Success", res.data.message, "success");
         setEditModalCentered(false);
+        setCheck(!check);
+
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
@@ -126,8 +135,9 @@ const SubCategory = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteSubCategories/${id}`).then((res) => {
           if (res.data.status === 200) {
-            setSubCategoryInsert([]);
             swal("Success", res.data.message, "success");
+            setCheck(!check);
+
             // thisClicked.closest("tr").remove();
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
@@ -150,7 +160,7 @@ const SubCategory = (props) => {
       }
       setLoading(false);
     });
-  }, [subCategoryInsert, editSubMenu, id]);
+  }, [check]);
   var branchID = 0;
 
   var viewProducts_HTMLTABLE = "";
@@ -164,7 +174,7 @@ const SubCategory = (props) => {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       branchID = item.branchID;
       return (
-        <div className="col-xl-4 col-lg-6 col-sm-6" key={i}>
+        <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3" key={i}>
           <div className="card overflow-hidden">
             <div className="card-body">
               <div className="text-center">
@@ -176,10 +186,17 @@ const SubCategory = (props) => {
                 >
                   <span>
                     <img
-                      style={{ height: "100px", objectFit: "contain" }}
-                      src={`http://${base_url}:${port}/images/sub_catagories/${item.SubCategoryIcon}`}
-                      className="w-40"
-                      alt=""
+                      style={{
+                        height: "100px",
+                        width: "100%",
+                        objectFit: "contain",
+                      }}
+                      src={
+                        item.SubCategoryIcon
+                          ? `http://${base_url}:${port}/images/sub_catagories/${item.SubCategoryIcon}`
+                          : DefaultPic
+                      }
+                      alt="sub category"
                     />
                   </span>
 
@@ -190,24 +207,14 @@ const SubCategory = (props) => {
 
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
-                <div className="col-4 pt-3 pb-3 border-right">
+                <div className="col-6 pt-3 pb-3 border-right">
                   <Link to="" onClick={(e) => fetchSubMenus(e, item.sub_id)}>
                     <span>{t("edit")}</span>
                   </Link>
                 </div>
-                <div className="col-4 pt-3 pb-3 border-right">
+                <div className="col-6 pt-3 pb-3">
                   <Link to="" onClick={(e) => deleteSubMenu(e, item.sub_id)}>
                     <span>{t("delete")}</span>
-                  </Link>
-                </div>
-                <div className="col-4 pt-3 pb-3">
-                  <Link
-                    to={{
-                      pathname: `${url}/products`,
-                      state: { id: item.sub_id },
-                    }}
-                  >
-                    <span>{t("products")}</span>
                   </Link>
                 </div>
               </div>
@@ -250,14 +257,6 @@ const SubCategory = (props) => {
             <div className="form-group">
               <label className="mb-1 ">
                 {" "}
-                <strong>
-                  {t("category_name")}: {props.location.CategoryName}
-                </strong>{" "}
-              </label>
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
                 <strong>{t("sub_category_icon")}</strong>{" "}
               </label>
               <div className="input-group">
@@ -267,7 +266,6 @@ const SubCategory = (props) => {
                     className="form-control"
                     placeholder={t("sub_category_icon")}
                     name="SubCategoryIcon"
-                    required
                     onChange={handleImage}
                   />
                 </div>
@@ -334,7 +332,11 @@ const SubCategory = (props) => {
                     onChange={handleImage}
                   />
                   <img
-                    src={`http://${base_url}:${port}/images/sub_catagories/${editSubMenu.SubCategoryIcon}`}
+                    src={
+                      editSubMenu.CategoryIcon
+                        ? `http://${base_url}:${port}/images/sub_catagories/${editSubMenu.SubCategoryIcon}`
+                        : DefaultPic
+                    }
                     width="70"
                     alt=" "
                   />
@@ -372,7 +374,7 @@ const SubCategory = (props) => {
       </Modal>
       <div className="row">
         {viewProducts_HTMLTABLE}
-        <div className="col-xl-4 col-lg-4 col-sm-4 ">
+        <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
           <div className="card overflow-hidden ">
             <div
               className="card-body d-flex justify-content-center text-center"

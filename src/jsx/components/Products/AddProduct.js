@@ -19,13 +19,11 @@ const AddProduct = (props) => {
   const schema = yup
     .object()
     .shape({
-      Description: yup.string().required("This field is a required field"),
       ProductName: yup.string().required("This field is a required field"),
       UnitID: yup.string().required("This field is a required field"),
       sub_category: yup.string().required("This field is a required field"),
       price: yup.number().required("This field is a required field"),
       stock: yup.number().required("This field is a required field"),
-      preparationTime: yup.number().required("This field is a required field"),
     })
     .required();
   const {
@@ -36,6 +34,7 @@ const AddProduct = (props) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
   // validation End
   const [modalCentered, setModalCentered] = useState(false);
 
@@ -68,6 +67,8 @@ const AddProduct = (props) => {
         setProductIngredient([]);
         reset();
         swal("Success", res.data.message, "success");
+        history.goBack();
+
         //  this.props.history.push("/")
       }
     });
@@ -87,7 +88,10 @@ const AddProduct = (props) => {
         setInsert({
           name: "",
         });
+        setCheck(!check);
+
         setModalCentered(false);
+
         swal("Success", res.data.message, "success");
       }
     });
@@ -98,6 +102,8 @@ const AddProduct = (props) => {
   const [unitData, setUnitData] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [intgredients, setIntgredients] = useState([]);
+  const [check, setCheck] = useState(true);
+
   useEffect(() => {
     axios.post(`/api/GetIngredient`).then((res) => {
       if (res.data.status === 200) {
@@ -121,7 +127,7 @@ const AddProduct = (props) => {
       }
       setLoading(false);
     });
-  }, [insert]);
+  }, [check]);
   const [productIngredient, setProductIngredient] = useState([]);
   const handleSelectEvent = (e) => {
     setProductIngredient(e);
@@ -483,6 +489,15 @@ const AddProduct = (props) => {
   return (
     <>
       <Fragment>
+        <div className="m-1">
+          <Button
+            variant="danger light"
+            className="m-1"
+            onClick={() => history.goBack()}
+          >
+            List of Products
+          </Button>
+        </div>
         {viewProducts_HTMLTABLE}
 
         <Modal className="fade" show={modalCentered}>

@@ -45,6 +45,8 @@ const Design = (props) => {
   // Insert Start
   const [themes, setThemes] = useState([]);
   const [activeThemeId, setActiveThemeId] = useState([]);
+  const [check, setCheck] = useState(true);
+
   const handleInput = (e) => {
     e.persist();
     setThemes({ ...themes, [e.target.name]: e.target.value });
@@ -68,7 +70,7 @@ const Design = (props) => {
     // console.log(activeThemeId);
     axios.post(`/api/UpdateTheme/${activeThemeId}`, formData).then((res) => {
       if (res.data.status === 200) {
-        setLoading(true);
+        setCheck(!check);
         swal("Success", res.data.message, "success");
       }
     });
@@ -79,7 +81,7 @@ const Design = (props) => {
   const changeTheActiveTheme = (e, id) => {
     axios.post(`/api/ThemeStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
-        setLoading(true);
+        setCheck(!check);
         swal("Success", res.data.message, "success");
       }
     });
@@ -88,7 +90,7 @@ const Design = (props) => {
   const changeTheActiveTemplate = (e, id) => {
     axios.post(`/api/TemplateStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
-        setLoading(true);
+        setCheck(!check);
         swal("Success", res.data.message, "success");
       }
     });
@@ -116,7 +118,7 @@ const Design = (props) => {
         setTemplates(res.data.data);
       }
     });
-  }, [loading]);
+  }, [check]);
   // delete start
   const deleteTheme = (e, id) => {
     e.preventDefault();
@@ -130,7 +132,7 @@ const Design = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteTheme/${id}`).then((res) => {
           if (res.data.status === 200) {
-            setLoading(true);
+            setCheck(!check);
             swal("Success", res.data.message, "success");
             // thisClicked.closest("tr").remove();
           } else if (res.data.status === 404) {
@@ -148,7 +150,7 @@ const Design = (props) => {
     e.preventDefault();
     axios.get(`/api/duplicateTheme/${id}`).then((res) => {
       if (res.data.status === 200) {
-        setLoading(true);
+        setCheck(!check);
         swal("Success", res.data.message, "success");
       }
     });

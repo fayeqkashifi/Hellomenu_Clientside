@@ -42,21 +42,39 @@ const Branches = () => {
 
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
-  const [branchstate, setBranchstate] = useState([]);
+  const [branchstate, setBranchstate] = useState({
+    BrancheName: "",
+    currencyID: "",
+  });
   const handleInput = (e) => {
     e.preventDefault();
     setBranchstate({ ...branchstate, [e.target.name]: e.target.value });
   };
   const saveBranch = (e) => {
     // e.preventDefault();
-    axios.post("/api/InsertBranches", branchstate).then((res) => {
-      if (res.data.status === 200) {
-        setBranchstate([]);
-        reset();
-        swal("Success", res.data.message, "success");
-        setModalCentered(false);
-      }
+    const check = branchdata.every((item) => {
+      return item.BrancheName !== branchstate.BrancheName;
     });
+    if (check) {
+      axios.post("/api/InsertBranches", branchstate).then((res) => {
+        if (res.data.status === 200) {
+          setBranchstate({
+            BrancheName: "",
+            currencyID: "",
+          });
+          reset();
+          setCheck(!check);
+          swal("Success", res.data.message, "success");
+          setModalCentered(false);
+        }
+      });
+    } else {
+      swal(
+        "warning",
+        "The name already exists, please try another name.",
+        "warning"
+      );
+    }
   };
   // insert end
 
@@ -81,14 +99,17 @@ const Branches = () => {
   };
   const updateBranch = (e) => {
     e.preventDefault();
-    console.log(editBranchstate);
     axios.post("/api/UpdateBranches", editBranchstate).then((res) => {
       if (res.data.status === 200) {
-        setBranchdata([]);
-        setEditBranchstate([]);
         swal("Success", res.data.message, "success");
+        setEditBranchstate({
+          id: "",
+          BrancheName: "",
+          currencyID: "",
+        });
+        setCheck(!check);
+
         setEditModalCentered(false);
-        //  this.props.history.push("/")
       }
     });
   };
@@ -111,7 +132,7 @@ const Branches = () => {
           } else if (res.data.status === 404) {
             swal("Success", res.data.message, "success");
           }
-          setBranchstate([]);
+          setCheck(!check);
         });
       } else {
         swal("Your Data is safe now!");
@@ -123,6 +144,8 @@ const Branches = () => {
   const [branchdata, setBranchdata] = useState([]);
   const [currency, setCurrency] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(true);
+
   // for mobile
   useEffect(() => {
     axios.get("/api/GetBranches").then((res) => {
@@ -136,7 +159,7 @@ const Branches = () => {
         setCurrency(res.data.fetchData);
       }
     });
-  }, [branchstate]);
+  }, [check]);
   // for download QRCode
   const downloadQRCode = (e, id) => {
     e.preventDefault();
@@ -190,10 +213,13 @@ const Branches = () => {
                     )}`}
                     className="primary"
                   />
-                  <Link to="" onClick={(e) => downloadQRCode(e, btoa(item.id))}>
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => downloadQRCode(e, btoa(item.id))}
+                  >
                     {" "}
                     <p>{t("download_qr_code")}</p>
-                  </Link>
+                  </div>
                   <h3 className="mt-4 mb-1"> {item.BrancheName}</h3>
                 </Link>
                 <CDropdown variant="btn-group">
@@ -325,7 +351,7 @@ const Branches = () => {
                 placeholder="currencyID"
                 name="currencyID"
                 onChange={handleInput}
-                value={branchstate.currencyID}
+                defaultValue={branchstate.currencyID}
               >
                 <option value="">{t("select_currency")}</option> )
                 {currency.map((item) => (
@@ -411,14 +437,15 @@ const Branches = () => {
                 name="currencyID"
                 required
                 onChange={editHandleInput}
-                value={editBranchstate.currencyID}
+                defaultValue={editBranchstate.currencyID}
               >
-                <option value="">{t("select_currency")}</option> )
-                {currency.map((item) => (
-                  <option value={item.id} key={item.id}>
-                    {item.currency_name + " / " + item.currency_code}
-                  </option>
-                ))}
+                {currency.map((item) => {
+                  return (
+                    <option value={item.id} key={item.id}>
+                      {item.currency_name + " / " + item.currency_code}
+                    </option>
+                  );
+                })}
               </select>
             </div>
           </Modal.Body>

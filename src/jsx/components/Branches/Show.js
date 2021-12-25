@@ -28,19 +28,23 @@ import Unit from "../Units/Unit";
 import Tables from "./Tables";
 import ProductShow from "../Products/Show";
 import DesignShow from "../Design/Show";
+import IconButton from "@mui/material/IconButton";
+import RefreshIcon from "@mui/icons-material/Refresh";
 const Show = (props) => {
   const { t } = useTranslation();
   const id = props.history.location.state.id;
   const BrancheName = props.history.location.state.BrancheName;
   const { path, url } = useRouteMatch();
   const [template, setTemplate] = useState("");
+  const [check, setCheck] = useState(true);
+
   useEffect(() => {
     axios.get(`/api/GetTempBasedOnBranch/${id}`).then((res) => {
       if (res.data.status === 200) {
         setTemplate(res.data.fetchData);
       }
     });
-  }, []);
+  }, [check]);
   const tabData = [
     {
       name: t("categories"),
@@ -97,21 +101,23 @@ const Show = (props) => {
         pathname: ``,
       },
     },
-    {
-      name: t("public_link"),
-      url: {
-        pathname: `/${template.URL}/${btoa(id)}`,
-      },
-    },
+    // {
+    //   name: t("public_link"),
+    //   url: {
+    //     pathname: `/${template.URL}/${btoa(id)}`,
+    //   },
+    // },
   ];
   // to display public link inside phone
   const [visible, setVisible] = useState(false);
 
-  const [destinationLink, setDestinationLink] = useState("");
-  const phone = (e, srcLink) => {
+  const phone = (e) => {
     e.preventDefault();
-    setDestinationLink(srcLink);
     setVisible(true);
+  };
+  const reload = (e) => {
+    e.preventDefault();
+    setCheck(!check);
   };
   return (
     <Fragment>
@@ -133,12 +139,7 @@ const Show = (props) => {
                           {tabData.map((data, i) =>
                             data.name === t("preview") ? (
                               <Nav.Item as="li" key={i}>
-                                <Link
-                                  to={data.url}
-                                  onClick={(e) =>
-                                    phone(e, `/standard-template/${btoa(id)}`)
-                                  }
-                                >
+                                <Link to={data.url} onClick={(e) => phone(e)}>
                                   <Nav.Link eventKey={data.name.toLowerCase()}>
                                     {data.name}
                                   </Nav.Link>
@@ -148,11 +149,11 @@ const Show = (props) => {
                               <Nav.Item as="li" key={i}>
                                 <Link
                                   to={data.url}
-                                  target={
-                                    data.name === t("public_link")
-                                      ? "_blank"
-                                      : ""
-                                  }
+                                  // target={
+                                  //   data.name === t("public_link")
+                                  //     ? "_blank"
+                                  //     : ""
+                                  // }
                                 >
                                   <Nav.Link eventKey={data.name.toLowerCase()}>
                                     {data.name}
@@ -178,13 +179,26 @@ const Show = (props) => {
           onHide={() => setVisible(false)}
         >
           <COffcanvasHeader>
-            <COffcanvasTitle>{t("display_mobile")}</COffcanvasTitle>
+            <COffcanvasTitle>
+              {t("display_mobile")}
+              <br></br>
+              <small>First, reload the settings to device.</small>
+            </COffcanvasTitle>
             <CCloseButton
               className="text-reset"
               onClick={() => setVisible(false)}
             />
           </COffcanvasHeader>
           <COffcanvasBody>
+            <div className="d-flex justify-content-between">
+              <IconButton onClick={(e) => reload(e)}>
+                <RefreshIcon />
+              </IconButton>
+              <Link to={`/${template.URL}/${btoa(id)}`} target="_blank">
+                {t("public_link")}
+              </Link>
+            </div>
+
             <div className="wrapper">
               <div className="iphone">
                 <div className="power"></div>
@@ -195,7 +209,8 @@ const Show = (props) => {
                 <div className="speaker"></div>
                 <div className="screen">
                   <iframe
-                    src={destinationLink}
+                    src={`/${template.URL}/${btoa(id)}`}
+                    key={check}
                     height="100%"
                     width="100%"
                     title="Devices"

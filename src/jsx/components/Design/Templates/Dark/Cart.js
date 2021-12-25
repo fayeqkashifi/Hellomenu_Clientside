@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useTranslation } from "react-i18next";
 // Import css files
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Footer from "./Footer";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
@@ -16,17 +14,15 @@ import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 
 import "react-slideshow-image/dist/styles.css";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 // import { Carousel } from "react-responsive-carousel";
 import CardContent from "@mui/material/CardContent";
+import ClearIcon from "@mui/icons-material/Clear";
+import IconButton from "@mui/material/IconButton";
+import { Link } from "react-router-dom";
 
 import "../style.css";
-import CancelIcon from "@mui/icons-material/Cancel";
 const Cart = (props) => {
   // for localization
   const { t } = useTranslation();
@@ -72,10 +68,15 @@ const Cart = (props) => {
     JSON.parse(localStorage.getItem("cart")) || []
   );
   const [loading, setLoading] = useState(true);
+  let [sum, setSum] = useState(0);
+
   useEffect(() => {
     setLoading(false);
+    cart.map((item) => {
+      sum += item.price * item.qty;
+    });
+    setSum(sum);
   }, []);
-  let [sum, setSum] = useState(0);
 
   const handleDecrement = (e, qty, id, price) => {
     e.preventDefault();
@@ -102,6 +103,17 @@ const Cart = (props) => {
     );
     setSum((sum += parseInt(price)));
   };
+  const remItem = (id, qty, price) => {
+    setSum((sum -= price * qty));
+
+    const data = cart.filter((cart) => {
+      return cart.id !== id;
+    });
+    // data.push(...data, { qty: 1 });
+    // console.log(data);
+    localStorage.setItem("cart", JSON.stringify(data));
+    setCart(data);
+  };
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -119,6 +131,7 @@ const Cart = (props) => {
     viewImages_HTMLTABLE = cart?.map((item, i) => {
       return (
         <Card
+          key={i}
           sx={{
             // height: "100%",
             display: "flex",
@@ -130,13 +143,21 @@ const Cart = (props) => {
           }}
           className="m-1"
         >
-          <div className="text-right m-1">
-            <CancelIcon />
+          <div className="text-right">
+            <IconButton onClick={() => remItem(item.id, item.qty, item.price)}>
+              <ClearIcon
+                sx={{
+                  color: custom?.menusAcriveColor
+                    ? custom.menusAcriveColor
+                    : "#f27d1e",
+                }}
+              />
+            </IconButton>
           </div>
 
           <CardContent sx={{ flexGrow: 1 }}>
-            <Grid container spacing={2} key={i}>
-              <Grid item xs={3} sm={4} md={4}>
+            <Grid container spacing={2}>
+              <Grid item xs={3} sm={3} md={3}>
                 <img
                   style={{
                     height: "100px",
@@ -149,7 +170,7 @@ const Cart = (props) => {
                   // className="h-100"
                 />
               </Grid>
-              <Grid item xs={3} sm={4} md={4}>
+              <Grid item xs={5} sm={5} md={5}>
                 <Typography
                   variant="button"
                   style={{ textTransform: "capitalize" }}
@@ -164,7 +185,7 @@ const Cart = (props) => {
                 >
                   {getSymbolFromCurrency(item.currency_code) +
                     "  " +
-                    item.price * item.qty}
+                    (item.price * item.qty).toFixed(2)}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
                   {item.UnitName}
@@ -241,7 +262,64 @@ const Cart = (props) => {
       <CssBaseline />
       <Container maxWidth="lg" className="mb-2">
         <Header subcategories={0} cart={cart.length} />
-        {viewImages_HTMLTABLE}
+        {cart.length === 0 ? (
+          <Grid container spacing={2} className="text-center">
+            <Grid item xs={12} sm={12} md={12}>
+              No Item Available
+            </Grid>
+          </Grid>
+        ) : (
+          <>
+            {viewImages_HTMLTABLE}
+            <Card
+              sx={{
+                // height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                // borderRadius: "%",
+                backgroundColor: custom?.cardBgColor
+                  ? custom.cardBgColor
+                  : "#2d3134",
+              }}
+              className="m-1"
+            >
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6} sm={6} md={6}>
+                    <Typography
+                      variant="body1"
+                      className="font-weight-bold col-12 btn"
+                    >
+                      {sum.toFixed(2) +
+                        "  " +
+                        getSymbolFromCurrency(cart[0]?.currency_code)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6} sm={6} md={6}>
+                    <Link
+                      className="col-12 btn"
+                      style={{
+                        textTransform: "capitalize",
+                        backgroundColor: theme?.button_background_color
+                          ? theme.button_background_color
+                          : "#ff751d",
+                        color: theme?.button_text_color
+                          ? theme.button_text_color
+                          : "#f1fcfe",
+                        fontSize: theme?.bTextSize
+                          ? theme.bTextSize + "rem"
+                          : "1rem",
+                      }}
+                      to=""
+                    >
+                      Order
+                    </Link>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </Container>
     </ThemeProvider>
   );

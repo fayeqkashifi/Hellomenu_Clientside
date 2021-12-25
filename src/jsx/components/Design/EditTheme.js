@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  CBreadcrumb,
   CCard,
   CCardBody,
   CCardHeader,
@@ -68,6 +67,8 @@ const EditTheme = (props) => {
     axios.post(`/api/UpdateTheme/${id}`, formData).then((res) => {
       if (res.data.status === 200) {
         swal("Success", res.data.message, "success");
+        history.goBack();
+
         // setThemes([]);
         // setImageStateMenu([]);
         // setImageState([]);

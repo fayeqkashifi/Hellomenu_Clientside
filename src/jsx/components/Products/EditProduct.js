@@ -19,13 +19,13 @@ const EditProduct = (props) => {
   const schema = yup
     .object()
     .shape({
-      Description: yup.string().required("This field is a required field"),
+      // Description: yup.string().required("This field is a required field"),
       ProductName: yup.string().required("This field is a required field"),
       UnitID: yup.string().required("This field is a required field"),
       sub_category_id: yup.string().required("This field is a required field"),
       price: yup.number().required("This field is a required field"),
       stock: yup.number().required("This field is a required field"),
-      preparationTime: yup.number().required("This field is a required field"),
+      // preparationTime: yup.number().required("This field is a required field"),
     })
     .required();
   const {
@@ -56,6 +56,7 @@ const EditProduct = (props) => {
         setInsert({
           name: "",
         });
+        setCheck(!check);
         setModalCentered(false);
         swal("Success", res.data.message, "success");
       }
@@ -89,6 +90,8 @@ const EditProduct = (props) => {
     axios.post("/api/UpdateProduct", formData).then((res) => {
       if (res.data.status === 200) {
         swal("Success", res.data.message, "success");
+        setCheck(!check);
+        history.goBack();
       }
     });
   };
@@ -100,6 +103,8 @@ const EditProduct = (props) => {
   const [subCategories, setSubCategories] = useState([]);
   const [intgredients, setIntgredients] = useState([]);
   const [productIngredient, setProductIngredient] = useState([]);
+  const [check, setCheck] = useState(true);
+
   const handleSelectEvent = (e) => {
     setProductIngredient(e);
   };
@@ -154,7 +159,7 @@ const EditProduct = (props) => {
         swal("Error", res.data.message, "error");
       }
     });
-  }, [insert]);
+  }, [check]);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -506,6 +511,15 @@ const EditProduct = (props) => {
   return (
     <>
       <Fragment>
+        <div className="m-1">
+          <Button
+            variant="danger light"
+            className="m-1"
+            onClick={() => history.goBack()}
+          >
+            List of Products
+          </Button>
+        </div>
         {viewProducts_HTMLTABLE}
         <Modal className="fade" show={modalCentered}>
           <Form onSubmit={save} method="POST" encType="multipart/form-data">

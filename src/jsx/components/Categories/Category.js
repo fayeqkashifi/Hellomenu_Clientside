@@ -3,12 +3,7 @@ import { Button, Modal, Form } from "react-bootstrap";
 import { base_url, port } from "../../../Consts";
 /// Bootstrap
 import { Row, Col, Card } from "react-bootstrap";
-import {
-  Link,
-  useRouteMatch,
-  Switch,
-  BrowserRouter as Router,
-} from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
@@ -17,13 +12,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
   CBreadcrumb,
-  CBreadcrumbItem,
   CDropdown,
   CDropdownToggle,
   CDropdownMenu,
 } from "@coreui/react";
-import PrivateRoute from "../PrivateRoute";
-import SubCategory from "./SubCategory";
+import DefaultPic from "../../../images/hellomenu/category.svg";
 
 const Category = (props) => {
   const { path, url } = useRouteMatch();
@@ -49,11 +42,12 @@ const Category = (props) => {
   const { t } = useTranslation();
   // ID
   const id = props.history.location.state.id;
-  const BrancheName = props.history.location.state.BrancheName;
+  const [check, setCheck] = useState(true);
   // insert Start
   const [modalCentered, setModalCentered] = useState(false);
   const [categoryInsert, setCategoryInsert] = useState({
     CategoryName: "",
+    CategoryIcon: "",
     branchID: id,
   });
   const [imageState, setImageState] = useState([]);
@@ -77,9 +71,11 @@ const Category = (props) => {
         // console.log(res.data.status);
         setCategoryInsert({
           CategoryName: "",
+          CategoryIcon: "",
           branchID: id,
         });
         reset();
+        setCheck(!check);
         swal("Success", res.data.message, "success");
         setModalCentered(false);
         //  this.props.history.push("/")
@@ -89,7 +85,11 @@ const Category = (props) => {
   // insert End
   // edit start
   const [editmodalCentered, setEditModalCentered] = useState(false);
-  const [editMenu, setEditMenu] = useState("");
+  const [editMenu, setEditMenu] = useState({
+    CategoryName: "",
+    CategoryIcon: "",
+    branchID: id,
+  });
   const editHandleInput = (e) => {
     e.persist();
     setEditMenu({ ...editMenu, [e.target.name]: e.target.value });
@@ -115,10 +115,16 @@ const Category = (props) => {
     axios.post("/api/UpdateCategories", formData).then((res) => {
       if (res.data.status === 200) {
         // console.log(res.data.status);
-        setEditMenu("");
+        setEditMenu({
+          id: "",
+          CategoryName: "",
+          CategoryIcon: "",
+          branchID: id,
+        });
+        setCheck(!check);
+
         swal("Success", res.data.message, "success");
         setEditModalCentered(false);
-        //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
       }
@@ -138,9 +144,9 @@ const Category = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteCategories/${id}`).then((res) => {
           if (res.data.status === 200) {
-            setCategoryInsert([]);
             swal("Success", res.data.message, "success");
             // thisClicked.closest("tr").remove();
+            setCheck(!check);
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
           }
@@ -162,7 +168,7 @@ const Category = (props) => {
       }
       setLoading(false);
     });
-  }, [categoryInsert, editMenu, id]);
+  }, [check]);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -174,7 +180,7 @@ const Category = (props) => {
   } else {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       return (
-        <Col xl={3} key={item.id}>
+        <Col xl={3} md={3} lg={3} sm={6} key={item.id}>
           <Card>
             <Card.Header>
               <h4 className="card-intro-title">{item.CategoryName}</h4>
@@ -189,10 +195,17 @@ const Category = (props) => {
                 >
                   <span>
                     <img
-                      style={{ height: "100px", objectFit: "contain" }}
-                      src={`http://${base_url}:${port}/images/catagories/${item.CategoryIcon}`}
-                      className="w-40"
-                      alt="Menu"
+                      style={{
+                        height: "150px",
+                        width: "100%",
+                        objectFit: "contain",
+                      }}
+                      src={
+                        item.CategoryIcon
+                          ? `http://${base_url}:${port}/images/catagories/${item.CategoryIcon}`
+                          : DefaultPic
+                      }
+                      alt="category"
                     />
                   </span>
                 </Link>
@@ -221,7 +234,10 @@ const Category = (props) => {
                 </CDropdownToggle>
                 <CDropdownMenu>
                   <div className="mx-3 my-2">
-                    <Link to="" onClick={(e) => fetchMenus(e, item.id)}>
+                    <div
+                      onClick={(e) => fetchMenus(e, item.id)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -237,11 +253,14 @@ const Category = (props) => {
                         />
                       </svg>
                       <span> {t("edit")}</span>
-                    </Link>
+                    </div>
                   </div>
 
                   <div className="mx-3 my-2">
-                    <Link to="" onClick={(e) => deleteMenu(e, item.id)}>
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={(e) => deleteMenu(e, item.id)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -257,7 +276,7 @@ const Category = (props) => {
                         />
                       </svg>
                       <span> {t("delete")}</span>
-                    </Link>
+                    </div>
                   </div>
                   <div className="mx-3 my-2">
                     <Link
@@ -290,7 +309,7 @@ const Category = (props) => {
   return (
     <Fragment>
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <Link className="font-weight-bold">{t("categories")}</Link>
+        <div className="font-weight-bold">{t("categories")}</div>
       </CBreadcrumb>
       {/* <!-- Insert  Modal --> */}
 
@@ -314,14 +333,6 @@ const Category = (props) => {
             <div className="form-group">
               <label className="mb-1 ">
                 {" "}
-                <strong>
-                  {t("branch_name")}: {props.location.branchName}
-                </strong>{" "}
-              </label>
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
                 <strong>{t("category_icon")}</strong>{" "}
               </label>
               <div className="input-group">
@@ -331,7 +342,6 @@ const Category = (props) => {
                     className="form-control"
                     placeholder={t("category_icon")}
                     name="CategoryIcon"
-                    required
                     onChange={handleImage}
                   />
                 </div>
@@ -411,7 +421,11 @@ const Category = (props) => {
                     onChange={handleImage}
                   />
                   <img
-                    src={`http://${base_url}:${port}/images/catagories/${editMenu.CategoryIcon}`}
+                    src={
+                      editMenu.CategoryIcon
+                        ? `http://${base_url}:${port}/images/catagories/${editMenu.CategoryIcon}`
+                        : DefaultPic
+                    }
                     width="70"
                     alt=" "
                   />
@@ -449,7 +463,7 @@ const Category = (props) => {
       </Modal>
       <Row>
         {viewProducts_HTMLTABLE}
-        <div className="col-xl-3 col-lg-4 col-sm-4 ">
+        <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
           <div className="card overflow-hidden ">
             <div
               className="card-body d-flex justify-content-center text-center"

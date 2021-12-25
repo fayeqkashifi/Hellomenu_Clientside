@@ -46,7 +46,12 @@ function Header(props) {
           align="center"
           sx={{ flex: 1 }}
         ></Typography>
-        <IconButton>
+        <Link
+          to={{
+            pathname: `/dark-templates/cart`,
+            state: { custom: custom },
+          }}
+        >
           <Badge
             badgeContent={cart}
             sx={{
@@ -61,21 +66,14 @@ function Header(props) {
             }}
             overlap="circular"
           >
-            <Link
-              to={{
-                pathname: `/dark-templates/cart`,
-                state: { custom: custom },
+            <AddShoppingCartIcon
+              fontSize="small"
+              sx={{
+                color: "#fff",
               }}
-            >
-              <AddShoppingCartIcon
-                fontSize="small"
-                sx={{
-                  color: "#fff",
-                }}
-              />
-            </Link>
+            />
           </Badge>
-        </IconButton>
+        </Link>
       </Toolbar>
 
       {subcategories === 0 ? (

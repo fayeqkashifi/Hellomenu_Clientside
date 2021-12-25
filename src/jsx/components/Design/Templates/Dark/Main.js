@@ -18,6 +18,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
+import Counter from "./Counter";
 
 var hold = 1;
 export default function Main(props) {
@@ -132,22 +133,22 @@ export default function Main(props) {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-  const addItem = (id) => {
-    const check = cart.every((item) => {
-      return item.id !== id;
-    });
-    if (check) {
-      const data = products.filter((product) => {
-        return product.id === id;
-      });
-      // data.push(...data, { qty: 1 });
-      // console.log(data);
-      localStorage.setItem("cart", JSON.stringify(cart.concat(data)));
-      setCart(cart.concat(data));
-    } else {
-      alert("product has been already added to cart");
-    }
-  };
+  // const addItem = (id) => {
+  // const check = cart.every((item) => {
+  //   return item.id !== id;
+  // });
+  // if (check) {
+  //   const data = products.filter((product) => {
+  //     return product.id === id;
+  //   });
+  //   // data.push(...data, { qty: 1 });
+  //   // console.log(data);
+  //   localStorage.setItem("cart", JSON.stringify(cart.concat(data)));
+  //   setCart(cart.concat(data));
+  // } else {
+  //   alert("product has been already added to cart");
+  // }
+  // };
   var viewShow_HTMLTABLE = "";
   if (loading) {
     return (
@@ -270,7 +271,7 @@ export default function Main(props) {
               </Link>
 
               <div className="mt-2">
-                <Grid container spacing={2}>
+                <Grid container>
                   <Grid item xs={9}>
                     <Link
                       to={{
@@ -288,7 +289,13 @@ export default function Main(props) {
                     </Link>
                   </Grid>
                   <Grid item xs={3}>
-                    <IconButton onClick={() => addItem(item.id)}>
+                    <Counter
+                      item={item}
+                      cart={cart}
+                      setCart={setCart}
+                      products={products}
+                    />
+                    {/* <IconButton onClick={() => addItem(item.id)}>
                       {cart.every((val) => {
                         return val.id !== item.id;
                       }) ? (
@@ -308,7 +315,7 @@ export default function Main(props) {
                           }}
                         />
                       )}
-                    </IconButton>
+                    </IconButton> */}
                   </Grid>
                 </Grid>
 
@@ -319,7 +326,7 @@ export default function Main(props) {
                 >
                   {getSymbolFromCurrency(item.currency_code) +
                     "  " +
-                    item.price}
+                    item.price.toFixed(2)}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
                   {item.Description}

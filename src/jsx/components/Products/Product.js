@@ -120,7 +120,12 @@ const Product = (props) => {
                 <div className="row m-3">
                   {JSON.parse(item.ingredients)?.map((item, i) => {
                     return (
-                      <Stack direction="row" className="m-1" spacing={1}>
+                      <Stack
+                        direction="row"
+                        className="m-1"
+                        spacing={1}
+                        key={i}
+                      >
                         <Chip
                           label={item.label}
                           // color="primary"
@@ -139,7 +144,12 @@ const Product = (props) => {
                 <div className="row m-3">
                   {JSON.parse(item.extras)?.map((item, i) => {
                     return (
-                      <Stack direction="row" className="m-1" spacing={1}>
+                      <Stack
+                        direction="row"
+                        className="m-1"
+                        spacing={1}
+                        key={i}
+                      >
                         <Chip
                           label={item.label + "( +" + item.price + ".00" + " )"}
                           // color="primary"
@@ -158,7 +168,12 @@ const Product = (props) => {
                 <div className="row m-3">
                   {JSON.parse(item.recommendations)?.map((item, i) => {
                     return (
-                      <Stack direction="row" className="m-1" spacing={1}>
+                      <Stack
+                        direction="row"
+                        className="m-1"
+                        spacing={1}
+                        key={i}
+                      >
                         <Chip
                           label={item.label}
                           // color="primary"

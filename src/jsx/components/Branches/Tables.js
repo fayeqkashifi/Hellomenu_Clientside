@@ -33,10 +33,13 @@ const Tables = (props) => {
   const { t } = useTranslation();
   // ID
   const id = props.history.location.state.id;
+  const [check, setCheck] = useState(true);
 
   // insert modal
   const [modalCentered, setModalCentered] = useState(false);
   const [tableInsert, setTableInsert] = useState({
+    tableId: "",
+    tableName: "",
     branchId: id,
   });
   const handleInput = (e) => {
@@ -48,10 +51,12 @@ const Tables = (props) => {
     axios.post("/api/InsertTable", tableInsert).then((res) => {
       if (res.data.status === 200) {
         setTableInsert({
+          tableId: "",
+          tableName: "",
           branchId: id,
         });
         reset();
-
+        setCheck(!check);
         swal("Success", res.data.message, "success");
         setModalCentered(false);
         //  this.props.history.push("/")
@@ -62,7 +67,11 @@ const Tables = (props) => {
 
   // edit modal
   const [editmodalCentered, setEditModalCentered] = useState(false);
-  const [editTable, setEditTable] = useState([]);
+  const [editTable, setEditTable] = useState({
+    tableId: "",
+    tableName: "",
+    branchId: id,
+  });
   const editHandleInput = (e) => {
     e.persist();
     setEditTable({ ...editTable, [e.target.name]: e.target.value });
@@ -82,9 +91,15 @@ const Tables = (props) => {
     e.preventDefault();
     axios.post("/api/UpdateTable", editTable).then((res) => {
       if (res.data.status === 200) {
-        setEditTable("");
+        setEditTable({
+          tableId: "",
+          tableName: "",
+          branchId: id,
+        });
         swal("Success", res.data.message, "success");
         setEditModalCentered(false);
+        setCheck(!check);
+
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
@@ -106,9 +121,7 @@ const Tables = (props) => {
         axios.delete(`/api/DeleteTable/${id}`).then((res) => {
           if (res.data.status === 200) {
             swal("Success", res.data.message, "success");
-            setTableInsert({
-              branchId: id,
-            });
+            setCheck(!check);
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
           }
@@ -130,7 +143,7 @@ const Tables = (props) => {
       }
       setLoading(false);
     });
-  }, [tableInsert, editTable, id]);
+  }, [check]);
   // download QRcode
   const downloadQRCode = (e, id) => {
     e.preventDefault();

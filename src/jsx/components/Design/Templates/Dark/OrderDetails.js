@@ -175,8 +175,8 @@ const OrderDetails = (props) => {
                 <Typography variant="subtitle1" gutterBottom>
                   {item.label +
                     " ( +" +
-                    item.price * item.qty +
-                    ".00 " +
+                    (item.price * item.qty).toFixed(2) +
+                    " " +
                     getSymbolFromCurrency(countryCode) +
                     " )"}
                 </Typography>
@@ -289,7 +289,10 @@ const OrderDetails = (props) => {
                     style={{ textTransform: "capitalize" }}
                   >
                     {productName}{" "}
-                    {orignalPrice + " " + getSymbolFromCurrency(countryCode)}
+                    {orignalPrice +
+                      ".00" +
+                      " " +
+                      getSymbolFromCurrency(countryCode)}
                   </Typography>
                   <Typography variant="subtitle1" gutterBottom>
                     {ingredients?.map((item, i) => {
@@ -309,7 +312,8 @@ const OrderDetails = (props) => {
                       }
                     })}
                   </Typography>
-                  {custom?.show_recommendation == 0 ? (
+                  {custom?.show_recommendation == 0 ||
+                  fetchData.length === 0 ? (
                     ""
                   ) : (
                     <>
@@ -359,9 +363,9 @@ const OrderDetails = (props) => {
               gutterBottom
               className="font-weight-bold text-center col-12 btn"
             >
-              {getSymbolFromCurrency(countryCode) +
-                "  " +
-                (parseInt(price) + sum)}
+              {(parseInt(price) + sum).toFixed(2) +
+                " " +
+                getSymbolFromCurrency(countryCode)}
             </Typography>
           </Grid>
           <Grid item xs={5}>

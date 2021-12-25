@@ -101,7 +101,7 @@ const ProductDetails = (props) => {
         varData = JSON.parse(res.data.fetchData);
         parseVariants(varData);
       }
-
+      console.log(variantData);
       setLoading(false);
     };
     getdata(); // axios
@@ -224,53 +224,55 @@ const ProductDetails = (props) => {
     viewImages_HTMLTABLE = (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={5} md={5} lg={5}>
-          <Carousel>
-            {(() => {
-              if (Array.isArray(productDetails.image)) {
-                return productDetails.image?.map((image) => {
-                  return (
-                    <Carousel.Item key={image}>
-                      <img
-                        src={`http://${base_url}:${port}/images/variants_pics/${image}`}
-                        // className="img-thumbnail"
-                        alt=""
-                        style={{
-                          height: "200px",
-                          width: "100%",
-                          borderRadius: "5%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </Carousel.Item>
-                  );
-                });
-              } else {
-                return (
-                  <Carousel.Item>
-                    <img
-                      style={{
-                        height: "200px",
-                        width: "100%",
-                        borderRadius: "5%",
-                        objectFit: "contain",
-                      }}
-                      src={
-                        productDetails.stock === "No Stock" ||
-                        productDetails?.stock === 0
-                          ? `http://${base_url}:${port}/images/products/${
-                              productDetails.image
-                                ? productDetails?.image
-                                : fetchData?.image
-                            }`
-                          : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
-                      }
-                      alt=""
-                    />
-                  </Carousel.Item>
-                );
-              }
-            })()}
-          </Carousel>
+          {(() => {
+            if (Array.isArray(productDetails.image)) {
+              return (
+                <Carousel>
+                  {productDetails.image?.map((image) => {
+                    return (
+                      <Carousel.Item key={image}>
+                        <img
+                          src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                          // className="img-thumbnail"
+                          alt=""
+                          style={{
+                            height: "200px",
+                            width: "100%",
+                            borderRadius: "5%",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </Carousel.Item>
+                    );
+                  })}
+                </Carousel>
+              );
+            } else {
+              return (
+                <div>
+                  <img
+                    style={{
+                      height: "200px",
+                      width: "100%",
+                      borderRadius: "5%",
+                      objectFit: "contain",
+                    }}
+                    src={
+                      productDetails.stock === "No Stock" ||
+                      productDetails?.stock === 0
+                        ? `http://${base_url}:${port}/images/products/${
+                            productDetails.image
+                              ? productDetails?.image
+                              : fetchData?.image
+                          }`
+                        : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
+                    }
+                    alt=""
+                  />
+                </div>
+              );
+            }
+          })()}
         </Grid>
 
         <Grid item xs={12} sm={7} md={7} lg={7}>
@@ -303,7 +305,8 @@ const ProductDetails = (props) => {
                 {fetchData?.Description}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                {custom?.preparation_time == 0 ? (
+                {custom?.preparation_time == 0 ||
+                fetchData?.preparationTime == null ? (
                   ""
                 ) : (
                   <>
@@ -320,8 +323,8 @@ const ProductDetails = (props) => {
               >
                 {t("price")} :{" "}
                 {productDetails.price === 0
-                  ? fetchData?.price + sum
-                  : parseInt(productDetails.price) + sum}
+                  ? (fetchData?.price + sum).toFixed(2)
+                  : (parseInt(productDetails.price) + sum).toFixed(2)}
                 {"  " + getSymbolFromCurrency(fetchData.currency_code)}
               </Typography>
               <Typography
@@ -335,7 +338,8 @@ const ProductDetails = (props) => {
                   : productDetails.stock}
               </Typography>
             </div>
-            {custom?.show_ingredients == 0 ? (
+            {custom?.show_ingredients == 0 ||
+            JSON.parse(fetchData.ingredients).length === 0 ? (
               ""
             ) : (
               <>
@@ -402,7 +406,8 @@ const ProductDetails = (props) => {
                 </div>
               </>
             )}
-            {custom?.show_extras == 0 ? (
+            {custom?.show_extras == 0 ||
+            JSON.parse(fetchData.extras).length === 0 ? (
               ""
             ) : (
               <div className="row mx-3">
@@ -441,7 +446,8 @@ const ProductDetails = (props) => {
                 </FormGroup>
               </div>
             )}
-            {custom?.show_variants == 0 ? (
+            {custom?.show_variants == 0 ||
+            Object.keys(showVaralint).length === 0 ? (
               ""
             ) : (
               <>
@@ -529,6 +535,9 @@ const ProductDetails = (props) => {
       <Footer
         title="Checkout"
         theme={custom}
+        stock={
+          productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
+        }
         url={{
           pathname: `/dark-template/product/order-details/${btoa(id)}`,
           state: {

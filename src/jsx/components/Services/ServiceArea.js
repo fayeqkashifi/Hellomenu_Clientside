@@ -51,6 +51,8 @@ const ServiceArea = (props) => {
           BranchID: id,
         });
         reset();
+        setCheck(!check);
+
         swal("Success", res.data.message, "success");
         setModalCentered(false);
         //  this.props.history.push("/")
@@ -83,8 +85,9 @@ const ServiceArea = (props) => {
     e.preventDefault();
     axios.post("/api/UpdateServiceAreas", editServiceAreas).then((res) => {
       if (res.data.status === 200) {
-        console.log(res.data.status);
         setEditServiceAreas("");
+        setCheck(!check);
+
         swal("Success", res.data.message, "success");
         setEditModalCentered(false);
         //  this.props.history.push("/")
@@ -108,10 +111,7 @@ const ServiceArea = (props) => {
         axios.delete(`/api/DeleteServiceAreas/${id}`).then((res) => {
           if (res.data.status === 200) {
             swal("Success", res.data.message, "success");
-            setServiceAreaInsert({
-              AreaName: "",
-              BranchID: id,
-            });
+            setCheck(!check);
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
           }
@@ -126,6 +126,7 @@ const ServiceArea = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(true);
 
   useEffect(() => {
     axios.get(`/api/GetServiceAreas/${id}`).then((res) => {
@@ -134,7 +135,7 @@ const ServiceArea = (props) => {
       }
       setLoading(false);
     });
-  }, [serviceAreaInsert, editServiceAreas, id]);
+  }, [check]);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -195,15 +196,6 @@ const ServiceArea = (props) => {
             </Button>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>
-                  {t("branch_name")}: {props.location.branchName}
-                </strong>{" "}
-              </label>
-            </div>
-
             <div className="form-group">
               <label className="mb-1 ">
                 {" "}
