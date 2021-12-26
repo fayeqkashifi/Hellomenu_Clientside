@@ -21,8 +21,8 @@ const EditProduct = (props) => {
     .shape({
       // Description: yup.string().required("This field is a required field"),
       ProductName: yup.string().required("This field is a required field"),
-      UnitID: yup.string().required("This field is a required field"),
-      sub_category_id: yup.string().required("This field is a required field"),
+      // UnitID: yup.string().required("This field is a required field"),
+      category_id: yup.string().required("This field is a required field"),
       price: yup.number().required("This field is a required field"),
       stock: yup.number().required("This field is a required field"),
       // preparationTime: yup.number().required("This field is a required field"),
@@ -78,7 +78,7 @@ const EditProduct = (props) => {
     formData.append("image", imageState.photo);
     formData.append("Description", editProduct.Description);
     formData.append("ProductName", editProduct.ProductName);
-    formData.append("UnitID", editProduct.UnitID);
+    formData.append("UnitName", editProduct.UnitName);
     formData.append("price", editProduct.price);
     formData.append("stock", editProduct.stock);
     formData.append("preparationTime", editProduct.preparationTime);
@@ -86,6 +86,7 @@ const EditProduct = (props) => {
     formData.append("extras", JSON.stringify(productExtra));
     formData.append("recommendations", JSON.stringify(productRecom));
     formData.append("sub_category", editProduct.sub_category_id);
+    formData.append("category", editProduct.category_id);
     formData.append("id", editProduct.id);
     axios.post("/api/UpdateProduct", formData).then((res) => {
       if (res.data.status === 200) {
@@ -101,6 +102,7 @@ const EditProduct = (props) => {
   const [loading, setLoading] = useState(true);
   const [unitData, setUnitData] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [intgredients, setIntgredients] = useState([]);
   const [productIngredient, setProductIngredient] = useState([]);
   const [check, setCheck] = useState(true);
@@ -137,12 +139,12 @@ const EditProduct = (props) => {
         setUnitData(res.data.fetchData);
       }
     });
-    axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
+    axios.get(`/api/GetCategories/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        setSubCategories(res.data.fetchData);
-        // console.log(res.data.fetchData);
+        setCategories(res.data.fetchData);
       }
     });
+
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
@@ -154,13 +156,30 @@ const EditProduct = (props) => {
         setProductIngredient(JSON.parse(res.data.product.ingredients));
         setProductExtra(JSON.parse(res.data.product.extras));
         setProductRecom(JSON.parse(res.data.product.recommendations));
+        console.log(res.data.product);
+        axios
+          .get(`/api/GetSubCategories/${res.data.product.category_id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setSubCategories(res.data.fetchData);
+              // console.log(res.data.fetchData);
+            }
+          });
         setLoading(false);
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
       }
     });
   }, [check]);
-
+  const getSubCategories = (e) => {
+    e.preventDefault();
+    axios.get(`/api/GetSubCategories/${e.target.value}`).then((res) => {
+      if (res.data.status === 200) {
+        setSubCategories(res.data.fetchData);
+      }
+    });
+    setEditProduct({ ...editProduct, [e.target.name]: e.target.value });
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -179,6 +198,39 @@ const EditProduct = (props) => {
         <div className="card-body">
           <Form onSubmit={handleSubmit(updateProduct)} method="POST">
             <div className="row">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                <div className="form-group">
+                  <label className="mb-1 ">
+                    {" "}
+                    <strong>{t("categories")}</strong>{" "}
+                  </label>
+                  <select
+                    type="text"
+                    {...register("category_id")}
+                    className={
+                      errors.category_id?.message
+                        ? "form-control  is-invalid"
+                        : "form-control"
+                    }
+                    placeholder={t("category_id")}
+                    name="category_id"
+                    onChange={(e) => [getSubCategories(e)]}
+                    value={editProduct.category_id}
+                  >
+                    <option value="">{t("select_a_option")}</option> )
+                    {categories.map((item) => (
+                      <option value={item.id} key={item.id}>
+                        {item.CategoryName}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category_id?.message && (
+                    <div className="invalid-feedback">
+                      {errors.category_id?.message}
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                 <div className="form-group">
                   <label className="mb-1 ">
@@ -218,29 +270,22 @@ const EditProduct = (props) => {
                     {" "}
                     <strong>{t("unit")}</strong>{" "}
                   </label>
-                  <select
+                  <input
                     type="text"
-                    {...register("UnitID")}
+                    {...register("UnitName")}
                     className={
-                      errors.UnitID?.message
+                      errors.UnitName?.message
                         ? "form-control  is-invalid"
                         : "form-control"
                     }
-                    placeholder="UnitID"
-                    name="UnitID"
+                    placeholder={t("UnitName")}
+                    name="UnitName"
                     onChange={editHandleInput}
-                    value={editProduct.UnitID}
-                  >
-                    <option value="">{t("select_a_option")}</option> )
-                    {unitData.map((item) => (
-                      <option value={item.id} key={item.id}>
-                        {item.UnitName}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.UnitID?.message && (
+                    value={editProduct.UnitName}
+                  />
+                  {errors.UnitName?.message && (
                     <div className="invalid-feedback">
-                      {errors.UnitID?.message}
+                      {errors.UnitName?.message}
                     </div>
                   )}
                 </div>

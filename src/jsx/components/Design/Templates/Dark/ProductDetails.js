@@ -101,7 +101,7 @@ const ProductDetails = (props) => {
         varData = JSON.parse(res.data.fetchData);
         parseVariants(varData);
       }
-      console.log(variantData);
+      // console.log(variantData);
       setLoading(false);
     };
     getdata(); // axios
@@ -355,6 +355,7 @@ const ProductDetails = (props) => {
                   {JSON.parse(fetchData.ingredients)?.map((item, i) => {
                     return (
                       <div
+                        key={i}
                         className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto"
                         onClick={() => {
                           changeIngredients(item.label);
@@ -472,9 +473,9 @@ const ProductDetails = (props) => {
                             padding: "5px",
                           }}
                         >
-                          {showVaralint[list].map((variant) => {
+                          {showVaralint[list].map((variant, z) => {
                             return (
-                              <div className="col">
+                              <div className="col" key={z}>
                                 <div
                                   onClick={() => {
                                     changePrice(list, variant);

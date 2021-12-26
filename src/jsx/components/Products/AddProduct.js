@@ -20,8 +20,8 @@ const AddProduct = (props) => {
     .object()
     .shape({
       ProductName: yup.string().required("This field is a required field"),
-      UnitID: yup.string().required("This field is a required field"),
-      sub_category: yup.string().required("This field is a required field"),
+      // UnitName: yup.string().required("This field is a required field"),
+      category: yup.string().required("This field is a required field"),
       price: yup.number().required("This field is a required field"),
       stock: yup.number().required("This field is a required field"),
     })
@@ -53,18 +53,16 @@ const AddProduct = (props) => {
     formData.append("Description", productInsert.Description);
     formData.append("ProductName", productInsert.ProductName);
     formData.append("sub_category", productInsert.sub_category);
+    formData.append("category", productInsert.category);
     formData.append("price", productInsert.price);
     formData.append("stock", productInsert.stock);
     formData.append("preparationTime", productInsert.preparationTime);
     formData.append("ingredients", JSON.stringify(productIngredient));
     formData.append("extras", JSON.stringify(productExtra));
     formData.append("recommendations", JSON.stringify(productRecom));
-    formData.append("UnitID", productInsert.UnitID);
+    formData.append("UnitName", productInsert.UnitName);
     axios.post(`/api/InsertProducts`, formData).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.status);
-        setProductInsert([]);
-        setProductIngredient([]);
         reset();
         swal("Success", res.data.message, "success");
         history.goBack();
@@ -99,8 +97,8 @@ const AddProduct = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [unitData, setUnitData] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [intgredients, setIntgredients] = useState([]);
   const [check, setCheck] = useState(true);
 
@@ -110,15 +108,9 @@ const AddProduct = (props) => {
         setIntgredients(res.data.fetchData);
       }
     });
-    axios.get(`/api/GetUnits/${branchId}`).then((res) => {
+    axios.get(`/api/GetCategories/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        setUnitData(res.data.fetchData);
-      }
-    });
-    axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setSubCategories(res.data.fetchData);
-        // console.log(res.data.fetchData);
+        setCategories(res.data.fetchData);
       }
     });
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
@@ -151,7 +143,15 @@ const AddProduct = (props) => {
   const handleSelectEventRecom = (e) => {
     setProductRecom(e);
   };
-
+  const getSubCategories = (e) => {
+    e.preventDefault();
+    axios.get(`/api/GetSubCategories/${e.target.value}`).then((res) => {
+      if (res.data.status === 200) {
+        setSubCategories(res.data.fetchData);
+      }
+    });
+    setProductInsert({ ...productInsert, [e.target.name]: e.target.value });
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -173,9 +173,47 @@ const AddProduct = (props) => {
               <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                 <div className="form-group">
                   <label className="mb-1 ">
+                    <strong>{t("categories")}</strong>
+                  </label>
+                  <select
+                    type="text"
+                    {...register("category")}
+                    className={
+                      errors.category?.message
+                        ? "form-control  is-invalid"
+                        : "form-control"
+                    }
+                    placeholder={t("category")}
+                    name="category"
+                    // onChange={handleInput}
+                    value={productInsert.category}
+                    onChange={(e) => [getSubCategories(e)]}
+                  >
+                    <option value="null">{t("select_a_option")}</option>
+                    {categories.map((item) => (
+                      <option value={item.id} key={item.id}>
+                        {item.CategoryName}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.sub_category?.message && (
+                    <div className="invalid-feedback">
+                      {errors.sub_category?.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div
+                className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12 disable"
+                disabled=""
+              >
+                <div className="form-group">
+                  <label className="mb-1 ">
                     <strong>{t("sub_categories")}</strong>
                   </label>
                   <select
+                    disabled={subCategories.length === 0 ? "disabled" : ""}
                     type="text"
                     {...register("sub_category")}
                     className={
@@ -208,29 +246,23 @@ const AddProduct = (props) => {
                     {" "}
                     <strong>{t("unit")}</strong>{" "}
                   </label>
-                  <select
+                  <input
                     type="text"
-                    {...register("UnitID")}
+                    {...register("UnitName")}
                     className={
-                      errors.UnitID?.message
+                      errors.UnitName?.message
                         ? "form-control  is-invalid"
                         : "form-control"
                     }
-                    placeholder="UnitID"
-                    name="UnitID"
+                    placeholder={t("Number, KGR...")}
+                    name="UnitName"
                     onChange={handleInput}
-                    value={productInsert.UnitID}
-                  >
-                    <option value="">{t("select_a_option")}</option> )
-                    {unitData.map((item) => (
-                      <option value={item.id} key={item.id}>
-                        {item.UnitName}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.UnitID?.message && (
+                    value={productInsert.UnitName}
+                  />
+
+                  {errors.UnitName?.message && (
                     <div className="invalid-feedback">
-                      {errors.UnitID?.message}
+                      {errors.UnitName?.message}
                     </div>
                   )}
                 </div>
