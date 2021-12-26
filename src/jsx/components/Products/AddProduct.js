@@ -196,9 +196,9 @@ const AddProduct = (props) => {
                       </option>
                     ))}
                   </select>
-                  {errors.sub_category?.message && (
+                  {errors.category?.message && (
                     <div className="invalid-feedback">
-                      {errors.sub_category?.message}
+                      {errors.category?.message}
                     </div>
                   )}
                 </div>

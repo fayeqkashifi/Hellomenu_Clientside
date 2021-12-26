@@ -81,13 +81,13 @@ const Show = (props) => {
         state: { id: id, BrancheName: BrancheName },
       },
     },
-    {
-      name: t("units"),
-      url: {
-        pathname: `${url}/unit`,
-        state: { id: id, BrancheName: BrancheName },
-      },
-    },
+    // {
+    //   name: t("units"),
+    //   url: {
+    //     pathname: `${url}/unit`,
+    //     state: { id: id, BrancheName: BrancheName },
+    //   },
+    // },
     {
       name: t("services"),
       url: {

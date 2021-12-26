@@ -100,7 +100,6 @@ const EditProduct = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [unitData, setUnitData] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [intgredients, setIntgredients] = useState([]);
@@ -132,11 +131,6 @@ const EditProduct = (props) => {
     axios.post(`/api/GetIngredient`).then((res) => {
       if (res.data.status === 200) {
         setIntgredients(res.data.fetchData);
-      }
-    });
-    axios.get(`/api/GetUnits/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setUnitData(res.data.fetchData);
       }
     });
     axios.get(`/api/GetCategories/${branchId}`).then((res) => {
@@ -239,6 +233,7 @@ const EditProduct = (props) => {
                   </label>
                   <select
                     type="text"
+                    disabled={subCategories.length === 0 ? "disabled" : ""}
                     {...register("sub_category_id")}
                     className={
                       errors.sub_category_id?.message

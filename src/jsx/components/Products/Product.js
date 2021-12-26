@@ -34,6 +34,7 @@ const Product = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteProducts/${id}`).then((res) => {
           if (res.data.status === 200) {
+            setCheck(!check);
             swal("Success", res.data.message, "success");
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
@@ -48,6 +49,7 @@ const Product = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(true);
   useEffect(() => {
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
@@ -55,7 +57,7 @@ const Product = (props) => {
       }
       setLoading(false);
     });
-  }, []);
+  }, [check]);
 
   const columns = [
     {
@@ -85,9 +87,9 @@ const Product = (props) => {
     {
       key: "CategoryName",
     },
-    {
-      key: "SubCategoryName",
-    },
+    // {
+    //   key: "SubCategoryName",
+    // },
     {
       key: "actions",
     },
@@ -232,13 +234,16 @@ const Product = (props) => {
                     </IconButton>
                   </Tooltip>
                 </Link>
-                <Link to="" onClick={(e) => deleteProduct(e, item.id)}>
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={(e) => deleteProduct(e, item.id)}
+                >
                   <Tooltip title="Delete">
                     <IconButton>
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                </Link>
+                </div>
               </td>
             );
           },

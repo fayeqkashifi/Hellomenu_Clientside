@@ -46,6 +46,7 @@ export default function Main(props) {
     axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setSubCategories(res.data.fetchData);
+
         setActiveSubCategory(res.data.fetchData[0]?.sub_id);
         axios
           .get(
