@@ -145,11 +145,15 @@ const AddProduct = (props) => {
   };
   const getSubCategories = (e) => {
     e.preventDefault();
-    axios.get(`/api/GetSubCategories/${e.target.value}`).then((res) => {
-      if (res.data.status === 200) {
-        setSubCategories(res.data.fetchData);
-      }
-    });
+    axios
+      .get(
+        `/api/GetSubCategories/${e.target.value == "" ? null : e.target.value}`
+      )
+      .then((res) => {
+        if (res.data.status === 200) {
+          setSubCategories(res.data.fetchData);
+        }
+      });
     setProductInsert({ ...productInsert, [e.target.name]: e.target.value });
   };
   var viewProducts_HTMLTABLE = "";
@@ -189,7 +193,7 @@ const AddProduct = (props) => {
                     value={productInsert.category}
                     onChange={(e) => [getSubCategories(e)]}
                   >
-                    <option value="null">{t("select_a_option")}</option>
+                    <option value="">{t("select_a_option")}</option>
                     {categories.map((item) => (
                       <option value={item.id} key={item.id}>
                         {item.CategoryName}

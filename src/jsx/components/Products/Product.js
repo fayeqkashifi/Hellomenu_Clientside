@@ -54,6 +54,7 @@ const Product = (props) => {
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
+        // console.log(res.data.fetchData);
       }
       setLoading(false);
     });
@@ -87,9 +88,9 @@ const Product = (props) => {
     {
       key: "CategoryName",
     },
-    // {
-    //   key: "SubCategoryName",
-    // },
+    {
+      key: "SubCategoryName",
+    },
     {
       key: "actions",
     },

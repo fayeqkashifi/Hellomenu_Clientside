@@ -167,11 +167,15 @@ const EditProduct = (props) => {
   }, [check]);
   const getSubCategories = (e) => {
     e.preventDefault();
-    axios.get(`/api/GetSubCategories/${e.target.value}`).then((res) => {
-      if (res.data.status === 200) {
-        setSubCategories(res.data.fetchData);
-      }
-    });
+    axios
+      .get(
+        `/api/GetSubCategories/${e.target.value == "" ? null : e.target.value}`
+      )
+      .then((res) => {
+        if (res.data.status === 200) {
+          setSubCategories(res.data.fetchData);
+        }
+      });
     setEditProduct({ ...editProduct, [e.target.name]: e.target.value });
   };
   var viewProducts_HTMLTABLE = "";

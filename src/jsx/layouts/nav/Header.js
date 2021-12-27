@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next";
 import IdleTimer from "react-idle-timer";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 const Header = ({ toggle, onProfile, onNotification }) => {
   const idleTimerRef = useRef(null);
   const { t } = useTranslation();

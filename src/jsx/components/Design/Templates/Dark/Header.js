@@ -11,23 +11,29 @@ import { Link } from "react-router-dom";
 function Header(props) {
   const history = useHistory();
 
-  const {
-    subcategories,
-    activeSubCategory,
-    setProducts,
-    setActiveSubCategory,
-    custom,
-    cart,
-  } = props;
+  const { menu, activeMenu, setProducts, setActiveMenu, custom, cart } = props;
 
-  const filterProducts = (subCateID) => {
-    axios.get(`/api/GetProductsBasedOnSubCategory/${subCateID}`).then((res) => {
-      if (res.data.status === 200) {
-        // console.log(res.data.data);
-        setProducts(res.data.data);
-      }
-    });
-    setActiveSubCategory(subCateID);
+  const filterProducts = (menu) => {
+    if (menu.sub_category_id === null) {
+      setActiveMenu(menu.category_id);
+      axios
+        .get(`/api/GetProductsBasedCategory/${menu.category_id}`)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setProducts(res.data.data);
+          }
+        });
+    } else {
+      setActiveMenu(menu.sub_category_id);
+
+      axios
+        .get(`/api/GetProductsBasedOnSubCategory/${menu.sub_category_id}`)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setProducts(res.data.data);
+          }
+        });
+    }
   };
   return (
     <React.Fragment>
@@ -76,7 +82,7 @@ function Header(props) {
         </Link>
       </Toolbar>
 
-      {subcategories === 0 ? (
+      {menu === 0 ? (
         " "
       ) : (
         <div>
@@ -89,11 +95,14 @@ function Header(props) {
               marginTop: "-25px",
             }}
           >
-            {subcategories?.map((section, i) => (
+            {menu?.map((section, i) => (
               <Typography
                 className="px-3"
                 style={
-                  activeSubCategory === section.sub_id
+                  activeMenu ===
+                  (section.sub_category_id === null
+                    ? section.category_id
+                    : section.sub_category_id)
                     ? {
                         cursor: "pointer",
                         borderBottomStyle: "solid",
@@ -115,9 +124,11 @@ function Header(props) {
                 key={i}
                 variant="h6"
                 sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
-                onClick={() => filterProducts(section.sub_id)}
+                onClick={() => filterProducts(section)}
               >
-                {section.SubCategoryName}
+                {section.SubCategoryName === null
+                  ? section.CategoryName
+                  : section.SubCategoryName}
               </Typography>
             ))}
           </Toolbar>

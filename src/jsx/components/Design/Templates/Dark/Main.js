@@ -16,8 +16,7 @@ import { Link } from "react-router-dom";
 import getSymbolFromCurrency from "currency-symbol-map";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import AddIcon from "@mui/icons-material/Add";
-import IconButton from "@mui/material/IconButton";
+
 import Counter from "./Counter";
 
 var hold = 1;
@@ -27,9 +26,9 @@ export default function Main(props) {
   const branchId = atob(props.match.params.id);
 
   const [branch, setBranch] = useState([]);
-  const [subcategories, setSubCategories] = useState([]);
+  const [menu, setMenu] = useState([]);
   const [products, setProducts] = useState([]);
-  const [activeSubCategory, setActiveSubCategory] = useState(0);
+  const [activeMenu, setActiveMenu] = useState(0);
   const [custom, setCustom] = useState([]);
 
   useEffect(() => {
@@ -43,49 +42,72 @@ export default function Main(props) {
         setBranch(res.data.data);
       }
     });
-    axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
+    axios.get(`/api/getCategoriesBasedProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        setSubCategories(res.data.fetchData);
-        console.log(res.data.fetchData);
-        setActiveSubCategory(res.data.fetchData[0]?.sub_id);
-        axios
-          .get(
-            `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_id}`
-          )
-          .then((res) => {
-            if (res.data.status === 200) {
-              setProducts(res.data.data);
-              // console.log(res.data.data);
-            }
-          });
+        setMenu(res.data.fetchData);
+        if (res.data.fetchData[0]?.sub_category_id === null) {
+          setActiveMenu(res.data.fetchData[0]?.category_id);
+          axios
+            .get(
+              `/api/GetProductsBasedCategory/${res.data.fetchData[0]?.category_id}`
+            )
+            .then((res) => {
+              if (res.data.status === 200) {
+                setProducts(res.data.data);
+              }
+            });
+        } else {
+          setActiveMenu(res.data.fetchData[0]?.sub_category_id);
+
+          axios
+            .get(
+              `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_category_id}`
+            )
+            .then((res) => {
+              if (res.data.status === 200) {
+                setProducts(res.data.data);
+              }
+            });
+        }
         setLoading(false);
       }
     });
   }, []);
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
-    if (hold < subcategories.length) {
-      axios.get(`/api/getSubCateBasedOnBranch/${branchId}`).then((res) => {
+    if (hold < menu.length) {
+      axios.get(`/api/getCategoriesBasedProducts/${branchId}`).then((res) => {
         if (res.data.status === 200) {
-          setActiveSubCategory(res.data.fetchData[hold].sub_id);
-          axios
-            .get(
-              `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[hold].sub_id}`
-            )
-            .then((res) => {
-              if (res.data.status === 200) {
-                if (res.data.data.length === 0) {
+          setActiveMenu(res.data.fetchData[hold].sub_id);
+
+          if (res.data.fetchData[hold]?.sub_category_id === null) {
+            setActiveMenu(res.data.fetchData[hold]?.category_id);
+            axios
+              .get(
+                `/api/GetProductsBasedCategory/${res.data.fetchData[hold]?.category_id}`
+              )
+              .then((res) => {
+                if (res.data.status === 200) {
                   hold = hold + 1;
-                  // console.log(res.data.data);
-                  fetchMoreData();
-                } else {
-                  hold = hold + 1;
+
                   setProducts(products.concat(res.data.data));
                 }
-              }
-            });
+              });
+          } else {
+            setActiveMenu(res.data.fetchData[hold]?.sub_category_id);
 
-          setSubCategories(res.data.fetchData);
+            axios
+              .get(
+                `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[hold]?.sub_category_id}`
+              )
+              .then((res) => {
+                if (res.data.status === 200) {
+                  hold = hold + 1;
+
+                  setProducts(products.concat(res.data.data));
+                }
+              });
+          }
         }
       });
     } else {
@@ -346,10 +368,10 @@ export default function Main(props) {
         <Header
           cart={cart.length}
           title={branch[0]?.BrancheName}
-          subcategories={subcategories}
-          activeSubCategory={activeSubCategory}
+          menu={menu}
+          activeMenu={activeMenu}
           setProducts={setProducts}
-          setActiveSubCategory={setActiveSubCategory}
+          setActiveMenu={setActiveMenu}
           custom={custom}
         />
 
@@ -374,7 +396,7 @@ export default function Main(props) {
           }
         ></InfiniteScroll>
       </Container>
-      <Footer title="Checkout Order" theme={custom} />
+      <Footer title="Checkout Order" theme={custom} url={""} />
     </ThemeProvider>
   );
 }
