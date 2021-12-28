@@ -80,27 +80,28 @@ const Cart = (props) => {
 
   const handleDecrement = (e, qty, id, price) => {
     e.preventDefault();
+    let vars = cart.map((item) =>
+      id == item.id
+        ? {
+            ...item,
+            qty: item.qty - (item.qty > 0 ? 1 : 0),
+          }
+        : item
+    );
     if (qty > 1) {
-      setCart((cart) =>
-        cart.map((item) =>
-          id == item.id
-            ? {
-                ...item,
-                qty: item.qty - (item.qty > 0 ? 1 : 0),
-              }
-            : item
-        )
-      );
+      setCart((cart) => vars);
       setSum((sum -= parseInt(price)));
+      localStorage.setItem("cart", JSON.stringify(vars));
     }
   };
   const handelIncrement = (e, qty, id, price) => {
     e.preventDefault();
-    setCart((cart) =>
-      cart.map((item) =>
-        id == item.id ? { ...item, qty: item.qty + 1 } : item
-      )
+    let vars = cart.map((item) =>
+      id == item.id ? { ...item, qty: qty + 1 } : item
     );
+    setCart((cart) => vars);
+    localStorage.setItem("cart", JSON.stringify(vars));
+
     setSum((sum += parseInt(price)));
   };
   const remItem = (id, qty, price) => {
@@ -109,8 +110,6 @@ const Cart = (props) => {
     const data = cart.filter((cart) => {
       return cart.id !== id;
     });
-    // data.push(...data, { qty: 1 });
-    // console.log(data);
     localStorage.setItem("cart", JSON.stringify(data));
     setCart(data);
   };

@@ -13,6 +13,7 @@ import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion";
 import EditIcon from "@mui/icons-material/Edit";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+// import DataTable from 'react-data-table-component';
 const Product = (props) => {
   const { path, url } = useRouteMatch();
 
@@ -54,7 +55,7 @@ const Product = (props) => {
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
-        // console.log(res.data.fetchData);
+        console.log(res.data.fetchData);
       }
       setLoading(false);
     });

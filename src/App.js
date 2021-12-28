@@ -12,6 +12,7 @@ import Login from "./jsx/pages/Login";
 /// Style
 import "./css/style.css";
 import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
+
 import PublicRoute from "./jsx/components/PublicRoute";
 import axios from "axios";
 import StandardTemplate from "./jsx/components/Design/Templates/Default/Main";

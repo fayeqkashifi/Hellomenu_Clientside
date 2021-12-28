@@ -82,7 +82,6 @@ const Design = (props) => {
     axios.post(`/api/ThemeStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        swal("Success", res.data.message, "success");
       }
     });
   };
@@ -91,7 +90,6 @@ const Design = (props) => {
     axios.post(`/api/TemplateStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        swal("Success", res.data.message, "success");
       }
     });
   };
@@ -334,7 +332,15 @@ const Design = (props) => {
                               )}
                             </Grid>
                             <Grid item xs={4}>
-                              {item.Status == 1 ? (
+                              <Switch
+                                disabled={item.Status == 1 ? true : false}
+                                checked={item.Status == 1 ? true : false}
+                                color="secondary"
+                                onChange={(e) =>
+                                  changeTheActiveTemplate(e, item.id)
+                                }
+                              />
+                              {/* {item.Status == 1 ? (
                                 <Switch checked disabled color="secondary" />
                               ) : (
                                 <Switch
@@ -343,7 +349,7 @@ const Design = (props) => {
                                   }
                                   color="secondary"
                                 />
-                              )}
+                              )} */}
                             </Grid>
                           </Grid>
                         </CardActions>

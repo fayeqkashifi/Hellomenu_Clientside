@@ -22,8 +22,16 @@ const AddProduct = (props) => {
       ProductName: yup.string().required("This field is a required field"),
       // UnitName: yup.string().required("This field is a required field"),
       category: yup.string().required("This field is a required field"),
-      price: yup.number().required("This field is a required field"),
-      stock: yup.number().required("This field is a required field"),
+      price: yup
+        .number()
+
+        .required("This field is a required field")
+        .min(1, "Please add a positive Number"),
+      stock: yup
+        .number()
+
+        .required("This field is a required field")
+        .min(1, "Please add a positive Number"),
     })
     .required();
   const {
@@ -330,7 +338,7 @@ const AddProduct = (props) => {
                     <strong>{t("price")}</strong>{" "}
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     {...register("price")}
                     className={
                       errors.price?.message
@@ -339,8 +347,9 @@ const AddProduct = (props) => {
                     }
                     placeholder={t("price")}
                     name="price"
+                    min="0"
                     onChange={handleInput}
-                    value={productInsert.price}
+                    value={productInsert.price ? productInsert.price : "0"}
                   />
                   {errors.price?.message && (
                     <div className="invalid-feedback">
@@ -356,7 +365,7 @@ const AddProduct = (props) => {
                     <strong>{t("stock")}</strong>{" "}
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     {...register("stock")}
                     className={
                       errors.stock?.message
@@ -366,7 +375,7 @@ const AddProduct = (props) => {
                     placeholder={t("stock")}
                     name="stock"
                     onChange={handleInput}
-                    value={productInsert.stock}
+                    value={productInsert.stock ? productInsert.stock : "0"}
                   />
                   {errors.stock?.message && (
                     <div className="invalid-feedback">

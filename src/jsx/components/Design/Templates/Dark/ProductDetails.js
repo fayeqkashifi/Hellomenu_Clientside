@@ -2,13 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 // Import css files
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import Footer from "./Footer";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-// import Slider from "react-slick";
 import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
@@ -22,10 +19,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-// import { Carousel } from "react-responsive-carousel";
 import Carousel from "react-bootstrap/Carousel";
-
-import "../style.css";
 
 const ProductDetails = (props) => {
   // for localization

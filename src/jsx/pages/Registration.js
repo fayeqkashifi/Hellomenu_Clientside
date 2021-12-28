@@ -1,176 +1,162 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 const Registration = () => {
-   // validation start
-   const schema = yup.object().shape({
-      name: yup.string().required(),
-      phone_number: yup.string().required(),
-      email: yup.string().email().required(),
-      password: yup.string().required().min(6),
-   }).required();
-   const { register, handleSubmit, reset, formState: { errors } } = useForm({
-      resolver: yupResolver(schema)
-   });
-   // validation end 
+  // validation start
 
-   // for localization
-   const { t } = useTranslation();
-   
-   // add user start
-   const [registerstate, setRegisterstate] = useState({
-      name: '',
-      phone_number: '',
-      email: '',
-      password: '',
-      // error_list:[],
-   });
-   const handleInput = (e) => {
-      e.persist();
-      setRegisterstate({ ...registerstate, [e.target.name]: e.target.value });
-   };
-   const saveRegister = (e) => {
-      axios.get('sanctum/csrf-cookie').then(response => {
-         axios.post("/api/register", registerstate).then(res => {
-            if (res.data.status === 200) {
-               // console.log(res.data.status);
-               //  localStorage.setItem('auth_token', res.data.token);
-               //  localStorage.setItem('auth_name', res.data.user);
-               //  localStorage.setItem('auth_id', res.data.id);
+  const validationSchema = () => {
+    return Yup.object().shape({
+      name: Yup.string().required("Fullname is required"),
+      phone_number: Yup.string().required("Phone number is required"),
+      // .matches(phoneRegExp, "Phone number is not valid"),
+      email: Yup.string()
+        .required("Email is required")
+        .email("Email is invalid"),
+      password: Yup.string()
+        .required("Password is required")
+        .min(6, "Password must be at least 6 characters")
+        .max(40, "Password must not exceed 40 characters"),
+    });
+  };
+  const history = useHistory();
 
-               setRegisterstate({
-                  name: '',
-                  phone_number: '',
-                  email: '',
-                  password: ''
-               });
-               reset();
-               swal("Success", res.data.message, "success");
-               //   history.push("/page-login")
+  const handleSubmit = (data) => {
+    //  console.log(JSON.stringify(data, null, 2));
+    axios.get("sanctum/csrf-cookie").then((response) => {
+      axios.post("/api/register", data).then((res) => {
+        if (res.data.status === 200) {
+          swal("Success", res.data.message, "success").then((check) => {
+            if (check) {
+              history.push("/page-login");
             }
-         });
+          });
+        }
       });
+    });
+  };
+  // validation end
+  const initialValues = {
+    name: "",
+    phone_number: "",
+    email: "",
+    password: "",
+  };
+  // for localization
+  const { t } = useTranslation();
 
-   };
-   // add user end 
-   return (
-      <div className="row justify-content-center  h-200 align-items-center h-80">
-         <div className="col-md-4">
-            <div className="authincation-content">
-               <div className="row no-gutters">
-                  <div className="col-xl-12">
-                     <div className="auth-form">
-                        <div className="text-center mb-3">
-                           <h4 className="text-center mb-4">{t('sign_up_your_account')}</h4>
-                        </div>
+  return (
+    <div className="row justify-content-center  h-200 align-items-center h-80">
+      <div className="col-md-4">
+        <div className="authincation-content">
+          <div className="row no-gutters">
+            <div className="col-xl-12">
+              <div className="auth-form">
+                <div className="text-center mb-3">
+                  <h4 className="text-center mb-4">
+                    {t("sign_up_your_account")}
+                  </h4>
+                </div>
+                <div className="register-form">
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                  >
+                    <Form>
+                      <div className="form-group">
+                        <label> {t("full_name")}</label>
+                        <Field
+                          name="name"
+                          type="text"
+                          className="form-control"
+                          placeholder="Smith..."
+                        />
+                        <ErrorMessage
+                          name="name"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
 
-                        <form
-                           method="POST"
-                           onSubmit={handleSubmit(saveRegister)}
-                           encType="multipart/form-data"
+                      <div className="form-group">
+                        <label htmlFor="phone_number">
+                          {" "}
+                          {t("phone_number")}{" "}
+                        </label>
+                        <Field
+                          name="phone_number"
+                          type="text"
+                          className="form-control"
+                          placeholder="+93--- ---- ----"
+                        />
+                        <ErrorMessage
+                          name="phone_number"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
 
+                      <div className="form-group">
+                        <label htmlFor="email"> {t("email")} </label>
+                        <Field
+                          name="email"
+                          type="email"
+                          className="form-control"
+                          placeholder="a@gmail.com"
+                        />
+                        <ErrorMessage
+                          name="email"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="password"> {t("password")} </label>
+                        <Field
+                          name="password"
+                          type="password"
+                          className="form-control"
+                          placeholder="*******"
+                        />
+                        <ErrorMessage
+                          name="password"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <button
+                          type="submit"
+                          className="btn btn-primary btn-block"
                         >
-                           <div className="form-group">
-                              <label className="mb-1 "> <strong>{t('full_name')}</strong> </label>
-                              <input
-                                 type="text"
-                                 {...register("name")}
-                                 className={
-                                    errors.name?.message
-                                       ? "form-control  is-invalid"
-                                       : "form-control"
-                                 }
-                                 placeholder={t('full_name')}
-                                 name="name"
-                                 onChange={handleInput}
-                                 value={registerstate.name}
+                          {t("sign_me_up")}{" "}
+                        </button>
+                      </div>
+                    </Form>
+                  </Formik>
+                </div>
 
-                              />
-                              {errors.name?.message && (
-                                 <div className="invalid-feedback">{errors.name?.message}</div>
-                              )}
-                           </div>
-                           <div className="form-group">
-                              <label className="mb-1 "> <strong>{t('phone')}</strong> </label>
-                              <input
-                                 type="text"
-                                 {...register("phone_number")}
-                                 className={
-                                    errors.phone_number?.message
-                                       ? "form-control  is-invalid"
-                                       : "form-control"
-                                 }
-                                 placeholder={t('phone')}
-                                 name="phone_number"
-                                 onChange={handleInput} value={registerstate.phone_number}
-                              />
-                              {errors.phone_number?.message && (
-                                 <div className="invalid-feedback">{errors.phone_number?.message}</div>
-                              )}
-                           </div>
-                           <div className="form-group">
-                              <label className="mb-1 ">   <strong>{t('email')}</strong>  </label>
-                              <input
-                                 type="email"
-                                 {...register("email")}
-
-                                 className={
-                                    errors.email?.message
-                                       ? "form-control  is-invalid"
-                                       : "form-control"
-                                 }
-                                 placeholder={t('email_example')}
-                                 name="email"
-                                 onChange={handleInput} value={registerstate.email}
-                              />
-                              {errors.email?.message && (
-                                 <div className="invalid-feedback">{errors.email?.message}</div>
-                              )}
-                           </div>
-                           <div className="form-group">
-                              <label className="mb-1 ">   <strong>{t('password')}</strong>  </label>
-                              <input type="password"
-                                 {...register("password")}
-
-                                 className={
-                                    errors.password?.message
-                                       ? "form-control  is-invalid"
-                                       : "form-control"
-                                 }
-                                 name="password"
-                                 placeholder={t('password_msg')}
-                                 onChange={handleInput} value={registerstate.password}
-                              />
-                              {errors.password?.message && (
-                                 <div className="invalid-feedback">{errors.password?.message}</div>
-                              )}
-                           </div>
-                           <div className="text-center mt-4">
-                              <button type="submit" className="btn btn-primary btn-block"   >  {t('sign_me_up')}  </button>
-                           </div>
-                        </form>
-                        <div className="new-account mt-3">
-                           <p className="">
-                              {t('already_have_an_account')}  {" "}
-                              <Link className="text-primary" to="/page-login">
-                                 {t('sign_in')}
-                              </Link>
-                           </p>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+                <div className="new-account mt-3">
+                  <p className="">
+                    {t("already_have_an_account")}{" "}
+                    <Link className="text-primary" to="/page-login">
+                      {t("sign_in")}
+                    </Link>
+                  </p>
+                </div>
+              </div>
             </div>
-         </div>
+          </div>
+        </div>
       </div>
-   );
-
+    </div>
+  );
 };
 
 export default Registration;

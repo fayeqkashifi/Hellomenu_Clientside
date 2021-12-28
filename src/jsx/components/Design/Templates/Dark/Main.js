@@ -46,7 +46,10 @@ export default function Main(props) {
       if (res.data.status === 200) {
         setMenu(res.data.fetchData);
         if (res.data.fetchData[0]?.sub_category_id === null) {
-          setActiveMenu(res.data.fetchData[0]?.category_id);
+          setActiveMenu(
+            res.data.fetchData[0]?.CategoryName +
+              res.data.fetchData[0]?.category_id
+          );
           axios
             .get(
               `/api/GetProductsBasedCategory/${res.data.fetchData[0]?.category_id}`
@@ -57,7 +60,10 @@ export default function Main(props) {
               }
             });
         } else {
-          setActiveMenu(res.data.fetchData[0]?.sub_category_id);
+          setActiveMenu(
+            res.data.fetchData[0]?.SubCategoryName +
+              res.data.fetchData[0]?.sub_category_id
+          );
 
           axios
             .get(
@@ -78,10 +84,13 @@ export default function Main(props) {
     if (hold < menu.length) {
       axios.get(`/api/getCategoriesBasedProducts/${branchId}`).then((res) => {
         if (res.data.status === 200) {
-          setActiveMenu(res.data.fetchData[hold].sub_id);
+          // setActiveMenu(res.data.fetchData[hold].sub_id);
 
           if (res.data.fetchData[hold]?.sub_category_id === null) {
-            setActiveMenu(res.data.fetchData[hold]?.category_id);
+            setActiveMenu(
+              res.data.fetchData[hold]?.CategoryName +
+                res.data.fetchData[hold]?.category_id
+            );
             axios
               .get(
                 `/api/GetProductsBasedCategory/${res.data.fetchData[hold]?.category_id}`
@@ -94,7 +103,10 @@ export default function Main(props) {
                 }
               });
           } else {
-            setActiveMenu(res.data.fetchData[hold]?.sub_category_id);
+            setActiveMenu(
+              res.data.fetchData[hold]?.SubCategoryName +
+                res.data.fetchData[hold]?.sub_category_id
+            );
 
             axios
               .get(
@@ -156,6 +168,7 @@ export default function Main(props) {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
+  // console.log(JSON.parse(localStorage.getItem("cart"))[1].id);
   // const addItem = (id) => {
   // const check = cart.every((item) => {
   //   return item.id !== id;
@@ -188,6 +201,15 @@ export default function Main(props) {
       return (
         <Grid
           item
+          style={
+            item.stock == 0
+              ? {
+                  pointerEvents: "none",
+                  opacity: "0.4",
+                  WebkitFilter: "grayscale(1)",
+                }
+              : {}
+          }
           xs={
             custom?.numberProductInRowMobile
               ? custom.numberProductInRowMobile == 1
@@ -313,6 +335,7 @@ export default function Main(props) {
                   </Grid>
                   <Grid item xs={3}>
                     <Counter
+                      custom={custom}
                       item={item}
                       cart={cart}
                       setCart={setCart}

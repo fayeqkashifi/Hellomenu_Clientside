@@ -12,10 +12,9 @@ function Header(props) {
   const history = useHistory();
 
   const { menu, activeMenu, setProducts, setActiveMenu, custom, cart } = props;
-
   const filterProducts = (menu) => {
     if (menu.sub_category_id === null) {
-      setActiveMenu(menu.category_id);
+      setActiveMenu(menu.CategoryName + menu.category_id);
       axios
         .get(`/api/GetProductsBasedCategory/${menu.category_id}`)
         .then((res) => {
@@ -24,7 +23,7 @@ function Header(props) {
           }
         });
     } else {
-      setActiveMenu(menu.sub_category_id);
+      setActiveMenu(menu.SubCategoryName + menu.sub_category_id);
 
       axios
         .get(`/api/GetProductsBasedOnSubCategory/${menu.sub_category_id}`)
@@ -101,8 +100,8 @@ function Header(props) {
                 style={
                   activeMenu ===
                   (section.sub_category_id === null
-                    ? section.category_id
-                    : section.sub_category_id)
+                    ? section.CategoryName + section.category_id
+                    : section.SubCategoryName + section.sub_category_id)
                     ? {
                         cursor: "pointer",
                         borderBottomStyle: "solid",
