@@ -52,7 +52,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
     <div className="header">
       <IdleTimer
         ref={idleTimerRef}
-        timeout={1000 * 60 * 15}
+        timeout={1000 * 60 * 60}
         onIdle={logoutUser}
       />
       <div className="header-content">
