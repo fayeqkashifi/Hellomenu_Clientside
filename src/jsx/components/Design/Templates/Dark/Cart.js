@@ -21,8 +21,11 @@ import CardContent from "@mui/material/CardContent";
 import ClearIcon from "@mui/icons-material/Clear";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
+import ReactWhatsapp from "react-whatsapp";
 
 import "../style.css";
+var message = "";
+
 const Cart = (props) => {
   // for localization
   const { t } = useTranslation();
@@ -113,6 +116,7 @@ const Cart = (props) => {
     localStorage.setItem("cart", JSON.stringify(data));
     setCart(data);
   };
+
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -128,6 +132,15 @@ const Cart = (props) => {
     );
   } else {
     viewImages_HTMLTABLE = cart?.map((item, i) => {
+      message =
+        message +
+        `*Product Name*: ${item.ProductName} *Category*: ${
+          item.CategoryName
+        } *Sub Category*: ${item.SubCategoryName} *QTY*: ${item.qty} *Price*: ${
+          item.price
+        } *Total Price*: ${item.qty * item.price} *${getSymbolFromCurrency(
+          item.currency_code
+        )}* \n`;
       return (
         <Card
           key={i}
@@ -295,7 +308,13 @@ const Cart = (props) => {
                     </Typography>
                   </Grid>
                   <Grid item xs={6} sm={6} md={6}>
-                    <Link
+                    <p className="d-none">
+                      {console.log(message)}
+                      {(message = `\n${message} *Grand Total*: ${sum}`)}
+                    </p>
+                    {console.log(message)}
+
+                    <ReactWhatsapp
                       className="col-12 btn"
                       style={{
                         textTransform: "capitalize",
@@ -309,10 +328,13 @@ const Cart = (props) => {
                           ? theme.bTextSize + "rem"
                           : "1rem",
                       }}
-                      to=""
+                      number="905411251310"
+                      message={message}
+                      max="4096"
+                      type="submit"
                     >
-                      Order
-                    </Link>
+                      {t("send_order")}{" "}
+                    </ReactWhatsapp>
                   </Grid>
                 </Grid>
               </CardContent>

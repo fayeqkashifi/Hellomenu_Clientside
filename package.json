@@ -77,6 +77,7 @@
       "react-hook-form": "^7.18.1",
       "react-horizontal-scroll-container": "^1.0.1",
       "react-i18next": "^11.13.0",
+      "react-id-swiper": "^4.0.0",
       "react-idle": "^3.0.0",
       "react-idle-timer": "^4.6.4",
       "react-infinite-scroll-component": "^6.1.0",

@@ -19,16 +19,11 @@ import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import Carousel from "react-bootstrap/Carousel";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
-
-// import "./styles.css";
-// import Swiper core and required modules
 import SwiperCore, { Navigation, Thumbs } from "swiper";
-import { set } from "date-fns";
 
 // install Swiper modules
 SwiperCore.use([Navigation, Thumbs]);
@@ -76,6 +71,7 @@ const ProductDetails = (props) => {
     },
   });
   // design end
+  const [swiper, setSwiper] = useState(null);
 
   let varData = [];
   //for retriving data using laravel API
@@ -155,13 +151,24 @@ const ProductDetails = (props) => {
       };
       productdetails = newProductDetails;
     }
-    // document
-    //   .getElementsByClassName("swiper-slide swiper-slide-active")
-    //   .classList.remove("swiper-slide swiper-slide-active");
-    // document.getElementsByClassName(productdetails.image[0]).className =
-    //   "swiper-slide swiper-slide-active";
 
     setProductDetails({ ...productdetails });
+    if (swiper) {
+      let counter = 0;
+      varPics.map((section) => {
+        section.image.map((image, i) => {
+          if (Array.isArray(productDetails.image)) {
+            if (image === productDetails.image[0]) {
+              swiper.slideTo(counter);
+            }
+          } else {
+            swiper.slideTo(0);
+          }
+
+          counter++;
+        });
+      });
+    }
   };
   const parseVariants = (variantData) => {
     const variants = [];
@@ -222,9 +229,8 @@ const ProductDetails = (props) => {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-  const [swiperClass, setSwiperClass] = useState(null);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  console.log(thumbsSwiper);
+
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -252,29 +258,29 @@ const ProductDetails = (props) => {
                 "--swiper-pagination-color": "#fff",
               }}
               spaceBetween={10}
+              speed={3500}
               navigation={true}
               thumbs={{ swiper: thumbsSwiper }}
+              onSwiper={(s) => {
+                setSwiper(s);
+              }}
               className="mySwiper2"
             >
               {varPics?.map((section) => {
                 return section.image?.map((image, i) => {
                   return (
                     <>
-                      {/* {setSwiperClass(image)} */}
-
                       <SwiperSlide key={image}>
-                        <div>
-                          <img
-                            src={`http://${base_url}:${port}/images/variants_pics/${image}`}
-                            alt=""
-                            style={{
-                              height: "400px",
-                              width: "100%",
-                              borderRadius: "5%",
-                              objectFit: "contain",
-                            }}
-                          />
-                        </div>
+                        <img
+                          src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                          alt=""
+                          style={{
+                            height: "400px",
+                            width: "100%",
+                            borderRadius: "5%",
+                            objectFit: "contain",
+                          }}
+                        />
                       </SwiperSlide>
                     </>
                   );
@@ -289,7 +295,6 @@ const ProductDetails = (props) => {
               freeMode={true}
               watchSlidesProgress={true}
               className="mySwiper"
-              activeSlideKey={productDetails.image[0]}
             >
               {varPics?.map((section) => {
                 return section.image?.map((image) => {
@@ -314,33 +319,6 @@ const ProductDetails = (props) => {
               })}
             </Swiper>
           </>
-          {/* );
-            } else {
-              return (
-                <div>
-                  <img
-                    style={{
-                      height: "200px",
-                      width: "100%",
-                      borderRadius: "5%",
-                      objectFit: "contain",
-                    }}
-                    src={
-                      productDetails.stock === "No Stock" ||
-                      productDetails?.stock === 0
-                        ? `http://${base_url}:${port}/images/products/${
-                            productDetails.image
-                              ? productDetails?.image
-                              : fetchData?.image
-                          }`
-                        : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
-                    }
-                    alt=""
-                  />
-                </div>
-              );
-            }
-          })()} */}
         </Grid>
 
         <Grid item xs={12} sm={7} md={7} lg={7}>

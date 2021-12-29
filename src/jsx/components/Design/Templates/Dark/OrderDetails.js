@@ -22,6 +22,7 @@ import Box from "@mui/material/Box";
 import getSymbolFromCurrency from "currency-symbol-map";
 import FormGroup from "@mui/material/FormGroup";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
+import ReactWhatsapp from "react-whatsapp";
 
 const OrderDetails = (props) => {
   const custom = props.history.location.state.custom;
@@ -156,7 +157,7 @@ const OrderDetails = (props) => {
         <Grid container spacing={2} key={i}>
           <Grid item xs={8} sm={8} md={8}>
             {/* {console.log(item)} */}
-
+          
             <FormControlLabel
               control={
                 <Checkbox
