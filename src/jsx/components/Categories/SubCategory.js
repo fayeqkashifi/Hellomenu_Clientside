@@ -68,6 +68,7 @@ const SubCategory = (props) => {
           SubCategoryName: "",
           CategoryID: id,
         });
+        setImageState([]);
         reset();
         setCheck(!check);
 
@@ -333,7 +334,7 @@ const SubCategory = (props) => {
                   />
                   <img
                     src={
-                      editSubMenu.CategoryIcon
+                      editSubMenu.SubCategoryIcon
                         ? `http://${base_url}:${port}/images/sub_catagories/${editSubMenu.SubCategoryIcon}`
                         : DefaultPic
                     }

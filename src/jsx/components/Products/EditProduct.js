@@ -23,8 +23,16 @@ const EditProduct = (props) => {
       ProductName: yup.string().required("This field is a required field"),
       // UnitID: yup.string().required("This field is a required field"),
       category_id: yup.string().required("This field is a required field"),
-      price: yup.number().required("This field is a required field"),
-      stock: yup.number().required("This field is a required field"),
+      price: yup
+        .number()
+        .typeError("Amount must be a number")
+        .required("Please provide plan cost.")
+        .min(1, "Too little"),
+      stock: yup
+        .number()
+        .typeError("Amount must be a number")
+        .required("Please provide plan cost.")
+        .min(1, "Too little"),
       // preparationTime: yup.number().required("This field is a required field"),
     })
     .required();
@@ -90,9 +98,15 @@ const EditProduct = (props) => {
     formData.append("id", editProduct.id);
     axios.post("/api/UpdateProduct", formData).then((res) => {
       if (res.data.status === 200) {
-        swal("Success", res.data.message, "success");
+        swal("Success", res.data.message, "success").then((check) => {
+          if (check) {
+            history.push({
+              pathname: `/branches/show/products`,
+              state: { id: branchId },
+            });
+          }
+        });
         setCheck(!check);
-        history.goBack();
       }
     });
   };
@@ -305,7 +319,6 @@ const EditProduct = (props) => {
                     }
                     placeholder={t("product_name")}
                     name="ProductName"
-                    required
                     onChange={editHandleInput}
                     value={editProduct.ProductName}
                   />
@@ -359,7 +372,6 @@ const EditProduct = (props) => {
                     }
                     placeholder={t("price")}
                     name="price"
-                    required
                     onChange={editHandleInput}
                     value={editProduct.price}
                   />
@@ -386,7 +398,6 @@ const EditProduct = (props) => {
                     }
                     placeholder={t("stock")}
                     name="stock"
-                    required
                     onChange={editHandleInput}
                     value={editProduct.stock}
                   />

@@ -100,10 +100,11 @@ const ProductDetails = (props) => {
         url: `/api/Getvariations/${id}`,
       });
       setFetchData(data[0]);
-      setVarPics(JSON.parse(res.data.fetchData));
-      console.log(varPics);
+
       if (res.data.fetchData !== "") {
         varData = JSON.parse(res.data.fetchData);
+        setVarPics(JSON.parse(res.data.fetchData));
+
         parseVariants(varData);
       }
       // console.log(variantData);
@@ -248,77 +249,115 @@ const ProductDetails = (props) => {
     viewImages_HTMLTABLE = (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={5} md={5} lg={5}>
-          {/* {(() => {
-            if (Array.isArray(productDetails.image)) {
-              return ( */}
-          <>
-            <Swiper
-              style={{
-                "--swiper-navigation-color": "#fff",
-                "--swiper-pagination-color": "#fff",
-              }}
-              spaceBetween={10}
-              speed={3500}
-              navigation={true}
-              thumbs={{ swiper: thumbsSwiper }}
-              onSwiper={(s) => {
-                setSwiper(s);
-              }}
-              className="mySwiper2"
-            >
-              {varPics?.map((section) => {
-                return section.image?.map((image, i) => {
-                  return (
-                    <>
-                      <SwiperSlide key={image}>
-                        <img
-                          src={`http://${base_url}:${port}/images/variants_pics/${image}`}
-                          alt=""
-                          style={{
-                            height: "400px",
-                            width: "100%",
-                            borderRadius: "5%",
-                            objectFit: "contain",
-                          }}
-                        />
-                      </SwiperSlide>
-                    </>
-                  );
-                });
-              })}
-            </Swiper>
-            <br></br>
-            <Swiper
-              onSwiper={setThumbsSwiper}
-              spaceBetween={10}
-              slidesPerView={5}
-              freeMode={true}
-              watchSlidesProgress={true}
-              className="mySwiper"
-            >
-              {varPics?.map((section) => {
-                return section.image?.map((image) => {
-                  return (
-                    <SwiperSlide
-                      // onSwiper={productDetails.image[0]}
-                      key={image}
-                    >
+          {(() => {
+            if (varPics.length != 0) {
+              return (
+                <>
+                  <Swiper
+                    style={{
+                      "--swiper-navigation-color": "#fff",
+                      "--swiper-pagination-color": "#fff",
+                    }}
+                    spaceBetween={10}
+                    speed={2500}
+                    navigation={true}
+                    thumbs={{ swiper: thumbsSwiper }}
+                    onSwiper={(s) => {
+                      setSwiper(s);
+                    }}
+                    className="mySwiper2"
+                  >
+                    {varPics?.map((section) => {
+                      return section.image?.map((image, i) => {
+                        return (
+                          <>
+                            <SwiperSlide key={image}>
+                              <img
+                                src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                                alt=""
+                                style={{
+                                  height: "400px",
+                                  width: "100%",
+                                  borderRadius: "5%",
+                                  objectFit: "contain",
+                                }}
+                              />
+                            </SwiperSlide>
+                          </>
+                        );
+                      });
+                    })}
+                  </Swiper>
+                  <br></br>
+                  <Swiper
+                    onSwiper={setThumbsSwiper}
+                    spaceBetween={10}
+                    slidesPerView={5}
+                    freeMode={true}
+                    watchSlidesProgress={true}
+                    className="mySwiper"
+                  >
+                    {varPics?.map((section) => {
+                      return section.image?.map((image) => {
+                        return (
+                          <SwiperSlide
+                            // onSwiper={productDetails.image[0]}
+                            key={image}
+                          >
+                            <img
+                              src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                              alt=""
+                              style={{
+                                height: "70px",
+                                width: "100%",
+                                borderRadius: "5%",
+                                // objectFit: "contain",
+                              }}
+                            />
+                          </SwiperSlide>
+                        );
+                      });
+                    })}
+                  </Swiper>
+                </>
+              );
+            } else {
+              return (
+                <>
+                  <Swiper
+                   
+                    speed={2500}
+                    onSwiper={(s) => {
+                      setSwiper(s);
+                    }}
+                    className="mySwiper2"
+                  >
+                    <SwiperSlide>
                       <img
-                        src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                        src={
+                          productDetails.stock === "No Stock" ||
+                          productDetails?.stock === 0
+                            ? `http://${base_url}:${port}/images/products/${
+                                productDetails.image
+                                  ? productDetails?.image
+                                  : fetchData?.image
+                              }`
+                            : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
+                        }
                         alt=""
                         style={{
-                          height: "70px",
+                          height: "400px",
                           width: "100%",
                           borderRadius: "5%",
-                          // objectFit: "contain",
+                          objectFit: "contain",
                         }}
                       />
                     </SwiperSlide>
-                  );
-                });
-              })}
-            </Swiper>
-          </>
+                  </Swiper>
+                </>
+              );
+            }
+          })()}
         </Grid>
 
         <Grid item xs={12} sm={7} md={7} lg={7}>

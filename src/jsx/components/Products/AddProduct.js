@@ -24,14 +24,14 @@ const AddProduct = (props) => {
       category: yup.string().required("This field is a required field"),
       price: yup
         .number()
-
-        .required("This field is a required field")
-        .min(1, "Please add a positive Number"),
+        .typeError("Amount must be a number")
+        .required("Please provide plan cost.")
+        .min(1, "Too little"),
       stock: yup
         .number()
-
-        .required("This field is a required field")
-        .min(1, "Please add a positive Number"),
+        .typeError("Amount must be a number")
+        .required("Please provide plan cost.")
+        .min(1, "Too little"),
     })
     .required();
   const {
@@ -72,10 +72,14 @@ const AddProduct = (props) => {
     axios.post(`/api/InsertProducts`, formData).then((res) => {
       if (res.data.status === 200) {
         reset();
-        swal("Success", res.data.message, "success");
-        history.goBack();
-
-        //  this.props.history.push("/")
+        swal("Success", res.data.message, "success").then((check) => {
+          if (check) {
+            history.push({
+              pathname: `/branches/show/products`,
+              state: { id: branchId },
+            });
+          }
+        });
       }
     });
   };
@@ -349,7 +353,7 @@ const AddProduct = (props) => {
                     name="price"
                     min="0"
                     onChange={handleInput}
-                    value={productInsert.price ? productInsert.price : "0"}
+                    value={productInsert.price}
                   />
                   {errors.price?.message && (
                     <div className="invalid-feedback">
@@ -375,7 +379,7 @@ const AddProduct = (props) => {
                     placeholder={t("stock")}
                     name="stock"
                     onChange={handleInput}
-                    value={productInsert.stock ? productInsert.stock : "0"}
+                    value={productInsert.stock}
                   />
                   {errors.stock?.message && (
                     <div className="invalid-feedback">

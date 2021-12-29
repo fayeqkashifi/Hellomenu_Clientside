@@ -74,6 +74,7 @@ const Category = (props) => {
           CategoryIcon: "",
           branchID: id,
         });
+        setImageState([]);
         reset();
         setCheck(!check);
         swal("Success", res.data.message, "success");

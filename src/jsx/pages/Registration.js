@@ -7,11 +7,16 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 const Registration = () => {
   // validation start
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const validationSchema = () => {
     return Yup.object().shape({
       name: Yup.string().required("Fullname is required"),
-      phone_number: Yup.string().required("Phone number is required"),
+      phone_number: Yup.string().matches(
+        phoneRegExp,
+        "Phone number is not valid"
+      ),
       // .matches(phoneRegExp, "Phone number is not valid"),
       email: Yup.string()
         .required("Email is required")
@@ -34,6 +39,8 @@ const Registration = () => {
               history.push("/page-login");
             }
           });
+        } else {
+          swal("warning", res.data.message, "warning");
         }
       });
     });
@@ -91,7 +98,7 @@ const Registration = () => {
                           name="phone_number"
                           type="text"
                           className="form-control"
-                          placeholder="+93--- ---- ----"
+                          placeholder="0093--- ---- ----"
                         />
                         <ErrorMessage
                           name="phone_number"

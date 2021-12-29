@@ -46,7 +46,7 @@ class SideBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      path: window.location.pathname.slice(1),
+      path: window.location.pathname.replace(/^\/([^\/]*).*$/, "$1"),
     };
   }
   render() {
