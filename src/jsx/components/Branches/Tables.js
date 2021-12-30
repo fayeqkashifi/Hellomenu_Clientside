@@ -162,9 +162,16 @@ const Tables = (props) => {
     aEl.click();
     document.body.removeChild(aEl);
   };
-  const [layout, setLayout] = useState(true);
+  const [layout, setLayout] = useState(
+    JSON.parse(
+      localStorage.getItem("layoutTables")
+        ? localStorage.getItem("layoutTables")
+        : true
+    )
+  );
   const changeLayout = () => {
     setLayout(!layout);
+    localStorage.setItem("layoutTables", !layout);
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {

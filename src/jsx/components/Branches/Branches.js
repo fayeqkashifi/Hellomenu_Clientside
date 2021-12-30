@@ -177,6 +177,7 @@ const Branches = () => {
     });
   }, [check]);
   // for download QRCode
+
   const downloadQRCode = (e, id) => {
     e.preventDefault();
     // console.log(id)
@@ -192,10 +193,18 @@ const Branches = () => {
     aEl.click();
     document.body.removeChild(aEl);
   };
-  const [layout, setLayout] = useState(true);
+  const [layout, setLayout] = useState(
+    JSON.parse(
+      localStorage.getItem("layoutBranch")
+        ? localStorage.getItem("layoutBranch")
+        : true
+    )
+  );
   const changeLayout = () => {
     setLayout(!layout);
+    localStorage.setItem("layoutBranch", !layout);
   };
+
   var viewBranches_HTMLTABLE = "";
   if (loading) {
     return (

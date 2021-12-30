@@ -168,9 +168,16 @@ const Category = (props) => {
       setLoading(false);
     });
   }, [check]);
-  const [layout, setLayout] = useState(true);
+  const [layout, setLayout] = useState(
+    JSON.parse(
+      localStorage.getItem("layoutCategory")
+        ? localStorage.getItem("layoutCategory")
+        : true
+    )
+  );
   const changeLayout = () => {
     setLayout(!layout);
+    localStorage.setItem("layoutCategory", !layout);
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -189,7 +196,10 @@ const Category = (props) => {
                 <Link
                   to={{
                     pathname: `${url}/sub-category`,
-                    state: { id: item.id },
+                    state: {
+                      id: id,
+                      sub_id: item.id,
+                    },
                   }}
                 >
                   <span>
@@ -216,14 +226,20 @@ const Category = (props) => {
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
                 <div className="col-6 pt-3 pb-3 border-right">
-                  <Link to="" onClick={(e) => fetchMenus(e, item.id)}>
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => fetchMenus(e, item.id)}
+                  >
                     <span>{t("edit")}</span>
-                  </Link>
+                  </div>
                 </div>
                 <div className="col-6 pt-3 pb-3">
-                  <Link to="" onClick={(e) => deleteMenu(e, item.id)}>
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => deleteMenu(e, item.id)}
+                  >
                     <span>{t("delete")}</span>
-                  </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -451,7 +467,8 @@ const Category = (props) => {
                                 to={{
                                   pathname: `${url}/sub-category`,
                                   state: {
-                                    id: item.id,
+                                    id: id,
+                                    sub_id: item.id,
                                   },
                                 }}
                               >
@@ -478,7 +495,8 @@ const Category = (props) => {
                                 to={{
                                   pathname: `${url}/sub-category`,
                                   state: {
-                                    id: item.id,
+                                    id: id,
+                                    sub_id: item.id,
                                   },
                                 }}
                               >

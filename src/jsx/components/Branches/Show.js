@@ -90,7 +90,7 @@ const Show = (props) => {
     {
       name: t("services"),
       url: {
-        pathname: `${url}/service-area`,
+        pathname: `${url}/services`,
         state: { id: id, BrancheName: BrancheName },
       },
     },
@@ -134,7 +134,11 @@ const Show = (props) => {
                     <div className="card-action card-tabs mt-3 mt-3 mt-lg-0">
                       <Tab.Container
                         defaultActiveKey={
-                          geturl[5] ? geturl[5] : tabData[0].name.toLowerCase()
+                          geturl[5] != "sub-category"
+                            ? geturl[5]
+                              ? geturl[5]
+                              : tabData[0].name.toLowerCase()
+                            : tabData[0].name.toLowerCase()
                         }
                       >
                         <Nav as="ul" className="nav-tabs">
@@ -234,7 +238,7 @@ const Show = (props) => {
           <PrivateRoute path={`${path}/design`} component={DesignShow} />
           <PrivateRoute path={`${path}/products`} component={ProductShow} />
 
-          <PrivateRoute path={`${path}/service-area`} component={ServiceArea} />
+          <PrivateRoute path={`${path}/services`} component={ServiceArea} />
           <PrivateRoute path={`${path}/inventory`} component={Inventory} />
           <PrivateRoute path={`${path}/tables`} component={Tables} />
           <PrivateRoute

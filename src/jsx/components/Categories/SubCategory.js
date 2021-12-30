@@ -34,7 +34,7 @@ const SubCategory = (props) => {
   // validation end
   // for localization
   const { t } = useTranslation();
-  const id = props.history.location.state.id;
+  const id = props.history.location.state.sub_id;
 
   const [check, setCheck] = useState(true);
 
@@ -163,9 +163,16 @@ const SubCategory = (props) => {
       setLoading(false);
     });
   }, [check]);
-  const [layout, setLayout] = useState(true);
+  const [layout, setLayout] = useState(
+    JSON.parse(
+      localStorage.getItem("layoutSubCategory")
+        ? localStorage.getItem("layoutSubCategory")
+        : true
+    )
+  );
   const changeLayout = () => {
     setLayout(!layout);
+    localStorage.setItem("layoutSubCategory", !layout);
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {

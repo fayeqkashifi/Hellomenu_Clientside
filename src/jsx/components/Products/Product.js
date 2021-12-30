@@ -98,9 +98,16 @@ const Product = (props) => {
       key: "actions",
     },
   ];
-  const [layout, setLayout] = useState(true);
+  const [layout, setLayout] = useState(
+    JSON.parse(
+      localStorage.getItem("layoutProducts")
+        ? localStorage.getItem("layoutProducts")
+        : true
+    )
+  );
   const changeLayout = () => {
     setLayout(!layout);
+    localStorage.setItem("layoutProducts", !layout);
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
