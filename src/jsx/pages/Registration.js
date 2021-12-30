@@ -29,7 +29,7 @@ const Registration = () => {
   const history = useHistory();
 
   const handleSubmit = (data) => {
-    //  console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(data, null, 2));
     axios.get("sanctum/csrf-cookie").then((response) => {
       axios.post("/api/register", data).then((res) => {
         if (res.data.status === 200) {
@@ -39,6 +39,8 @@ const Registration = () => {
             }
           });
         } else {
+          console.log(res.data.data);
+
           swal("warning", res.data.message, "warning");
         }
       });

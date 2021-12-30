@@ -134,13 +134,13 @@ const Cart = (props) => {
     viewImages_HTMLTABLE = cart?.map((item, i) => {
       message =
         message +
-        `*Product Name*: ${item.ProductName} *Category*: ${
+        `*Product Name*: ${item.ProductName} \n*Category*: ${
           item.CategoryName
-        } *Sub Category*: ${item.SubCategoryName} *QTY*: ${item.qty} *Price*: ${
-          item.price
-        } *Total Price*: ${item.qty * item.price} *${getSymbolFromCurrency(
-          item.currency_code
-        )}* \n`;
+        } \n*Sub Category*: ${item.SubCategoryName} \n*QTY*: ${
+          item.qty
+        } \n*Price*: ${item.price} \n*Total Price*: ${
+          item.qty * item.price
+        } *${getSymbolFromCurrency(item.currency_code)}* \n\n`;
       return (
         <Card
           key={i}
@@ -310,7 +310,7 @@ const Cart = (props) => {
                   <Grid item xs={6} sm={6} md={6}>
                     <p className="d-none">
                       {console.log(message)}
-                      {(message = `\n${message} *Grand Total*: ${sum}`)}
+                      {(message = `\n\n\n${message} *Grand Total*: ${sum}`)}
                     </p>
                     {console.log(message)}
 
@@ -328,7 +328,7 @@ const Cart = (props) => {
                           ? theme.bTextSize + "rem"
                           : "1rem",
                       }}
-                      number="905411251310"
+                      number="+93744647067"
                       message={message}
                       max="4096"
                       type="submit"

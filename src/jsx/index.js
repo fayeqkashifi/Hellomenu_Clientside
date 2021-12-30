@@ -30,6 +30,7 @@ import Attributes from "./components/Attributes/Attributes";
 import Error404 from "./pages/Error404";
 import Ingredients from "./components/Products/Ingredients";
 import Extra from "./components/Products/Extra";
+import Area from "./components/Areas/Area";
 
 const Markup = () => {
   const routes = [
@@ -47,6 +48,7 @@ const Markup = () => {
     { url: "gallery/:id", component: Gallery },
     { url: "branches/tables", component: Tables },
     { url: "attributes", component: Attributes },
+    { url: "areas", component: Area },
   ];
 
   return (

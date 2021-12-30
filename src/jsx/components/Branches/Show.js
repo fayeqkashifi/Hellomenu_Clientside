@@ -88,9 +88,9 @@ const Show = (props) => {
     //   },
     // },
     {
-      name: t("services"),
+      name: t("services_areas"),
       url: {
-        pathname: `${url}/services`,
+        pathname: `${url}/services-areas`,
         state: { id: id, BrancheName: BrancheName },
       },
     },
@@ -238,7 +238,10 @@ const Show = (props) => {
           <PrivateRoute path={`${path}/design`} component={DesignShow} />
           <PrivateRoute path={`${path}/products`} component={ProductShow} />
 
-          <PrivateRoute path={`${path}/services`} component={ServiceArea} />
+          <PrivateRoute
+            path={`${path}/services-areas`}
+            component={ServiceArea}
+          />
           <PrivateRoute path={`${path}/inventory`} component={Inventory} />
           <PrivateRoute path={`${path}/tables`} component={Tables} />
           <PrivateRoute
