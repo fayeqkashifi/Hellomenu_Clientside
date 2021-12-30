@@ -149,7 +149,7 @@ const Design = (props) => {
     axios.get(`/api/duplicateTheme/${id}`).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        swal("Success", res.data.message, "success");
+        // swal("Success", res.data.message, "success");
       }
     });
   };
@@ -239,14 +239,12 @@ const Design = (props) => {
                     {item.ThemeName}
                   </div>
                   <div className="col-4 text-right">
-                    {item.Status == 1 ? (
-                      <Switch checked disabled color="secondary" />
-                    ) : (
-                      <Switch
-                        onChange={(e) => changeTheActiveTheme(e, item.id)}
-                        color="secondary"
-                      />
-                    )}
+                    <Switch
+                      disabled={item.Status == 1 ? true : false}
+                      checked={item.Status == 1 ? true : false}
+                      color="secondary"
+                      onChange={(e) => changeTheActiveTheme(e, item.id)}
+                    />
                   </div>
                 </div>
               </CCardText>
@@ -559,7 +557,7 @@ const Design = (props) => {
                           htmlFor="inputPassword"
                           className="col-sm-6 col-form-label"
                         >
-                          {t("background_color")}
+                          {t("bgColor")}
                         </CFormLabel>
                         <CCol sm={6} className="text-center">
                           <input

@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
-import {
-  Link,
-  // , useHistory
-} from "react-router-dom";
+// import {
+//   Link,
+//   // , useHistory
+// } from "react-router-dom";
 /// Image
 import i18next from "i18next";
 import profile from "../../../images/hellomenu/logo.svg";
@@ -24,7 +24,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
         localStorage.removeItem("auth_token");
         localStorage.removeItem("auth_name");
         localStorage.removeItem("auth_id");
-        window.location = "/";
+        window.location = "/page-login";
       }
     });
   };
@@ -52,7 +52,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
     <div className="header">
       <IdleTimer
         ref={idleTimerRef}
-        timeout={1000 * 60 * 60}
+        timeout={1000 * 60 * 15}
         onIdle={logoutUser}
       />
       <div className="header-content">
@@ -115,7 +115,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                 }`}
                 onClick={() => onProfile()}
               >
-                <Link
+                <a
                   // to={"#"}
                   className="nav-link"
                   role="button"
@@ -126,13 +126,13 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                     <span>{localStorage.getItem("auth_name")}</span>
                   </div>
                   <img src={profile} width="10" alt="" />
-                </Link>
+                </a>
                 <div
                   className={`dropdown-menu dropdown-menu-right ${
                     toggle === "profile" ? "show" : ""
                   }`}
                 >
-                  <Link to="/profile" className="dropdown-item ai-icon">
+                  {/* <Link to="/profile" className="dropdown-item ai-icon">
                     <svg
                       id="icon-user1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +150,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                     <span className="ml-2">{t("profile")} </span>
-                  </Link>
+                  </Link> */}
 
                   <button
                     className="dropdown-item ai-icon"

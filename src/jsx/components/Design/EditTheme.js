@@ -66,8 +66,11 @@ const EditTheme = (props) => {
     formData.append("ButtonShape", themes.ButtonShape);
     axios.post(`/api/UpdateTheme/${id}`, formData).then((res) => {
       if (res.data.status === 200) {
-        swal("Success", res.data.message, "success");
-        history.goBack();
+        swal("Success", res.data.message, "success").then((check) => {
+          if (check) {
+            history.goBack();
+          }
+        });
 
         // setThemes([]);
         // setImageStateMenu([]);

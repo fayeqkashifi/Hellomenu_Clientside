@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 
 const Ingredients = (props) => {
   // validation start
@@ -28,7 +27,6 @@ const Ingredients = (props) => {
 
   // for localization
   const { t } = useTranslation();
-  // get ID from URL
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
   const [insert, setInsert] = useState([]);
@@ -40,6 +38,8 @@ const Ingredients = (props) => {
     axios.post("/api/InsertIngredient", insert).then((res) => {
       if (res.data.status === 200) {
         setInsert([]);
+        setCheck(!check);
+
         reset();
         setModalCentered(false);
         swal("Success", res.data.message, "success");
@@ -72,7 +72,7 @@ const Ingredients = (props) => {
     axios.post("/api/UpdateIngredient", edit).then((res) => {
       if (res.data.status === 200) {
         setEdit([]);
-        setInsert([]);
+        setCheck(!check);
         setEditModalCentered(false);
 
         swal("Success", res.data.message, "success");
@@ -98,7 +98,7 @@ const Ingredients = (props) => {
         axios.delete(`/api/DeleteIngredient/${id}`).then((res) => {
           if (res.data.status === 200) {
             swal("Success", res.data.message, "success");
-            setInsert([]);
+            setCheck(!check);
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
           }
@@ -113,6 +113,7 @@ const Ingredients = (props) => {
   //retriving data using laravel API for show
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(true);
   useEffect(() => {
     axios.post(`/api/GetIngredient`).then((res) => {
       if (res.data.status === 200) {
@@ -121,7 +122,7 @@ const Ingredients = (props) => {
       }
       setLoading(false);
     });
-  }, [insert]);
+  }, [check]);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -161,9 +162,6 @@ const Ingredients = (props) => {
   }
   return (
     <Fragment>
-      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem active>{t("ingredients")}</CBreadcrumbItem>
-      </CBreadcrumb>
       {/* insert */}
       <Modal className="fade" show={modalCentered}>
         <Form

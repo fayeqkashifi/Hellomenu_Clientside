@@ -3,13 +3,16 @@ import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
+import Cookies from "universal-cookie";
+import { base_url, port } from "../../Consts";
 
 const Login = () => {
   // Valivation start
+  const cookies = new Cookies();
 
   const [loginstate, setLoginstate] = useState({
-    email: "",
-    password: "",
+    email: cookies.get("myUserName"),
+    password: cookies.get("myPassword"),
   });
   // validation end
   const [error, setError] = useState(false);
@@ -39,6 +42,17 @@ const Login = () => {
         }
       });
     });
+  };
+  const setCookie = (e) => {
+    if (e.target.checked) {
+      cookies.set("myUserName", loginstate.email, {
+        path: `http://${base_url}:${port}/page-login`,
+      });
+      cookies.set("myPassword", loginstate.password, {
+        path: `http://${base_url}:${port}/page-login`,
+      });
+      console.log(cookies.get("myUserName")); // Pacman
+    }
   };
 
   // check the auth end
@@ -96,6 +110,7 @@ const Login = () => {
                           type="checkbox"
                           className="custom-control-input"
                           id="basic_checkbox_1"
+                          onClick={setCookie}
                         />
                         <label
                           className="custom-control-label"

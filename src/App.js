@@ -29,6 +29,7 @@ import OrderDetails from "./jsx/components/Design/Templates/Dark/OrderDetails";
 import SecondTemplate from "./jsx/components/Design/Templates/Second/Main";
 import ProductsList from "./jsx/components/Design/Templates/Thrid/ProductsList";
 import Cart from "./jsx/components/Design/Templates/Dark/Cart";
+import ForgotPassword from "./jsx/pages/ForgotPassword";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -55,7 +56,7 @@ axios.interceptors.response.use(
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_name");
       localStorage.removeItem("auth_id");
-      window.location = "/";
+      // window.location = "/";
 
       return error.response;
     }
@@ -80,6 +81,12 @@ const App = () => {
           restricted={false}
           component={Registration}
           path="/user-register"
+          exact
+        />
+        <PublicRoute
+          restricted={false}
+          component={ForgotPassword}
+          path="/forgot-password"
           exact
         />
         <PublicRoute

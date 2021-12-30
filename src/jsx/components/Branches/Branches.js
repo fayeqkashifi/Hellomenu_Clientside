@@ -8,15 +8,13 @@ import QRCode from "qrcode.react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {
-  CBreadcrumb,
-  CDropdownMenu,
-  CDropdown,
-  CDropdownToggle,
-  CBreadcrumbItem,
-} from "@coreui/react";
+import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 // import ReactWhatsapp from 'react-whatsapp';
 // import FloatingWhatsApp from 'react-floating-whatsapp'
+import ViewComfyIcon from "@mui/icons-material/ViewComfy";
+import IconButton from "@mui/material/IconButton";
+import TableRowsIcon from "@mui/icons-material/TableRows";
+import AddIcon from "@mui/icons-material/Add";
 
 const Branches = () => {
   // validation start
@@ -52,20 +50,24 @@ const Branches = () => {
   };
   const saveBranch = (e) => {
     // e.preventDefault();
-    const check = branchdata.every((item) => {
+    const checkBranch = branchdata.every((item) => {
       return item.BrancheName !== branchstate.BrancheName;
     });
-    if (check) {
+    if (checkBranch) {
       axios.post("/api/InsertBranches", branchstate).then((res) => {
         if (res.data.status === 200) {
-          setBranchstate({
-            BrancheName: "",
-            currencyID: "",
-          });
-          reset();
-          setCheck(!check);
-          swal("Success", res.data.message, "success");
           setModalCentered(false);
+          setCheck(!check);
+
+          swal("Success", res.data.message, "success").then((done) => {
+            if (done) {
+              setBranchstate({
+                BrancheName: "",
+                currencyID: "",
+              });
+              reset();
+            }
+          });
         }
       });
     } else {
@@ -99,19 +101,33 @@ const Branches = () => {
   };
   const updateBranch = (e) => {
     e.preventDefault();
-    axios.post("/api/UpdateBranches", editBranchstate).then((res) => {
-      if (res.data.status === 200) {
-        swal("Success", res.data.message, "success");
-        setEditBranchstate({
-          id: "",
-          BrancheName: "",
-          currencyID: "",
-        });
-        setCheck(!check);
-
-        setEditModalCentered(false);
-      }
+    const checkBranch = branchdata.every((item) => {
+      return item.BrancheName !== editBranchstate.BrancheName;
     });
+    if (checkBranch) {
+      axios.post("/api/UpdateBranches", editBranchstate).then((res) => {
+        if (res.data.status === 200) {
+          setEditModalCentered(false);
+
+          swal("Success", res.data.message, "success").then((done) => {
+            if (done) {
+              setEditBranchstate({
+                id: "",
+                BrancheName: "",
+                currencyID: "",
+              });
+              setCheck(!check);
+            }
+          });
+        }
+      });
+    } else {
+      swal(
+        "warning",
+        "The name already exists, please try another name.",
+        "warning"
+      );
+    }
   };
   // edit end
   // delete start
@@ -176,7 +192,10 @@ const Branches = () => {
     aEl.click();
     document.body.removeChild(aEl);
   };
-
+  const [layout, setLayout] = useState(true);
+  const changeLayout = () => {
+    setLayout(!layout);
+  };
   var viewBranches_HTMLTABLE = "";
   if (loading) {
     return (
@@ -192,21 +211,15 @@ const Branches = () => {
             <div className="card-body">
               <div className="text-center">
                 <Link
-                  // to={`branches/category/${btoa(item.id)}`}
-                  // // to={`/branches/show/${btoa(item.id)}`}
                   to={{
                     pathname: `/branches/show`,
                     state: { id: item.id, BrancheName: item.BrancheName },
                   }}
-                  // to={{
-                  //   pathname: `/branches/category`,
-                  //   state: { id: item.id,BrancheName: item.BrancheName },
-                  // }}
                 >
                   <QRCode
                     id={btoa(item.id)}
                     level={"H"}
-                    size={256}
+                    size={180}
                     fgColor="#f50b65"
                     value={`http://192.168.1.103:3000/show-branch-details/${btoa(
                       item.id
@@ -220,69 +233,22 @@ const Branches = () => {
                     {" "}
                     <p>{t("download_qr_code")}</p>
                   </div>
-                  <h3 className="mt-4 mb-1"> {item.BrancheName}</h3>
+                  <h4> {item.BrancheName}</h4>
                 </Link>
-                <CDropdown variant="btn-group">
-                  {/* <CButton color="primary" size="sm"></CButton> */}
-                  <CDropdownToggle
-                    color="primary"
-                    size="lg"
-                    split
-                    shape="rounded"
-                    caret={false}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32"
-                      height="32"
-                      fill="currentColor"
-                      className="bi bi-three-dots"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                    </svg>
-                  </CDropdownToggle>
-                  <CDropdownMenu>
-                    <div className="mx-3 my-2">
-                      <Link to="" onClick={(e) => editBranch(e, item.id)}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-pencil-square"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                          <path
-                            fillRule="evenodd"
-                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                          />
-                        </svg>
-                        <span> {t("edit")}</span>
-                      </Link>
-                    </div>
-                    <div className="mx-3 my-2">
-                      <Link to="" onClick={(e) => deleteBranch(e, item.id)}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-trash"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                          <path
-                            fillRule="evenodd"
-                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-                          />
-                        </svg>
-                        <span> {t("delete")}</span>
-                      </Link>
-                    </div>
-                  </CDropdownMenu>
-                </CDropdown>
+              </div>
+            </div>
+            <div className="card-footer pt-0 pb-0 text-center">
+              <div className="row">
+                <div className="col-6 pt-3 pb-3 border-right">
+                  <Link to="" onClick={(e) => editBranch(e, item.id)}>
+                    <span>{t("edit")}</span>
+                  </Link>
+                </div>
+                <div className="col-6 pt-3 pb-3">
+                  <Link to="" onClick={(e) => deleteBranch(e, item.id)}>
+                    <span>{t("delete")}</span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -296,6 +262,7 @@ const Branches = () => {
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
         <CBreadcrumbItem active>{t("Branches")}</CBreadcrumbItem>
       </CBreadcrumb>
+
       {/* <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} /> */}
       {/* <!-- Insert  Modal --> */}
       <Modal className="fade" show={modalCentered}>
@@ -462,47 +429,145 @@ const Branches = () => {
           </Modal.Footer>
         </Form>
       </Modal>
-      <div className="row">
-        {viewBranches_HTMLTABLE}
-        <div className="col-xl-4 col-lg-6 col-sm-6 ">
-          <div className="card overflow-hidden ">
-            <div
-              className="card-body d-flex justify-content-center text-center"
-              style={{ border: "2px dashed red" }}
-            >
-              <div className="align-self-center text-center">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => setModalCentered(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    fill="currentColor"
-                    className="bi bi-plus"
-                    viewBox="0 0 16 16"
+      <div className="row justify-content-end">
+        <div className="col-1">
+          <IconButton aria-label="Example" onClick={changeLayout}>
+            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+          </IconButton>
+        </div>
+      </div>
+
+      {layout ? (
+        <div className="row">
+          {viewBranches_HTMLTABLE}
+          <div className="col-xl-4 col-lg-6 col-sm-6 ">
+            <div className="card overflow-hidden ">
+              <div
+                className="card-body d-flex justify-content-center text-center"
+                style={{ border: "2px dashed #f50b65" }}
+              >
+                <div className="align-self-center text-center">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => setModalCentered(true)}
                   >
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                  </svg>
-                  {t("add_branch")}
-                </button>
+                    <AddIcon />
+                    {t("add_branch")}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* <div className="App">
-                <FloatingWhatsApp
-                    phoneNumber="93744647067"
-                    accountName="Mohammad Faiq"
-                    allowClickAway
-                    // notification
-                    // notificationDelay={60000} // 1 minute
-                    // notificationSound
-                />
-            </div> */}
+      ) : (
+        <div className="row">
+          <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+            <div className="card">
+              <div className="card-header border-0">
+                <div>
+                  <h4 className="card-title mb-2">{t("branches")}</h4>
+                </div>
+                <div className="dropdown">
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_branch")}
+                  </Button>
+                </div>
+              </div>
+              <div className="card-body p-0">
+                <div className="table-responsive ">
+                  <table className="table text-center ">
+                    <thead>
+                      <tr className="card-title">
+                        <th>{t("qr_code")}</th>
+                        <th>{t("branch_name")}</th>
+                        <th>{t("actions")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {branchdata.map((item, i) => {
+                        return (
+                          <tr key={item.id}>
+                            <td>
+                              <Link
+                                to={{
+                                  pathname: `/branches/show`,
+                                  state: {
+                                    id: item.id,
+                                    BrancheName: item.BrancheName,
+                                  },
+                                }}
+                              >
+                                <QRCode
+                                  id={btoa(item.id)}
+                                  level={"H"}
+                                  size={100}
+                                  height="100px"
+                                  fgColor="#f50b65"
+                                  value={`http://192.168.1.103:3000/show-branch-details/${btoa(
+                                    item.id
+                                  )}`}
+                                  className="primary"
+                                />
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  onClick={(e) =>
+                                    downloadQRCode(e, btoa(item.id))
+                                  }
+                                >
+                                  <small>{t("download_qr_code")}</small>
+                                </div>
+                              </Link>
+                            </td>
+                            <td>
+                              {" "}
+                              <Link
+                                to={{
+                                  pathname: `/branches/show`,
+                                  state: {
+                                    id: item.id,
+                                    BrancheName: item.BrancheName,
+                                  },
+                                }}
+                              >
+                                {" "}
+                                {item.BrancheName}
+                              </Link>
+                            </td>
+
+                            <td>
+                              <button
+                                type="button"
+                                onClick={(e) => editBranch(e, item.id)}
+                                className="btn btn-outline-danger btn-sm"
+                              >
+                                {t("edit")}
+                              </button>
+                              &nbsp;&nbsp;&nbsp;
+                              <button
+                                type="button"
+                                onClick={(e) => deleteBranch(e, item.id)}
+                                className="btn btn-outline-warning btn-sm"
+                              >
+                                {t("delete")}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Fragment>
   );
 };

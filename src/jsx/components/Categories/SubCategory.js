@@ -10,11 +10,12 @@ import * as yup from "yup";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
 import DefaultPic from "../../../images/hellomenu/sub_category.svg";
+import ViewComfyIcon from "@mui/icons-material/ViewComfy";
+import IconButton from "@mui/material/IconButton";
+import TableRowsIcon from "@mui/icons-material/TableRows";
+import AddIcon from "@mui/icons-material/Add";
 
 const SubCategory = (props) => {
-  const history = useHistory();
-  const { path, url } = useRouteMatch();
-
   // validation start
   const schema = yup
     .object()
@@ -162,8 +163,10 @@ const SubCategory = (props) => {
       setLoading(false);
     });
   }, [check]);
-  var branchID = 0;
-
+  const [layout, setLayout] = useState(true);
+  const changeLayout = () => {
+    setLayout(!layout);
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -173,36 +176,27 @@ const SubCategory = (props) => {
     );
   } else {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
-      branchID = item.branchID;
       return (
         <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3" key={i}>
           <div className="card overflow-hidden">
             <div className="card-body">
               <div className="text-center">
-                <Link
-                  to={{
-                    pathname: `${url}/products`,
-                    state: { id: item.sub_id },
+                <img
+                  style={{
+                    height: "100px",
+                    width: "100%",
+                    borderRadius: "10%",
+                    objectFit: "contain",
                   }}
-                >
-                  <span>
-                    <img
-                      style={{
-                        height: "100px",
-                        width: "100%",
-                        objectFit: "contain",
-                      }}
-                      src={
-                        item.SubCategoryIcon
-                          ? `http://${base_url}:${port}/images/sub_catagories/${item.SubCategoryIcon}`
-                          : DefaultPic
-                      }
-                      alt="sub category"
-                    />
-                  </span>
+                  src={
+                    item.SubCategoryIcon
+                      ? `http://${base_url}:${port}/images/sub_catagories/${item.SubCategoryIcon}`
+                      : DefaultPic
+                  }
+                  alt="sub category"
+                />
 
-                  <h4 className="mt-4 mb-1">{item.SubCategoryName}</h4>
-                </Link>
+                <h4 className="mt-2">{item.SubCategoryName}</h4>
               </div>
             </div>
 
@@ -373,37 +367,118 @@ const SubCategory = (props) => {
           </Modal.Footer>
         </Form>
       </Modal>
-      <div className="row">
-        {viewProducts_HTMLTABLE}
-        <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
-          <div className="card overflow-hidden ">
-            <div
-              className="card-body d-flex justify-content-center text-center"
-              style={{ border: "2px dashed red" }}
-            >
-              <div className="align-self-center text-center">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => setModalCentered(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    fill="currentColor"
-                    className="bi bi-plus"
-                    viewBox="0 0 16 16"
+      <div className="row justify-content-end">
+        <div className="col-1">
+          <IconButton aria-label="Example" onClick={changeLayout}>
+            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+          </IconButton>
+        </div>
+      </div>
+      {layout ? (
+        <div className="row">
+          {viewProducts_HTMLTABLE}
+          <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
+            <div className="card overflow-hidden ">
+              <div
+                className="card-body d-flex justify-content-center text-center"
+                style={{ border: "2px dashed #f50b65" }}
+              >
+                <div className="align-self-center text-center">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => setModalCentered(true)}
                   >
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                  </svg>
-                  {t("add_sub_Category")}
-                </button>
+                    <AddIcon />
+
+                    {t("add_sub_Category")}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="row">
+          <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+            <div className="card">
+              <div className="card-header border-0">
+                <div>
+                  <h4 className="card-title mb-2">{t("categories")}</h4>
+                </div>
+                <div className="dropdown">
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_category")}
+                  </Button>
+                </div>
+              </div>
+              <div className="card-body p-0">
+                <div className="table-responsive ">
+                  <table className="table text-center ">
+                    <thead>
+                      <tr className="card-title">
+                        <th>{t("image")}</th>
+                        <th>{t("sub_category_name")}</th>
+                        <th>{t("actions")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fetchData.map((item, i) => {
+                        return (
+                          <tr key={item.id}>
+                            <td>
+                              <div>
+                                <img
+                                  style={{
+                                    height: "50px",
+                                    width: "100%",
+                                    borderRadius: "10%",
+                                    objectFit: "contain",
+                                  }}
+                                  src={
+                                    item.SubCategoryIcon
+                                      ? `http://${base_url}:${port}/images/sub_catagories/${item.SubCategoryIcon}`
+                                      : DefaultPic
+                                  }
+                                  alt="category"
+                                />
+                              </div>
+                            </td>
+                            <td>{item.SubCategoryName}</td>
+
+                            <td>
+                              <button
+                                type="button"
+                                onClick={(e) => fetchSubMenus(e, item.sub_id)}
+                                className="btn btn-outline-danger btn-sm"
+                              >
+                                {t("edit")}
+                              </button>
+                              &nbsp;&nbsp;&nbsp;
+                              <button
+                                type="button"
+                                onClick={(e) => deleteSubMenu(e, item.sub_id)}
+                                className="btn btn-outline-warning btn-sm"
+                              >
+                                {t("delete")}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Fragment>
   );
 };

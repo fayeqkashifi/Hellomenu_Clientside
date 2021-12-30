@@ -20,7 +20,6 @@ import BranchShow from "./components/Branches/Show";
 
 import Company from "./components/Companies/Company";
 import ServiceArea from "./components/Services/ServiceArea";
-import Unit from "./components/Units/Unit";
 import Inventory from "./components/Inventories/Inventory";
 import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
@@ -28,7 +27,6 @@ import Gallery from "./components/Variants/Gallary";
 import Basket from "./components/Orders/Basket";
 import Tables from "./components/Branches/Tables";
 import Attributes from "./components/Attributes/Attributes";
-import Options from "./components/Attributes/Options";
 import Error404 from "./pages/Error404";
 import Ingredients from "./components/Products/Ingredients";
 import Extra from "./components/Products/Extra";
@@ -42,7 +40,6 @@ const Markup = () => {
     { url: "extras", component: Extra },
     { url: "companies", component: Company },
     { url: "branches/service-area", component: ServiceArea },
-    { url: "branches/unit", component: Unit },
     { url: "branches/inventory", component: Inventory },
     { url: "profile", component: Profile },
     { url: "orders", component: Order },
@@ -50,7 +47,6 @@ const Markup = () => {
     { url: "gallery/:id", component: Gallery },
     { url: "branches/tables", component: Tables },
     { url: "attributes", component: Attributes },
-    { url: "add-option/:id", component: Options },
   ];
 
   return (

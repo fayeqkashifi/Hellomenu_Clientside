@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 
 const Attributes = (props) => {
   // validation start
@@ -28,8 +27,6 @@ const Attributes = (props) => {
 
   // for localization
   const { t } = useTranslation();
-  // get ID from URL
-  const id = props.match.params.id;
 
   // insert Attribute start
   const [modalCentered, setModalCentered] = useState(false);
@@ -43,6 +40,7 @@ const Attributes = (props) => {
     // e.preventDefault();
     axios.post("/api/InsertAttribute", attributeInsert).then((res) => {
       if (res.data.status === 200) {
+        setCheck(!check);
         setAttributeInsert([]);
         reset();
 
@@ -79,7 +77,9 @@ const Attributes = (props) => {
     e.preventDefault();
     axios.post("/api/UpdateAttribute", editAttribute).then((res) => {
       if (res.data.status === 200) {
-        setEditAttribute("");
+        setCheck(!check);
+
+        setEditAttribute([]);
         setEditModalCentered(false);
 
         swal("Success", res.data.message, "success");
@@ -105,7 +105,7 @@ const Attributes = (props) => {
         axios.delete(`/api/DeleteAttribute/${id}`).then((res) => {
           if (res.data.status === 200) {
             swal("Success", res.data.message, "success");
-            setAttributeInsert([]);
+            setCheck(!check);
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
           }
@@ -120,6 +120,7 @@ const Attributes = (props) => {
   //retriving data using laravel API for show
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(true);
   useEffect(() => {
     axios.post(`/api/GetAttributes`).then((res) => {
       if (res.data.status === 200) {
@@ -128,7 +129,7 @@ const Attributes = (props) => {
       }
       setLoading(false);
     });
-  }, [attributeInsert, editAttribute, id]);
+  }, [check]);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -169,9 +170,6 @@ const Attributes = (props) => {
 
   return (
     <Fragment>
-      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem active>{t("attributes")}</CBreadcrumbItem>
-      </CBreadcrumb>
       <Modal className="fade" show={modalCentered}>
         <Form
           onSubmit={handleSubmit(saveAttribute)}

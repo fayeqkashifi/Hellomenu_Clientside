@@ -39,8 +39,9 @@ const Company = () => {
   const saveCompany = (e) => {
     axios.post("/api/InsertCompanies", companyState).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.status);
-        setCompanyState("");
+        setCompanyState([]);
+        setCheck(!check);
+
         reset();
         swal("Success", res.data.message, "success");
         setModalCentered(false);
@@ -74,8 +75,9 @@ const Company = () => {
     e.preventDefault();
     axios.post("/api/UpdateCompanies", editCompanystate).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.status);
-        setEditCompanystate("");
+        setEditCompanystate([]);
+        setCheck(!check);
+
         swal("Success", res.data.message, "success");
         setEditModalCentered(false);
         //  this.props.history.push("/")
@@ -99,6 +101,7 @@ const Company = () => {
             swal(res.data.message, {
               icon: "success",
             });
+            setCheck(!check);
             // swal("Success",,"success");
             // thisClicked.closest("tr").remove();
           } else if (res.data.status === 404) {
@@ -116,6 +119,7 @@ const Company = () => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(true);
 
   useEffect(() => {
     axios.get("/api/GetCompanies").then((res) => {
@@ -124,7 +128,7 @@ const Company = () => {
       }
       setLoading(false);
     });
-  }, [companyState, editCompanystate]);
+  }, [check]);
 
   var viewCompanies_HTMLTABLE = "";
   if (loading) {

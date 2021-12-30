@@ -34,7 +34,7 @@ export default function Main(props) {
   useEffect(() => {
     axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        setCustom(res.data.fetchData?.Customization);
+        setCustom(res.data.fetchData[0]?.Customization);
       }
     });
     axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {

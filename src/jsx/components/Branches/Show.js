@@ -24,7 +24,6 @@ import Category from "../Categories/Category";
 import Inventory from "../Inventories/Inventory";
 import PrivateRoute from "../PrivateRoute";
 import ServiceArea from "../Services/ServiceArea";
-import Unit from "../Units/Unit";
 import Tables from "./Tables";
 import ProductShow from "../Products/Show";
 import DesignShow from "../Design/Show";
@@ -41,7 +40,7 @@ const Show = (props) => {
   useEffect(() => {
     axios.get(`/api/GetTempBasedOnBranch/${id}`).then((res) => {
       if (res.data.status === 200) {
-        setTemplate(res.data.fetchData);
+        setTemplate(res.data.fetchData[0]);
       }
     });
   }, [check]);
@@ -119,6 +118,7 @@ const Show = (props) => {
     e.preventDefault();
     setCheck(!check);
   };
+  const geturl = document.location.href.split("/");
   return (
     <Fragment>
       <Router>
@@ -133,7 +133,9 @@ const Show = (props) => {
                     </div>
                     <div className="card-action card-tabs mt-3 mt-3 mt-lg-0">
                       <Tab.Container
-                        defaultActiveKey={tabData[0].name.toLowerCase()}
+                        defaultActiveKey={
+                          geturl[5] ? geturl[5] : tabData[0].name.toLowerCase()
+                        }
                       >
                         <Nav as="ul" className="nav-tabs">
                           {tabData.map((data, i) =>
@@ -233,7 +235,6 @@ const Show = (props) => {
           <PrivateRoute path={`${path}/products`} component={ProductShow} />
 
           <PrivateRoute path={`${path}/service-area`} component={ServiceArea} />
-          <PrivateRoute path={`${path}/unit`} component={Unit} />
           <PrivateRoute path={`${path}/inventory`} component={Inventory} />
           <PrivateRoute path={`${path}/tables`} component={Tables} />
           <PrivateRoute

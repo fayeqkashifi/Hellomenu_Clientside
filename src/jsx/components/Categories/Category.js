@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { base_url, port } from "../../../Consts";
 /// Bootstrap
-import { Row, Col, Card } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import { Link, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
@@ -10,13 +10,11 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {
-  CBreadcrumb,
-  CDropdown,
-  CDropdownToggle,
-  CDropdownMenu,
-} from "@coreui/react";
 import DefaultPic from "../../../images/hellomenu/category.svg";
+import ViewComfyIcon from "@mui/icons-material/ViewComfy";
+import IconButton from "@mui/material/IconButton";
+import TableRowsIcon from "@mui/icons-material/TableRows";
+import AddIcon from "@mui/icons-material/Add";
 
 const Category = (props) => {
   const { path, url } = useRouteMatch();
@@ -170,7 +168,10 @@ const Category = (props) => {
       setLoading(false);
     });
   }, [check]);
-
+  const [layout, setLayout] = useState(true);
+  const changeLayout = () => {
+    setLayout(!layout);
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -181,17 +182,14 @@ const Category = (props) => {
   } else {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       return (
-        <Col xl={3} md={3} lg={3} sm={6} key={item.id}>
-          <Card>
-            <Card.Header>
-              <h4 className="card-intro-title">{item.CategoryName}</h4>
-            </Card.Header>
-            <Card.Body>
+        <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3" key={i}>
+          <div className="card overflow-hidden">
+            <div className="card-body">
               <div className="text-center">
                 <Link
                   to={{
                     pathname: `${url}/sub-category`,
-                    state: { id: item.id, CategoryName: item.CategoryName },
+                    state: { id: item.id },
                   }}
                 >
                   <span>
@@ -199,6 +197,7 @@ const Category = (props) => {
                       style={{
                         height: "150px",
                         width: "100%",
+                        borderRadius: "10%",
                         objectFit: "contain",
                       }}
                       src={
@@ -209,111 +208,32 @@ const Category = (props) => {
                       alt="category"
                     />
                   </span>
+                  <h4 className="mt-2">{item.CategoryName}</h4>
                 </Link>
               </div>
-            </Card.Body>
+            </div>
 
-            <Card.Footer className="text-center">
-              <CDropdown variant="btn-group">
-                {/* <CButton color="primary" size="sm"></CButton> */}
-                <CDropdownToggle
-                  color="primary"
-                  size="sm"
-                  shape="rounded"
-                  caret={false}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-three-dots"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                  </svg>
-                </CDropdownToggle>
-                <CDropdownMenu>
-                  <div className="mx-3 my-2">
-                    <div
-                      onClick={(e) => fetchMenus(e, item.id)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-pencil-square"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                        <path
-                          fillRule="evenodd"
-                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                        />
-                      </svg>
-                      <span> {t("edit")}</span>
-                    </div>
-                  </div>
-
-                  <div className="mx-3 my-2">
-                    <div
-                      style={{ cursor: "pointer" }}
-                      onClick={(e) => deleteMenu(e, item.id)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-trash"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                        <path
-                          fillRule="evenodd"
-                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-                        />
-                      </svg>
-                      <span> {t("delete")}</span>
-                    </div>
-                  </div>
-                  <div className="mx-3 my-2">
-                    <Link
-                      to={{
-                        pathname: `${url}/sub-category`,
-                        state: { id: item.id, CategoryName: item.CategoryName },
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-subtract"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2z" />
-                      </svg>
-                      <span> {t("sub_category")}</span>
-                    </Link>
-                  </div>
-                </CDropdownMenu>
-              </CDropdown>
-            </Card.Footer>
-          </Card>
-        </Col>
+            <div className="card-footer pt-0 pb-0 text-center">
+              <div className="row">
+                <div className="col-6 pt-3 pb-3 border-right">
+                  <Link to="" onClick={(e) => fetchMenus(e, item.id)}>
+                    <span>{t("edit")}</span>
+                  </Link>
+                </div>
+                <div className="col-6 pt-3 pb-3">
+                  <Link to="" onClick={(e) => deleteMenu(e, item.id)}>
+                    <span>{t("delete")}</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       );
     });
   }
   return (
     <Fragment>
-      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <div className="font-weight-bold">{t("categories")}</div>
-      </CBreadcrumb>
-      {/* <!-- Insert  Modal --> */}
-
       <Modal className="fade" show={modalCentered}>
         <Form
           onSubmit={handleSubmit(saveMenu)}
@@ -462,37 +382,138 @@ const Category = (props) => {
           </Modal.Footer>
         </Form>
       </Modal>
-      <Row>
-        {viewProducts_HTMLTABLE}
-        <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
-          <div className="card overflow-hidden ">
-            <div
-              className="card-body d-flex justify-content-center text-center"
-              style={{ border: "2px dashed red" }}
-            >
-              <div className="align-self-center text-center">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => setModalCentered(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    fill="currentColor"
-                    className="bi bi-plus"
-                    viewBox="0 0 16 16"
+
+      <div className="row justify-content-end">
+        <div className="col-1">
+          <IconButton aria-label="Example" onClick={changeLayout}>
+            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+          </IconButton>
+        </div>
+      </div>
+      {layout ? (
+        <Row>
+          {viewProducts_HTMLTABLE}
+          <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
+            <div className="card overflow-hidden ">
+              <div
+                className="card-body d-flex justify-content-center text-center"
+                style={{ border: "2px dashed #f50b65" }}
+              >
+                <div className="align-self-center text-center">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => setModalCentered(true)}
                   >
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                  </svg>
-                  {t("add_category")}
-                </button>
+                    <AddIcon />
+                    {t("add_category")}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Row>
+      ) : (
+        <div className="row">
+          <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+            <div className="card">
+              <div className="card-header border-0">
+                <div>
+                  <h4 className="card-title mb-2">{t("categories")}</h4>
+                </div>
+                <div className="dropdown">
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_category")}
+                  </Button>
+                </div>
+              </div>
+              <div className="card-body p-0">
+                <div className="table-responsive ">
+                  <table className="table text-center ">
+                    <thead>
+                      <tr className="card-title">
+                        <th>{t("image")}</th>
+                        <th>{t("category_name")}</th>
+                        <th>{t("actions")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fetchData.map((item, i) => {
+                        return (
+                          <tr key={item.id}>
+                            <td>
+                              <Link
+                                to={{
+                                  pathname: `${url}/sub-category`,
+                                  state: {
+                                    id: item.id,
+                                  },
+                                }}
+                              >
+                                <div>
+                                  <img
+                                    style={{
+                                      height: "50px",
+                                      width: "100%",
+                                      borderRadius: "10%",
+                                      objectFit: "contain",
+                                    }}
+                                    src={
+                                      item.CategoryIcon
+                                        ? `http://${base_url}:${port}/images/catagories/${item.CategoryIcon}`
+                                        : DefaultPic
+                                    }
+                                    alt="category"
+                                  />
+                                </div>
+                              </Link>
+                            </td>
+                            <td>
+                              <Link
+                                to={{
+                                  pathname: `${url}/sub-category`,
+                                  state: {
+                                    id: item.id,
+                                  },
+                                }}
+                              >
+                                {item.CategoryName}
+                              </Link>
+                            </td>
+
+                            <td>
+                              <button
+                                type="button"
+                                onClick={(e) => fetchMenus(e, item.id)}
+                                className="btn btn-outline-danger btn-sm"
+                              >
+                                {t("edit")}
+                              </button>
+                              &nbsp;&nbsp;&nbsp;
+                              <button
+                                type="button"
+                                onClick={(e) => deleteMenu(e, item.id)}
+                                className="btn btn-outline-warning btn-sm"
+                              >
+                                {t("delete")}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </Row>
+      )}
     </Fragment>
   );
 };

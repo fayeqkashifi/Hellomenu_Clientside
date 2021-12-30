@@ -8,8 +8,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
 import QRCode from "qrcode.react";
-import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
-
+import ViewComfyIcon from "@mui/icons-material/ViewComfy";
+import IconButton from "@mui/material/IconButton";
+import TableRowsIcon from "@mui/icons-material/TableRows";
+import AddIcon from "@mui/icons-material/Add";
 const Tables = (props) => {
   // validation start
   const schema = yup
@@ -155,10 +157,14 @@ const Tables = (props) => {
       .replace("image/png", "image/octet-stream");
     let aEl = document.createElement("a");
     aEl.href = qrCodeURL;
-    aEl.download = "Branch_QR_Code.png";
+    aEl.download = "Table_QR_Code.png";
     document.body.appendChild(aEl);
     aEl.click();
     document.body.removeChild(aEl);
+  };
+  const [layout, setLayout] = useState(true);
+  const changeLayout = () => {
+    setLayout(!layout);
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -178,16 +184,18 @@ const Tables = (props) => {
               id={btoa(item.id)}
               level={"H"}
               size={256}
-              fgColor="red"
+              fgColor="#f50b65"
               value={`http://192.168.1.103:3000/show-branch-details/${btoa(
                 item.id
               )}`}
               className="primary d-none"
             />
-            <Link to="" onClick={(e) => downloadQRCode(e, btoa(item.id))}>
-              {" "}
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={(e) => downloadQRCode(e, btoa(item.id))}
+            >
               {t("download_qr_code")}
-            </Link>
+            </div>
           </td>
           <td>
             <button
@@ -365,43 +373,127 @@ const Tables = (props) => {
           </Modal.Footer>
         </Form>
       </Modal>
-      <div className="row">
-        <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-          <div className="card">
-            <div className="card-header border-0">
-              <div>
-                <h4 className="card-title mb-2">{t("tables")}</h4>
+      <div className="row justify-content-end">
+        <div className="col-1">
+          <IconButton aria-label="Example" onClick={changeLayout}>
+            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+          </IconButton>
+        </div>
+      </div>
+      {layout ? (
+        <div className="row">
+          <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+            <div className="card">
+              <div className="card-header border-0">
+                <div>
+                  <h4 className="card-title mb-2">{t("tables")}</h4>
+                </div>
+                <div className="dropdown">
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_table")}
+                  </Button>
+                </div>
               </div>
-              <div className="dropdown">
-                <Button
-                  variant="primary"
-                  type="button"
-                  className="mb-2 mr-2"
-                  onClick={() => setModalCentered(true)}
-                >
-                  {t("add_table")}
-                </Button>
-              </div>
-            </div>
-            <div className="card-body p-0">
-              <div className="table-responsive ">
-                <table className="table text-center ">
-                  <thead>
-                    <tr className="card-title">
-                      {/* <th>{t('number')}</th> */}
-                      <th>{t("table_id")}</th>
-                      <th>{t("table_name")}</th>
-                      <th>{t("download")}</th>
-                      <th>{t("actions")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>{viewProducts_HTMLTABLE}</tbody>
-                </table>
+              <div className="card-body p-0">
+                <div className="table-responsive ">
+                  <table className="table text-center ">
+                    <thead>
+                      <tr className="card-title">
+                        {/* <th>{t('number')}</th> */}
+                        <th>{t("table_id")}</th>
+                        <th>{t("table_name")}</th>
+                        <th>{t("download")}</th>
+                        <th>{t("actions")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>{viewProducts_HTMLTABLE}</tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="row">
+          {fetchData.map((item, i) => {
+            return (
+              <div className="col-xl-3 col-lg-4 col-sm-6" key={item.id}>
+                <div className="card overflow-hidden">
+                  <div className="card-body">
+                    <div className="text-center">
+                      <Link
+                        to={{
+                          pathname: `/branches/show`,
+                          state: { id: item.id, BrancheName: item.BrancheName },
+                        }}
+                      >
+                        <QRCode
+                          id={btoa(item.id)}
+                          level={"H"}
+                          size={128}
+                          fgColor="#f50b65"
+                          value={`http://192.168.1.103:3000/show-branch-details/${btoa(
+                            item.id
+                          )}`}
+                          className="primary "
+                        />
+                        <div
+                          onClick={(e) => downloadQRCode(e, btoa(item.id))}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {" "}
+                          {t("download_qr_code")}
+                        </div>
+
+                        <h6> {item.tableId}</h6>
+                        <h4> {item.tableName}</h4>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="card-footer pt-0 pb-0 text-center">
+                    <div className="row">
+                      <div className="col-6 pt-3 pb-3 border-right">
+                        <Link to="" onClick={(e) => fetchTable(e, item.id)}>
+                          <span>{t("edit")}</span>
+                        </Link>
+                      </div>
+                      <div className="col-6 pt-3 pb-3">
+                        <Link to="" onClick={(e) => deleteTable(e, item.id)}>
+                          <span>{t("delete")}</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          <div className="col-xl-3 col-lg-4 col-sm-6 ">
+            <div className="card overflow-hidden ">
+              <div
+                className="card-body d-flex justify-content-center text-center"
+                style={{ border: "2px dashed #f50b65" }}
+              >
+                <div className="align-self-center text-center">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    <AddIcon />
+                    {t("add_table")}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Fragment>
   );
 };

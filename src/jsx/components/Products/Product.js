@@ -13,7 +13,9 @@ import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion";
 import EditIcon from "@mui/icons-material/Edit";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-// import DataTable from 'react-data-table-component';
+import ViewComfyIcon from "@mui/icons-material/ViewComfy";
+import TableRowsIcon from "@mui/icons-material/TableRows";
+import AddIcon from "@mui/icons-material/Add";
 const Product = (props) => {
   const { path, url } = useRouteMatch();
 
@@ -96,6 +98,10 @@ const Product = (props) => {
       key: "actions",
     },
   ];
+  const [layout, setLayout] = useState(true);
+  const changeLayout = () => {
+    setLayout(!layout);
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -267,8 +273,8 @@ const Product = (props) => {
   return (
     <>
       <Fragment>
-        <div style={{ overflowX: "scroll" }}>
-          <div className="float-right">
+        <div className="row justify-content-end">
+          <div className="col-3 text-right">
             <Link
               className="btn btn-primary mb-2 mr-2"
               to={{
@@ -278,10 +284,85 @@ const Product = (props) => {
             >
               {t("add_product")}
             </Link>
+            <IconButton aria-label="Example" onClick={changeLayout}>
+              {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+            </IconButton>
           </div>
-
-          {viewProducts_HTMLTABLE}
         </div>
+        {layout ? (
+          <div style={{ overflow: "scroll" }}>{viewProducts_HTMLTABLE}</div>
+        ) : (
+          <div className="row">
+            {fetchData.map((item, i) => {
+              return (
+                <div className="col-xl-3 col-lg- col-sm-6" key={item.id}>
+                  <div className="card overflow-hidden">
+                    <div className="card-body">
+                      <div className="text-center">
+                        <img
+                          src={`http://${base_url}:${port}/images/products/${item.image}`}
+                          alt=""
+                          style={{
+                            width: "120px",
+                            height: "100px",
+                            objectFit: "contain",
+                          }}
+                        />
+                        <h4 className="mt-2"> {item.ProductName}</h4>
+                      </div>
+                    </div>
+                    <div className="card-footer pt-0 pb-0 text-center">
+                      <div className="row">
+                        <div className="col-4 pt-3 pb-3 border-right">
+                          <Link
+                            to={{
+                              pathname: `${url}/variants`,
+                              id: item.id,
+                              ProductName: item.ProductName,
+                              state: { id: item.id },
+                            }}
+                          >
+                            <Tooltip title="Variants">
+                              <IconButton>
+                                <AutoAwesomeMotionIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                        </div>
+                        <div className="col-4 pt-3 pb-3 border-right">
+                          <Link
+                            to={{
+                              pathname: `${url}/edit-product`,
+                              state: { id: branchId, productId: item.id },
+                            }}
+                          >
+                            <Tooltip title="Edit">
+                              <IconButton>
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                        </div>
+                        <div className="col-4 pt-3 pb-3">
+                          <Link
+                            to=""
+                            onClick={(e) => deleteProduct(e, item.id)}
+                          >
+                            <Tooltip title="Delete">
+                              <IconButton>
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </Fragment>
     </>
   );

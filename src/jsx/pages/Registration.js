@@ -13,10 +13,9 @@ const Registration = () => {
   const validationSchema = () => {
     return Yup.object().shape({
       name: Yup.string().required("Fullname is required"),
-      phone_number: Yup.string().matches(
-        phoneRegExp,
-        "Phone number is not valid"
-      ),
+      phone_number: Yup.string()
+        .required("Password is required")
+        .matches(phoneRegExp, "Phone number is not valid"),
       // .matches(phoneRegExp, "Phone number is not valid"),
       email: Yup.string()
         .required("Email is required")
