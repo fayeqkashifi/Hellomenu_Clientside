@@ -7,7 +7,7 @@ import {
 
 import Design from "./Design";
 import PrivateRoute from "../PrivateRoute";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 import Customization from "./Templates/Dark/Customization";
 import Theme from "./Theme";
 import EditTheme from "./EditTheme";
@@ -15,8 +15,8 @@ import DefaultCustomization from "./Templates/Default/Customization";
 
 const DesignShow = (props) => {
   const { path, url } = useRouteMatch();
-  const { t } = useTranslation();
-  const id = props.history.location.state.id;
+  // const { t } = useTranslation();
+  // const id = props.history.location.state.id;
 
   return (
     <Fragment>

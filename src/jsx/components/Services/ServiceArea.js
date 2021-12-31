@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import Select from "react-select";
 
 const ServiceArea = (props) => {
   // Validation Start
@@ -43,13 +44,13 @@ const ServiceArea = (props) => {
     });
   };
   const saveServiceAreas = (e) => {
-    // e.preventDefault();
-    axios.post("/api/InsertServicAreas", serviceAreaInsert).then((res) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("BranchID", id);
+    formData.append("AreaName", JSON.stringify(servicesAreas));
+    axios.post("/api/InsertServicAreas", formData).then((res) => {
       if (res.data.status === 200) {
-        setServiceAreaInsert({
-          AreaName: "",
-          BranchID: id,
-        });
+        setServicesAreas([]);
         reset();
         setCheck(!check);
 
@@ -125,10 +126,16 @@ const ServiceArea = (props) => {
 
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
+  const [areaLocation, setAreaLocation] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
 
   useEffect(() => {
+    axios.get(`/api/GetAreas`).then((res) => {
+      if (res.data.status === 200) {
+        setAreaLocation(res.data.fetchData);
+      }
+    });
     axios.get(`/api/GetServiceAreas/${id}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
@@ -136,7 +143,20 @@ const ServiceArea = (props) => {
       setLoading(false);
     });
   }, [check]);
+  const [servicesAreas, setServicesAreas] = useState([]);
+  const handleSelectEvent = (e) => {
+    setServicesAreas(e);
+  };
 
+  const serviceAreaHandle = (e, id) => {
+    let updatedList = servicesAreas.map((item) => {
+      if (item.value == id) {
+        return { ...item, deliveryFee: e.target.value }; //gets everything that was already in item, and updates "done"
+      }
+      return item; // else return unmodified item
+    });
+    setServicesAreas(updatedList);
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -179,12 +199,8 @@ const ServiceArea = (props) => {
                 <CBreadcrumbItem active>{t('services_area')}</CBreadcrumbItem>
             </CBreadcrumb> */}
       {/* <!-- Insert  Modal --> */}
-      <Modal className="fade" show={modalCentered}>
-        <Form
-          onSubmit={handleSubmit(saveServiceAreas)}
-          method="POST"
-          encType="multipart/form-data"
-        >
+      <Modal className="fade" size="lg" show={modalCentered}>
+        <Form onSubmit={saveServiceAreas}>
           <Modal.Header>
             <Modal.Title>{t("add_service_area")}</Modal.Title>
             <Button
@@ -196,7 +212,49 @@ const ServiceArea = (props) => {
             </Button>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-group">
+            <div className="row ">
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="form-group">
+                  <label className="mb-1 ">
+                    {" "}
+                    <strong>{t("areas")}</strong>{" "}
+                  </label>
+                  <Select
+                    // value={filterAttributes}
+                    isMulti
+                    options={areaLocation.map((o, i) => {
+                      return { value: o.id, label: o.areaName };
+                    })}
+                    onChange={handleSelectEvent}
+                    // name="attributeName"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                  />
+                </div>
+              </div>
+            </div>
+            {servicesAreas?.map((item, i) => {
+              return (
+                <div className="row m-1" key={i}>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+                    <label className="mb-1 ">
+                      <strong>{item.label}</strong>
+                    </label>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+                    <input
+                      type="text"
+                      // min="0"
+                      className="form-control"
+                      placeholder="Delivery charges for this Area"
+                      onChange={(e) => serviceAreaHandle(e, item.value)}
+                      value={servicesAreas[i].areaName}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            {/* <div className="form-group">
               <label className="mb-1 ">
                 {" "}
                 <strong>{t("service_area")}</strong>{" "}
@@ -211,7 +269,7 @@ const ServiceArea = (props) => {
                 value={serviceAreaInsert.AreaName}
               />
               <div className="text-danger">{errors.AreaName?.message}</div>
-            </div>
+            </div> */}
           </Modal.Body>
           <Modal.Footer>
             <Button

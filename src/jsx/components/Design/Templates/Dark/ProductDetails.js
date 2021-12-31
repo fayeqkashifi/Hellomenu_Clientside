@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 // Import css files
@@ -325,7 +325,6 @@ const ProductDetails = (props) => {
               return (
                 <>
                   <Swiper
-                   
                     speed={2500}
                     onSwiper={(s) => {
                       setSwiper(s);

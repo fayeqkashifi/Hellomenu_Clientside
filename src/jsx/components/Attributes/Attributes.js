@@ -122,7 +122,7 @@ const Attributes = (props) => {
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   useEffect(() => {
-    axios.post(`/api/GetAttributes`).then((res) => {
+    axios.get(`/api/GetAttributes`).then((res) => {
       if (res.data.status === 200) {
         // console.log(res.data.fetchData);
         setFetchData(res.data.fetchData);

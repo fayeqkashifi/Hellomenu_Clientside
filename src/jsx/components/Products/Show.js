@@ -1,7 +1,5 @@
-import React, { Fragment, useState } from "react";
-import { Tab, Nav } from "react-bootstrap";
+import React, { Fragment } from "react";
 import {
-  Link,
   BrowserRouter as Router,
   Switch,
   useRouteMatch,
@@ -10,15 +8,14 @@ import {
 import Product from "../Products/Product";
 import PrivateRoute from "../PrivateRoute";
 import Variants from "../Variants/Variants";
-import { Button, Modal, Form } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 import AddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
 
 const ProductShow = (props) => {
   const { path, url } = useRouteMatch();
-  const { t } = useTranslation();
-  const id = props.history.location.state.id;
+  // const { t } = useTranslation();
+  // const id = props.history.location.state.id;
 
   return (
     <Fragment>

@@ -33,7 +33,7 @@ const Variants = (props) => {
       }
 
       const res = await axios({
-        method: "POST",
+        method: "GET",
         url: "/api/GetAttributes",
       });
       const nameAtter = {};
