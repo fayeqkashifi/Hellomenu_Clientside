@@ -1,28 +1,20 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 const Attributes = (props) => {
   // validation start
-  const schema = yup
-    .object()
-    .shape({
-      attributeName: yup.string().required("This field is a required field"),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const initialValues = {
+    attributeName: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      attributeName: Yup.string().required("Attribute Name is required"),
+    });
+  };
   // validation end
 
   // for localization
@@ -30,23 +22,12 @@ const Attributes = (props) => {
 
   // insert Attribute start
   const [modalCentered, setModalCentered] = useState(false);
-  const [attributeInsert, setAttributeInsert] = useState([]);
-  const handleInput = (e) => {
-    e.persist();
-    console.log(e.target.value);
-    setAttributeInsert({ ...attributeInsert, [e.target.name]: e.target.value });
-  };
-  const saveAttribute = (e) => {
-    // e.preventDefault();
-    axios.post("/api/InsertAttribute", attributeInsert).then((res) => {
+  const saveAttribute = (data) => {
+    axios.post("/api/InsertAttribute", data).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        setAttributeInsert([]);
-        reset();
-
         swal("Success", res.data.message, "success");
         setModalCentered(false);
-        //  this.props.history.push("/")
       }
     });
   };
@@ -55,11 +36,7 @@ const Attributes = (props) => {
   // edit Attribute start
   const [editmodalCentered, setEditModalCentered] = useState(false);
   const [editAttribute, setEditAttribute] = useState([]);
-  const editHandleInput = (e) => {
-    e.persist();
 
-    setEditAttribute({ ...editAttribute, [e.target.name]: e.target.value });
-  };
   // fetch the exact Attribute
   const fetchAttribute = (e, id) => {
     e.preventDefault();
@@ -73,15 +50,11 @@ const Attributes = (props) => {
     });
   };
   // update the Attribute
-  const updateAttribute = (e) => {
-    e.preventDefault();
-    axios.post("/api/UpdateAttribute", editAttribute).then((res) => {
+  const updateAttribute = (data) => {
+    axios.post("/api/UpdateAttribute", data).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-
-        setEditAttribute([]);
         setEditModalCentered(false);
-
         swal("Success", res.data.message, "success");
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
@@ -124,7 +97,6 @@ const Attributes = (props) => {
   useEffect(() => {
     axios.get(`/api/GetAttributes`).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.fetchData);
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
@@ -171,94 +143,113 @@ const Attributes = (props) => {
   return (
     <Fragment>
       <Modal className="fade" show={modalCentered}>
-        <Form
-          onSubmit={handleSubmit(saveAttribute)}
-          method="POST"
-          encType="multipart/form-data"
+        <Modal.Header>
+          <Modal.Title>{t("add_attribute")}</Modal.Title>
+          <Button
+            onClick={() => setModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={saveAttribute}
         >
-          <Modal.Header>
-            <Modal.Title>{t("add_attribute")}</Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("attribute_name")} </strong>{" "}
-              </label>
-              <input
-                type="text"
-                {...register("attributeName")}
-                className="form-control"
-                placeholder={t("attribute_name")}
-                name="attributeName"
-                onChange={handleInput}
-                value={attributeInsert.attributeName}
-              />
-              <div className="text-danger">{errors.attributeName?.message}</div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("save")}
-            </Button>
-          </Modal.Footer>
-        </Form>
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("attribute_name")}</label>
+                  <Field
+                    name="attributeName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.attributeName && touched.attributeName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="Name...."
+                  />
+                  <ErrorMessage
+                    name="attributeName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={updateAttribute} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("edit_Attribute")} </Modal.Title>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("attribute_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("attribute_name")}
-                name="attributeName"
-                required
-                onChange={editHandleInput}
-                value={editAttribute.attributeName}
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("update")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Header>
+          <Modal.Title>{t("edit_Attribute")} </Modal.Title>
+          <Button
+            onClick={() => setEditModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={editAttribute}
+          validationSchema={validationSchema}
+          onSubmit={updateAttribute}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("attribute_name")}</label>
+                  <Field
+                    name="attributeName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.attributeName && touched.attributeName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="Name...."
+                  />
+                  <ErrorMessage
+                    name="attributeName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setEditModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("update")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       <div className="row">
         <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">

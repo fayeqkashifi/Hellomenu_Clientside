@@ -29,13 +29,23 @@ const Registration = () => {
   const history = useHistory();
 
   const handleSubmit = (data) => {
-    console.log(JSON.stringify(data, null, 2));
+    // console.log(JSON.stringify(data, null, 2));
     axios.get("sanctum/csrf-cookie").then((response) => {
       axios.post("/api/register", data).then((res) => {
         if (res.data.status === 200) {
           swal("Success", res.data.message, "success").then((check) => {
             if (check) {
-              history.push("/page-login");
+              axios.post("/api/login", data).then((res) => {
+                if (res.data.status === 200) {
+                  localStorage.setItem("auth_token", res.data.token);
+                  localStorage.setItem("auth_name", res.data.user);
+                  localStorage.setItem("auth_id", res.data.id);
+                  history.push("/dashboard");
+                  // window.location = "/dashboard";
+                } else {
+                  swal("Warning", res.data.message, "warning");
+                }
+              });
             }
           });
         } else {
@@ -74,79 +84,99 @@ const Registration = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                   >
-                    <Form>
-                      <div className="form-group">
-                        <label> {t("full_name")}</label>
-                        <Field
-                          name="name"
-                          type="text"
-                          className="form-control"
-                          placeholder="Smith..."
-                        />
-                        <ErrorMessage
-                          name="name"
-                          component="div"
-                          className="text-danger"
-                        />
-                      </div>
+                    {({ errors, status, touched }) => (
+                      <Form>
+                        <div className="form-group">
+                          <label> {t("full_name")}</label>
+                          <Field
+                            name="name"
+                            type="text"
+                            className={
+                              "form-control" +
+                              (errors.name && touched.name ? " is-invalid" : "")
+                            }
+                            placeholder="Smith..."
+                          />
+                          <ErrorMessage
+                            name="name"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
 
-                      <div className="form-group">
-                        <label htmlFor="phone_number">
-                          {" "}
-                          {t("phone_number")}{" "}
-                        </label>
-                        <Field
-                          name="phone_number"
-                          type="text"
-                          className="form-control"
-                          placeholder="0093--- ---- ----"
-                        />
-                        <ErrorMessage
-                          name="phone_number"
-                          component="div"
-                          className="text-danger"
-                        />
-                      </div>
+                        <div className="form-group">
+                          <label htmlFor="phone_number">
+                            {" "}
+                            {t("phone_number")}{" "}
+                          </label>
+                          <Field
+                            name="phone_number"
+                            type="text"
+                            className={
+                              "form-control" +
+                              (errors.phone_number && touched.phone_number
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="0093--- ---- ----"
+                          />
+                          <ErrorMessage
+                            name="phone_number"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
 
-                      <div className="form-group">
-                        <label htmlFor="email"> {t("email")} </label>
-                        <Field
-                          name="email"
-                          type="email"
-                          className="form-control"
-                          placeholder="a@gmail.com"
-                        />
-                        <ErrorMessage
-                          name="email"
-                          component="div"
-                          className="text-danger"
-                        />
-                      </div>
+                        <div className="form-group">
+                          <label htmlFor="email"> {t("email")} </label>
+                          <Field
+                            name="email"
+                            type="email"
+                            className={
+                              "form-control" +
+                              (errors.email && touched.email
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="a@gmail.com"
+                          />
+                          <ErrorMessage
+                            name="email"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
 
-                      <div className="form-group">
-                        <label htmlFor="password"> {t("password")} </label>
-                        <Field
-                          name="password"
-                          type="password"
-                          className="form-control"
-                          placeholder="*******"
-                        />
-                        <ErrorMessage
-                          name="password"
-                          component="div"
-                          className="text-danger"
-                        />
-                      </div>
+                        <div className="form-group">
+                          <label htmlFor="password"> {t("password")} </label>
+                          <Field
+                            name="password"
+                            type="password"
+                            className={
+                              "form-control" +
+                              (errors.password && touched.password
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="*******"
+                          />
+                          <ErrorMessage
+                            name="password"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
 
-                      <div className="form-group">
-                        <button
-                          type="submit"
-                          className="btn btn-primary btn-block"
-                        >
-                          {t("sign_me_up")}{" "}
-                        </button>
-                      </div>
-                    </Form>
+                        <div className="form-group">
+                          <button
+                            type="submit"
+                            className="btn btn-primary btn-block"
+                          >
+                            {t("sign_me_up")}{" "}
+                          </button>
+                        </div>
+                      </Form>
+                    )}
                   </Formik>
                 </div>
 

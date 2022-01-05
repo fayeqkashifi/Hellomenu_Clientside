@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
@@ -12,52 +12,37 @@ import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 const Tables = (props) => {
+  const id = props.history.location.state.id;
+
   // validation start
-  const schema = yup
-    .object()
-    .shape({
-      tableId: yup.string().required("This field is a required field"),
-      tableName: yup.string().required("This field is a required field"),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const initialValues = {
+    tableId: "",
+    tableName: "",
+    branchId: id,
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      tableId: Yup.string().required("Table ID is required"),
+      tableName: Yup.string().required("Table Name is required"),
+    });
+  };
   // validation end
 
   // for localization
   const { t } = useTranslation();
   // ID
-  const id = props.history.location.state.id;
   const [check, setCheck] = useState(true);
 
   // insert modal
   const [modalCentered, setModalCentered] = useState(false);
-  const [tableInsert, setTableInsert] = useState({
-    tableId: "",
-    tableName: "",
-    branchId: id,
-  });
-  const handleInput = (e) => {
-    e.persist();
-    setTableInsert({ ...tableInsert, [e.target.name]: e.target.value });
-  };
-  const saveTable = (e) => {
+
+  const saveTable = (data) => {
     // e.preventDefault();
-    axios.post("/api/InsertTable", tableInsert).then((res) => {
+    axios.post("/api/InsertTable", data).then((res) => {
       if (res.data.status === 200) {
-        setTableInsert({
-          tableId: "",
-          tableName: "",
-          branchId: id,
-        });
-        reset();
         setCheck(!check);
         swal("Success", res.data.message, "success");
         setModalCentered(false);
@@ -74,10 +59,7 @@ const Tables = (props) => {
     tableName: "",
     branchId: id,
   });
-  const editHandleInput = (e) => {
-    e.persist();
-    setEditTable({ ...editTable, [e.target.name]: e.target.value });
-  };
+
   const fetchTable = (e, id) => {
     e.preventDefault();
     axios.get(`/api/EditTable/${id}`).then((res) => {
@@ -89,15 +71,9 @@ const Tables = (props) => {
       }
     });
   };
-  const updateTable = (e) => {
-    e.preventDefault();
-    axios.post("/api/UpdateTable", editTable).then((res) => {
+  const updateTable = (data) => {
+    axios.post("/api/UpdateTable", data).then((res) => {
       if (res.data.status === 200) {
-        setEditTable({
-          tableId: "",
-          tableName: "",
-          branchId: id,
-        });
         swal("Success", res.data.message, "success");
         setEditModalCentered(false);
         setCheck(!check);
@@ -228,157 +204,157 @@ const Tables = (props) => {
   return (
     <Fragment>
       <Modal className="fade" show={modalCentered}>
-        <Form
-          onSubmit={handleSubmit(saveTable)}
-          method="POST"
-          encType="multipart/form-data"
+        <Modal.Header>
+          <Modal.Title>{t("add_table")}</Modal.Title>
+          <Button
+            onClick={() => setModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={saveTable}
         >
-          <Modal.Header>
-            <Modal.Title>{t("add_table")}</Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("table_id")} </strong>{" "}
-              </label>
-              <input
-                type="text"
-                {...register("tableId")}
-                className={
-                  errors.tableId?.message
-                    ? "form-control  is-invalid"
-                    : "form-control"
-                }
-                placeholder={t("table_id")}
-                name="tableId"
-                onChange={handleInput}
-                value={tableInsert.tableId}
-              />
-              {errors.tableId?.message && (
-                <div className="invalid-feedback">
-                  {errors.tableId?.message}
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("table_id")}</label>
+                  <Field
+                    name="tableId"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.tableId && touched.tableId ? " is-invalid" : "")
+                    }
+                    placeholder="ID...."
+                  />
+                  <ErrorMessage
+                    name="tableId"
+                    component="div"
+                    className="invalid-feedback"
+                  />
                 </div>
-              )}
-              {/* <div className="text-danger">
-                                {errors.name?.message}
-                            </div> */}
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("table_name")} </strong>{" "}
-              </label>
-              <input
-                type="text"
-                {...register("tableName")}
-                className={
-                  errors.tableName?.message
-                    ? "form-control  is-invalid"
-                    : "form-control"
-                }
-                placeholder={t("table_name")}
-                name="tableName"
-                onChange={handleInput}
-                value={tableInsert.tableName}
-              />
-              {errors.tableName?.message && (
-                <div className="invalid-feedback">
-                  {errors.tableName?.message}
+                <div className="form-group">
+                  <label> {t("table_name")}</label>
+                  <Field
+                    name="tableName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.tableName && touched.tableName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="A name for table..."
+                  />
+                  <ErrorMessage
+                    name="tableName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
                 </div>
-              )}
-              {/* <div className="text-danger">
-                                {errors.value?.message}
-                            </div> */}
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("save")}
-            </Button>
-          </Modal.Footer>
-        </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={updateTable} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("edit_table")} </Modal.Title>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group text-center">
-              <QRCode
-                level={"H"}
-                size={256}
-                fgColor="#f50b65"
-                value={`http://192.168.1.103:3000/show-branch-details/${btoa(
-                  editTable.tableId
-                )}`}
-              />
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("table_id")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("table_id")}
-                name="tableId"
-                required
-                onChange={editHandleInput}
-                value={editTable.tableId}
-              />
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("table_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("table_name")}
-                name="tableName"
-                required
-                onChange={editHandleInput}
-                value={editTable.tableName}
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("update")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Header>
+          <Modal.Title>{t("edit_table")} </Modal.Title>
+          <Button
+            onClick={() => setEditModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={editTable}
+          validationSchema={validationSchema}
+          onSubmit={updateTable}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group text-center">
+                  <QRCode
+                    level={"H"}
+                    size={128}
+                    fgColor="#f50b65"
+                    value={`http://192.168.1.103:3000/show-branch-details/${btoa(
+                      editTable.tableId
+                    )}`}
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("table_id")}</label>
+                  <Field
+                    name="tableId"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.tableId && touched.tableId ? " is-invalid" : "")
+                    }
+                    placeholder="ID...."
+                  />
+                  <ErrorMessage
+                    name="tableId"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("table_name")}</label>
+                  <Field
+                    name="tableName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.tableName && touched.tableName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="A name for table..."
+                  />
+                  <ErrorMessage
+                    name="tableName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setEditModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       <div className="row justify-content-end">
         <div className="col-1">

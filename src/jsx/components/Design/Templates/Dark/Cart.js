@@ -97,15 +97,19 @@ const Cart = (props) => {
       localStorage.setItem("cart", JSON.stringify(vars));
     }
   };
-  const handelIncrement = (e, qty, id, price) => {
+  const handelIncrement = (e, qty, id, price, stock) => {
     e.preventDefault();
-    let vars = cart.map((item) =>
-      id == item.id ? { ...item, qty: qty + 1 } : item
-    );
-    setCart((cart) => vars);
-    localStorage.setItem("cart", JSON.stringify(vars));
+    if (stock > qty) {
+      let vars = cart.map((item) =>
+        id == item.id ? { ...item, qty: qty + 1 } : item
+      );
+      setCart((cart) => vars);
+      localStorage.setItem("cart", JSON.stringify(vars));
 
-    setSum((sum += parseInt(price)));
+      setSum((sum += parseInt(price)));
+    } else {
+      alert("More than that isn't available because it's out of stock.");
+    }
   };
   const remItem = (id, qty, price) => {
     setSum((sum -= price * qty));
@@ -177,7 +181,9 @@ const Cart = (props) => {
                     borderRadius: "15%",
                     objectFit: "contain",
                   }}
-                  src={`http://${base_url}:${port}/images/products/${item.image}`}
+                  src={`http://${base_url}:${port}/images/products/${
+                    JSON.parse(item.image)[0]
+                  }`}
                   alt="Image"
                   // className="h-100"
                 />
@@ -242,7 +248,13 @@ const Cart = (props) => {
                     <div className="col-4">
                       <Typography
                         onClick={(e) =>
-                          handelIncrement(e, item.qty, item.id, item.price)
+                          handelIncrement(
+                            e,
+                            item.qty,
+                            item.id,
+                            item.price,
+                            item.stock
+                          )
                         }
                         style={{ cursor: "pointer" }}
                         variant="h6"
@@ -297,7 +309,7 @@ const Cart = (props) => {
             >
               <CardContent sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={6} sm={6} md={6}>
+                  <Grid item xs={4} sm={4} md={4}>
                     <Typography
                       variant="body1"
                       className="font-weight-bold col-12 btn"
@@ -307,7 +319,7 @@ const Cart = (props) => {
                         getSymbolFromCurrency(cart[0]?.currency_code)}
                     </Typography>
                   </Grid>
-                  <Grid item xs={6} sm={6} md={6}>
+                  <Grid item xs={4} sm={4} md={4}>
                     <p className="d-none">
                       {console.log(message)}
                       {(message = `\n\n\n${message} *Grand Total*: ${sum}`)}
@@ -335,6 +347,29 @@ const Cart = (props) => {
                     >
                       {t("send_order")}{" "}
                     </ReactWhatsapp>
+                  </Grid>
+                  <Grid item xs={4} sm={4} md={4}>
+                    <button
+                      className="col-12 btn"
+                      style={{
+                        textTransform: "capitalize",
+                        backgroundColor: theme?.button_background_color
+                          ? theme.button_background_color
+                          : "#ff751d",
+                        color: theme?.button_text_color
+                          ? theme.button_text_color
+                          : "#f1fcfe",
+                        fontSize: theme?.bTextSize
+                          ? theme.bTextSize + "rem"
+                          : "1rem",
+                      }}
+                      onClick={() => [
+                        localStorage.removeItem("cart"),
+                        setCart([]),
+                      ]}
+                    >
+                      {t("empty_cart")}{" "}
+                    </button>
                   </Grid>
                 </Grid>
               </CardContent>

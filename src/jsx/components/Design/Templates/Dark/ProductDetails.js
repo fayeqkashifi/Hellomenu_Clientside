@@ -325,33 +325,69 @@ const ProductDetails = (props) => {
               return (
                 <>
                   <Swiper
+                    spaceBetween={10}
                     speed={2500}
+                    navigation={true}
+                    thumbs={{ swiper: thumbsSwiper }}
                     onSwiper={(s) => {
                       setSwiper(s);
                     }}
                     className="mySwiper2"
                   >
-                    <SwiperSlide>
-                      <img
-                        src={
-                          productDetails.stock === "No Stock" ||
-                          productDetails?.stock === 0
-                            ? `http://${base_url}:${port}/images/products/${
-                                productDetails.image
-                                  ? productDetails?.image
-                                  : fetchData?.image
-                              }`
-                            : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
-                        }
-                        alt=""
-                        style={{
-                          height: "400px",
-                          width: "100%",
-                          borderRadius: "5%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </SwiperSlide>
+                    {JSON.parse(fetchData.image).map((image) => {
+                      return (
+                        <SwiperSlide key={image}>
+                          <img
+                            src={
+                              productDetails.stock === "No Stock" ||
+                              productDetails?.stock === 0
+                                ? `http://${base_url}:${port}/images/products/${
+                                    productDetails.image
+                                      ? productDetails?.image
+                                      : image
+                                  }`
+                                : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
+                            }
+                            alt=""
+                            style={{
+                              height: "400px",
+                              width: "100%",
+                              borderRadius: "5%",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </SwiperSlide>
+                      );
+                    })}
+                  </Swiper>
+                  <br></br>
+                  <Swiper
+                    onSwiper={setThumbsSwiper}
+                    spaceBetween={10}
+                    slidesPerView={5}
+                    freeMode={true}
+                    watchSlidesProgress={true}
+                    className="mySwiper"
+                  >
+                    {JSON.parse(fetchData.image)?.map((image) => {
+                      return (
+                        <SwiperSlide
+                          // onSwiper={productDetails.image[0]}
+                          key={image}
+                        >
+                          <img
+                            src={`http://${base_url}:${port}/images/products/${image}`}
+                            alt=""
+                            style={{
+                              height: "70px",
+                              width: "100%",
+                              borderRadius: "5%",
+                              // objectFit: "contain",
+                            }}
+                          />
+                        </SwiperSlide>
+                      );
+                    })}
                   </Swiper>
                 </>
               );

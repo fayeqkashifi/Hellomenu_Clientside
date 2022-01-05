@@ -5,8 +5,17 @@ import { base_url, port } from "../../../Consts";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+
 const VariantsLine = (props) => {
-  const { items, filterAttributes, productid, setVarantGrid } = props;
+  const {
+    items,
+    filterAttributes,
+    productid,
+    setVarantGrid,
+    numberOfVar,
+    setNumberOfVar,
+    getJSONVaraints,
+  } = props;
   const [values, setValues] = useState(items);
   if (Object.keys(items).length !== Object.keys(values).length) {
     setValues(items);
@@ -112,31 +121,58 @@ const VariantsLine = (props) => {
       sku: sku,
     });
   };
-
+  const removeVar = (value) => {
+    console.log(value);
+    setNumberOfVar(
+      numberOfVar.filter((item) => {
+        return item.postion != value;
+      })
+    );
+    getJSONVaraints(
+      JSON.stringify(
+        numberOfVar.filter((item) => {
+          return item.postion != value;
+        })
+      )
+    );
+    setValues([]);
+  };
   // console.log(items);
   // console.log(values);
   const outputs = [];
   for (const [key, value] of Object.entries(values)) {
     if (key != "postion") {
       outputs.push(
-        <div className="col-xl-2 col-lg-2 col-sm-2 p-4  ">
-          <input
-            className={
-              errors[key] ? " form-control is-invalid" : "form-control"
-            }
-            disabled={key == "sku"}
-            value={key == "image" ? "" : value}
-            onBlur={(event) => {
-              changeSku(event);
-            }}
-            onChange={(event) => Change(event)}
-            name={key}
-            type={key == "image" ? "file" : ""}
-            multiple
-          ></input>
-          {errors[key] ? (
-            <div className="invalid-feedback">{errors[key + "message"]}</div>
-          ) : null}
+        <>
+          <div className="col-xl-2 col-lg-2 col-sm-2 m-2 ">
+            <input
+              className={
+                errors[key] ? " form-control is-invalid" : "form-control"
+              }
+              disabled={key == "sku"}
+              value={key == "image" ? "" : value}
+              // onBlur={(event) => {
+              //   changeSku(event);
+              // }}
+              onChange={(event) => Change(event)}
+              name={key}
+              type={key == "image" ? "file" : ""}
+              multiple
+            ></input>
+            {errors[key] ? (
+              <div className="invalid-feedback">{errors[key + "message"]}</div>
+            ) : null}
+          </div>
+        </>
+      );
+    } else {
+      outputs.push(
+        <div className="col-xl-1 col-lg-1 col-sm-1 m-2">
+          <Tooltip title="Delete">
+            <IconButton onClick={() => removeVar(value)}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </div>
       );
     }
@@ -188,8 +224,14 @@ const VariantsLine = (props) => {
 const VariantsGrid = (props) => {
   const { t } = useTranslation();
 
-  const { filterAttributes, numberOfVar, productid, getJSONVaraints, recheck } =
-    props;
+  const {
+    filterAttributes,
+    numberOfVar,
+    productid,
+    getJSONVaraints,
+    recheck,
+    setNumberOfVar,
+  } = props;
   const [varintGrid, setVariantGrid] = useState([]);
 
   useEffect(() => {
@@ -201,10 +243,12 @@ const VariantsGrid = (props) => {
     <VariantsLine
       key={i}
       recheck={recheck}
-      key={item.postion}
       setVarantGrid={(item) => setVarantGrid(item)}
       items={item}
       productid={productid}
+      numberOfVar={numberOfVar}
+      setNumberOfVar={setNumberOfVar}
+      getJSONVaraints={getJSONVaraints}
       filterAttributes={filterAttributes}
     ></VariantsLine>
   ));
@@ -212,7 +256,6 @@ const VariantsGrid = (props) => {
   const setVarantGrid = (item) => {
     if (item.sku !== "") {
       let modifyVariant = varintGrid;
-
       modifyVariant[item.postion] = item;
       setVariantGrid(modifyVariant);
       getJSONVaraints(JSON.stringify(varintGrid));
@@ -225,6 +268,8 @@ const VariantsGrid = (props) => {
     <Fragment>
       <div className="col-xl-12 col-lg-12 col-sm-12 ">
         <div className="row">
+          <div className="col-md-2  p-4">{t("actions")}</div>
+
           <div className="col-md-2  p-4">{t("sku")}</div>
           <div className="col-md-2  p-4">{t("price")}</div>
           <div className="col-md-2  p-4">{t("stock")}</div>

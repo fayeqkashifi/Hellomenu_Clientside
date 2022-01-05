@@ -57,7 +57,6 @@ const Product = (props) => {
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
-        console.log(res.data.fetchData);
       }
       setLoading(false);
     });
@@ -207,7 +206,9 @@ const Product = (props) => {
             return (
               <td>
                 <img
-                  src={`http://${base_url}:${port}/images/products/${item.image}`}
+                  src={`http://${base_url}:${port}/images/products/${
+                    JSON.parse(item.image)[0]
+                  }`}
                   className="img-thumbnail"
                   alt=""
                   style={{
@@ -227,7 +228,7 @@ const Product = (props) => {
                     pathname: `${url}/variants`,
                     id: item.id,
                     ProductName: item.ProductName,
-                    state: { id: item.id },
+                    state: { p_id: item.id, id: branchId },
                   }}
                 >
                   <Tooltip title="Variants">
@@ -307,7 +308,9 @@ const Product = (props) => {
                     <div className="card-body">
                       <div className="text-center">
                         <img
-                          src={`http://${base_url}:${port}/images/products/${item.image}`}
+                          src={`http://${base_url}:${port}/images/products/${
+                            JSON.parse(item.image)[0]
+                          }`}
                           alt=""
                           style={{
                             width: "120px",
@@ -326,7 +329,7 @@ const Product = (props) => {
                               pathname: `${url}/variants`,
                               id: item.id,
                               ProductName: item.ProductName,
-                              state: { id: item.id },
+                              state: { p_id: item.id, id: branchId },
                             }}
                           >
                             <Tooltip title="Variants">

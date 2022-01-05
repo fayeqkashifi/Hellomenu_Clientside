@@ -23,12 +23,16 @@ const Counter = (props) => {
   };
   const handelIncrement = (e, qty, id) => {
     e.preventDefault();
-    let vars = cart.map((item) =>
-      id === item.id ? { ...item, qty: item.qty + 1 } : item
-    );
-    setCart((cart) => vars);
-    item.qty = qty + 1;
-    localStorage.setItem("cart", JSON.stringify(vars));
+    if (item.stock > qty) {
+      let vars = cart.map((item) =>
+        id === item.id ? { ...item, qty: item.qty + 1 } : item
+      );
+      setCart((cart) => vars);
+      item.qty = qty + 1;
+      localStorage.setItem("cart", JSON.stringify(vars));
+    } else {
+      alert("More than that isn't available because it's out of stock.");
+    }
   };
 
   const addItem = (id) => {

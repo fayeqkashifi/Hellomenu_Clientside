@@ -1,46 +1,31 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 const Ingredients = (props) => {
   // validation start
-  const schema = yup
-    .object()
-    .shape({
-      name: yup.string().required("This field is a required field"),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const initialValues = {
+    name: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      name: Yup.string().required("Name is required"),
+    });
+  };
   // validation end
 
   // for localization
   const { t } = useTranslation();
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
-  const [insert, setInsert] = useState([]);
-  const handleInput = (e) => {
-    e.persist();
-    setInsert({ ...insert, [e.target.name]: e.target.value });
-  };
-  const save = (e) => {
-    axios.post("/api/InsertIngredient", insert).then((res) => {
-      if (res.data.status === 200) {
-        setInsert([]);
-        setCheck(!check);
 
-        reset();
+  const save = (data) => {
+    axios.post("/api/InsertIngredient", data).then((res) => {
+      if (res.data.status === 200) {
+        setCheck(!check);
         setModalCentered(false);
         swal("Success", res.data.message, "success");
       }
@@ -50,10 +35,7 @@ const Ingredients = (props) => {
   // edit Attribute start
   const [editmodalCentered, setEditModalCentered] = useState(false);
   const [edit, setEdit] = useState([]);
-  const editHandleInput = (e) => {
-    e.persist();
-    setEdit({ ...edit, [e.target.name]: e.target.value });
-  };
+
   // fetch
   const fetch = (e, id) => {
     e.preventDefault();
@@ -67,14 +49,11 @@ const Ingredients = (props) => {
     });
   };
   // update
-  const update = (e) => {
-    e.preventDefault();
-    axios.post("/api/UpdateIngredient", edit).then((res) => {
+  const update = (data) => {
+    axios.post("/api/UpdateIngredient", data).then((res) => {
       if (res.data.status === 200) {
-        setEdit([]);
         setCheck(!check);
         setEditModalCentered(false);
-
         swal("Success", res.data.message, "success");
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
@@ -164,94 +143,109 @@ const Ingredients = (props) => {
     <Fragment>
       {/* insert */}
       <Modal className="fade" show={modalCentered}>
-        <Form
-          onSubmit={handleSubmit(save)}
-          method="POST"
-          encType="multipart/form-data"
+        <Modal.Header>
+          <Modal.Title>{t("add_ingredient")}</Modal.Title>
+          <Button
+            onClick={() => setModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={save}
         >
-          <Modal.Header>
-            <Modal.Title>{t("add_ingredient")}</Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("name")} </strong>{" "}
-              </label>
-              <input
-                type="text"
-                {...register("name")}
-                className="form-control"
-                placeholder={t("name")}
-                name="name"
-                onChange={handleInput}
-                value={insert.name}
-              />
-              <div className="text-danger">{errors.name?.message}</div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("save")}
-            </Button>
-          </Modal.Footer>
-        </Form>
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("name")}</label>
+                  <Field
+                    name="name"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.name && touched.name ? " is-invalid" : "")
+                    }
+                    placeholder="Name...."
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={update} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("edit_ingredient")} </Modal.Title>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("name")}
-                name="name"
-                required
-                onChange={editHandleInput}
-                value={edit.name}
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("update")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Header>
+          <Modal.Title>{t("edit_ingredient")} </Modal.Title>
+          <Button
+            onClick={() => setEditModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={edit}
+          validationSchema={validationSchema}
+          onSubmit={update}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("name")}</label>
+                  <Field
+                    name="name"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.name && touched.name ? " is-invalid" : "")
+                    }
+                    placeholder="Name...."
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setEditModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("update")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       <div className="row">
         <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">

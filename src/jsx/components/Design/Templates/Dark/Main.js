@@ -308,7 +308,9 @@ export default function Main(props) {
                       borderRadius: "15%",
                       objectFit: "contain",
                     }}
-                    src={`http://${base_url}:${port}/images/products/${item.image}`}
+                    src={`http://${base_url}:${port}/images/products/${
+                      JSON.parse(item.image)[0]
+                    }`}
                     alt="Image"
                     // className="h-100"
                   />

@@ -136,10 +136,11 @@
   "download_qr_code": "Download QR Code",
   "qr_code":"QR Code",
   "areas":"Areas",
+  "add_area":"Add Area",
   "name_area":"Area Name",
   "add":"Add",
   "order_now_by_whatsapp": "Order Now By WhatsApp",
-  "delivery_fee": "Delivery Fee",
+  "delivery_fees": "Delivery Fees",
   "grand_total": "Grand Total",
   "note": "Note",
   "phone_number": "Phone Number",
@@ -248,5 +249,6 @@
   "recommendation_products": "Recommendation Products",
   "show_preparation_time": "Display Preparation Time",
   "recommendation": "Recommendation",
-  "save_and_preview":"Save & Preview"
+  "save_and_preview":"Save & Preview",
+  "empty_cart":"Empty Cart"
 }

@@ -1,77 +1,84 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import Select from "react-select";
 import { useHistory } from "react-router-dom";
-
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 const AddProduct = (props) => {
   const history = useHistory();
-
   // for localization
   const { t } = useTranslation();
   const branchId = props.history.location.state.id;
   // validation start
-  const schema = yup
-    .object()
-    .shape({
-      ProductName: yup.string().required("This field is a required field"),
-      // UnitName: yup.string().required("This field is a required field"),
-      category: yup.string().required("This field is a required field"),
-      price: yup
-        .number()
-        .typeError("Amount must be a number")
-        .required("Please provide plan cost.")
-        .min(1, "Too little"),
-      stock: yup
-        .number()
-        .typeError("Amount must be a number")
-        .required("Please provide plan cost.")
-        .min(1, "Too little"),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const initialValues = {
+    ProductName: "",
+    category: "",
+    sub_category: "",
+    price: "",
+    stock: "",
+    preparationTime: "",
+    UnitName: "",
+    Description: "",
+  };
 
+  const validationSchema = () => {
+    return Yup.object().shape({
+      ProductName: Yup.string().required("Product Name is required"),
+      category: Yup.string().required("Category is required"),
+      price: Yup.number()
+        .typeError("Amount must be a number")
+        .required("Please provide plan cost.")
+        .min(1, "Too little"),
+      stock: Yup.number()
+        .typeError("Amount must be a number")
+        .required("Please provide plan cost.")
+        .min(1, "Too little"),
+    });
+  };
+  const initialValuesIngredient = {
+    name: "",
+  };
+  const validationSchemaIngredient = () => {
+    return Yup.object().shape({
+      name: Yup.string().required("Ingredient Name is required"),
+    });
+  };
   // validation End
   const [modalCentered, setModalCentered] = useState(false);
 
   const [imageState, setImageState] = useState([]);
   const handleImage = (e) => {
-    setImageState({ ...imageState, photo: e.target.files[0] });
+    const imagesArray = [];
+    for (let i = 0; i < e.target.files.length; i++) {
+      imagesArray.push(e.target.files[i]);
+    }
+    setImageState({ ...imageState, image: imagesArray });
   };
-  const [productInsert, setProductInsert] = useState([]);
-  const handleInput = (e) => {
-    e.persist();
-    setProductInsert({ ...productInsert, [e.target.name]: e.target.value });
-  };
-  const saveProduct = (e) => {
+
+  const saveProduct = (data) => {
+    console.log(JSON.stringify(data, null, 2));
+
     const formData = new FormData();
-    formData.append("image", imageState.photo);
-    formData.append("Description", productInsert.Description);
-    formData.append("ProductName", productInsert.ProductName);
-    formData.append("sub_category", productInsert.sub_category);
-    formData.append("category", productInsert.category);
-    formData.append("price", productInsert.price);
-    formData.append("stock", productInsert.stock);
-    formData.append("preparationTime", productInsert.preparationTime);
+    for (let i = 0; i < imageState.image.length; i++) {
+      formData.append("image[]", imageState.image[i]);
+    }
+    // formData.append("image", imageState.photo);
+    formData.append("Description", data.Description);
+    formData.append("ProductName", data.ProductName);
+    formData.append("sub_category", data.sub_category);
+    formData.append("category", data.category);
+    formData.append("price", data.price);
+    formData.append("stock", data.stock);
+    formData.append("preparationTime", data.preparationTime);
     formData.append("ingredients", JSON.stringify(productIngredient));
     formData.append("extras", JSON.stringify(productExtra));
     formData.append("recommendations", JSON.stringify(productRecom));
-    formData.append("UnitName", productInsert.UnitName);
+    formData.append("UnitName", data.UnitName);
     axios.post(`/api/InsertProducts`, formData).then((res) => {
       if (res.data.status === 200) {
-        reset();
         swal("Success", res.data.message, "success").then((check) => {
           if (check) {
             history.push({
@@ -83,25 +90,12 @@ const AddProduct = (props) => {
       }
     });
   };
-  const [insert, setInsert] = useState({
-    name: "",
-  });
 
-  const handleInputIngredients = (e) => {
-    e.persist();
-    setInsert({ ...insert, [e.target.name]: e.target.value });
-  };
-  const save = (e) => {
-    e.preventDefault();
-    axios.post("/api/InsertIngredient", insert).then((res) => {
+  const save = (data) => {
+    axios.post("/api/InsertIngredient", data).then((res) => {
       if (res.data.status === 200) {
-        setInsert({
-          name: "",
-        });
         setCheck(!check);
-
         setModalCentered(false);
-
         swal("Success", res.data.message, "success");
       }
     });
@@ -157,6 +151,7 @@ const AddProduct = (props) => {
   };
   const getSubCategories = (e) => {
     e.preventDefault();
+    console.log(e.target.value);
     axios
       .get(
         `/api/GetSubCategories/${e.target.value == "" ? null : e.target.value}`
@@ -166,7 +161,6 @@ const AddProduct = (props) => {
           setSubCategories(res.data.fetchData);
         }
       });
-    setProductInsert({ ...productInsert, [e.target.name]: e.target.value });
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -184,352 +178,290 @@ const AddProduct = (props) => {
           </div>
         </div>
         <div className="card-body">
-          <Form onSubmit={handleSubmit(saveProduct)} method="POST">
-            <div className="row">
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    <strong>{t("categories")}</strong>
-                  </label>
-                  <select
-                    type="text"
-                    {...register("category")}
-                    className={
-                      errors.category?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    placeholder={t("category")}
-                    name="category"
-                    // onChange={handleInput}
-                    value={productInsert.category}
-                    onChange={(e) => [getSubCategories(e)]}
-                  >
-                    <option value="">{t("select_a_option")}</option>
-                    {categories.map((item) => (
-                      <option value={item.id} key={item.id}>
-                        {item.CategoryName}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category?.message && (
-                    <div className="invalid-feedback">
-                      {errors.category?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div
-                className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12 disable"
-                disabled=""
-              >
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    <strong>{t("sub_categories")}</strong>
-                  </label>
-                  <select
-                    disabled={subCategories.length === 0 ? "disabled" : ""}
-                    type="text"
-                    {...register("sub_category")}
-                    className={
-                      errors.sub_category?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    placeholder={t("sub_category")}
-                    name="sub_category"
-                    onChange={handleInput}
-                    value={productInsert.sub_category}
-                  >
-                    <option value="">{t("select_a_option")}</option>
-                    {subCategories.map((item) => (
-                      <option value={item.sub_id} key={item.sub_id}>
-                        {item.SubCategoryName}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.sub_category?.message && (
-                    <div className="invalid-feedback">
-                      {errors.sub_category?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    {" "}
-                    <strong>{t("unit")}</strong>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    {...register("UnitName")}
-                    className={
-                      errors.UnitName?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    placeholder={t("Number, KGR...")}
-                    name="UnitName"
-                    onChange={handleInput}
-                    value={productInsert.UnitName}
-                  />
-
-                  {errors.UnitName?.message && (
-                    <div className="invalid-feedback">
-                      {errors.UnitName?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    {" "}
-                    <strong>{t("product_name")}</strong>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    {...register("ProductName")}
-                    className={
-                      errors.ProductName?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    placeholder={t("product_name")}
-                    name="ProductName"
-                    onChange={handleInput}
-                    value={productInsert.ProductName}
-                  />
-                  {errors.ProductName?.message && (
-                    <div className="invalid-feedback">
-                      {errors.ProductName?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    {" "}
-                    <strong>{t("description")}</strong>{" "}
-                  </label>
-                  <textarea
-                    type="text"
-                    {...register("Description")}
-                    className={
-                      errors.Description?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    placeholder={t("description")}
-                    name="Description"
-                    onChange={handleInput}
-                    value={productInsert.Description}
-                  />
-                  {errors.Description?.message && (
-                    <div className="invalid-feedback">
-                      {errors.Description?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    {" "}
-                    <strong>{t("price")}</strong>{" "}
-                  </label>
-                  <input
-                    type="number"
-                    {...register("price")}
-                    className={
-                      errors.price?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    placeholder={t("price")}
-                    name="price"
-                    min="0"
-                    onChange={handleInput}
-                    value={productInsert.price}
-                  />
-                  {errors.price?.message && (
-                    <div className="invalid-feedback">
-                      {errors.price?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    {" "}
-                    <strong>{t("stock")}</strong>{" "}
-                  </label>
-                  <input
-                    type="number"
-                    {...register("stock")}
-                    className={
-                      errors.stock?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    placeholder={t("stock")}
-                    name="stock"
-                    onChange={handleInput}
-                    value={productInsert.stock}
-                  />
-                  {errors.stock?.message && (
-                    <div className="invalid-feedback">
-                      {errors.stock?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    <strong>{t("preparation_Time")}(Minutes)</strong>
-                  </label>
-                  <input
-                    type="number"
-                    {...register("preparationTime")}
-                    className={
-                      errors.preparationTime?.message
-                        ? "form-control  is-invalid"
-                        : "form-control"
-                    }
-                    name="preparationTime"
-                    placeholder="30"
-                    onChange={handleInput}
-                    value={productInsert.preparationTime}
-                  />
-                  {errors.preparationTime?.message && (
-                    <div className="invalid-feedback">
-                      {errors.preparationTime?.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    {" "}
-                    <strong>{t("image")}</strong>{" "}
-                  </label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    placeholder={t("image")}
-                    name="photo"
-                    required
-                    onChange={handleImage}
-                  />
-                  {/* </div> */}
-                </div>
-              </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                <div className="form-group">
-                  <div className="d-flex justify-content-between">
-                    <label className="mb-1 ">
-                      <strong>{t("ingredients")}</strong>
-                    </label>
-                    <small
-                      onClick={() => setModalCentered(true)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {t("add_ingredient")}
-                    </small>
-                  </div>
-                  <Select
-                    isMulti
-                    options={intgredients?.map((o, i) => {
-                      return { id: i, value: o.id, label: o.name };
-                    })}
-                    onChange={handleSelectEvent}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                  />
-                </div>
-              </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    <strong>{t("extras")}</strong>
-                    <small>
-                      (Please first choose the fields and then set the input
-                      values.)
-                    </small>
-                  </label>
-
-                  <Select
-                    isMulti
-                    options={intgredients?.map((o, i) => {
-                      return { id: i, value: o.id, label: o.name, price: 0 };
-                    })}
-                    onChange={handleSelectEventExtra}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                  />
-                </div>
-              </div>
-              {productExtra?.map((item, i) => {
-                return (
-                  <div className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3" key={i}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={saveProduct}
+          >
+            {({ errors, status, touched }) => (
+              <Form>
+                <div className="row">
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                     <div className="form-group">
-                      <label className="mb-1 ">
-                        <strong>{item.label}</strong>
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        className="form-control"
-                        onChange={(e) => extraHandle(e, item.id)}
-                        value={productExtra[i].price}
+                      <label> {t("categories")}</label>
+                      <Field
+                        as="select"
+                        name="category"
+                        className={
+                          "form-control" +
+                          (errors.category && touched.category
+                            ? " is-invalid"
+                            : "")
+                        }
+                        onClick={(e) => getSubCategories(e)}
+                      >
+                        <option key="empty" value="">
+                          {t("select_a_option")}
+                        </option>
+                        {categories.map((item) => (
+                          <option value={item.id} key={item.id}>
+                            {item.CategoryName}
+                          </option>
+                        ))}
+                      </Field>
+                      <ErrorMessage
+                        name="category"
+                        component="div"
+                        className="invalid-feedback"
                       />
                     </div>
                   </div>
-                );
-              })}
 
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                <div className="form-group">
-                  <label className="mb-1 ">
-                    <strong>{t("recommendation_products")}</strong>
-                  </label>
-                  <Select
-                    isMulti
-                    options={fetchData?.map((o, i) => {
-                      return {
-                        price: o.price,
-                        value: o.id,
-                        label: o.ProductName,
-                        qty: 1,
-                      };
-                    })}
-                    onChange={handleSelectEventRecom}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                  />
+                  <div
+                    className={`col-xl-6 col-xxl-6 col-lg-6 col-sm-12 ${
+                      subCategories.length === 0 ? "d-none" : ""
+                    }`}
+                  >
+                    <div className="form-group">
+                      <label> {t("sub_categories")}</label>
+                      <Field
+                        as="select"
+                        name="sub_category"
+                        className={"form-control"}
+                      >
+                        <option value="">{t("select_a_option")}</option>
+                        {subCategories.map((item) => (
+                          <option value={item.sub_id} key={item.sub_id}>
+                            {item.SubCategoryName}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label> {t("unit")}</label>
+                      <Field
+                        name="UnitName"
+                        type="text"
+                        className={"form-control"}
+                        placeholder="KGR, Cm, Number..."
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label> {t("product_name")}</label>
+                      <Field
+                        name="ProductName"
+                        type="text"
+                        className={
+                          "form-control" +
+                          (errors.ProductName && touched.ProductName
+                            ? " is-invalid"
+                            : "")
+                        }
+                        placeholder="Name..."
+                      />
+                      <ErrorMessage
+                        name="ProductName"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label> {t("description")}</label>
+                      <Field
+                        as="textarea"
+                        name="Description"
+                        className={
+                          "form-control" +
+                          (errors.Description && touched.Description
+                            ? " is-invalid"
+                            : "")
+                        }
+                        placeholder="Description..."
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label> {t("price")}</label>
+                      <Field
+                        name="price"
+                        type="number"
+                        className={
+                          "form-control" +
+                          (errors.price && touched.price ? " is-invalid" : "")
+                        }
+                        placeholder="price..."
+                      />
+                      <ErrorMessage
+                        name="price"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label> {t("stock")}</label>
+                      <Field
+                        name="stock"
+                        type="number"
+                        className={
+                          "form-control" +
+                          (errors.stock && touched.stock ? " is-invalid" : "")
+                        }
+                        placeholder="stock..."
+                      />
+                      <ErrorMessage
+                        name="stock"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label>{t("preparation_Time")}(Minutes)</label>
+                      <Field
+                        name="preparationTime"
+                        type="number"
+                        className={"form-control"}
+                        placeholder="preparation Time..."
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label>{t("image")}</label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        placeholder={t("image")}
+                        name="photo"
+                        required
+                        onChange={handleImage}
+                        multiple
+                        data-overwrite-initial="false"
+                        data-min-file-count="1"
+                      />
+                    </div>
+                    
+                  </div>
+                  <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                    <div className="form-group">
+                      <div className="d-flex justify-content-between">
+                        <label className="mb-1 ">
+                          <strong>{t("ingredients")}</strong>
+                        </label>
+                        <small
+                          onClick={() => setModalCentered(true)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {t("add_ingredient")}
+                        </small>
+                      </div>
+                      <Select
+                        isMulti
+                        options={intgredients?.map((o, i) => {
+                          return { id: i, value: o.id, label: o.name };
+                        })}
+                        onChange={handleSelectEvent}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                    <div className="form-group">
+                      <label className="mb-1 ">
+                        <strong>{t("extras")}</strong>
+                        <small>
+                          (Please first choose the fields and then set the input
+                          values.)
+                        </small>
+                      </label>
+
+                      <Select
+                        isMulti
+                        options={intgredients?.map((o, i) => {
+                          return {
+                            id: i,
+                            value: o.id,
+                            label: o.name,
+                            price: 0,
+                          };
+                        })}
+                        onChange={handleSelectEventExtra}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                      />
+                    </div>
+                  </div>
+                  {productExtra?.map((item, i) => {
+                    return (
+                      <div
+                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3"
+                        key={i}
+                      >
+                        <div className="form-group">
+                          <label className="mb-1 ">
+                            <strong>{item.label}</strong>
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            className="form-control"
+                            onChange={(e) => extraHandle(e, item.id)}
+                            value={productExtra[i].price}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                    <div className="form-group">
+                      <label className="mb-1 ">
+                        <strong>{t("recommendation_products")}</strong>
+                      </label>
+                      <Select
+                        isMulti
+                        options={fetchData?.map((o, i) => {
+                          return {
+                            price: o.price,
+                            value: o.id,
+                            label: o.ProductName,
+                            qty: 1,
+                          };
+                        })}
+                        onChange={handleSelectEventRecom}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="card-footer">
-              <Button
-                variant="danger light"
-                className="m-1"
-                onClick={() => history.goBack()}
-              >
-                {t("back")}
-              </Button>
-              <Button variant="primary" type="submit">
-                {t("save")}{" "}
-              </Button>
-            </div>
-          </Form>
+                <div className="card-footer">
+                  <Button
+                    variant="danger light"
+                    className="m-1"
+                    onClick={() => history.goBack()}
+                  >
+                    {t("back")}
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    {t("save")}{" "}
+                  </Button>
+                </div>
+              </Form>
+            )}
+          </Formik>
         </div>
       </div>
     );
@@ -550,45 +482,56 @@ const AddProduct = (props) => {
         {viewProducts_HTMLTABLE}
 
         <Modal className="fade" show={modalCentered}>
-          <Form onSubmit={save} method="POST" encType="multipart/form-data">
-            <Modal.Header>
-              <Modal.Title>{t("add_ingredient")}</Modal.Title>
-              <Button
-                onClick={() => setModalCentered(false)}
-                variant=""
-                className="close"
-              >
-                <span>&times;</span>
-              </Button>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-group">
-                <label className="mb-1 ">
-                  {" "}
-                  <strong>{t("name")} </strong>{" "}
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder={t("name")}
-                  name="name"
-                  onChange={handleInputIngredients}
-                  value={insert.name}
-                />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                onClick={() => setModalCentered(false)}
-                variant="danger light"
-              >
-                {t("close")}
-              </Button>
-              <Button variant="primary" type="submit">
-                {t("save")}
-              </Button>
-            </Modal.Footer>
-          </Form>
+          <Modal.Header>
+            <Modal.Title>{t("add_ingredient")}</Modal.Title>
+            <Button
+              onClick={() => setModalCentered(false)}
+              variant=""
+              className="close"
+            >
+              <span>&times;</span>
+            </Button>
+          </Modal.Header>
+          <Formik
+            initialValues={initialValuesIngredient}
+            validationSchema={validationSchemaIngredient}
+            onSubmit={save}
+          >
+            {({ errors, status, touched }) => (
+              <Form>
+                <Modal.Body>
+                  <div className="form-group">
+                    <label> {t("name")}</label>
+                    <Field
+                      name="name"
+                      type="text"
+                      className={
+                        "form-control" +
+                        (errors.name && touched.name ? " is-invalid" : "")
+                      }
+                      placeholder="Name...."
+                    />
+                    <ErrorMessage
+                      name="name"
+                      component="div"
+                      className="invalid-feedback"
+                    />
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={() => setModalCentered(false)}
+                    variant="danger light"
+                  >
+                    {t("close")}
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    {t("save")}{" "}
+                  </Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
         </Modal>
       </Fragment>
     </>

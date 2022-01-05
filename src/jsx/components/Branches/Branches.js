@@ -1,13 +1,10 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert";
 import QRCode from "qrcode.react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 // import ReactWhatsapp from 'react-whatsapp';
 // import FloatingWhatsApp from 'react-floating-whatsapp'
@@ -15,59 +12,36 @@ import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const Branches = () => {
-  // validation start
-  const schema = yup
-    .object()
-    .shape({
-      BrancheName: yup.string().required("This field is a required field"),
-      currencyID: yup.string().required("This field is a required field"),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-  // validation end
-
   // localization
   const { t } = useTranslation();
-
-  // insert start
-  const [modalCentered, setModalCentered] = useState(false);
-  const [branchstate, setBranchstate] = useState({
+  const initialValues = {
     BrancheName: "",
     currencyID: "",
-  });
-  const handleInput = (e) => {
-    e.preventDefault();
-    setBranchstate({ ...branchstate, [e.target.name]: e.target.value });
   };
-  const saveBranch = (e) => {
-    // e.preventDefault();
+  const validationSchema = () => {
+    return Yup.object().shape({
+      BrancheName: Yup.string().required("Branch Name is required"),
+      currencyID: Yup.string().required("Currency is required"),
+    });
+  };
+  // insert start
+  const [modalCentered, setModalCentered] = useState(false);
+
+  const saveBranch = (data) => {
+    // console.log(JSON.stringify(data, null, 2));
     const checkBranch = branchdata.every((item) => {
-      return item.BrancheName !== branchstate.BrancheName;
+      return item.BrancheName !== data.BrancheName;
     });
     if (checkBranch) {
-      axios.post("/api/InsertBranches", branchstate).then((res) => {
+      axios.post("/api/InsertBranches", data).then((res) => {
         if (res.data.status === 200) {
           setModalCentered(false);
           setCheck(!check);
-
-          swal("Success", res.data.message, "success").then((done) => {
-            if (done) {
-              setBranchstate({
-                BrancheName: "",
-                currencyID: "",
-              });
-              reset();
-            }
-          });
+          swal("Success", res.data.message, "success");
         }
       });
     } else {
@@ -84,10 +58,6 @@ const Branches = () => {
   const [editmodalCentered, setEditModalCentered] = useState(false);
 
   const [editBranchstate, setEditBranchstate] = useState([]);
-  const editHandleInput = (e) => {
-    e.persist();
-    setEditBranchstate({ ...editBranchstate, [e.target.name]: e.target.value });
-  };
   const editBranch = (e, id) => {
     e.preventDefault();
     axios.get(`/api/EditBranches/${id}`).then((res) => {
@@ -99,35 +69,31 @@ const Branches = () => {
       }
     });
   };
-  const updateBranch = (e) => {
-    e.preventDefault();
-    const checkBranch = branchdata.every((item) => {
-      return item.BrancheName !== editBranchstate.BrancheName;
-    });
-    if (checkBranch) {
-      axios.post("/api/UpdateBranches", editBranchstate).then((res) => {
-        if (res.data.status === 200) {
-          setEditModalCentered(false);
+  const updateBranch = (data) => {
+    // const checkBranch = branchdata.every((item) => {
+    //   return item.BrancheName !== data.BrancheName;
+    // });
+    // console.log(checkBranch);
+    // if (checkBranch) {
+    axios.post("/api/UpdateBranches", data).then((res) => {
+      if (res.data.status === 200) {
+        setEditModalCentered(false);
 
-          swal("Success", res.data.message, "success").then((done) => {
-            if (done) {
-              setEditBranchstate({
-                id: "",
-                BrancheName: "",
-                currencyID: "",
-              });
-              setCheck(!check);
-            }
-          });
-        }
-      });
-    } else {
-      swal(
-        "warning",
-        "The name already exists, please try another name.",
-        "warning"
-      );
-    }
+        swal("Success", res.data.message, "success").then((done) => {
+          if (done) {
+            setEditBranchstate([]);
+            setCheck(!check);
+          }
+        });
+      }
+    });
+    // } else {
+    //   swal(
+    //     "warning",
+    //     "The name already exists, please try another name.",
+    //     "warning"
+    //   );
+    // }
   };
   // edit end
   // delete start
@@ -275,168 +241,163 @@ const Branches = () => {
       {/* <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} /> */}
       {/* <!-- Insert  Modal --> */}
       <Modal className="fade" show={modalCentered}>
-        <Form onSubmit={handleSubmit(saveBranch)} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("add_branch")}</Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("branch_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                {...register("BrancheName")}
-                className={
-                  errors.BrancheName?.message
-                    ? "form-control  is-invalid"
-                    : "form-control"
-                }
-                placeholder={t("branch_name")}
-                name="BrancheName"
-                onChange={handleInput}
-                value={branchstate.BrancheName}
-              />
-              {errors.BrancheName?.message && (
-                <div className="invalid-feedback">
-                  {errors.BrancheName?.message}
+        <Modal.Header>
+          <Modal.Title>{t("add_branch")}</Modal.Title>
+          <Button
+            onClick={() => setModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={saveBranch}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("branch_name")}</label>
+                  <Field
+                    name="BrancheName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.BrancheName && touched.BrancheName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="A unique name..."
+                  />
+                  <ErrorMessage
+                    name="BrancheName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
                 </div>
-              )}
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("currency")}</strong>{" "}
-              </label>
-              <select
-                type="text"
-                {...register("currencyID")}
-                className={
-                  errors.currencyID?.message
-                    ? "form-control  is-invalid"
-                    : "form-control"
-                }
-                placeholder="currencyID"
-                name="currencyID"
-                onChange={handleInput}
-                defaultValue={branchstate.currencyID}
-              >
-                <option value="">{t("select_currency")}</option> )
-                {currency.map((item) => (
-                  <option value={item.id} key={item.id}>
-                    {item.currency_name + " / " + item.currency_code}
-                  </option>
-                ))}
-              </select>
-              {errors.currencyID?.message && (
-                <div className="invalid-feedback">
-                  {errors.currencyID?.message}
+                <div className="form-group">
+                  <label> {t("currency")}</label>
+                  <Field
+                    as="select"
+                    name="currencyID"
+                    className={
+                      "form-control" +
+                      (errors.currencyID && touched.currencyID
+                        ? " is-invalid"
+                        : "")
+                    }
+                  >
+                    <option value="">{t("select_currency")}</option> )
+                    {currency.map((item) => (
+                      <option value={item.id} key={item.id}>
+                        {item.currency_name + " / " + item.currency_code}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="currencyID"
+                    component="div"
+                    className="invalid-feedback"
+                  />
                 </div>
-              )}
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("save")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={updateBranch} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("edit_branch")}</Modal.Title>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("id")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                disabled="disabled"
-                className="form-control"
-                // placeholder="Branch Name"
-                name="id"
-                required
-                onChange={editHandleInput}
-                value={editBranchstate.id}
-              />
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("branch_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("branch_name")}
-                name="BrancheName"
-                required
-                onChange={editHandleInput}
-                value={editBranchstate.BrancheName}
-              />
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("currency")}</strong>{" "}
-              </label>
-              <select
-                type="text"
-                className="form-control"
-                placeholder="currencyID"
-                name="currencyID"
-                required
-                onChange={editHandleInput}
-                defaultValue={editBranchstate.currencyID}
-              >
-                {currency.map((item) => {
-                  return (
-                    <option value={item.id} key={item.id}>
-                      {item.currency_name + " / " + item.currency_code}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("update")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Header>
+          <Modal.Title>{t("edit_branch")}</Modal.Title>
+          <Button
+            onClick={() => setEditModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={editBranchstate}
+          validationSchema={validationSchema}
+          onSubmit={updateBranch}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("branch_name")}</label>
+                  <Field
+                    name="BrancheName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.BrancheName && touched.BrancheName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="A unique name..."
+                  />
+                  <ErrorMessage
+                    name="BrancheName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("currency")}</label>
+                  <Field
+                    as="select"
+                    name="currencyID"
+                    className={
+                      "form-control" +
+                      (errors.currencyID && touched.currencyID
+                        ? " is-invalid"
+                        : "")
+                    }
+                  >
+                    <option value="">{t("select_currency")}</option> )
+                    {currency.map((item) => (
+                      <option value={item.id} key={item.id}>
+                        {item.currency_name + " / " + item.currency_code}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="currencyID"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setEditModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("update")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       <div className="row justify-content-end">
         <div className="col-1">

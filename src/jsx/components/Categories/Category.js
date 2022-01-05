@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { base_url, port } from "../../../Consts";
 /// Bootstrap
 import { Row } from "react-bootstrap";
@@ -7,34 +7,16 @@ import { Link, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import DefaultPic from "../../../images/hellomenu/category.svg";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const Category = (props) => {
   const { path, url } = useRouteMatch();
-
-  // valiation start
-  const schema = yup
-    .object()
-    .shape({
-      CategoryName: yup.string().required("This field is a required field"),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-  // validation end
 
   // for localization
   const { t } = useTranslation();
@@ -43,37 +25,28 @@ const Category = (props) => {
   const [check, setCheck] = useState(true);
   // insert Start
   const [modalCentered, setModalCentered] = useState(false);
-  const [categoryInsert, setCategoryInsert] = useState({
-    CategoryName: "",
-    CategoryIcon: "",
-    branchID: id,
-  });
   const [imageState, setImageState] = useState([]);
-
-  const handleInput = (e) => {
-    e.persist();
-    setCategoryInsert({ ...categoryInsert, [e.target.name]: e.target.value });
-  };
   const handleImage = (e) => {
     setImageState({ ...imageState, CategoryIcon: e.target.files[0] });
   };
-  const saveMenu = (e) => {
+  const initialValues = {
+    CategoryName: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      CategoryName: Yup.string().required("Category Name is required"),
+    });
+  };
+  const saveMenu = (data) => {
     // e.preventDefault();
     const formData = new FormData();
     formData.append("CategoryIcon", imageState.CategoryIcon);
-    formData.append("CategoryName", categoryInsert.CategoryName);
-    formData.append("branchID", categoryInsert.branchID);
+    formData.append("CategoryName", data.CategoryName);
+    formData.append("branchID", id);
 
     axios.post("/api/InsertCategories", formData).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.status);
-        setCategoryInsert({
-          CategoryName: "",
-          CategoryIcon: "",
-          branchID: id,
-        });
         setImageState([]);
-        reset();
         setCheck(!check);
         swal("Success", res.data.message, "success");
         setModalCentered(false);
@@ -89,10 +62,6 @@ const Category = (props) => {
     CategoryIcon: "",
     branchID: id,
   });
-  const editHandleInput = (e) => {
-    e.persist();
-    setEditMenu({ ...editMenu, [e.target.name]: e.target.value });
-  };
   const fetchMenus = (e, id) => {
     e.preventDefault();
     axios.get(`/api/EditCategories/${id}`).then((res) => {
@@ -104,12 +73,11 @@ const Category = (props) => {
       }
     });
   };
-  const updateMenu = (e) => {
-    e.preventDefault();
+  const updateMenu = (data) => {
     const formData = new FormData();
     formData.append("CategoryIcon", imageState.CategoryIcon);
-    formData.append("CategoryName", editMenu.CategoryName);
-    formData.append("branchID", editMenu.branchID);
+    formData.append("CategoryName", data.CategoryName);
+    formData.append("branchID", id);
     formData.append("id", editMenu.id);
     axios.post("/api/UpdateCategories", formData).then((res) => {
       if (res.data.status === 200) {
@@ -251,29 +219,45 @@ const Category = (props) => {
   return (
     <Fragment>
       <Modal className="fade" show={modalCentered}>
-        <Form
-          onSubmit={handleSubmit(saveMenu)}
-          method="POST"
-          encType="multipart/form-data"
+        <Modal.Header>
+          <Modal.Title>{t("add_category")} </Modal.Title>
+          <Button
+            onClick={() => setModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={saveMenu}
         >
-          <Modal.Header>
-            <Modal.Title>{t("add_category")} </Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("category_icon")}</strong>{" "}
-              </label>
-              <div className="input-group">
-                <div className="custom-file">
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("category_name")}</label>
+                  <Field
+                    name="CategoryName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.CategoryName && touched.CategoryName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder={t("category_name")}
+                  />
+                  <ErrorMessage
+                    name="CategoryName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("image")}</label>
                   <input
                     type="file"
                     className="form-control"
@@ -282,74 +266,63 @@ const Category = (props) => {
                     onChange={handleImage}
                   />
                 </div>
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("category_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                {...register("CategoryName")}
-                className="form-control"
-                placeholder={t("category_name")}
-                name="CategoryName"
-                onChange={handleInput}
-                value={categoryInsert.CategoryName}
-              />
-              <div className="text-danger">{errors.CategoryName?.message}</div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("save")}
-            </Button>
-          </Modal.Footer>
-        </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={updateMenu} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("edit_category")}</Modal.Title>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("edit_category")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                disabled="disabled"
-                className="form-control"
-                name="id"
-                required
-                onChange={editHandleInput}
-                value={editMenu.id}
-              />
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("category_icon")}</strong>{" "}
-              </label>
-              <div className="input-group">
-                <div className="custom-file">
+        <Modal.Header>
+          <Modal.Title>{t("edit_category")}</Modal.Title>
+          <Button
+            onClick={() => setEditModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={editMenu}
+          validationSchema={validationSchema}
+          onSubmit={updateMenu}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("category_name")}</label>
+                  <Field
+                    name="CategoryName"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.CategoryName && touched.CategoryName
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder={t("category_name")}
+                  />
+                  <ErrorMessage
+                    name="CategoryName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("image")}</label>
                   <input
                     type="file"
                     className="form-control"
@@ -367,36 +340,21 @@ const Category = (props) => {
                     alt=" "
                   />
                 </div>
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("category_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("category_name")}
-                name="CategoryName"
-                required
-                onChange={editHandleInput}
-                value={editMenu.CategoryName}
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("update")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setEditModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("update")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
 
       <div className="row justify-content-end">

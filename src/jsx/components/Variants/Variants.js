@@ -7,13 +7,15 @@ import Grid from "./Grid";
 import { CBreadcrumb } from "@coreui/react";
 import Select from "react-select";
 import { Link, useHistory } from "react-router-dom";
+import "@pathofdev/react-tag-input/build/index.css";
+import { TagsInput } from "react-tag-input-component";
 
 const Variants = (props) => {
   // for localization
   const history = useHistory();
 
   const { t } = useTranslation();
-  const id = props.history.location.state.id;
+  const id = props.history.location.state.p_id;
 
   const [nameAttr, setNameAtter] = useState({});
   const [attributes, setAttributes] = useState([]);
@@ -44,23 +46,20 @@ const Variants = (props) => {
         res.data.fetchData.length !== attributes.length &&
         jsonvar.data.fetchData == ""
       ) {
-        const varLines = [];
-
-        res.data.fetchData.map((fetchData) => {
-          nameAtter[fetchData.attributeName] = "";
-        });
-
-        varLines.push({
-          postion: 0,
-          sku: "",
-          price: "",
-          stock: "",
-          image: [],
-          // ...nameAtter,
-        });
+        // const varLines = [];
+        // res.data.fetchData.map((fetchData) => {
+        //   nameAtter[fetchData.attributeName] = "";
+        // });
+        // varLines.push({
+        //   postion: 0,
+        //   sku: "",
+        //   price: "",
+        //   stock: "",
+        //   image: [],
+        //   // ...nameAtter,
+        // });
         // setNameAtter(nameAtter);
-
-        setNumberOfVar(varLines);
+        // setNumberOfVar(varLines);
         setAttributes(res.data.fetchData);
       } else {
         const varLines = [];
@@ -100,7 +99,7 @@ const Variants = (props) => {
           varLines.push(line);
           setfilterAttributes(attrFilterName);
         });
-        setNameAtter(AttNames);
+        // setNameAtter(AttNames);
         // console.log(nameAttr);
 
         setNumberOfVar(varLines);
@@ -111,23 +110,114 @@ const Variants = (props) => {
     getdata();
     setLoading(false);
   }, []);
-  const CreateNewVar = () => {
+  let [test, setTest] = useState([]);
+  const CreateNewVar = (tag) => {
+    // var min = 1;
+    // var max = 100;
+    // var postion = min + Math.random() * (max - min);
     let postion = 0;
     if (numberOfVar.length > 0) {
       postion = numberOfVar.length;
     }
-    setNumberOfVar([
-      ...numberOfVar,
-      {
-        postion: postion,
-        sku: "",
-        price: "",
-        stock: "",
-        image: [],
-        ...nameAttr,
-      },
-    ]);
+
+    if (variantsTags.length == 1) {
+      if (tags != 0) {
+        setNumberOfVar([]);
+        for (const [attr, values] of Object.entries(tag)) {
+          values.map((item) => {
+            setNumberOfVar((numberOfVar) => {
+              return [
+                ...numberOfVar,
+                {
+                  postion: postion,
+                  sku: item,
+                  price: "",
+                  stock: "",
+                  image: [],
+                  // ...nameAttr,
+                },
+              ];
+            });
+          });
+          //
+        }
+      }
+    } else {
+      let sku = "";
+      let c = 1;
+      for (const [attr, values] of Object.entries(tag)) {
+        if (Object.keys(tag).length == c) {
+          sku += values;
+        } else {
+          sku += values + "-";
+        }
+        c++;
+      }
+      if (!test.includes(sku)) {
+        setTest((item) => {
+          return [...item, sku];
+        });
+      }
+      if (numberOfVar.length != 0) {
+        const check = numberOfVar.every((item) => {
+          return item.sku != sku;
+        });
+        if (check) {
+          setNumberOfVar((numberOfVar) => {
+            return [
+              ...numberOfVar,
+              {
+                postion: postion,
+                sku: sku,
+                price: "",
+                stock: "",
+                image: [],
+                // ...nameAttr,
+              },
+            ];
+          });
+        }
+      } else {
+        setNumberOfVar((numberOfVar) => {
+          return [
+            ...numberOfVar,
+            {
+              postion: postion,
+              sku: sku,
+              price: "",
+              stock: "",
+              image: [],
+              // ...nameAttr,
+            },
+          ];
+        });
+        // setNumberOfVar(
+        //   numberOfVar.filter((vars) => {
+        //     return vars.sku != sku;
+        //   })
+        // );
+
+        // if (vars.sku != sku) {
+        //   setNumberOfVar((numberOfVar) => {
+        //     return [
+        //       ...numberOfVar,
+        //       {
+        //         postion: postion,
+        //         sku: sku,
+        //         price: "",
+        //         stock: "",
+        //         image: [],
+        //         // ...nameAttr,
+        //       },
+        //     ];
+        //   });
+        // }
+      }
+
+      // console.log(numberOfVar);
+    }
   };
+
   const removeVar = () => {
     const varsLines = numberOfVar;
     varsLines.pop();
@@ -160,56 +250,82 @@ const Variants = (props) => {
   const recheckitem = (item) => {
     console.log(item);
   };
-
+  const [variantsTags, setVariantsTage] = useState([]);
   // select box
   const handleSelectEvent = (e) => {
-    const nameAtter = {};
-    // console.log(filterAttributes);
-    // console.log(e);
+    setVariantsTage(e);
 
-    const inputFilter = filterAttributes?.length ? filterAttributes?.length : 0;
-    const input = e?.length ? e?.length : 0;
-    if (input > inputFilter) {
-      if (inputFilter === 0) {
-        e?.map((item) => {
-          nameAtter[item.label] = "";
-          numberOfVar.map((vars) => {
-            vars[item.label] = vars[item.label] ? vars[item.label] : "";
-          });
-        });
-      } else {
-        e?.map((item) => {
-          nameAtter[item.label] = "";
-          numberOfVar.map((vars) => {
-            vars[item.label] = vars[item.label] ? vars[item.label] : "";
-          });
-        });
-      }
-    } else if (input < inputFilter) {
-      if (input === 0) {
-        var uniqueResultOne = filterAttributes;
-      } else {
-        var uniqueResultOne = filterAttributes.filter(function (obj) {
-          return !e.some(function (obj2) {
-            return obj.value == obj2.value;
-          });
-        });
-      }
-      const label = uniqueResultOne[0].label;
-      numberOfVar.map((vars) => {
-        delete vars[label];
-      });
-      e?.map((item) => {
-        nameAtter[item.label] = "";
-      });
-    }
-
-    // Object.keys(vars).splice(index, 1);
-    //   console.log(vars);
-    setfilterAttributes(e);
-    setNameAtter(nameAtter);
-    setNumberOfVar(numberOfVar);
+    // const nameAtter = {};
+    // const inputFilter = filterAttributes?.length ? filterAttributes?.length : 0;
+    // const input = e?.length ? e?.length : 0;
+    // if (input > inputFilter) {
+    //   if (inputFilter === 0) {
+    //     e?.map((item) => {
+    //       nameAtter[item.label] = "";
+    //       numberOfVar.map((vars) => {
+    //         vars[item.label] = vars[item.label] ? vars[item.label] : "";
+    //       });
+    //     });
+    //   } else {
+    //     e?.map((item) => {
+    //       nameAtter[item.label] = "";
+    //       numberOfVar.map((vars) => {
+    //         vars[item.label] = vars[item.label] ? vars[item.label] : "";
+    //       });
+    //     });
+    //   }
+    // } else if (input < inputFilter) {
+    //   if (input === 0) {
+    //     var uniqueResultOne = filterAttributes;
+    //   } else {
+    //     var uniqueResultOne = filterAttributes.filter(function (obj) {
+    //       return !e.some(function (obj2) {
+    //         return obj.value == obj2.value;
+    //       });
+    //     });
+    //   }
+    //   const label = uniqueResultOne[0].label;
+    //   numberOfVar.map((vars) => {
+    //     delete vars[label];
+    //   });
+    //   e?.map((item) => {
+    //     nameAtter[item.label] = "";
+    //   });
+    // }
+    // setfilterAttributes(e);
+    // setNameAtter(nameAtter);
+    // setNumberOfVar(numberOfVar);
   };
+  const [tags, setTags] = useState([]);
+  const handleEvent = (e, value) => {
+    setTags({ ...tags, [value]: e });
+    if (variantsTags.length == 1) {
+      CreateNewVar({ ...tags, [value]: e });
+    } else {
+      if (tags[value]) {
+        let attrs = [];
+
+        for (const [attr, values] of Object.entries({ ...tags, [value]: e }))
+          attrs.push(values.map((v) => ({ [attr]: v })));
+
+        attrs = attrs.reduce((a, b) =>
+          a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
+        );
+        // console.log(attrs);
+        attrs.map((tag) => {
+          // console.log(tag);
+          CreateNewVar(tag);
+        });
+      } else {
+        console.log("undefine");
+      }
+    }
+    // console.log(tags);
+    // console.log(e);
+    //
+    // }
+  };
+
   if (loading) {
     return (
       <div className="spinner-border text-primary " role="status">
@@ -233,7 +349,7 @@ const Variants = (props) => {
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
               <Select
-                value={filterAttributes}
+                // value={filterAttributes}
                 isMulti
                 options={attributes.map((o, i) => {
                   return { value: o.attributeName, label: o.attributeName };
@@ -246,6 +362,30 @@ const Variants = (props) => {
             </div>
           </div>
         </div>
+        <div className="col-xl-12 col-lg-12 col-sm-12 p-5">
+          {variantsTags?.map((item, i) => {
+            return (
+              <div className="row m-2" key={i}>
+                <div
+                  className="col-xl-4 col-lg-4 col-sm-4 "
+                  // style={{ backgroundColor: "#555", font: "white" }}
+                >
+                  {item.label}
+                </div>
+                <div className="col-xl-8 col-lg-8 col-sm-8">
+                  {/* <TagInput /> */}
+                  <TagsInput
+                    // value={selected}
+                    onChange={(e) => handleEvent(e, item.value)}
+                    // onBlur={CreateNewVar}
+                    // id={item.label}
+                    placeHolder="Please Enter A Value"
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
         <div className="row">
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
@@ -257,7 +397,9 @@ const Variants = (props) => {
                   }}
                   getJSONVaraints={(items) => getJSONVaraints(items)}
                   numberOfVar={numberOfVar}
+                  setNumberOfVar={setNumberOfVar}
                   filterAttributes={filterAttributes}
+                  // variantsTags={variantsTags}
                   productid={id}
                 ></Grid>
               </div>

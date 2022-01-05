@@ -1,30 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import Select from "react-select";
-
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 const ServiceArea = (props) => {
-  // Validation Start
-  const schema = yup
-    .object()
-    .shape({
-      AreaName: yup.string().required("This field is a required field"),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-  // Validation End
   // for localization
   const { t } = useTranslation();
   //ID
@@ -32,17 +14,8 @@ const ServiceArea = (props) => {
 
   // insert Start
   const [modalCentered, setModalCentered] = useState(false);
-  const [serviceAreaInsert, setServiceAreaInsert] = useState({
-    AreaName: "",
-    BranchID: id,
-  });
-  const handleInput = (e) => {
-    e.persist();
-    setServiceAreaInsert({
-      ...serviceAreaInsert,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [areaModal, setAreaModal] = useState(false);
+
   const saveServiceAreas = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -51,7 +24,6 @@ const ServiceArea = (props) => {
     axios.post("/api/InsertServicAreas", formData).then((res) => {
       if (res.data.status === 200) {
         setServicesAreas([]);
-        reset();
         setCheck(!check);
 
         swal("Success", res.data.message, "success");
@@ -84,9 +56,19 @@ const ServiceArea = (props) => {
   };
   const updateServiceArea = (e) => {
     e.preventDefault();
-    axios.post("/api/UpdateServiceAreas", editServiceAreas).then((res) => {
+    const formData = new FormData();
+    formData.append("id", editServiceAreas.id);
+    formData.append("deliveryFees", editServiceAreas.deliveryFees);
+    formData.append(
+      "areaLocationId",
+      servicesAreaEdit.value
+        ? servicesAreaEdit.value
+        : editServiceAreas.areaLocationId
+    );
+
+    axios.post("/api/UpdateServiceAreas", formData).then((res) => {
       if (res.data.status === 200) {
-        setEditServiceAreas("");
+        // setEditServiceAreas([]);
         setCheck(!check);
 
         swal("Success", res.data.message, "success");
@@ -134,11 +116,20 @@ const ServiceArea = (props) => {
     axios.get(`/api/GetAreas`).then((res) => {
       if (res.data.status === 200) {
         setAreaLocation(res.data.fetchData);
+        // console.log(res.data.fetchData);
       }
     });
     axios.get(`/api/GetServiceAreas/${id}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
+        // console.log(res.data.fetchData);
+        // setAreaLocation(
+        //   areaLocation.filter((item) => {
+        //     return fetchData.map((set) => {
+        //       return item.areaName == set.areaName;
+        //     });
+        //   })
+        // );
       }
       setLoading(false);
     });
@@ -147,15 +138,36 @@ const ServiceArea = (props) => {
   const handleSelectEvent = (e) => {
     setServicesAreas(e);
   };
+  const [servicesAreaEdit, setServicesAreaEdit] = useState([]);
 
+  const handleSelectEventEdit = (e) => {
+    setServicesAreaEdit(e);
+  };
   const serviceAreaHandle = (e, id) => {
     let updatedList = servicesAreas.map((item) => {
       if (item.value == id) {
-        return { ...item, deliveryFee: e.target.value }; //gets everything that was already in item, and updates "done"
+        return { ...item, deliveryFees: e.target.value }; //gets everything that was already in item, and updates "done"
       }
       return item; // else return unmodified item
     });
     setServicesAreas(updatedList);
+  };
+  const initialValues = {
+    areaName: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      areaName: Yup.string().required("Area Name is required"),
+    });
+  };
+  const save = (data) => {
+    // console.log(JSON.stringify(data, null, 2));
+    axios.post("/api/InsertAreas", data).then((res) => {
+      if (res.data.status === 200) {
+        setCheck(!check);
+        setAreaModal(false);
+      }
+    });
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -170,7 +182,8 @@ const ServiceArea = (props) => {
         <tr key={item.id}>
           <td>{i + 1}</td>
 
-          <td> {item.AreaName}</td>
+          <td> {item.areaName}</td>
+          <td> {item.deliveryFees}</td>
           <td>
             <button
               type="button"
@@ -194,17 +207,13 @@ const ServiceArea = (props) => {
   }
   return (
     <Fragment>
-      {/* <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-                <CBreadcrumbItem className="font-weight-bold" href="/branches" >{t('Branches')}</CBreadcrumbItem>
-                <CBreadcrumbItem active>{t('services_area')}</CBreadcrumbItem>
-            </CBreadcrumb> */}
       {/* <!-- Insert  Modal --> */}
       <Modal className="fade" size="lg" show={modalCentered}>
-        <Form onSubmit={saveServiceAreas}>
+        <form onSubmit={saveServiceAreas}>
           <Modal.Header>
             <Modal.Title>{t("add_service_area")}</Modal.Title>
             <Button
-              onClick={() => setModalCentered(false)}
+              onClick={() => [setModalCentered(false), setServicesAreas([])]}
               variant=""
               className="close"
             >
@@ -215,18 +224,29 @@ const ServiceArea = (props) => {
             <div className="row ">
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                 <div className="form-group">
-                  <label className="mb-1 ">
-                    {" "}
-                    <strong>{t("areas")}</strong>{" "}
-                  </label>
+                  <div className="d-flex justify-content-between">
+                    <label className="mb-1 ">
+                      {" "}
+                      <strong>{t("areas")}</strong>{" "}
+                      <small>
+                        (Please first choose the fields and then set the input
+                        values.)
+                      </small>
+                    </label>
+                    <small
+                      onClick={() => setAreaModal(true)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {t("add_area")}
+                    </small>
+                  </div>
                   <Select
-                    // value={filterAttributes}
                     isMulti
                     options={areaLocation.map((o, i) => {
                       return { value: o.id, label: o.areaName };
                     })}
                     onChange={handleSelectEvent}
-                    // name="attributeName"
+                    required
                     className="basic-multi-select"
                     classNamePrefix="select"
                   />
@@ -245,6 +265,7 @@ const ServiceArea = (props) => {
                     <input
                       type="text"
                       // min="0"
+                      required
                       className="form-control"
                       placeholder="Delivery charges for this Area"
                       onChange={(e) => serviceAreaHandle(e, item.value)}
@@ -254,26 +275,10 @@ const ServiceArea = (props) => {
                 </div>
               );
             })}
-            {/* <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("service_area")}</strong>{" "}
-              </label>
-              <textarea
-                type="text"
-                {...register("AreaName")}
-                className="form-control"
-                placeholder={t("service_area")}
-                name="AreaName"
-                onChange={handleInput}
-                value={serviceAreaInsert.AreaName}
-              />
-              <div className="text-danger">{errors.AreaName?.message}</div>
-            </div> */}
           </Modal.Body>
           <Modal.Footer>
             <Button
-              onClick={() => setModalCentered(false)}
+              onClick={() => [setModalCentered(false), setServicesAreas([])]}
               variant="danger light"
             >
               {t("close")}
@@ -282,11 +287,59 @@ const ServiceArea = (props) => {
               {t("save")}
             </Button>
           </Modal.Footer>
-        </Form>
+        </form>
+      </Modal>
+      <Modal className="fade" show={areaModal}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={save}
+        >
+          <Form>
+            <Modal.Header>
+              <Modal.Title>{t("add_area")}</Modal.Title>
+              <Button
+                onClick={() => setAreaModal(false)}
+                variant=""
+                className="close"
+              >
+                <span>&times;</span>
+              </Button>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-group">
+                <label> {t("name")} </label>
+                <Field
+                  name="areaName"
+                  type="text"
+                  className="form-control "
+                  placeholder="Area Name..."
+                />
+
+                <ErrorMessage
+                  name="areaName"
+                  component="div"
+                  className="text-danger"
+                />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                onClick={() => setAreaModal(false)}
+                variant="danger light"
+              >
+                {t("close")}
+              </Button>
+              <Button variant="primary" type="submit">
+                {t("save")}
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Formik>
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={updateServiceArea} method="POST">
+        <form onSubmit={updateServiceArea} method="POST">
           <Modal.Header>
             <Modal.Title>{t("edit_service_area")}</Modal.Title>
             <Button
@@ -303,14 +356,33 @@ const ServiceArea = (props) => {
                 {" "}
                 <strong>{t("service_area")}</strong>{" "}
               </label>
-              <textarea
+              <Select
+                defaultValue={{
+                  value: editServiceAreas.areaLocationId,
+                  label: editServiceAreas.areaName,
+                }}
+                options={areaLocation.map((o, i) => {
+                  return { value: o.id, label: o.areaName };
+                })}
+                onChange={handleSelectEventEdit}
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
+            </div>
+            <div className="form-group">
+              <label className="mb-1 ">
+                {" "}
+                <strong>{t("delivery_fees")}</strong>{" "}
+              </label>
+              <input
                 type="text"
-                className="form-control"
-                placeholder={t("service_area")}
-                name="AreaName"
-                required
+                // min="0"
                 onChange={editHandleInput}
-                value={editServiceAreas.AreaName}
+                name="deliveryFees"
+                required
+                className="form-control"
+                placeholder="Delivery charges for this Area"
+                value={editServiceAreas.deliveryFees}
               />
             </div>
           </Modal.Body>
@@ -325,7 +397,7 @@ const ServiceArea = (props) => {
               {t("update")}{" "}
             </Button>
           </Modal.Footer>
-        </Form>
+        </form>
       </Modal>
       <div className="row">
         <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
@@ -352,6 +424,7 @@ const ServiceArea = (props) => {
                     <tr>
                       <th>{t("number")}</th>
                       <th>{t("service_area")}</th>
+                      <th>{t("delivery_fees")}</th>
                       <th>{t("actions")}</th>
                     </tr>
                   </thead>
