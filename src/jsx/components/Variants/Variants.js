@@ -17,13 +17,11 @@ const Variants = (props) => {
   const { t } = useTranslation();
   const id = props.history.location.state.p_id;
 
-  const [nameAttr, setNameAtter] = useState({});
   const [attributes, setAttributes] = useState([]);
-  const [filterAttributes, setfilterAttributes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [numberOfVar, setNumberOfVar] = useState([]);
   const [jsonVaraints, setJsonVaratis] = useState("");
-
+  const [filterAttributes, setfilterAttributes] = useState([]);
   useEffect(() => {
     const getdata = async () => {
       const jsonvar = await axios({
@@ -60,6 +58,7 @@ const Variants = (props) => {
         // });
         // setNameAtter(nameAtter);
         // setNumberOfVar(varLines);
+
         setAttributes(res.data.fetchData);
       } else {
         const varLines = [];
@@ -82,11 +81,11 @@ const Variants = (props) => {
             ) {
               line[key] = value;
             } else if (nameAtter.hasOwnProperty(key)) {
-              line[key] = value;
               attrFilterName.push({
                 value: key,
                 label: key,
               });
+
               AttNames[key] = "";
             } else {
               if (count < Object.keys(nameAtter).length) {
@@ -96,11 +95,11 @@ const Variants = (props) => {
             }
           }
 
+          console.log(attrFilterName);
+
           varLines.push(line);
-          setfilterAttributes(attrFilterName);
+          setVariantsTage(attrFilterName);
         });
-        // setNameAtter(AttNames);
-        // console.log(nameAttr);
 
         setNumberOfVar(varLines);
         setAttributes(res.data.fetchData);
@@ -110,40 +109,47 @@ const Variants = (props) => {
     getdata();
     setLoading(false);
   }, []);
-  let [test, setTest] = useState([]);
   const CreateNewVar = (tag) => {
-    // var min = 1;
-    // var max = 100;
-    // var postion = min + Math.random() * (max - min);
     let postion = 0;
     if (numberOfVar.length > 0) {
       postion = numberOfVar.length;
     }
-
     if (variantsTags.length == 1) {
+      let sku = id + "-";
       if (tags != 0) {
-        setNumberOfVar([]);
         for (const [attr, values] of Object.entries(tag)) {
-          values.map((item) => {
-            setNumberOfVar((numberOfVar) => {
-              return [
-                ...numberOfVar,
-                {
-                  postion: postion,
-                  sku: item,
-                  price: "",
-                  stock: "",
-                  image: [],
-                  // ...nameAttr,
-                },
-              ];
+          if (values.length < numberOfVar.length) {
+            setNumberOfVar(
+              numberOfVar.filter((val) => {
+                return values.includes(val[attr]);
+              })
+            );
+          } else {
+            values.map((item) => {
+              const check = numberOfVar.every((section) => {
+                return section.sku != sku + item;
+              });
+              if (check) {
+                setNumberOfVar((numberOfVar) => {
+                  return [
+                    ...numberOfVar,
+                    {
+                      postion: postion,
+                      sku: sku + item,
+                      price: "",
+                      stock: "",
+                      image: [],
+                      [attr]: item,
+                    },
+                  ];
+                });
+              }
             });
-          });
-          //
+          }
         }
       }
     } else {
-      let sku = "";
+      let sku = id + "-";
       let c = 1;
       for (const [attr, values] of Object.entries(tag)) {
         if (Object.keys(tag).length == c) {
@@ -152,11 +158,6 @@ const Variants = (props) => {
           sku += values + "-";
         }
         c++;
-      }
-      if (!test.includes(sku)) {
-        setTest((item) => {
-          return [...item, sku];
-        });
       }
       if (numberOfVar.length != 0) {
         const check = numberOfVar.every((item) => {
@@ -167,12 +168,12 @@ const Variants = (props) => {
             return [
               ...numberOfVar,
               {
-                postion: postion,
+                postion: numberOfVar.length,
                 sku: sku,
                 price: "",
                 stock: "",
                 image: [],
-                // ...nameAttr,
+                ...tag,
               },
             ];
           });
@@ -182,47 +183,26 @@ const Variants = (props) => {
           return [
             ...numberOfVar,
             {
-              postion: postion,
+              postion: numberOfVar.length,
               sku: sku,
               price: "",
               stock: "",
               image: [],
-              // ...nameAttr,
+              ...tag,
             },
           ];
         });
-        // setNumberOfVar(
-        //   numberOfVar.filter((vars) => {
-        //     return vars.sku != sku;
-        //   })
-        // );
-
-        // if (vars.sku != sku) {
-        //   setNumberOfVar((numberOfVar) => {
-        //     return [
-        //       ...numberOfVar,
-        //       {
-        //         postion: postion,
-        //         sku: sku,
-        //         price: "",
-        //         stock: "",
-        //         image: [],
-        //         // ...nameAttr,
-        //       },
-        //     ];
-        //   });
-        // }
       }
 
       // console.log(numberOfVar);
     }
   };
 
-  const removeVar = () => {
-    const varsLines = numberOfVar;
-    varsLines.pop();
-    setNumberOfVar([...varsLines]);
-  };
+  // const removeVar = () => {
+  //   const varsLines = numberOfVar;
+  //   varsLines.pop();
+  //   setNumberOfVar([...varsLines]);
+  // };
   // select box
   const getJSONVaraints = (items) => {
     setJsonVaratis(items);
@@ -253,48 +233,11 @@ const Variants = (props) => {
   const [variantsTags, setVariantsTage] = useState([]);
   // select box
   const handleSelectEvent = (e) => {
-    setVariantsTage(e);
-
-    // const nameAtter = {};
-    // const inputFilter = filterAttributes?.length ? filterAttributes?.length : 0;
-    // const input = e?.length ? e?.length : 0;
-    // if (input > inputFilter) {
-    //   if (inputFilter === 0) {
-    //     e?.map((item) => {
-    //       nameAtter[item.label] = "";
-    //       numberOfVar.map((vars) => {
-    //         vars[item.label] = vars[item.label] ? vars[item.label] : "";
-    //       });
-    //     });
-    //   } else {
-    //     e?.map((item) => {
-    //       nameAtter[item.label] = "";
-    //       numberOfVar.map((vars) => {
-    //         vars[item.label] = vars[item.label] ? vars[item.label] : "";
-    //       });
-    //     });
-    //   }
-    // } else if (input < inputFilter) {
-    //   if (input === 0) {
-    //     var uniqueResultOne = filterAttributes;
-    //   } else {
-    //     var uniqueResultOne = filterAttributes.filter(function (obj) {
-    //       return !e.some(function (obj2) {
-    //         return obj.value == obj2.value;
-    //       });
-    //     });
-    //   }
-    //   const label = uniqueResultOne[0].label;
-    //   numberOfVar.map((vars) => {
-    //     delete vars[label];
-    //   });
-    //   e?.map((item) => {
-    //     nameAtter[item.label] = "";
-    //   });
-    // }
-    // setfilterAttributes(e);
-    // setNameAtter(nameAtter);
-    // setNumberOfVar(numberOfVar);
+    if (e == null) {
+      setVariantsTage([]);
+    } else {
+      setVariantsTage(e);
+    }
   };
   const [tags, setTags] = useState([]);
   const handleEvent = (e, value) => {
@@ -302,30 +245,54 @@ const Variants = (props) => {
     if (variantsTags.length == 1) {
       CreateNewVar({ ...tags, [value]: e });
     } else {
-      if (tags[value]) {
-        let attrs = [];
+      let attrs = [];
+      for (const [attr, values] of Object.entries({ ...tags, [value]: e }))
+        attrs.push(values.map((v) => ({ [attr]: v })));
 
-        for (const [attr, values] of Object.entries({ ...tags, [value]: e }))
-          attrs.push(values.map((v) => ({ [attr]: v })));
+      attrs = attrs.reduce((a, b) =>
+        a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
+      );
 
-        attrs = attrs.reduce((a, b) =>
-          a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
-        );
-        // console.log(attrs);
-        attrs.map((tag) => {
-          // console.log(tag);
-          CreateNewVar(tag);
+      attrs.map((tag) => {
+        CreateNewVar(tag);
+      });
+    }
+  };
+  const deleteAll = (e) => {
+    e.preventDefault();
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this imaginary file!",
+      icon: "warning",
+      buttons: [t("Cancel"), t("Confirm")],
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        axios.delete(`/api/Deletevariations/${id}`).then((res) => {
+          if (res.data.status === 200) {
+            setNumberOfVar([]);
+            setVariantsTage([]);
+            setTags([]);
+            swal("Success", res.data.message, "success");
+          } else if (res.data.status === 404) {
+            setNumberOfVar([]);
+            setVariantsTage([]);
+            setTags([]);
+            swal("Error", res.data.message, "error");
+          }
         });
       } else {
-        console.log("undefine");
+        swal("Your Data is safe now!");
       }
-    }
-    // console.log(tags);
-    // console.log(e);
-    //
-    // }
+    });
   };
-
+  const reset = (e) => {
+    e.preventDefault();
+    setNumberOfVar([]);
+    setVariantsTage([]);
+    setTags([]);
+  };
+  // delete End
   if (loading) {
     return (
       <div className="spinner-border text-primary " role="status">
@@ -349,7 +316,7 @@ const Variants = (props) => {
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
               <Select
-                // value={filterAttributes}
+                value={variantsTags}
                 isMulti
                 options={attributes.map((o, i) => {
                   return { value: o.attributeName, label: o.attributeName };
@@ -362,21 +329,45 @@ const Variants = (props) => {
             </div>
           </div>
         </div>
+        <div className="col-xl-12 col-lg-12 col-sm-12 ">
+          {" "}
+          <div className="d-flex justify-content-between">
+            <label className="mb-1 "></label>
+            <small style={{ cursor: "pointer" }} onClick={(e) => deleteAll(e)}>
+              {t("remove_all")}
+            </small>
+          </div>
+        </div>
+
         <div className="col-xl-12 col-lg-12 col-sm-12 p-5">
+          <div
+            className={`col-xl-12 col-lg-12 col-sm-12 ${
+              variantsTags.length == 0 ? "d-none" : ""
+            }`}
+          >
+            {" "}
+            <div className="d-flex justify-content-between">
+              <label className="mb-1 "></label>
+              <small style={{ cursor: "pointer" }} onClick={(e) => reset(e)}>
+                {t("reset_to_default")}
+              </small>
+            </div>
+          </div>
           {variantsTags?.map((item, i) => {
             return (
               <div className="row m-2" key={i}>
                 <div
-                  className="col-xl-4 col-lg-4 col-sm-4 "
+                  className="col-xl-3 col-lg-3 col-sm-3 "
                   // style={{ backgroundColor: "#555", font: "white" }}
                 >
                   {item.label}
+                  {/* {item.value} */}
                 </div>
-                <div className="col-xl-8 col-lg-8 col-sm-8">
+                <div className="col-xl-9 col-lg-9 col-sm-9">
                   {/* <TagInput /> */}
                   <TagsInput
-                    // value={selected}
-                    onChange={(e) => handleEvent(e, item.value)}
+                    // value={tags.length == 0 ? "" : []}
+                    onChange={(e) => handleEvent(e, item.label)}
                     // onBlur={CreateNewVar}
                     // id={item.label}
                     placeHolder="Please Enter A Value"
@@ -398,7 +389,6 @@ const Variants = (props) => {
                   getJSONVaraints={(items) => getJSONVaraints(items)}
                   numberOfVar={numberOfVar}
                   setNumberOfVar={setNumberOfVar}
-                  filterAttributes={filterAttributes}
                   // variantsTags={variantsTags}
                   productid={id}
                 ></Grid>
@@ -407,14 +397,20 @@ const Variants = (props) => {
           </div>
           <div className="col-xl-12 col-lg-12 col-sm-12">
             <div className="row ">
-              <div className="col-xl-1 col-lg-1 col-sm-1">
+              {/* <div className="col-xl-1 col-lg-1 col-sm-1">
                 <Button onClick={CreateNewVar}> Add Variant</Button>
-              </div>
-              <div className="col-xl-1 col-lg-1 col-sm-1">
+              </div> */}
+              {/* <div className="col-xl-1 col-lg-1 col-sm-1">
                 <Button onClick={removeVar}>Remove Variant</Button>
-              </div>
+              </div> */}
               <div className="col-xl-1 col-lg-1 col-sm-1">
-                <Button onClick={saveVaraiants}> Save Variants</Button>
+                <Button
+                  onClick={saveVaraiants}
+                  disabled={numberOfVar.length == 0 ? "disabled" : ""}
+                >
+                  {" "}
+                  Save Variants
+                </Button>
               </div>
             </div>
           </div>

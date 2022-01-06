@@ -117,6 +117,7 @@ const ProductDetails = (props) => {
     const varlineindex = keys.indexOf(varName);
     const newSkuArray = skuarray;
     newSkuArray[varlineindex] = variant;
+
     setSkuArray(newSkuArray);
     if (keys.length == newSkuArray.length) {
       caluclatePrice(newSkuArray, variantData);
@@ -124,6 +125,7 @@ const ProductDetails = (props) => {
   };
   const caluclatePrice = (newSkuArray, variantData) => {
     let sku = id + "-";
+
     for (let i = 0; i < newSkuArray.length; i++) {
       if (i == newSkuArray.length - 1) {
         sku += newSkuArray[i];
@@ -135,6 +137,7 @@ const ProductDetails = (props) => {
     const priceList = variantData.filter((item) => {
       return item.sku.replace(/\s+/g, "") == sku.replace(/\s+/g, "");
     });
+
     let productdetails = { price: 0, stock: 0 };
     if (priceList.length !== 0) {
       const line = priceList.pop();
@@ -143,6 +146,7 @@ const ProductDetails = (props) => {
         stock: line.stock,
         image: line.image,
       };
+
       productdetails = newProductDetails;
     } else {
       const newProductDetails = {
@@ -150,6 +154,7 @@ const ProductDetails = (props) => {
         stock: "No Stock",
         image: fetchData.image,
       };
+
       productdetails = newProductDetails;
     }
 
