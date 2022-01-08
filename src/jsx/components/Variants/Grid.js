@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 
 const VariantsLine = (props) => {
-  const { items, setVarantGrid } = props;
+  const { items, setVarantGrid, setNumberOfVar, numberOfVar } = props;
   const [values, setValues] = useState(items);
   if (Object.keys(items).length !== Object.keys(values).length) {
     setValues(items);
@@ -77,6 +77,22 @@ const VariantsLine = (props) => {
     });
   };
 
+  const removeVar = (e, val) => {
+    e.preventDefault();
+    var varsLines = numberOfVar;
+    varsLines = numberOfVar.filter((item) => {
+      return item.postion != val;
+    });
+    varsLines = varsLines.map((item) => {
+      return {
+        ...item,
+        postion: item.postion > val ? item.postion - 1 : item.postion,
+      };
+    });
+    console.log(varsLines);
+    setNumberOfVar([...varsLines]);
+    console.log(numberOfVar);
+  };
   const outputs = [];
 
   let i = 0;
@@ -84,12 +100,7 @@ const VariantsLine = (props) => {
     i++;
     if (key == "sku" || key == "price" || key == "stock" || key == "image") {
       outputs.push(
-        <div
-          className={`col-xl-${key == "sku" || key == "image" ? 3 : 2} col-lg-${
-            key == "sku" || key == "image" ? 3 : 2
-          } col-sm-${key == "sku" || key == "image" ? 3 : 2} m-2 `}
-          key={i}
-        >
+        <div className={`col-xl-2 col-lg-2 col-sm-2 m-2 `} key={i}>
           <input
             className={
               errors[key] ? " form-control is-invalid" : "form-control"
@@ -109,45 +120,58 @@ const VariantsLine = (props) => {
           ) : null}
         </div>
       );
+    } else if (key == "postion") {
+      outputs.push(
+        <div className={`col-xl-2 col-lg-2 col-sm-2 m-2 `} key={i}>
+          <Tooltip title="Delete">
+            <IconButton onClick={(e) => removeVar(e, value)}>
+              {value}
+              <DeleteIcon fontSize="small" sx={{ color: "red" }} />
+            </IconButton>
+          </Tooltip>
+        </div>
+      );
     }
   }
   return (
     <>
-      <div className="col-xl-12 col-lg-12 col-sm-12 ">
-        <div className="row">{outputs}</div>
-      </div>
-      <div className="col-xl-12 col-lg-12 col-sm-12 ">
-        <div className="row">
-          {values.image?.map((photo, i) => {
-            return (
-              <div className="col-xl-2 col-lg-2 col-sm-2" key={i}>
-                <div className="card ">
-                  <div className="text-center">
-                    <img
-                      className="w-100"
-                      src={`http://${base_url}:${port}/images/variants_pics/${photo}`}
-                      alt=""
-                      style={{
-                        // width: "100px",
-                        height: "100px",
-                        objectFit: "contain",
-                      }}
-                    />
-                  </div>
+      <div className="row">
+        <div className="col-xl-12 col-lg-12 col-sm-12 ">
+          <div className="row">{outputs}</div>
+        </div>
+        <div className="col-xl-12 col-lg-12 col-sm-12 ">
+          <div className="row">
+            {values.image?.map((photo, i) => {
+              return (
+                <div className="col-xl-2 col-lg-2 col-sm-2" key={i}>
+                  <div className="card ">
+                    <div className="text-center">
+                      <img
+                        className="w-100"
+                        src={`http://${base_url}:${port}/images/variants_pics/${photo}`}
+                        alt=""
+                        style={{
+                          // width: "100px",
+                          height: "100px",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </div>
 
-                  <div className="card-footer pt-0 pb-0 text-center">
-                    <div className="row">
-                      <Tooltip title="Delete">
-                        <IconButton onClick={(e) => removeImage(e, photo)}>
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                    <div className="card-footer pt-0 pb-0 text-center">
+                      <div className="row">
+                        <Tooltip title="Delete">
+                          <IconButton onClick={(e) => removeImage(e, photo)}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </>
@@ -167,44 +191,16 @@ const VariantsGrid = (props) => {
     }
   }, [numberOfVar]);
 
-  const removeVar = async (e, val) => {
-    e.preventDefault();
-    let varsLines = numberOfVar;
-    varsLines = numberOfVar.filter((item) => {
-      return item.postion != val;
-    });
-    varsLines = varsLines.map((item) => {
-      return {
-        ...item,
-        postion: item.postion > val ? item.postion - 1 : item.postion,
-      };
-    });
-    console.log(varsLines);
-
-    await setNumberOfVar([...varsLines]);
-
-    console.log(numberOfVar);
-  };
-
   const vars = numberOfVar.map((item, i) => (
-    <div className="row" key={i}>
-      <div className="col-xl-10 col-lg-10 col-sm-10 ">
-        <VariantsLine
-          recheck={recheck}
-          setVarantGrid={(item) => setVarantGrid(item)}
-          items={item}
-          productid={productid}
-        ></VariantsLine>
-      </div>
-      <div className="col-xl-2 col-lg-2 col-sm-2 text-center">
-        <Tooltip title="Delete">
-          <IconButton onClick={(e) => removeVar(e, item.postion)}>
-            {item.postion}
-            <DeleteIcon fontSize="small" sx={{ color: "red" }} />
-          </IconButton>
-        </Tooltip>
-      </div>
-    </div>
+    <VariantsLine
+      recheck={recheck}
+      key={i}
+      setVarantGrid={(item) => setVarantGrid(item)}
+      items={item}
+      productid={productid}
+      numberOfVar={numberOfVar}
+      setNumberOfVar={setNumberOfVar}
+    ></VariantsLine>
   ));
 
   const setVarantGrid = (item) => {
@@ -222,11 +218,12 @@ const VariantsGrid = (props) => {
     <Fragment>
       <div className="col-xl-12 col-lg-12 col-sm-12 ">
         <div className="row">
+          <div className="col-md-2  p-4 text-center">{t("actions")}</div>
+
           <div className="col-md-3  p-4 text-center ">{t("sku")}</div>
           <div className="col-md-2  p-4 text-center">{t("price")}</div>
           <div className="col-md-2  p-4 text-center">{t("stock")}</div>
           <div className="col-md-3  p-4 text-center">{t("image")}</div>
-          <div className="col-md-2  p-4 text-center">{t("actions")}</div>
 
           {/* {filterAttributes?.map((sec, i) => (
             <div className="col-md-2  p-4" key={i}>

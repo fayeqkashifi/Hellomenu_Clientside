@@ -16,7 +16,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Switch from "@mui/material/Switch";
 import Select from "react-select";
-
+import Chip from "@mui/material/Chip";
 const Category = (props) => {
   const { path, url } = useRouteMatch();
 
@@ -210,6 +210,7 @@ const Category = (props) => {
                   </span>
                   <h4 className="mt-2">{item.CategoryName}</h4>
                 </Link>
+                {item.isShared ? <Chip label="Shared" size="small" /> : ""}
               </div>
             </div>
 

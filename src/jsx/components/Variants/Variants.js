@@ -319,6 +319,7 @@ const Variants = (props) => {
       }
     });
   };
+  
   if (loading) {
     return (
       <div className="spinner-border text-primary " role="status">
