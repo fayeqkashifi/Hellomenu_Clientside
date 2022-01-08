@@ -13,16 +13,15 @@ const VariantsLine = (props) => {
     setValues(items);
   }
 
-  let [errors, setErrors] = useState({});
   useEffect(() => {
     setVarantGrid({
       ...values,
     });
   }, [values]);
 
+  let [errors, setErrors] = useState({});
   const Change = (event) => {
     const name = event.target.name;
-
     if (event.target.name == "image") {
       uploadImage(event);
     } else {
@@ -165,7 +164,6 @@ const VariantsGrid = (props) => {
   useEffect(() => {
     if (numberOfVar.length !== 0) {
       setVariantGrid(numberOfVar);
-      console.log(varintGrid);
     }
   }, [numberOfVar]);
 

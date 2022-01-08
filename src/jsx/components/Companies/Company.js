@@ -160,7 +160,7 @@ const Company = () => {
             <button
               type="button"
               onClick={(e) => deleteCompany(e, item.id)}
-              className="btn btn-outline-warning btn-sm"
+              className="btn btn-outline-warning btn-sm d-none"
             >
               {t("delete")}
             </button>
@@ -301,7 +301,9 @@ const Company = () => {
               <div>
                 <h4 className="card-title mb-2">{t("companies")} </h4>
               </div>
-              <div className="dropdown">
+              <div
+                className={`dropdown ${fetchData.length == 1 ? "d-none" : ""}`}
+              >
                 <Button
                   variant="primary"
                   type="button"

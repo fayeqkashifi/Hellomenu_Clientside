@@ -7,6 +7,8 @@ import Select from "react-select";
 import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Switch from "@mui/material/Switch";
+
 const AddProduct = (props) => {
   const history = useHistory();
   // for localization
@@ -65,6 +67,9 @@ const AddProduct = (props) => {
     for (let i = 0; i < imageState.image.length; i++) {
       formData.append("image[]", imageState.image[i]);
     }
+    productbranches.map((item) => {
+      formData.append("branches[]", item.value);
+    });
     // formData.append("image", imageState.photo);
     formData.append("Description", data.Description);
     formData.append("ProductName", data.ProductName);
@@ -77,7 +82,9 @@ const AddProduct = (props) => {
     formData.append("extras", JSON.stringify(productExtra));
     formData.append("recommendations", JSON.stringify(productRecom));
     formData.append("UnitName", data.UnitName);
+    formData.append("branchId", branchId);
     axios.post(`/api/InsertProducts`, formData).then((res) => {
+      console.log(res);
       if (res.data.status === 200) {
         swal("Success", res.data.message, "success").then((check) => {
           if (check) {
@@ -106,7 +113,9 @@ const AddProduct = (props) => {
   const [subCategories, setSubCategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [intgredients, setIntgredients] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [check, setCheck] = useState(true);
+  const [share, setShare] = useState(false);
 
   useEffect(() => {
     axios.post(`/api/GetIngredient`).then((res) => {
@@ -119,11 +128,21 @@ const AddProduct = (props) => {
         setCategories(res.data.fetchData);
       }
     });
+
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
+    });
+    axios.get(`/api/GetBranches`).then((res) => {
+      if (res.data.status === 200) {
+        setBranches(
+          res.data.branches.filter((item) => {
+            return item.id != branchId;
+          })
+        );
+      }
     });
   }, [check]);
   const [productIngredient, setProductIngredient] = useState([]);
@@ -149,9 +168,30 @@ const AddProduct = (props) => {
   const handleSelectEventRecom = (e) => {
     setProductRecom(e);
   };
+  const [productbranches, setProductBranches] = useState([]);
+  const handleSelectBranches = (e) => {
+    setProductBranches(e);
+    // console.log(e);
+    let arrayID = [];
+    e?.map((item) => {
+      arrayID.push(item.value);
+    });
+    axios
+      .get(`/api/getSharedCategories`, {
+        params: {
+          id: arrayID,
+        },
+      })
+      .then((res) => {
+        // console.log(res);
+        if (res.status === 200) {
+          setCategories(res.data);
+        }
+      });
+  };
   const getSubCategories = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
+
     axios
       .get(
         `/api/GetSubCategories/${e.target.value == "" ? null : e.target.value}`
@@ -161,6 +201,17 @@ const AddProduct = (props) => {
           setSubCategories(res.data.fetchData);
         }
       });
+  };
+  const filterCategories = (e) => {
+    e.preventDefault();
+    if (!e.target.checked) {
+      setProductBranches([]);
+      axios.get(`/api/GetCategories/${branchId}`).then((res) => {
+        if (res.data.status === 200) {
+          setCategories(res.data.fetchData);
+        }
+      });
+    }
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -186,6 +237,43 @@ const AddProduct = (props) => {
             {({ errors, status, touched }) => (
               <Form>
                 <div className="row">
+                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                    <div className="form-group">
+                      <label> {t("share_product_with_other_branches")}</label>
+                      <Switch
+                        checked={share}
+                        color="secondary"
+                        onChange={(e) => [
+                          setShare(!share),
+                          filterCategories(e),
+                        ]}
+                      />
+                    </div>
+                  </div>
+                  {share ? (
+                    <>
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                        <div className="form-group">
+                          <label> {t("branches")}</label>
+                          <Select
+                            isMulti
+                            options={branches?.map((o, i) => {
+                              return {
+                                value: o.id,
+                                label: o.BrancheName,
+                              };
+                            })}
+                            onChange={handleSelectBranches}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    " "
+                  )}
+
                   <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                     <div className="form-group">
                       <label> {t("categories")}</label>
@@ -350,7 +438,6 @@ const AddProduct = (props) => {
                         data-min-file-count="1"
                       />
                     </div>
-                    
                   </div>
                   <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                     <div className="form-group">

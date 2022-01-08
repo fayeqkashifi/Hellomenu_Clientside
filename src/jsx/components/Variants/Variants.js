@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,8 @@ import Select from "react-select";
 import { Link, useHistory } from "react-router-dom";
 import "@pathofdev/react-tag-input/build/index.css";
 import { TagsInput } from "react-tag-input-component";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const Variants = (props) => {
   // for localization
@@ -16,12 +18,15 @@ const Variants = (props) => {
 
   const { t } = useTranslation();
   const id = props.history.location.state.p_id;
+  const branchId = props.history.location.state.id;
 
   const [attributes, setAttributes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [numberOfVar, setNumberOfVar] = useState([]);
   const [jsonVaraints, setJsonVaratis] = useState("");
   const [filterAttributes, setfilterAttributes] = useState([]);
+  const [check, setCheck] = useState(true);
+
   useEffect(() => {
     const getdata = async () => {
       const jsonvar = await axios({
@@ -108,7 +113,7 @@ const Variants = (props) => {
 
     getdata();
     setLoading(false);
-  }, []);
+  }, [check]);
   const CreateNewVar = (tag) => {
     let postion = 0;
     if (numberOfVar.length > 0) {
@@ -119,6 +124,7 @@ const Variants = (props) => {
       if (tags != 0) {
         for (const [attr, values] of Object.entries(tag)) {
           if (values.length < numberOfVar.length) {
+            // delete variants
             setNumberOfVar(
               numberOfVar.filter((val) => {
                 return values.includes(val[attr]);
@@ -258,6 +264,8 @@ const Variants = (props) => {
       });
     }
   };
+
+  // delete Start
   const deleteAll = (e) => {
     e.preventDefault();
     swal({
@@ -292,7 +300,25 @@ const Variants = (props) => {
     setVariantsTage([]);
     setTags([]);
   };
-  // delete End
+
+  // insert Attribute start
+  const initialValues = {
+    attributeName: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      attributeName: Yup.string().required("Attribute Name is required"),
+    });
+  };
+  const [modalCentered, setModalCentered] = useState(false);
+  const saveAttribute = (data) => {
+    axios.post("/api/InsertAttribute", data).then((res) => {
+      if (res.data.status === 200) {
+        setCheck(!check);
+        setModalCentered(false);
+      }
+    });
+  };
   if (loading) {
     return (
       <div className="spinner-border text-primary " role="status">
@@ -304,15 +330,29 @@ const Variants = (props) => {
       <Fragment>
         <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
           <Link
+            to={{
+              pathname: `/branches/show/products`,
+              state: { id: branchId },
+            }}
             className="font-weight-bold"
-            to=""
-            onClick={() => history.goBack()}
           >
             {t("back_to_products_list")}
           </Link>
         </CBreadcrumb>
 
         <div className="row">
+          <div className="col-xl-12 col-lg-12 col-sm-12 ">
+            {" "}
+            <div className="d-flex justify-content-between">
+              <label className="mb-1 "></label>
+              <small
+                style={{ cursor: "pointer" }}
+                onClick={() => setModalCentered(true)}
+              >
+                {t("add_attribute")}
+              </small>
+            </div>
+          </div>
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
               <Select
@@ -415,6 +455,61 @@ const Variants = (props) => {
             </div>
           </div>
         </div>
+
+        <Modal className="fade" show={modalCentered}>
+          <Modal.Header>
+            <Modal.Title>{t("add_attribute")}</Modal.Title>
+            <Button
+              onClick={() => setModalCentered(false)}
+              variant=""
+              className="close"
+            >
+              <span>&times;</span>
+            </Button>
+          </Modal.Header>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={saveAttribute}
+          >
+            {({ errors, status, touched }) => (
+              <Form>
+                <Modal.Body>
+                  <div className="form-group">
+                    <label> {t("attribute_name")}</label>
+                    <Field
+                      name="attributeName"
+                      type="text"
+                      className={
+                        "form-control" +
+                        (errors.attributeName && touched.attributeName
+                          ? " is-invalid"
+                          : "")
+                      }
+                      placeholder="Name...."
+                    />
+                    <ErrorMessage
+                      name="attributeName"
+                      component="div"
+                      className="invalid-feedback"
+                    />
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={() => setModalCentered(false)}
+                    variant="danger light"
+                  >
+                    {t("close")}
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    {t("save")}{" "}
+                  </Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
+        </Modal>
       </Fragment>
     );
   }

@@ -113,22 +113,25 @@ const ServiceArea = (props) => {
   const [check, setCheck] = useState(true);
 
   useEffect(() => {
-    axios.get(`/api/GetAreas`).then((res) => {
+    let locations = [];
+    axios.get(`/api/getAreasBranch/${id}`).then((res) => {
       if (res.data.status === 200) {
+        console.log(res.data.fetchData);
         setAreaLocation(res.data.fetchData);
-        // console.log(res.data.fetchData);
       }
     });
     axios.get(`/api/GetServiceAreas/${id}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
         // console.log(res.data.fetchData);
+        // console.log();
+        let arrayData = [];
+        res.data.fetchData?.map((val) => {
+          return arrayData.push(val.areaName);
+        });
+        // console.log(arrayData);
         // setAreaLocation(
-        //   areaLocation.filter((item) => {
-        //     return fetchData.map((set) => {
-        //       return item.areaName == set.areaName;
-        //     });
-        //   })
+        //   areaLocation.filter((areaName) => !arrayData.includes(areaName))
         // );
       }
       setLoading(false);

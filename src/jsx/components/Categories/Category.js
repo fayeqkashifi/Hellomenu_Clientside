@@ -14,6 +14,8 @@ import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Switch from "@mui/material/Switch";
+import Select from "react-select";
 
 const Category = (props) => {
   const { path, url } = useRouteMatch();
@@ -23,6 +25,8 @@ const Category = (props) => {
   // ID
   const id = props.history.location.state.id;
   const [check, setCheck] = useState(true);
+  const [share, setShare] = useState(false);
+
   // insert Start
   const [modalCentered, setModalCentered] = useState(false);
   const [imageState, setImageState] = useState([]);
@@ -37,17 +41,25 @@ const Category = (props) => {
       CategoryName: Yup.string().required("Category Name is required"),
     });
   };
+  const [productbranches, setProductBranches] = useState([]);
+  const handleSelectBranches = (e) => {
+    setProductBranches(e);
+  };
   const saveMenu = (data) => {
     // e.preventDefault();
     const formData = new FormData();
+    productbranches.map((item) => {
+      formData.append("branches[]", item.value);
+    });
     formData.append("CategoryIcon", imageState.CategoryIcon);
     formData.append("CategoryName", data.CategoryName);
     formData.append("branchID", id);
-
     axios.post("/api/InsertCategories", formData).then((res) => {
       if (res.data.status === 200) {
         setImageState([]);
         setCheck(!check);
+        setShare(false);
+        setProductBranches([]);
         swal("Success", res.data.message, "success");
         setModalCentered(false);
         //  this.props.history.push("/")
@@ -127,8 +139,18 @@ const Category = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [branches, setBranches] = useState([]);
 
   useEffect(() => {
+    axios.get(`/api/GetBranches`).then((res) => {
+      if (res.data.status === 200) {
+        setBranches(
+          res.data.branches.filter((item) => {
+            return item.id != id;
+          })
+        );
+      }
+    });
     axios.get(`/api/GetCategories/${id}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
@@ -237,6 +259,36 @@ const Category = (props) => {
           {({ errors, status, touched }) => (
             <Form>
               <Modal.Body>
+                <div className="form-group">
+                  <label> {t("share_product_with_other_branches")}</label>
+                  <Switch
+                    checked={share}
+                    color="secondary"
+                    onChange={(e) => setShare(!share)}
+                  />
+                </div>
+                {share ? (
+                  <>
+                    <div className="form-group">
+                      <label> {t("branches")}</label>
+                      <Select
+                        isMulti
+                        options={branches?.map((o, i) => {
+                          return {
+                            value: o.id,
+                            label: o.BrancheName,
+                          };
+                        })}
+                        name="branches"
+                        onChange={handleSelectBranches}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  " "
+                )}
                 <div className="form-group">
                   <label> {t("category_name")}</label>
                   <Field
