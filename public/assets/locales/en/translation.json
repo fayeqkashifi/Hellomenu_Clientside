@@ -20,6 +20,8 @@
 
   "sub_category": "Sub Category",
   "add_category": "Add Category",
+  "add_new_category": "Add New Category",
+  "add_share_category": "Add Share Category",
   "category_icon": "Category Icon",
   "category_name": "Category Name",
   "edit_category": "Edit Category",
@@ -252,5 +254,9 @@
   "save_and_preview":"Save & Preview",
   "empty_cart":"Empty Cart",
   "remove_all":"Remove All",
-  "share_product_with_other_branches":"Share Product With Other Branches"
+  "share_product_with_other_branches":"Share Product With Other Branches",
+  "cityName": "City Name",
+  "city":"City",
+  "back_to_categories": "Back to Categories",
+  "share_with": "Share With"
 }

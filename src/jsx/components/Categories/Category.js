@@ -17,6 +17,8 @@ import * as Yup from "yup";
 import Switch from "@mui/material/Switch";
 import Select from "react-select";
 import Chip from "@mui/material/Chip";
+import Backdrop from "@mui/material/Backdrop";
+import ButtonGroup from "@mui/material/ButtonGroup";
 const Category = (props) => {
   const { path, url } = useRouteMatch();
 
@@ -28,6 +30,7 @@ const Category = (props) => {
   const [share, setShare] = useState(false);
 
   // insert Start
+  const [modal, setModal] = useState(false);
   const [modalCentered, setModalCentered] = useState(false);
   const [imageState, setImageState] = useState([]);
   const handleImage = (e) => {
@@ -62,6 +65,31 @@ const Category = (props) => {
         setProductBranches([]);
         swal("Success", res.data.message, "success");
         setModalCentered(false);
+        //  this.props.history.push("/")
+      }
+    });
+  };
+  const initialValuesCate = {
+    categories: "",
+  };
+  const validationSchemaCate = () => {
+    return Yup.object().shape({
+      // categories: Yup.string().required("Category Name is required"),
+    });
+  };
+  const saveCate = () => {
+    // e.preventDefault();
+    const formData = new FormData();
+
+    formData.append("CategoryName", cateHandel.label);
+    formData.append("branchID", id);
+
+    axios.post("/api/InsertSharedCate", formData).then((res) => {
+      if (res.data.status === 200) {
+        setCheck(!check);
+        setCateHandle([]);
+        swal("Success", res.data.message, "success");
+        setModal(false);
         //  this.props.history.push("/")
       }
     });
@@ -140,6 +168,7 @@ const Category = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
+  const [cats, setCates] = useState([]);
 
   useEffect(() => {
     axios.get(`/api/GetBranches`).then((res) => {
@@ -151,6 +180,12 @@ const Category = (props) => {
         );
       }
     });
+    axios.get(`/api/sharedCates/${id}`).then((res) => {
+      if (res.status === 200) {
+        console.log(res.data);
+        setCates(res.data);
+      }
+    });
     axios.get(`/api/GetCategories/${id}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
@@ -158,6 +193,12 @@ const Category = (props) => {
       setLoading(false);
     });
   }, [check]);
+
+  const [cateHandel, setCateHandle] = useState([]);
+  const handleSelectCates = (e) => {
+    setCateHandle(e);
+  };
+
   const [layout, setLayout] = useState(
     JSON.parse(
       localStorage.getItem("layoutCategory")
@@ -168,6 +209,13 @@ const Category = (props) => {
   const changeLayout = () => {
     setLayout(!layout);
     localStorage.setItem("layoutCategory", !layout);
+  };
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -188,7 +236,7 @@ const Category = (props) => {
                     pathname: `${url}/sub-category`,
                     state: {
                       id: id,
-                      sub_id: item.id,
+                      ca_id: item.id,
                     },
                   }}
                 >
@@ -210,7 +258,28 @@ const Category = (props) => {
                   </span>
                   <h4 className="mt-2">{item.CategoryName}</h4>
                 </Link>
-                {item.isShared ? <Chip label="Shared" size="small" /> : ""}
+                {item.isShared ? (
+                  <Link
+                    to={{
+                      pathname: `${url}/cat-shared`,
+                      state: {
+                        id: id,
+                        sub_id: item.id,
+                      },
+                    }}
+                  >
+                    Shared
+                  </Link>
+                ) : (
+                  // <Chip
+                  //   label="Shared"
+                  //   size="small"
+                  //   // href="/basic-chip"
+                  //   component=""
+                  //   clickable
+                  // />
+                  ""
+                )}
               </div>
             </div>
 
@@ -241,6 +310,50 @@ const Category = (props) => {
   }
   return (
     <Fragment>
+      <Modal className="fade" show={modal}>
+        <Modal.Header>
+          <Modal.Title>{t("add_category")} </Modal.Title>
+          <Button onClick={() => setModal(false)} variant="" className="close">
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValuesCate}
+          validationSchema={validationSchemaCate}
+          onSubmit={saveCate}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> {t("categories")}</label>
+                  <Select
+                    // isMulti
+                    options={cats?.map((o, i) => {
+                      return {
+                        value: o.id,
+                        label: o.CategoryName,
+                      };
+                    })}
+                    name="categories"
+                    onChange={handleSelectCates}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={() => setModal(false)} variant="danger light">
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
       <Modal className="fade" show={modalCentered}>
         <Modal.Header>
           <Modal.Title>{t("add_category")} </Modal.Title>
@@ -417,6 +530,27 @@ const Category = (props) => {
           </IconButton>
         </div>
       </div>
+      <div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+          onClick={handleClose}
+        >
+          <ButtonGroup
+            variant="contained"
+            aria-label="outlined primary button group"
+          >
+            <Button onClick={() => setModalCentered(true)} className="m-2">
+              {" "}
+              {t("add_new_category")}
+            </Button>
+            <Button className="m-2" onClick={() => setModal(true)}>
+              {" "}
+              {t("add_share_category")}
+            </Button>
+          </ButtonGroup>
+        </Backdrop>
+      </div>
       {layout ? (
         <Row>
           {viewProducts_HTMLTABLE}
@@ -430,7 +564,7 @@ const Category = (props) => {
                   <button
                     type="button"
                     className="btn btn-outline-primary"
-                    onClick={() => setModalCentered(true)}
+                    onClick={handleToggle}
                   >
                     <AddIcon />
                     {t("add_category")}
@@ -453,7 +587,7 @@ const Category = (props) => {
                     variant="primary"
                     type="button"
                     className="mb-2 mr-2"
-                    onClick={() => setModalCentered(true)}
+                    onClick={handleToggle}
                   >
                     {t("add_category")}
                   </Button>
@@ -513,6 +647,11 @@ const Category = (props) => {
                               >
                                 {item.CategoryName}
                               </Link>
+                              {item.isShared ? (
+                                <Chip label="Shared" size="small" />
+                              ) : (
+                                ""
+                              )}
                             </td>
 
                             <td>

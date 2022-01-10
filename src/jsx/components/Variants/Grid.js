@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 
 const VariantsLine = (props) => {
-  const { items, setVarantGrid, setNumberOfVar, numberOfVar } = props;
+  const { items, setVarantGrid } = props;
   const [values, setValues] = useState(items);
   if (Object.keys(items).length !== Object.keys(values).length) {
     setValues(items);
@@ -77,22 +77,6 @@ const VariantsLine = (props) => {
     });
   };
 
-  const removeVar = (e, val) => {
-    e.preventDefault();
-    var varsLines = numberOfVar;
-    varsLines = numberOfVar.filter((item) => {
-      return item.postion != val;
-    });
-    varsLines = varsLines.map((item) => {
-      return {
-        ...item,
-        postion: item.postion > val ? item.postion - 1 : item.postion,
-      };
-    });
-    console.log(varsLines);
-    setNumberOfVar([...varsLines]);
-    console.log(numberOfVar);
-  };
   const outputs = [];
 
   let i = 0;
@@ -118,17 +102,6 @@ const VariantsLine = (props) => {
           {errors[key] ? (
             <div className="invalid-feedback">{errors[key + "message"]}</div>
           ) : null}
-        </div>
-      );
-    } else if (key == "postion") {
-      outputs.push(
-        <div className={`col-xl-2 col-lg-2 col-sm-2 m-2 `} key={i}>
-          <Tooltip title="Delete">
-            <IconButton onClick={(e) => removeVar(e, value)}>
-              {value}
-              <DeleteIcon fontSize="small" sx={{ color: "red" }} />
-            </IconButton>
-          </Tooltip>
         </div>
       );
     }
@@ -189,18 +162,31 @@ const VariantsGrid = (props) => {
     if (numberOfVar.length !== 0) {
       setVariantGrid(numberOfVar);
     }
+    setNumberOfVar(numberOfVar);
   }, [numberOfVar]);
 
   const vars = numberOfVar.map((item, i) => (
-    <VariantsLine
-      recheck={recheck}
-      key={i}
-      setVarantGrid={(item) => setVarantGrid(item)}
-      items={item}
-      productid={productid}
-      numberOfVar={numberOfVar}
-      setNumberOfVar={setNumberOfVar}
-    ></VariantsLine>
+    <div className="row" key={i}>
+      <div className={`col-xl-10 col-lg-10 col-sm-10`}>
+        <VariantsLine
+          recheck={recheck}
+          setVarantGrid={(item) => setVarantGrid(item)}
+          items={item}
+          productid={productid}
+        >
+          {console.log("ali")}
+        </VariantsLine>
+      </div>
+
+      <div className={`col-xl-2 col-lg-2 col-sm-2 `}>
+        <Tooltip title="Delete">
+          <IconButton onClick={(e) => removeVar(e, item.postion)}>
+            {item.postion}
+            <DeleteIcon fontSize="small" sx={{ color: "red" }} />
+          </IconButton>
+        </Tooltip>
+      </div>
+    </div>
   ));
 
   const setVarantGrid = (item) => {
@@ -214,17 +200,30 @@ const VariantsGrid = (props) => {
     }
   };
 
+  const removeVar = (e, val) => {
+    e.preventDefault();
+    setNumberOfVar((prevState) =>
+      prevState
+        .filter((item) => {
+          return item.postion != val;
+        })
+        .map((item) => {
+          return {
+            ...item,
+            postion: item.postion > val ? item.postion - 1 : item.postion,
+          };
+        })
+    );
+  };
   return (
     <Fragment>
       <div className="col-xl-12 col-lg-12 col-sm-12 ">
         <div className="row">
-          <div className="col-md-2  p-4 text-center">{t("actions")}</div>
-
           <div className="col-md-3  p-4 text-center ">{t("sku")}</div>
           <div className="col-md-2  p-4 text-center">{t("price")}</div>
           <div className="col-md-2  p-4 text-center">{t("stock")}</div>
           <div className="col-md-3  p-4 text-center">{t("image")}</div>
-
+          <div className="col-md-2  p-4 text-center">{t("actions")}</div>
           {/* {filterAttributes?.map((sec, i) => (
             <div className="col-md-2  p-4" key={i}>
               {sec.label}

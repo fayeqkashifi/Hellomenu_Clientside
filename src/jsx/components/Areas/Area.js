@@ -5,6 +5,8 @@ import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import AsyncSelect from "react-select/async";
+
 const Area = (props) => {
   // validation start
   const initialValues = {
@@ -21,11 +23,15 @@ const Area = (props) => {
   const { t } = useTranslation();
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
- 
+
   const save = (data) => {
-    axios.post("/api/InsertAreas", data).then((res) => {
+    const formData = new FormData();
+    formData.append("city_id", selectedValue.id);
+    formData.append("areaName", data.areaName);
+    axios.post("/api/InsertAreas", formData).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
+        setSelectedValue(null);
         setModalCentered(false);
         swal("Success", res.data.message, "success");
       }
@@ -39,9 +45,12 @@ const Area = (props) => {
   // fetch
   const fetch = (e, id) => {
     e.preventDefault();
+
     axios.get(`/api/EditAreas/${id}`).then((res) => {
       if (res.data.status === 200) {
-        setEdit(res.data.item);
+        const data = res.data.item;
+        setEdit(data);
+        setSelectedValue({ id: data.city_id, cityName: data.cityName });
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
@@ -50,9 +59,16 @@ const Area = (props) => {
   };
   // update
   const update = (data) => {
-    axios.post("/api/UpdateAreas", data).then((res) => {
+    const formData = new FormData();
+
+    formData.append("city_id", selectedValue.id);
+    formData.append("areaName", data.areaName);
+    formData.append("id", data.id);
+
+    axios.post("/api/UpdateAreas", formData).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
+        setSelectedValue(null);
         setEditModalCentered(false);
         swal("Success", res.data.message, "success");
         //  this.props.history.push("/")
@@ -94,13 +110,44 @@ const Area = (props) => {
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   useEffect(() => {
-    axios.get(`/api/GetAreas`).then((res) => {
+    axios.get(`/api/getAreasCompany`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
   }, [check]);
+
+  const [inputValue, setValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  // handle input change event
+  const handleInputChange = (value) => {
+    setValue("");
+    setValue(value);
+  };
+
+  // handle selection
+  const handleChange = (value) => {
+    setSelectedValue(value);
+  };
+  const loadOptions = (inputValue) => {
+    return axios
+      .get(`/api/GetCities`, {
+        header: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        params: {
+          id: inputValue,
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -115,6 +162,7 @@ const Area = (props) => {
         <tr key={item.id}>
           <td>{i + 1}</td>
 
+          <td> {item.cityName}</td>
           <td> {item.areaName}</td>
           <td>
             {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
@@ -161,7 +209,26 @@ const Area = (props) => {
             <Form>
               <Modal.Body>
                 <div className="form-group">
-                  <label> {t("name_area")}</label>
+                  <label>
+                    <strong>{t("city")}</strong>
+                  </label>
+
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    value={selectedValue}
+                    getOptionLabel={(e) => e.cityName}
+                    getOptionValue={(e) => e.id}
+                    loadOptions={loadOptions}
+                    onInputChange={handleInputChange}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>
+                    <strong>{t("name_area")}</strong>
+                  </label>
+
                   <Field
                     name="areaName"
                     type="text"
@@ -214,7 +281,24 @@ const Area = (props) => {
             <Form>
               <Modal.Body>
                 <div className="form-group">
-                  <label> {t("name_area")}</label>
+                  <label>
+                    <strong>{t("city")}</strong>
+                  </label>
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    value={selectedValue}
+                    getOptionLabel={(e) => e.cityName}
+                    getOptionValue={(e) => e.id}
+                    loadOptions={loadOptions}
+                    onInputChange={handleInputChange}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>
+                    <strong>{t("name_area")}</strong>
+                  </label>
                   <Field
                     name="areaName"
                     type="text"
@@ -270,6 +354,7 @@ const Area = (props) => {
                   <thead>
                     <tr>
                       <th>{t("number")}</th>
+                      <th>{t("cityName")}</th>
                       <th>{t("areaName")}</th>
                       <th>{t("actions")}</th>
                     </tr>

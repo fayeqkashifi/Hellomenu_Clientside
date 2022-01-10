@@ -29,6 +29,7 @@ import ProductShow from "../Products/Show";
 import DesignShow from "../Design/Show";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import Shared from "../Categories/Shared";
 const Show = (props) => {
   const { t } = useTranslation();
   const id = props.history.location.state.id;
@@ -134,7 +135,8 @@ const Show = (props) => {
                     <div className="card-action card-tabs mt-3 mt-3 mt-lg-0">
                       <Tab.Container
                         defaultActiveKey={
-                          geturl[5] != "sub-category"
+                          geturl[5] != "sub-category" &&
+                          geturl[5] != "cat-shared"
                             ? geturl[5]
                               ? geturl[5]
                               : tabData[0].name.toLowerCase()
@@ -233,6 +235,7 @@ const Show = (props) => {
         <Switch>
           <PrivateRoute exact path={`${path}`} component={Category} />
           <PrivateRoute path={`${path}/sub-category`} component={SubCategory} />
+          <PrivateRoute path={`${path}/cat-shared`} component={Shared} />
 
           {/* <PrivateRoute path={`${path}/category`} component={Category} /> */}
           <PrivateRoute path={`${path}/design`} component={DesignShow} />

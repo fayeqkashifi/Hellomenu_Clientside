@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import AsyncSelect from "react-select/async";
+
 const ServiceArea = (props) => {
   // for localization
   const { t } = useTranslation();
@@ -165,12 +167,46 @@ const ServiceArea = (props) => {
   };
   const save = (data) => {
     // console.log(JSON.stringify(data, null, 2));
-    axios.post("/api/InsertAreas", data).then((res) => {
+    const formData = new FormData();
+    formData.append("city_id", selectedValue.id);
+    formData.append("areaName", data.areaName);
+    axios.post("/api/InsertAreas", formData).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setAreaModal(false);
       }
     });
+  };
+
+  const [inputValue, setValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  // handle input change event
+  const handleInputChange = (value) => {
+    setValue("");
+    setValue(value);
+  };
+
+  // handle selection
+  const handleChange = (value) => {
+    setSelectedValue(value);
+  };
+  const loadOptions = (inputValue) => {
+    return axios
+      .get(`/api/GetCities`, {
+        header: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        params: {
+          id: inputValue,
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.log(err);
+      });
   };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -266,8 +302,8 @@ const ServiceArea = (props) => {
                   </div>
                   <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                     <input
-                      type="text"
-                      // min="0"
+                      type="number"
+                      min="0"
                       required
                       className="form-control"
                       placeholder="Delivery charges for this Area"
@@ -311,7 +347,25 @@ const ServiceArea = (props) => {
             </Modal.Header>
             <Modal.Body>
               <div className="form-group">
-                <label> {t("name")} </label>
+                <label>
+                  <strong>{t("city")}</strong>
+                </label>
+
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  value={selectedValue}
+                  getOptionLabel={(e) => e.cityName}
+                  getOptionValue={(e) => e.id}
+                  loadOptions={loadOptions}
+                  onInputChange={handleInputChange}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  <strong>{t("name")}</strong>
+                </label>
                 <Field
                   name="areaName"
                   type="text"
