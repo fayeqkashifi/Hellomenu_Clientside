@@ -16,6 +16,7 @@ import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CustomAlert from "../CustomAlert";
 
 const SubCategory = (props) => {
   const initialValues = {
@@ -29,7 +30,6 @@ const SubCategory = (props) => {
   // for localization
   const { t } = useTranslation();
   const id = props.history.location.state.sub_id;
-
   const [check, setCheck] = useState(true);
 
   // insert start
@@ -50,24 +50,48 @@ const SubCategory = (props) => {
   const handleImage = (e) => {
     setImageState({ ...imageState, SubCategoryIcon: e.target.files[0] });
   };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveSubMenu = (data) => {
     // e.preventDefault();
-    const formData = new FormData();
-    formData.append("SubCategoryName", data.SubCategoryName);
-    formData.append("CategoryID", id);
-    formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
-    axios.post("/api/InsertSubCategories", formData).then((res) => {
-      if (res.data.status === 200) {
-        // console.log(res.data.status);
-
-        setImageState([]);
-        setCheck(!check);
-
-        swal("Success", res.data.message, "success");
-        setModalCentered(false);
-        //  this.props.history.push("/")
-      }
+    const checkCate = fetchData.every((item) => {
+      return item.SubCategoryName !== data.SubCategoryName;
     });
+    if (checkCate) {
+      const formData = new FormData();
+      formData.append("SubCategoryName", data.SubCategoryName);
+      formData.append("CategoryID", id);
+      formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
+      axios.post("/api/InsertSubCategories", formData).then((res) => {
+        if (res.data.status === 200) {
+          // console.log(res.data.status);
+
+          setImageState([]);
+          setCheck(!check);
+
+          setAlerts(true, "success", res.data.message);
+
+          setModalCentered(false);
+          //  this.props.history.push("/")
+        }
+      });
+    } else {
+      setAlerts(
+        true,
+        "warning",
+        "The name already exists, please try another name."
+      );
+    }
   };
   // insert End
 
@@ -83,7 +107,7 @@ const SubCategory = (props) => {
         setEditSubMenu(res.data.menu);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -95,13 +119,14 @@ const SubCategory = (props) => {
     formData.append("id", editSubMenu.id);
     axios.post("/api/UpdateSubCategory", formData).then((res) => {
       if (res.data.status === 200) {
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
+
         setEditModalCentered(false);
         setCheck(!check);
 
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -119,16 +144,17 @@ const SubCategory = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteSubCategories/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
+
             setCheck(!check);
 
             // thisClicked.closest("tr").remove();
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -211,6 +237,16 @@ const SubCategory = (props) => {
 
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
         <CBreadcrumbItem
           className="font-weight-bold"

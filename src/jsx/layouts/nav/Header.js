@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import IdleTimer from "react-idle-timer";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 const Header = ({ toggle, onProfile, onNotification }) => {
   const idleTimerRef = useRef(null);
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
       if (res.data.status === 200) {
         localStorage.removeItem("auth_token");
         localStorage.removeItem("auth_name");
+        localStorage.removeItem("auth_company_id");
         localStorage.removeItem("auth_id");
         window.location = "/page-login";
       }
@@ -123,7 +125,11 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                 >
                   <div className="header-info">
                     <small>{t("hello_menu")}</small>
-                    <span>{localStorage.getItem("auth_name")}</span>
+                    <span>
+                      {" "}
+                      {atob(localStorage.getItem("auth_name"))}{" "}
+                      <MoreVertIcon sx={{ color: "#f50b65" }} />
+                    </span>
                   </div>
                   <img src={profile} width="10" alt="" />
                 </a>

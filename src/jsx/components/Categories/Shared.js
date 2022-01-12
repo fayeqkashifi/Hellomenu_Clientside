@@ -1,16 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { base_url, port } from "../../../Consts";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import DefaultPic from "../../../images/hellomenu/category.svg";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import Switch from "@mui/material/Switch";
-import Select from "react-select";
-import Chip from "@mui/material/Chip";
 import { CBreadcrumb } from "@coreui/react";
 
 const Shared = (props) => {
@@ -20,12 +11,8 @@ const Shared = (props) => {
   const id = props.history.location.state.id;
   const sub_id = props.history.location.state.sub_id;
 
-  const [check, setCheck] = useState(true);
-  const [modalCentered, setModalCentered] = useState(false);
-
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [branches, setBranches] = useState([]);
 
   useEffect(() => {
     axios.get(`/api/GetSharedCatBranches/${sub_id}`).then((res) => {
@@ -34,7 +21,7 @@ const Shared = (props) => {
         setLoading(false);
       }
     });
-  }, [check]);
+  }, []);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -86,59 +73,6 @@ const Shared = (props) => {
           {t("back_to_categories")}
         </Link>
       </CBreadcrumb>
-      <Modal className="fade" show={modalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("share_with")} </Modal.Title>
-          <Button
-            onClick={() => setModalCentered(false)}
-            variant=""
-            className="close"
-          >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-        //   initialValues={initialValues}
-        //   validationSchema={validationSchema}
-        //   onSubmit={saveMenu}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <>
-                  <div className="form-group">
-                    <label> {t("branches")}</label>
-                    <Select
-                      isMulti
-                      options={branches?.map((o, i) => {
-                        return {
-                          value: o.branchID,
-                          label: o.BrancheName,
-                        };
-                      })}
-                      name="branches"
-                      //   onChange={handleSelectBranches}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                    />
-                  </div>
-                </>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
 
       {viewProducts_HTMLTABLE}
     </Fragment>

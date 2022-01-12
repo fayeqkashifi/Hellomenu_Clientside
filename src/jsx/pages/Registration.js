@@ -38,8 +38,12 @@ const Registration = () => {
               axios.post("/api/login", data).then((res) => {
                 if (res.data.status === 200) {
                   localStorage.setItem("auth_token", res.data.token);
-                  localStorage.setItem("auth_name", res.data.user);
-                  localStorage.setItem("auth_id", res.data.id);
+                  localStorage.setItem("auth_name", btoa(res.data.user));
+                  localStorage.setItem(
+                    "auth_company_id",
+                    btoa(res.data.company_id)
+                  );
+                  localStorage.setItem("auth_id", btoa(res.data.id));
                   history.push("/dashboard");
                   // window.location = "/dashboard";
                 } else {

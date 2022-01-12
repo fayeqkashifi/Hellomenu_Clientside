@@ -19,9 +19,10 @@ import Select from "react-select";
 import Chip from "@mui/material/Chip";
 import Backdrop from "@mui/material/Backdrop";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import CustomAlert from "../CustomAlert";
+
 const Category = (props) => {
   const { path, url } = useRouteMatch();
-
   // for localization
   const { t } = useTranslation();
   // ID
@@ -48,47 +49,68 @@ const Category = (props) => {
   const handleSelectBranches = (e) => {
     setProductBranches(e);
   };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveMenu = (data) => {
     // e.preventDefault();
-    const formData = new FormData();
-    productbranches.map((item) => {
-      formData.append("branches[]", item.value);
+    const checkCate = fetchData.every((item) => {
+      return item.CategoryName !== data.CategoryName;
     });
-    formData.append("CategoryIcon", imageState.CategoryIcon);
-    formData.append("CategoryName", data.CategoryName);
-    formData.append("branchID", id);
-    axios.post("/api/InsertCategories", formData).then((res) => {
-      if (res.data.status === 200) {
-        setImageState([]);
-        setCheck(!check);
-        setShare(false);
-        setProductBranches([]);
-        swal("Success", res.data.message, "success");
-        setModalCentered(false);
-        //  this.props.history.push("/")
-      }
-    });
+    if (checkCate) {
+      const formData = new FormData();
+      productbranches.map((item) => {
+        formData.append("branches[]", item.value);
+      });
+      formData.append("CategoryIcon", imageState.CategoryIcon);
+      formData.append("CategoryName", data.CategoryName);
+      formData.append("branchID", id);
+      axios.post("/api/InsertCategories", formData).then((res) => {
+        if (res.data.status === 200) {
+          setImageState([]);
+          setCheck(!check);
+          setShare(false);
+          setProductBranches([]);
+          setAlerts(true, "success", res.data.message);
+
+          setModalCentered(false);
+          //  this.props.history.push("/")
+        }
+      });
+    } else {
+      setAlerts(
+        true,
+        "warning",
+        "The name already exists, please try another name."
+      );
+    }
   };
   const initialValuesCate = {
     categories: "",
   };
   const validationSchemaCate = () => {
     return Yup.object().shape({
-      // categories: Yup.string().required("Category Name is required"),
+      categories: Yup.string().required("Please select a Category"),
     });
   };
-  const saveCate = () => {
-    // e.preventDefault();
+  const saveCate = (data) => {
     const formData = new FormData();
-
-    formData.append("CategoryName", cateHandel.label);
+    formData.append("CategoryName", data.categories);
     formData.append("branchID", id);
-
     axios.post("/api/InsertSharedCate", formData).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        setCateHandle([]);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
+
         setModal(false);
         //  this.props.history.push("/")
       }
@@ -109,7 +131,7 @@ const Category = (props) => {
         setEditMenu(res.data.menu);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -129,11 +151,11 @@ const Category = (props) => {
           branchID: id,
         });
         setCheck(!check);
+        setAlerts(true, "success", res.data.message);
 
-        swal("Success", res.data.message, "success");
         setEditModalCentered(false);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -151,15 +173,14 @@ const Category = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteCategories/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
-            // thisClicked.closest("tr").remove();
+            setAlerts(true, "success", res.data.message);
             setCheck(!check);
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -182,7 +203,6 @@ const Category = (props) => {
     });
     axios.get(`/api/sharedCates/${id}`).then((res) => {
       if (res.status === 200) {
-        console.log(res.data);
         setCates(res.data);
       }
     });
@@ -193,11 +213,6 @@ const Category = (props) => {
       setLoading(false);
     });
   }, [check]);
-
-  const [cateHandel, setCateHandle] = useState([]);
-  const handleSelectCates = (e) => {
-    setCateHandle(e);
-  };
 
   const [layout, setLayout] = useState(
     JSON.parse(
@@ -217,6 +232,7 @@ const Category = (props) => {
   const handleToggle = () => {
     setOpen(!open);
   };
+
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -236,7 +252,7 @@ const Category = (props) => {
                     pathname: `${url}/sub-category`,
                     state: {
                       id: id,
-                      ca_id: item.id,
+                      sub_id: item.id,
                     },
                   }}
                 >
@@ -310,6 +326,16 @@ const Category = (props) => {
   }
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <Modal className="fade" show={modal}>
         <Modal.Header>
           <Modal.Title>{t("add_category")} </Modal.Title>
@@ -322,7 +348,7 @@ const Category = (props) => {
           validationSchema={validationSchemaCate}
           onSubmit={saveCate}
         >
-          {({ errors, status, touched }) => (
+          {({ errors, status, setFieldValue, setFieldTouched, touched }) => (
             <Form>
               <Modal.Body>
                 <div className="form-group">
@@ -335,11 +361,23 @@ const Category = (props) => {
                         label: o.CategoryName,
                       };
                     })}
-                    name="categories"
-                    onChange={handleSelectCates}
+                    onChange={(option) => {
+                      setFieldValue("categories", option.label);
+                    }}
+                    // onChange={handleSelectCates}
                     className="basic-multi-select"
                     classNamePrefix="select"
                   />
+                  {errors.categories ? (
+                    <small
+                      className="invalid"
+                      style={{ color: "red", marginTop: ".5rem" }}
+                    >
+                      {errors.categories}
+                    </small>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </Modal.Body>
               <Modal.Footer>
@@ -374,7 +412,7 @@ const Category = (props) => {
             <Form>
               <Modal.Body>
                 <div className="form-group">
-                  <label> {t("share_product_with_other_branches")}</label>
+                  <label> {t("share_category_with_other_branches")}</label>
                   <Switch
                     checked={share}
                     color="secondary"

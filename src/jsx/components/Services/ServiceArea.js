@@ -7,6 +7,7 @@ import Select from "react-select";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
+import CustomAlert from "../CustomAlert";
 
 const ServiceArea = (props) => {
   // for localization
@@ -17,22 +18,37 @@ const ServiceArea = (props) => {
   // insert Start
   const [modalCentered, setModalCentered] = useState(false);
   const [areaModal, setAreaModal] = useState(false);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveServiceAreas = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("BranchID", id);
-    formData.append("AreaName", JSON.stringify(servicesAreas));
-    axios.post("/api/InsertServicAreas", formData).then((res) => {
-      if (res.data.status === 200) {
-        setServicesAreas([]);
-        setCheck(!check);
+    if (servicesAreas.length != 0) {
+      const formData = new FormData();
+      formData.append("BranchID", id);
+      formData.append("AreaName", JSON.stringify(servicesAreas));
+      axios.post("/api/InsertServicAreas", formData).then((res) => {
+        if (res.data.status === 200) {
+          setServicesAreas([]);
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
 
-        swal("Success", res.data.message, "success");
-        setModalCentered(false);
-        //  this.props.history.push("/")
-      }
-    });
+          setModalCentered(false);
+          //  this.props.history.push("/")
+        }
+      });
+    } else {
+      setAlerts(true, "warning", "Please select a location");
+    }
   };
   // insert End
   // edit Start
@@ -52,7 +68,7 @@ const ServiceArea = (props) => {
         setEditServiceAreas(res.data.menu);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -72,12 +88,12 @@ const ServiceArea = (props) => {
       if (res.data.status === 200) {
         // setEditServiceAreas([]);
         setCheck(!check);
+        setAlerts(true, "success", res.data.message);
 
-        swal("Success", res.data.message, "success");
         setEditModalCentered(false);
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -95,14 +111,15 @@ const ServiceArea = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteServiceAreas/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
+
             setCheck(!check);
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -159,21 +176,24 @@ const ServiceArea = (props) => {
   };
   const initialValues = {
     areaName: "",
+    city: "",
   };
   const validationSchema = () => {
     return Yup.object().shape({
       areaName: Yup.string().required("Area Name is required"),
+      city: Yup.string().required("Please select a Category"),
     });
   };
   const save = (data) => {
     // console.log(JSON.stringify(data, null, 2));
     const formData = new FormData();
-    formData.append("city_id", selectedValue.id);
+    formData.append("city_id", data.city);
     formData.append("areaName", data.areaName);
     axios.post("/api/InsertAreas", formData).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setAreaModal(false);
+        setAlerts(true, "success", res.data.message);
       }
     });
   };
@@ -246,6 +266,16 @@ const ServiceArea = (props) => {
   }
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       {/* <!-- Insert  Modal --> */}
       <Modal className="fade" size="lg" show={modalCentered}>
         <form onSubmit={saveServiceAreas}>
@@ -285,7 +315,6 @@ const ServiceArea = (props) => {
                       return { value: o.id, label: o.areaName };
                     })}
                     onChange={handleSelectEvent}
-                    required
                     className="basic-multi-select"
                     classNamePrefix="select"
                   />
@@ -334,64 +363,78 @@ const ServiceArea = (props) => {
           validationSchema={validationSchema}
           onSubmit={save}
         >
-          <Form>
-            <Modal.Header>
-              <Modal.Title>{t("add_area")}</Modal.Title>
-              <Button
-                onClick={() => setAreaModal(false)}
-                variant=""
-                className="close"
-              >
-                <span>&times;</span>
-              </Button>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-group">
-                <label>
-                  <strong>{t("city")}</strong>
-                </label>
+          {({ errors, status, setFieldValue, setFieldTouched, touched }) => (
+            <Form>
+              <Modal.Header>
+                <Modal.Title>{t("add_area")}</Modal.Title>
+                <Button
+                  onClick={() => setAreaModal(false)}
+                  variant=""
+                  className="close"
+                >
+                  <span>&times;</span>
+                </Button>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="form-group">
+                  <label>
+                    <strong>{t("city")}</strong>
+                  </label>
 
-                <AsyncSelect
-                  cacheOptions
-                  defaultOptions
-                  value={selectedValue}
-                  getOptionLabel={(e) => e.cityName}
-                  getOptionValue={(e) => e.id}
-                  loadOptions={loadOptions}
-                  onInputChange={handleInputChange}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  <strong>{t("name")}</strong>
-                </label>
-                <Field
-                  name="areaName"
-                  type="text"
-                  className="form-control "
-                  placeholder="Area Name..."
-                />
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    // value={selectedValue}
+                    getOptionLabel={(e) => e.cityName}
+                    getOptionValue={(e) => e.id}
+                    loadOptions={loadOptions}
+                    onInputChange={handleInputChange}
+                    onChange={(getOptionValue) => {
+                      setFieldValue("city", getOptionValue.id);
+                    }}
+                  />
+                  {errors.city ? (
+                    <small
+                      className="invalid"
+                      style={{ color: "red", marginTop: ".5rem" }}
+                    >
+                      {errors.city}
+                    </small>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="form-group">
+                  <label>
+                    <strong>{t("name")}</strong>
+                  </label>
+                  <Field
+                    name="areaName"
+                    type="text"
+                    className="form-control "
+                    placeholder="Area Name..."
+                  />
 
-                <ErrorMessage
-                  name="areaName"
-                  component="div"
-                  className="text-danger"
-                />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                onClick={() => setAreaModal(false)}
-                variant="danger light"
-              >
-                {t("close")}
-              </Button>
-              <Button variant="primary" type="submit">
-                {t("save")}
-              </Button>
-            </Modal.Footer>
-          </Form>
+                  <ErrorMessage
+                    name="areaName"
+                    component="div"
+                    className="text-danger"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setAreaModal(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
         </Formik>
       </Modal>
       {/* Edit Modal */}

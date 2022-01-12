@@ -5,6 +5,8 @@ import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CustomAlert from "../CustomAlert";
+
 const Attributes = (props) => {
   // validation start
   const initialValues = {
@@ -22,11 +24,24 @@ const Attributes = (props) => {
 
   // insert Attribute start
   const [modalCentered, setModalCentered] = useState(false);
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveAttribute = (data) => {
     axios.post("/api/InsertAttribute", data).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
+
         setModalCentered(false);
       }
     });
@@ -45,7 +60,7 @@ const Attributes = (props) => {
         setEditAttribute(res.data.item);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -55,10 +70,11 @@ const Attributes = (props) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setEditModalCentered(false);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
+
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -77,14 +93,14 @@ const Attributes = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteAttribute/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
             setCheck(!check);
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -142,6 +158,16 @@ const Attributes = (props) => {
 
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <Modal className="fade" show={modalCentered}>
         <Modal.Header>
           <Modal.Title>{t("add_attribute")}</Modal.Title>

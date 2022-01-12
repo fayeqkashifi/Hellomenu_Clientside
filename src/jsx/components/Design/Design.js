@@ -33,6 +33,7 @@ import { CardActionArea } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import Grid from "@mui/material/Grid";
 // import profile from "";
+import CustomAlert from "../CustomAlert";
 
 const Design = (props) => {
   const { path, url } = useRouteMatch();
@@ -55,6 +56,18 @@ const Design = (props) => {
   const handleImage = (e) => {
     setImageState({ ...imageState, Logo: e.target.files[0] });
   };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const save = (e) => {
     e.preventDefault();
     // console.log(themes);
@@ -71,7 +84,7 @@ const Design = (props) => {
     axios.post(`/api/UpdateTheme/${activeThemeId}`, formData).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
       }
     });
   };
@@ -82,6 +95,7 @@ const Design = (props) => {
     axios.post(`/api/ThemeStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
+        setAlerts(true, "info", res.data.message);
       }
     });
   };
@@ -90,6 +104,7 @@ const Design = (props) => {
     axios.post(`/api/TemplateStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
+        setAlerts(true, "info", res.data.message);
       }
     });
   };
@@ -131,14 +146,15 @@ const Design = (props) => {
         axios.delete(`/api/DeleteTheme/${id}`).then((res) => {
           if (res.data.status === 200) {
             setCheck(!check);
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
+
             // thisClicked.closest("tr").remove();
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -149,7 +165,7 @@ const Design = (props) => {
     axios.get(`/api/duplicateTheme/${id}`).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        // swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
       }
     });
   };
@@ -256,6 +272,16 @@ const Design = (props) => {
   }
   return (
     <>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <CNav variant="pills" role="tablist">
         <CNavItem>
           <CNavLink

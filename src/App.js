@@ -56,6 +56,7 @@ axios.interceptors.response.use(
     if (401 === error.response.status) {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_name");
+      localStorage.removeItem("auth_company_id");
       localStorage.removeItem("auth_id");
       // window.location = "/";
 
@@ -95,6 +96,7 @@ const App = () => {
           component={FilterSelection}
           path="/filterSelection"
         />
+
         <PublicRoute
           exact
           component={StandardTemplate}

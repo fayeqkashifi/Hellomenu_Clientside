@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
+import CustomAlert from "../CustomAlert";
 
 const Company = () => {
   // validation start
@@ -36,14 +37,28 @@ const Company = () => {
     e.preventDefault();
     setCompanyState({ ...companyState, [e.target.name]: e.target.value });
   };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveCompany = (e) => {
     axios.post("/api/InsertCompanies", companyState).then((res) => {
       if (res.data.status === 200) {
+        localStorage.setItem("auth_company_id", btoa(res.data.company_id));
         setCompanyState([]);
         setCheck(!check);
 
         reset();
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
+
         setModalCentered(false);
         //  this.props.history.push("/")
       }
@@ -67,7 +82,7 @@ const Company = () => {
         setEditCompanystate(res.data.company);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -77,8 +92,8 @@ const Company = () => {
       if (res.data.status === 200) {
         setEditCompanystate([]);
         setCheck(!check);
+        setAlerts(true, "success", res.data.message);
 
-        swal("Success", res.data.message, "success");
         setEditModalCentered(false);
         //  this.props.history.push("/")
       }
@@ -98,19 +113,16 @@ const Company = () => {
       if (willDelete) {
         axios.delete(`/api/DeleteCompanies/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal(res.data.message, {
-              icon: "success",
-            });
+            setAlerts(true, "success", res.data.message);
+
             setCheck(!check);
-            // swal("Success",,"success");
-            // thisClicked.closest("tr").remove();
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
           setCompanyState([]);
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -172,6 +184,16 @@ const Company = () => {
 
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
         <CBreadcrumbItem active>{t("companies")}</CBreadcrumbItem>
       </CBreadcrumb>
@@ -189,22 +211,6 @@ const Company = () => {
             </Button>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("user_id")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("user_id")}
-                name="user_id"
-                required
-                disabled
-                onChange={handleInput}
-                value={localStorage.getItem("auth_id")}
-              />
-            </div>
             <div className="form-group">
               <label className="mb-1 ">
                 {" "}
@@ -249,7 +255,7 @@ const Company = () => {
             </Button>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-group">
+            <div className="form-group d-none">
               <label className="mb-1 ">
                 {" "}
                 <strong>{t("id")}</strong>{" "}

@@ -5,11 +5,13 @@ import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import CustomAlert from "../CustomAlert";
+
 const Ingredients = (props) => {
   // validation start
-  const initialValues = {
-    name: "",
-  };
+
   const validationSchema = () => {
     return Yup.object().shape({
       name: Yup.string().required("Name is required"),
@@ -21,15 +23,51 @@ const Ingredients = (props) => {
   const { t } = useTranslation();
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
-
-  const save = (data) => {
-    axios.post("/api/InsertIngredient", data).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setModalCentered(false);
-        swal("Success", res.data.message, "success");
-      }
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
     });
+  };
+  const save = (e) => {
+    e.preventDefault();
+    if (form.length != 0) {
+      if (prevIsValid()) {
+        const formData = new FormData();
+        formData.append("form", JSON.stringify(form));
+        axios.post("/api/InsertIngredient", formData).then((res) => {
+          if (res.data.status === 200) {
+            setCheck(!check);
+            setForm([
+              {
+                name: "",
+
+                errors: {
+                  name: null,
+                },
+              },
+            ]);
+            setModalCentered(false);
+            console.log(res.data.duplicate_array.length);
+            res.data.duplicate_array.length == 0
+              ? setAlerts(true, "success", res.data.message)
+              : setAlerts(
+                  true,
+                  "warning",
+                  "Duplicate Entry:" + res.data.duplicate_array
+                );
+          }
+        });
+      }
+    } else {
+      setAlerts(true, "error", "Please add a name.");
+    }
   };
   // insert end
   // edit Attribute start
@@ -44,7 +82,7 @@ const Ingredients = (props) => {
         setEdit(res.data.item);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -54,10 +92,9 @@ const Ingredients = (props) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setEditModalCentered(false);
-        swal("Success", res.data.message, "success");
-        //  this.props.history.push("/")
+        setAlerts(true, "success", res.data.message);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -76,14 +113,15 @@ const Ingredients = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteIngredient/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
+
             setCheck(!check);
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -102,6 +140,85 @@ const Ingredients = (props) => {
       setLoading(false);
     });
   }, [check]);
+
+  const [form, setForm] = useState([
+    {
+      name: "",
+      errors: {
+        name: null,
+      },
+    },
+  ]);
+
+  const prevIsValid = () => {
+    if (form.length === 0) {
+      return true;
+    }
+
+    const someEmpty = form.some((item) => item.name === "");
+
+    if (someEmpty) {
+      form.map((item, index) => {
+        const allPrev = [...form];
+        // console.log();
+        if (form[index].name === "") {
+          allPrev[index].errors.name = "Name for ingerdient is required";
+        }
+        //  if (allPrev.some((val) => val.name == form[index].name)) {
+        //   allPrev[index].errors.name = "Duplicate Entry";
+        // }
+        setForm(allPrev);
+      });
+    }
+
+    return !someEmpty;
+  };
+
+  const handleAddLink = (e) => {
+    e.preventDefault();
+    const inputState = {
+      name: "",
+      errors: {
+        name: null,
+      },
+    };
+
+    if (prevIsValid()) {
+      setForm((prev) => [...prev, inputState]);
+    }
+  };
+
+  const onChange = (index, event) => {
+    event.preventDefault();
+    event.persist();
+
+    setForm((prev) => {
+      return prev.map((item, i) => {
+        if (i !== index) {
+          return item;
+        }
+
+        return {
+          ...item,
+          [event.target.name]: event.target.value,
+
+          errors: {
+            ...item.errors,
+            [event.target.name]:
+              event.target.value.length > 0
+                ? null
+                : [event.target.name] + " Is required",
+          },
+        };
+      });
+    });
+  };
+
+  const handleRemoveField = (e, index) => {
+    e.preventDefault();
+
+    setForm((prev) => prev.filter((item) => item !== prev[index]));
+  };
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {
@@ -141,6 +258,16 @@ const Ingredients = (props) => {
   }
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       {/* insert */}
       <Modal className="fade" show={modalCentered}>
         <Modal.Header>
@@ -153,46 +280,57 @@ const Ingredients = (props) => {
             <span>&times;</span>
           </Button>
         </Modal.Header>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={save}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("name")}</label>
-                  <Field
-                    name="name"
+        <form onSubmit={(e) => save(e)}>
+          <Modal.Body>
+            {form.map((item, index) => (
+              <div className="row mt-3" key={`item-${index}`}>
+                <div className="col-10">
+                  <input
                     type="text"
                     className={
-                      "form-control" +
-                      (errors.name && touched.name ? " is-invalid" : "")
+                      item.errors.name
+                        ? "form-control  is-invalid"
+                        : "form-control"
                     }
-                    placeholder="Name...."
-                  />
-                  <ErrorMessage
                     name="name"
-                    component="div"
-                    className="invalid-feedback"
+                    placeholder="Ingredient Name..."
+                    value={item.name}
+                    onChange={(e) => onChange(index, e)}
                   />
+
+                  {item.errors.name && (
+                    <div className="invalid-feedback">{item.errors.name}</div>
+                  )}
                 </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
+
+                <div className="col-2">
+                  <IconButton onClick={(e) => handleRemoveField(e, index)}>
+                    <DeleteIcon fontSize="small" sx={{ color: "red" }} />
+                  </IconButton>
+                </div>
+              </div>
+            ))}
+
+            <button className="btn btn-primary mt-2" onClick={handleAddLink}>
+              {t("add")}
+            </button>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              onClick={() => setModalCentered(false)}
+              variant="danger light"
+            >
+              {t("close")}
+            </Button>
+            <Button variant="primary" type="submit">
+              {t("save")}{" "}
+            </Button>
+          </Modal.Footer>
+        </form>
+
+        {/* </Form>
           )}
-        </Formik>
+        </Formik> */}
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>

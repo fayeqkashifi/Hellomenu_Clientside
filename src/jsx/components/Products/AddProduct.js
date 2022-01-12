@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Switch from "@mui/material/Switch";
+import CustomAlert from "../CustomAlert";
 
 const AddProduct = (props) => {
   const history = useHistory();
@@ -59,9 +60,20 @@ const AddProduct = (props) => {
     }
     setImageState({ ...imageState, image: imagesArray });
   };
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveProduct = (data) => {
-    console.log(JSON.stringify(data, null, 2));
+    // console.log(JSON.stringify(data, null, 2));
 
     const formData = new FormData();
     for (let i = 0; i < imageState.image.length; i++) {
@@ -84,7 +96,6 @@ const AddProduct = (props) => {
     formData.append("UnitName", data.UnitName);
     formData.append("branchId", branchId);
     axios.post(`/api/InsertProducts`, formData).then((res) => {
-      console.log(res);
       if (res.data.status === 200) {
         swal("Success", res.data.message, "success").then((check) => {
           if (check) {
@@ -99,11 +110,11 @@ const AddProduct = (props) => {
   };
 
   const save = (data) => {
-    axios.post("/api/InsertIngredient", data).then((res) => {
+    axios.post("/api/InsertSingleIngredient", data).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setModalCentered(false);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
       }
     });
   };
@@ -498,6 +509,7 @@ const AddProduct = (props) => {
                         <div className="form-group">
                           <label className="mb-1 ">
                             <strong>{item.label}</strong>
+                            <small>(Charge)</small>
                           </label>
                           <input
                             type="number"
@@ -557,6 +569,16 @@ const AddProduct = (props) => {
   return (
     <>
       <Fragment>
+        {alert.open ? (
+          <CustomAlert
+            open={alert.open}
+            severity={alert.severity}
+            message={alert.message}
+            setAlert={setAlert}
+          />
+        ) : (
+          ""
+        )}
         <div className="m-1">
           <Button
             variant="danger light"

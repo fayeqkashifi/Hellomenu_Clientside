@@ -6,15 +6,18 @@ import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
+import CustomAlert from "../CustomAlert";
 
 const Area = (props) => {
   // validation start
   const initialValues = {
     areaName: "",
+    city: "",
   };
   const validationSchema = () => {
     return Yup.object().shape({
       areaName: Yup.string().required("Area Name is required"),
+      city: Yup.string().required("Please select a Category"),
     });
   };
   // validation end
@@ -23,19 +26,45 @@ const Area = (props) => {
   const { t } = useTranslation();
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const save = (data) => {
-    const formData = new FormData();
-    formData.append("city_id", selectedValue.id);
-    formData.append("areaName", data.areaName);
-    axios.post("/api/InsertAreas", formData).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setSelectedValue(null);
-        setModalCentered(false);
-        swal("Success", res.data.message, "success");
+    const checkCate = fetchData.every((item) => {
+      if (item.areaName === data.areaName && item.city_id === data.city) {
+        return false;
+      } else {
+        return true;
       }
     });
+
+    if (checkCate) {
+      const formData = new FormData();
+      formData.append("city_id", data.city);
+      formData.append("areaName", data.areaName);
+      axios.post("/api/InsertAreas", formData).then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setModalCentered(false);
+          setAlerts(true, "success", res.data.message);
+        }
+      });
+    } else {
+      setAlerts(
+        true,
+        "warning",
+        "The name already exists, please try another name."
+      );
+    }
   };
   // insert end
   // edit Attribute start
@@ -53,11 +82,16 @@ const Area = (props) => {
         setSelectedValue({ id: data.city_id, cityName: data.cityName });
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
   // update
+  const initialValuesEdit = {
+    areaName: edit.areaName,
+    city: edit.city_id,
+    id: edit.id,
+  };
   const update = (data) => {
     const formData = new FormData();
 
@@ -69,11 +103,13 @@ const Area = (props) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setSelectedValue(null);
+
         setEditModalCentered(false);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
+
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -92,14 +128,15 @@ const Area = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteAreas/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
+
             setCheck(!check);
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -188,6 +225,16 @@ const Area = (props) => {
   }
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       {/* insert */}
       <Modal className="fade" show={modalCentered}>
         <Modal.Header>
@@ -205,7 +252,7 @@ const Area = (props) => {
           validationSchema={validationSchema}
           onSubmit={save}
         >
-          {({ errors, status, touched }) => (
+          {({ errors, status, setFieldValue, setFieldTouched, touched }) => (
             <Form>
               <Modal.Body>
                 <div className="form-group">
@@ -216,13 +263,26 @@ const Area = (props) => {
                   <AsyncSelect
                     cacheOptions
                     defaultOptions
-                    value={selectedValue}
+                    // value={selectedValue}
                     getOptionLabel={(e) => e.cityName}
                     getOptionValue={(e) => e.id}
                     loadOptions={loadOptions}
                     onInputChange={handleInputChange}
-                    onChange={handleChange}
+                    // onChange={handleChange}
+                    onChange={(getOptionValue) => {
+                      setFieldValue("city", getOptionValue.id);
+                    }}
                   />
+                  {errors.city ? (
+                    <small
+                      className="invalid"
+                      style={{ color: "red", marginTop: ".5rem" }}
+                    >
+                      {errors.city}
+                    </small>
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div className="form-group">
                   <label>
@@ -273,7 +333,7 @@ const Area = (props) => {
           </Button>
         </Modal.Header>
         <Formik
-          initialValues={edit}
+          initialValues={initialValuesEdit}
           validationSchema={validationSchema}
           onSubmit={update}
         >

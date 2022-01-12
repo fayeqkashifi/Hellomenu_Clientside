@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert";
@@ -14,9 +14,11 @@ import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CustomAlert from "../CustomAlert";
 
 const Branches = () => {
   // localization
+
   const { t } = useTranslation();
   const initialValues = {
     BrancheName: "",
@@ -30,26 +32,50 @@ const Branches = () => {
   };
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
-
+  const history = useHistory();
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveBranch = (data) => {
     // console.log(JSON.stringify(data, null, 2));
-    const checkBranch = branchdata.every((item) => {
-      return item.BrancheName !== data.BrancheName;
-    });
-    if (checkBranch) {
-      axios.post("/api/InsertBranches", data).then((res) => {
-        if (res.data.status === 200) {
-          setModalCentered(false);
-          setCheck(!check);
-          swal("Success", res.data.message, "success");
-        }
+    if (atob(localStorage.getItem("auth_company_id")) != "null") {
+      const checkBranch = branchdata.every((item) => {
+        return item.BrancheName !== data.BrancheName;
       });
+      if (checkBranch) {
+        axios.post("/api/InsertBranches", data).then((res) => {
+          if (res.data.status === 200) {
+            setModalCentered(false);
+            setCheck(!check);
+            setAlerts(true, "success", res.data.message);
+          }
+        });
+      } else {
+        setAlerts(
+          true,
+          "warning",
+          "The name already exists, please try another name."
+        );
+      }
     } else {
       swal(
         "warning",
-        "The name already exists, please try another name.",
+        "Please add the company first, then the branches.",
         "warning"
-      );
+      ).then((value) => {
+        if (value) {
+          history.push("/companies");
+        }
+      });
     }
   };
   // insert end
@@ -65,7 +91,7 @@ const Branches = () => {
         setEditBranchstate(res.data.branch);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -78,13 +104,9 @@ const Branches = () => {
     axios.post("/api/UpdateBranches", data).then((res) => {
       if (res.data.status === 200) {
         setEditModalCentered(false);
-
-        swal("Success", res.data.message, "success").then((done) => {
-          if (done) {
-            setEditBranchstate([]);
-            setCheck(!check);
-          }
-        });
+        setAlerts(true, "success", res.data.message);
+        setEditBranchstate([]);
+        setCheck(!check);
       }
     });
     // } else {
@@ -96,6 +118,7 @@ const Branches = () => {
     // }
   };
   // edit end
+
   // delete start
   const deleteBranch = (e, id) => {
     e.preventDefault();
@@ -109,15 +132,14 @@ const Branches = () => {
       if (willDelete) {
         axios.delete(`/api/DeleteBranches/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
-            // thisClicked.closest("tr").remove();
+            setAlerts(true, "success", res.data.message);
           } else if (res.data.status === 404) {
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "error", res.data.message);
           }
           setCheck(!check);
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -234,10 +256,20 @@ const Branches = () => {
 
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
+
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
         <CBreadcrumbItem active>{t("Branches")}</CBreadcrumbItem>
       </CBreadcrumb>
-
       {/* <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} /> */}
       {/* <!-- Insert  Modal --> */}
       <Modal className="fade" show={modalCentered}>
@@ -406,7 +438,6 @@ const Branches = () => {
           </IconButton>
         </div>
       </div>
-
       {layout ? (
         <div className="row">
           {viewBranches_HTMLTABLE}

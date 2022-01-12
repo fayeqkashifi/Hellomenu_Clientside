@@ -12,6 +12,8 @@ import * as Yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import CustomAlert from "../CustomAlert";
+
 const EditProduct = (props) => {
   const history = useHistory();
 
@@ -47,13 +49,24 @@ const EditProduct = (props) => {
   const productId = props.history.location.state.productId;
 
   const [modalCentered, setModalCentered] = useState(false);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const save = (data) => {
-    axios.post("/api/InsertIngredient", data).then((res) => {
+    axios.post("/api/InsertSingleIngredient", data).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setModalCentered(false);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
       }
     });
   };
@@ -517,6 +530,7 @@ const EditProduct = (props) => {
                         <div className="form-group">
                           <label className="mb-1 ">
                             <strong>{item.label}</strong>
+                            <small>(Charge)</small>
                           </label>
                           <input
                             type="number"
@@ -576,6 +590,16 @@ const EditProduct = (props) => {
   return (
     <>
       <Fragment>
+        {alert.open ? (
+          <CustomAlert
+            open={alert.open}
+            severity={alert.severity}
+            message={alert.message}
+            setAlert={setAlert}
+          />
+        ) : (
+          ""
+        )}
         <div className="m-1">
           <Button
             variant="danger light"

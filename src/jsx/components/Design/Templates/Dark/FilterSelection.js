@@ -4,10 +4,12 @@ import Select from "react-select";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 
 const FilterSelection = () => {
   const [areaLocation, setAreaLocation] = useState([]);
+  const [branches, setBranches] = useState([]);
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -19,10 +21,12 @@ const FilterSelection = () => {
   //     }
   //   });
   // }, []);
+
   const handleSelect = (e) => {
     axios.get(`/api/getServiceArea/${e.value}`).then((res) => {
       if (res.data.status === 200) {
-        history.push(`/dark-template/${btoa(res.data.fetchData[0]?.BranchID)}`);
+        setBranches(res.data.fetchData);
+        // history.push(`/dark-template/${btoa(res.data.fetchData[0]?.BranchID)}`);
       }
     });
   };
@@ -95,6 +99,20 @@ const FilterSelection = () => {
               className="basic-multi-select"
               classNamePrefix="select"
             />
+          </div>
+          <div>
+            {branches?.map((branch) => {
+              return (
+                <p key={branch.BranchID} style={{ color: "#fff" }}>
+                  <Link to={`/dark-template/${btoa(branch?.BranchID)}`}>
+                    <strong style={{ color: "#fff" }}>
+                      {" "}
+                      {branch.BrancheName}
+                    </strong>
+                  </Link>
+                </p>
+              );
+            })}
           </div>
         </div>
       </Backdrop>

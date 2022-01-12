@@ -3,10 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "react-router-dom";
-import * as yup from "yup";
 import QRCode from "qrcode.react";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
@@ -14,6 +11,8 @@ import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CustomAlert from "../CustomAlert";
+
 const Tables = (props) => {
   const id = props.history.location.state.id;
 
@@ -38,13 +37,24 @@ const Tables = (props) => {
 
   // insert modal
   const [modalCentered, setModalCentered] = useState(false);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const saveTable = (data) => {
     // e.preventDefault();
     axios.post("/api/InsertTable", data).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
         setModalCentered(false);
         //  this.props.history.push("/")
       }
@@ -67,20 +77,21 @@ const Tables = (props) => {
         setEditTable(res.data.Details);
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
   const updateTable = (data) => {
     axios.post("/api/UpdateTable", data).then((res) => {
       if (res.data.status === 200) {
-        swal("Success", res.data.message, "success");
+        setAlerts(true, "success", res.data.message);
+
         setEditModalCentered(false);
         setCheck(!check);
 
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
-        swal("Error", res.data.message, "error");
+        setAlerts(true, "error", res.data.message);
       }
     });
   };
@@ -98,14 +109,15 @@ const Tables = (props) => {
       if (willDelete) {
         axios.delete(`/api/DeleteTable/${id}`).then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
+
             setCheck(!check);
           } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -203,6 +215,16 @@ const Tables = (props) => {
   }
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <Modal className="fade" show={modalCentered}>
         <Modal.Header>
           <Modal.Title>{t("add_table")}</Modal.Title>
