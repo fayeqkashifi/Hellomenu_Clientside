@@ -1,16 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 import Cookies from "universal-cookie";
 import { base_url, port } from "../../Consts";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CustomAlert from "../components/CustomAlert";
 
 const Login = () => {
   const cookies = new Cookies();
-
   // for localization
   const { t } = useTranslation();
 
@@ -34,7 +33,18 @@ const Login = () => {
   const nextYear = new Date();
 
   nextYear.setFullYear(current.getFullYear() + 2);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const checkAuth = (data) => {
     // console.log(JSON.stringify(data, null, 2));
     if (data.remember_me) {
@@ -56,7 +66,7 @@ const Login = () => {
           localStorage.setItem("auth_id", btoa(res.data.id));
           history.push("/dashboard");
         } else {
-          swal("Warning", res.data.message, "warning");
+          setAlerts(true, "warning", res.data.message);
         }
       });
     });
@@ -65,6 +75,16 @@ const Login = () => {
   // check the auth end
   return (
     <div className="row justify-content-center h-100 align-items-center h-80">
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <div className="col-md-4 ">
         <div className="authincation-content">
           <div className="row no-gutters">

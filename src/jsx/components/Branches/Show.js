@@ -202,7 +202,11 @@ const Show = (props) => {
               <IconButton onClick={(e) => reload(e)}>
                 <RefreshIcon />
               </IconButton>
-              <Link to={`/${template.URL}/${btoa(id)}`} target="_blank">
+              <Link
+                to={`/filterSelection`}
+                // to={`/${template.URL}/${btoa(id)}`}
+                target="_blank"
+              >
                 {t("public_link")}
               </Link>
             </div>

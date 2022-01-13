@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CustomAlert from "../components/CustomAlert";
+
 const Registration = () => {
   // validation start
   const phoneRegExp =
@@ -27,7 +29,18 @@ const Registration = () => {
     });
   };
   const history = useHistory();
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const handleSubmit = (data) => {
     // console.log(JSON.stringify(data, null, 2));
     axios.get("sanctum/csrf-cookie").then((response) => {
@@ -47,15 +60,13 @@ const Registration = () => {
                   history.push("/dashboard");
                   // window.location = "/dashboard";
                 } else {
-                  swal("Warning", res.data.message, "warning");
+                  setAlerts(true, "warning", res.data.message);
                 }
               });
             }
           });
         } else {
-          console.log(res.data.data);
-
-          swal("warning", res.data.message, "warning");
+          setAlerts(true, "warning", res.data.message);
         }
       });
     });
@@ -72,6 +83,16 @@ const Registration = () => {
 
   return (
     <div className="row justify-content-center  h-200 align-items-center h-80">
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <div className="col-md-4">
         <div className="authincation-content">
           <div className="row no-gutters">
