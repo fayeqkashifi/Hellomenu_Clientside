@@ -104,7 +104,14 @@ const FilterSelection = () => {
             {branches?.map((branch) => {
               return (
                 <p key={branch.BranchID} style={{ color: "#fff" }}>
-                  <Link to={`/dark-template/${btoa(branch?.BranchID)}`}>
+                  <Link
+                    to={{
+                      pathname: `/dark-template/${btoa(branch?.BranchID)}`,
+                      state: {
+                        deliveryFees: branch.deliveryFees,
+                      },
+                    }}
+                  >
                     <strong style={{ color: "#fff" }}>
                       {" "}
                       {branch.BrancheName}

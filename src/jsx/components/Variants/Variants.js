@@ -258,7 +258,6 @@ const Variants = (props) => {
       attrs = attrs.reduce((a, b) =>
         a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
       );
-
       attrs.map((tag) => {
         CreateNewVar(tag);
       });
@@ -319,7 +318,7 @@ const Variants = (props) => {
       }
     });
   };
-  
+
   if (loading) {
     return (
       <div className="spinner-border text-primary " role="status">

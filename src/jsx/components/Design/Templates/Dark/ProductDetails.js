@@ -34,6 +34,7 @@ const ProductDetails = (props) => {
   const id = atob(props.match.params.id);
   //for retriving data using laravel API
   const custom = props.history.location.state.custom;
+  const deliveryFees = props.history.location.state.deliveryFees;
   // design start
   const theme = createTheme({
     palette: {
@@ -664,15 +665,19 @@ const ProductDetails = (props) => {
         stock={
           productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
         }
+        cart={cart}
+        deliveryFees={deliveryFees}
         url={{
           pathname: `/dark-template/product/order-details/${btoa(id)}`,
           state: {
             productName: fetchData.ProductName,
+
             picture: productDetails.image
               ? Array.isArray(productDetails.image)
                 ? productDetails.image[0]
                 : productDetails?.image
               : fetchData?.image,
+
             stock: productDetails.stock,
             price:
               productDetails.price === 0

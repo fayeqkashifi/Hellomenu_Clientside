@@ -23,6 +23,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import FormGroup from "@mui/material/FormGroup";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
 import ReactWhatsapp from "react-whatsapp";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const OrderDetails = (props) => {
   const custom = props.history.location.state.custom;
@@ -127,6 +128,7 @@ const OrderDetails = (props) => {
   };
   const handelIncrement = (e, qty, id, price) => {
     e.preventDefault();
+    // console.log();
     setFetchData((fetchData) =>
       fetchData.map((item) =>
         id == item.value ? { ...item, qty: item.qty + 1 } : item
@@ -157,7 +159,6 @@ const OrderDetails = (props) => {
         <Grid container spacing={2} key={i}>
           <Grid item xs={8} sm={8} md={8}>
             {/* {console.log(item)} */}
-          
             <FormControlLabel
               control={
                 <Checkbox
@@ -268,20 +269,27 @@ const OrderDetails = (props) => {
                     : "#2d3134",
                 }}
               >
-                <img
-                  style={{
-                    height: "250px",
-                    width: "100%",
-                    objectFit: "contain",
-                  }}
-                  src={
-                    stock === "No Stock" || stock === 0
-                      ? `http://${base_url}:${port}/images/products/${picture}`
-                      : `http://${base_url}:${port}/images/variants_pics/${picture}`
-                  }
-                  alt="Image"
-                  className="m-1"
-                />
+                {/* {console.log(picture)} */}
+                {JSON.parse(picture)?.map((image, i) => {
+                  return (
+                    <SwiperSlide key={i}>
+                      <img
+                        src={
+                          stock === "No Stock" || stock === 0
+                            ? `http://${base_url}:${port}/images/products/${image}`
+                            : `http://${base_url}:${port}/images/variants_pics/${image}`
+                        }
+                        alt=""
+                        style={{
+                          height: "250px",
+                          width: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </SwiperSlide>
+                  );
+                })}
+                {/* <img alt="Image" className="m-1" /> */}
                 <FavoriteIcon sx={{ color: "#ff751d" }} className="mx-4 my-2" />
 
                 <div className="row mx-3">

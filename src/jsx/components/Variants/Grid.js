@@ -162,7 +162,7 @@ const VariantsGrid = (props) => {
     if (numberOfVar.length !== 0) {
       setVariantGrid(numberOfVar);
     }
-    setNumberOfVar(numberOfVar);
+    // setNumberOfVar(numberOfVar);
   }, [numberOfVar]);
 
   const vars = numberOfVar.map((item, i) => (

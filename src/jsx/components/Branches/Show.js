@@ -221,7 +221,8 @@ const Show = (props) => {
                 <div className="speaker"></div>
                 <div className="screen">
                   <iframe
-                    src={`/${template.URL}/${btoa(id)}`}
+                    src="/filterSelection"
+                    // src={`/${template.URL}/${btoa(id)}`}
                     key={check}
                     height="100%"
                     width="100%"

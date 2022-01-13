@@ -24,6 +24,7 @@ export default function Main(props) {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const branchId = atob(props.match.params.id);
+  const deliveryFees = props.history.location.state.deliveryFees;
 
   const [branch, setBranch] = useState([]);
   const [menu, setMenu] = useState([]);
@@ -168,23 +169,7 @@ export default function Main(props) {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-  // console.log(JSON.parse(localStorage.getItem("cart"))[1].id);
-  // const addItem = (id) => {
-  // const check = cart.every((item) => {
-  //   return item.id !== id;
-  // });
-  // if (check) {
-  //   const data = products.filter((product) => {
-  //     return product.id === id;
-  //   });
-  //   // data.push(...data, { qty: 1 });
-  //   // console.log(data);
-  //   localStorage.setItem("cart", JSON.stringify(cart.concat(data)));
-  //   setCart(cart.concat(data));
-  // } else {
-  //   alert("product has been already added to cart");
-  // }
-  // };
+
   var viewShow_HTMLTABLE = "";
   if (loading) {
     return (
@@ -323,7 +308,7 @@ export default function Main(props) {
                     <Link
                       to={{
                         pathname: `/dark-template/product/${btoa(item.id)}`,
-                        state: { custom: custom },
+                        state: { custom: custom, deliveryFees: deliveryFees },
                       }}
                     >
                       <Typography
@@ -421,7 +406,13 @@ export default function Main(props) {
           }
         ></InfiniteScroll>
       </Container>
-      <Footer title="Checkout Order" theme={custom} url={""} />
+      <Footer
+        title="Checkout Order"
+        theme={custom}
+        url={""}
+        cart={cart}
+        deliveryFees={deliveryFees}
+      />
     </ThemeProvider>
   );
 }
