@@ -66,6 +66,7 @@ const Variants = (props) => {
 
         setAttributes(res.data.fetchData);
       } else {
+
         const varLines = [];
 
         const arrayVar = JSON.parse(jsonvar.data.fetchData);
@@ -90,7 +91,7 @@ const Variants = (props) => {
                 value: key,
                 label: key,
               });
-
+              line[key] = value;
               AttNames[key] = "";
             } else {
               if (count < Object.keys(nameAtter).length) {
@@ -102,6 +103,7 @@ const Variants = (props) => {
           varLines.push(line);
           setVariantsTage(attrFilterName);
         });
+        console.log(varLines);
         setNumberOfVar(varLines);
         setAttributes(res.data.fetchData);
       }

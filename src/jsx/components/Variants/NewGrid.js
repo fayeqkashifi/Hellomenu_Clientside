@@ -111,7 +111,7 @@ const NewGrid = (props) => {
 
   const outputs = [];
   let i = 0;
-
+  
   numberOfVar.map((item, x) => {
     for (const [key, value] of Object.entries(item)) {
       i++;
@@ -152,11 +152,11 @@ const NewGrid = (props) => {
     }
     if (item.image.length != 0) {
       outputs.push(
-        <div className="col-xl-12 col-lg-12 col-sm-12 " key={x}>
+        <div className="col-xl-12 col-lg-12 col-sm-12 " >
           <div className="row">
             {item.image?.map((photo, indexOfImage) => {
               return (
-                <div className="col-xl-2 col-lg-2 col-sm-2" key={indexOfImage}>
+                <div className="col-xl-2 col-lg-2 col-sm-2" key={photo}>
                   <div className="card ">
                     <div className="text-center">
                       <img
