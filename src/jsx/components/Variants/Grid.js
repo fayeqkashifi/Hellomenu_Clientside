@@ -173,9 +173,7 @@ const VariantsGrid = (props) => {
           setVarantGrid={(item) => setVarantGrid(item)}
           items={item}
           productid={productid}
-        >
-          {console.log("ali")}
-        </VariantsLine>
+        ></VariantsLine>
       </div>
 
       <div className={`col-xl-2 col-lg-2 col-sm-2 `}>
@@ -224,11 +222,6 @@ const VariantsGrid = (props) => {
           <div className="col-md-2  p-4 text-center">{t("stock")}</div>
           <div className="col-md-3  p-4 text-center">{t("image")}</div>
           <div className="col-md-2  p-4 text-center">{t("actions")}</div>
-          {/* {filterAttributes?.map((sec, i) => (
-            <div className="col-md-2  p-4" key={i}>
-              {sec.label}
-            </div>
-          ))} */}
         </div>
         {vars}
       </div>

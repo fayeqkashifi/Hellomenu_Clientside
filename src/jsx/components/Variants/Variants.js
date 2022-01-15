@@ -4,6 +4,7 @@ import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 import Grid from "./Grid";
+import NewGrid from "./NewGrid";
 import { CBreadcrumb } from "@coreui/react";
 import Select from "react-select";
 import { Link, useHistory } from "react-router-dom";
@@ -11,10 +12,10 @@ import "@pathofdev/react-tag-input/build/index.css";
 import { TagsInput } from "react-tag-input-component";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CustomAlert from "../CustomAlert";
 
 const Variants = (props) => {
   // for localization
-  const history = useHistory();
 
   const { t } = useTranslation();
   const id = props.history.location.state.p_id;
@@ -24,7 +25,6 @@ const Variants = (props) => {
   const [loading, setLoading] = useState(true);
   const [numberOfVar, setNumberOfVar] = useState([]);
   const [jsonVaraints, setJsonVaratis] = useState("");
-  const [filterAttributes, setfilterAttributes] = useState([]);
   const [check, setCheck] = useState(true);
 
   useEffect(() => {
@@ -99,13 +99,9 @@ const Variants = (props) => {
               count++;
             }
           }
-
-          console.log(attrFilterName);
-
           varLines.push(line);
           setVariantsTage(attrFilterName);
         });
-
         setNumberOfVar(varLines);
         setAttributes(res.data.fetchData);
       }
@@ -213,26 +209,7 @@ const Variants = (props) => {
   const getJSONVaraints = (items) => {
     setJsonVaratis(items);
   };
-  const saveVaraiants = async () => {
-    if (numberOfVar.length === JSON.parse(jsonVaraints).length) {
-      const formdata = new FormData();
-      formdata.append("product_id", id);
-      formdata.append("vars", jsonVaraints);
-      const res = await axios({
-        method: "post",
-        data: formdata,
-        url: "/api/saveVars",
-      });
-      if (res.data.status === 200) {
-        swal("Success", res.data.message, "success");
-      } else {
-        swal("error", res.data.message, "error");
-      }
-    } else {
-      console.log(jsonVaraints);
-      return;
-    }
-  };
+
   const recheckitem = (item) => {
     console.log(item);
   };
@@ -264,6 +241,19 @@ const Variants = (props) => {
     }
   };
 
+  // alert
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   // delete Start
   const deleteAll = (e) => {
     e.preventDefault();
@@ -280,16 +270,16 @@ const Variants = (props) => {
             setNumberOfVar([]);
             setVariantsTage([]);
             setTags([]);
-            swal("Success", res.data.message, "success");
+            setAlerts(true, "success", res.data.message);
           } else if (res.data.status === 404) {
             setNumberOfVar([]);
             setVariantsTage([]);
             setTags([]);
-            swal("Error", res.data.message, "error");
+            setAlerts(true, "error", res.data.message);
           }
         });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -298,6 +288,7 @@ const Variants = (props) => {
     setNumberOfVar([]);
     setVariantsTage([]);
     setTags([]);
+    setAlerts(true, "info", "Form Reseted!");
   };
 
   // insert Attribute start
@@ -315,6 +306,7 @@ const Variants = (props) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setModalCentered(false);
+        setAlerts(true, "success", res.data.message);
       }
     });
   };
@@ -328,6 +320,16 @@ const Variants = (props) => {
   } else {
     return (
       <Fragment>
+        {alert.open ? (
+          <CustomAlert
+            open={alert.open}
+            severity={alert.severity}
+            message={alert.message}
+            setAlert={setAlert}
+          />
+        ) : (
+          ""
+        )}
         <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
           <Link
             to={{
@@ -422,6 +424,23 @@ const Variants = (props) => {
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
               <div className="col-xl-12 col-lg-12 col-sm-12 ">
+                <NewGrid
+                  recheck={(item) => {
+                    recheckitem(item);
+                  }}
+                  getJSONVaraints={(items) => getJSONVaraints(items)}
+                  numberOfVar={numberOfVar}
+                  setNumberOfVar={setNumberOfVar}
+                  // variantsTags={variantsTags}
+                  productid={id}
+                ></NewGrid>
+              </div>
+            </div>
+          </div>
+
+          {/* <div className="col-xl-12 col-lg-12 col-sm-12 ">
+            <div className="card ">
+              <div className="col-xl-12 col-lg-12 col-sm-12 ">
                 <Grid
                   recheck={(item) => {
                     recheckitem(item);
@@ -434,26 +453,7 @@ const Variants = (props) => {
                 ></Grid>
               </div>
             </div>
-          </div>
-          <div className="col-xl-12 col-lg-12 col-sm-12">
-            <div className="row ">
-              {/* <div className="col-xl-1 col-lg-1 col-sm-1">
-                <Button onClick={CreateNewVar}> Add Variant</Button>
-              </div> */}
-              {/* <div className="col-xl-1 col-lg-1 col-sm-1">
-                <Button onClick={removeVar}>Remove Variant</Button>
-              </div> */}
-              <div className="col-xl-1 col-lg-1 col-sm-1">
-                <Button
-                  onClick={saveVaraiants}
-                  disabled={numberOfVar.length == 0 ? "disabled" : ""}
-                >
-                  {" "}
-                  Save Variants
-                </Button>
-              </div>
-            </div>
-          </div>
+          </div> */}
         </div>
 
         <Modal className="fade" show={modalCentered}>
