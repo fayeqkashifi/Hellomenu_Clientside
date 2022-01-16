@@ -273,7 +273,7 @@ const NewGrid = (props) => {
       ) : (
         ""
       )}
-      <div className="card-header">
+      <div className="card-header font-weight-bold">
         <div className="col-md-2">{t("actions")}</div>
         <div className="col-md-3">{t("sku")}</div>
         <div className="col-md-2">{t("price")}</div>

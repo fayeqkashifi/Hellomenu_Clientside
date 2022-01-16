@@ -399,7 +399,10 @@ const Variants = (props) => {
               {variantsTags?.map((item, i) => {
                 return (
                   <div className="row m-2" key={i}>
-                    <div className="col-xl-3 col-lg-3 col-sm-3 ">
+                    <div
+                      className="col-xl-3 col-lg-3 col-sm-3 font-weight-bold d-flex align-items-center justify-content-center"
+                      style={{ backgroundColor: "#f5f5f5" }}
+                    >
                       {item.label}
                     </div>
                     <div className="col-xl-9 col-lg-9 col-sm-9">
