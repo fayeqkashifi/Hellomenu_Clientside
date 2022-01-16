@@ -24,8 +24,9 @@ const Variants = (props) => {
   const [attributes, setAttributes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [numberOfVar, setNumberOfVar] = useState([]);
-  const [jsonVaraints, setJsonVaratis] = useState("");
   const [check, setCheck] = useState(true);
+  const [variantsTags, setVariantsTage] = useState([]);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     const getdata = async () => {
@@ -33,43 +34,28 @@ const Variants = (props) => {
         method: "GET",
         url: `/api/Getvariations/${id}`,
       });
-      if (jsonvar.data.status == 200) {
-        setJsonVaratis(jsonvar.data.fetchData);
-      }
-
       const res = await axios({
         method: "GET",
         url: "/api/GetAttributes",
       });
+
       const nameAtter = {};
       res.data.fetchData.map((fetchData) => {
         nameAtter[fetchData.attributeName] = "";
       });
+
       if (
         res.data.fetchData.length !== attributes.length &&
         jsonvar.data.fetchData == ""
       ) {
-        // const varLines = [];
-        // res.data.fetchData.map((fetchData) => {
-        //   nameAtter[fetchData.attributeName] = "";
-        // });
-        // varLines.push({
-        //   postion: 0,
-        //   sku: "",
-        //   price: "",
-        //   stock: "",
-        //   image: [],
-        //   // ...nameAtter,
-        // });
-        // setNameAtter(nameAtter);
-        // setNumberOfVar(varLines);
-
         setAttributes(res.data.fetchData);
+        // setTags(JSON.parse(jsonvar.data.fetchData.tags));
       } else {
+        setTags(JSON.parse(jsonvar.data.fetchData.tags));
 
         const varLines = [];
 
-        const arrayVar = JSON.parse(jsonvar.data.fetchData);
+        const arrayVar = JSON.parse(jsonvar.data.fetchData.variants);
         const AttNames = {};
 
         arrayVar.map((fetchData) => {
@@ -92,6 +78,7 @@ const Variants = (props) => {
                 label: key,
               });
               line[key] = value;
+
               AttNames[key] = "";
             } else {
               if (count < Object.keys(nameAtter).length) {
@@ -103,7 +90,6 @@ const Variants = (props) => {
           varLines.push(line);
           setVariantsTage(attrFilterName);
         });
-        console.log(varLines);
         setNumberOfVar(varLines);
         setAttributes(res.data.fetchData);
       }
@@ -113,43 +99,44 @@ const Variants = (props) => {
     setLoading(false);
   }, [check]);
   const CreateNewVar = (tag) => {
-    let postion = 0;
-    if (numberOfVar.length > 0) {
-      postion = numberOfVar.length;
-    }
     if (variantsTags.length == 1) {
       let sku = id + "-";
-      if (tags != 0) {
+      if (tag != 0) {
         for (const [attr, values] of Object.entries(tag)) {
-          if (values.length < numberOfVar.length) {
-            // delete variants
-            setNumberOfVar(
-              numberOfVar.filter((val) => {
-                return values.includes(val[attr]);
+          let count = -1;
+          setNumberOfVar((prevState) =>
+            prevState
+              .filter((item) => {
+                return values.includes(item[attr]);
               })
-            );
-          } else {
-            values.map((item) => {
-              const check = numberOfVar.every((section) => {
-                return section.sku != sku + item;
-              });
-              if (check) {
-                setNumberOfVar((numberOfVar) => {
-                  return [
-                    ...numberOfVar,
-                    {
-                      postion: postion,
-                      sku: sku + item,
-                      price: "",
-                      stock: "",
-                      image: [],
-                      [attr]: item,
-                    },
-                  ];
-                });
-              }
+              .map((item) => {
+                count = count + 1;
+                return {
+                  ...item,
+                  postion: count,
+                };
+              })
+          );
+          values.map((item) => {
+            const check = numberOfVar.every((section) => {
+              return section.sku != sku + item;
             });
-          }
+            if (check) {
+              setNumberOfVar((numberOfVar) => {
+                return [
+                  ...numberOfVar,
+                  {
+                    postion: numberOfVar.length,
+                    sku: sku + item,
+                    price: "",
+                    stock: "",
+                    image: [],
+                    [attr]: item,
+                  },
+                ];
+              });
+            }
+          });
         }
       }
     } else {
@@ -197,49 +184,48 @@ const Variants = (props) => {
           ];
         });
       }
-
-      // console.log(numberOfVar);
     }
   };
 
-  // const removeVar = () => {
-  //   const varsLines = numberOfVar;
-  //   varsLines.pop();
-  //   setNumberOfVar([...varsLines]);
-  // };
-  // select box
-  const getJSONVaraints = (items) => {
-    setJsonVaratis(items);
-  };
-
-  const recheckitem = (item) => {
-    console.log(item);
-  };
-  const [variantsTags, setVariantsTage] = useState([]);
   // select box
   const handleSelectEvent = (e) => {
     if (e == null) {
       setVariantsTage([]);
+      setNumberOfVar([]);
+      setTags([]);
     } else {
+      if (e.length < variantsTags.length) {
+        console.log();
+        setNumberOfVar([]);
+        setTags([]);
+      }
       setVariantsTage(e);
     }
   };
-  const [tags, setTags] = useState([]);
   const handleEvent = (e, value) => {
-    setTags({ ...tags, [value]: e });
+    if (e.length != 0) {
+      setTags({ ...tags, [value]: e });
+    }
     if (variantsTags.length == 1) {
       CreateNewVar({ ...tags, [value]: e });
     } else {
+      if (e.length == tags.length) {
+        setNumberOfVar([]);
+      }
       let attrs = [];
-      for (const [attr, values] of Object.entries({ ...tags, [value]: e }))
+      let arrayAttr = [];
+      for (const [attr, values] of Object.entries({ ...tags, [value]: e })) {
         attrs.push(values.map((v) => ({ [attr]: v })));
-
+        arrayAttr.push(attr);
+      }
       attrs = attrs.reduce((a, b) =>
         a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
       );
-      attrs.map((tag) => {
-        CreateNewVar(tag);
-      });
+      if (arrayAttr.length == variantsTags.length) {
+        attrs.map((tag) => {
+          CreateNewVar(tag);
+        });
+      }
     }
   };
 
@@ -256,7 +242,7 @@ const Variants = (props) => {
       message: message,
     });
   };
-  // delete Start
+  // delete
   const deleteAll = (e) => {
     e.preventDefault();
     swal({
@@ -400,17 +386,15 @@ const Variants = (props) => {
           {variantsTags?.map((item, i) => {
             return (
               <div className="row m-2" key={i}>
-                <div
-                  className="col-xl-3 col-lg-3 col-sm-3 "
-                  // style={{ backgroundColor: "#555", font: "white" }}
-                >
-                  {item.label}
-                  {/* {item.value} */}
-                </div>
+                <div className="col-xl-3 col-lg-3 col-sm-3 ">{item.label}</div>
                 <div className="col-xl-9 col-lg-9 col-sm-9">
-                  {/* <TagInput /> */}
+                  {console.log(
+                    tags[item.label] != undefined ? tags[item.label] : []
+                  )}
                   <TagsInput
-                    // value={tags.length == 0 ? "" : []}
+                    value={
+                      tags[item.label] != undefined ? tags[item.label] : []
+                    }
                     onChange={(e) => handleEvent(e, item.label)}
                     // onBlur={CreateNewVar}
                     // id={item.label}
@@ -425,15 +409,11 @@ const Variants = (props) => {
         <div className="row">
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
-              <div className="col-xl-12 col-lg-12 col-sm-12 ">
+              <div className="col-xl-12 col-lg-12 col-sm-12">
                 <NewGrid
-                  recheck={(item) => {
-                    recheckitem(item);
-                  }}
-                  getJSONVaraints={(items) => getJSONVaraints(items)}
                   numberOfVar={numberOfVar}
                   setNumberOfVar={setNumberOfVar}
-                  // variantsTags={variantsTags}
+                  tags={tags}
                   productid={id}
                 ></NewGrid>
               </div>
@@ -450,7 +430,6 @@ const Variants = (props) => {
                   getJSONVaraints={(items) => getJSONVaraints(items)}
                   numberOfVar={numberOfVar}
                   setNumberOfVar={setNumberOfVar}
-                  // variantsTags={variantsTags}
                   productid={id}
                 ></Grid>
               </div>

@@ -7,29 +7,56 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import swal from "sweetalert";
 import { Button } from "react-bootstrap";
+import CustomAlert from "../CustomAlert";
 
 const NewGrid = (props) => {
   const { t } = useTranslation();
 
-  const { numberOfVar, productid, setNumberOfVar } = props;
-
-  const saveVaraiants = async () => {
-    const formdata = new FormData();
-    formdata.append("product_id", productid);
-    formdata.append("vars", JSON.stringify(numberOfVar));
-    const res = await axios({
-      method: "post",
-      data: formdata,
-      url: "/api/saveVars",
+  const { numberOfVar, productid, tags, setNumberOfVar } = props;
+  // alert
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
     });
-    if (res.data.status === 200) {
-      swal("Success", res.data.message, "success");
+  };
+  const saveVaraiants = async () => {
+    let check = true;
+    numberOfVar.map((vars) => {
+      if (
+        vars.price < 0 ||
+        vars.stock < 0 ||
+        vars.stock == "" ||
+        vars.price == ""
+      ) {
+        check = false;
+      }
+    });
+    if (check) {
+      const formdata = new FormData();
+      formdata.append("product_id", productid);
+      formdata.append("vars", JSON.stringify(numberOfVar));
+      formdata.append("tags", JSON.stringify(tags));
+      const res = await axios({
+        method: "post",
+        data: formdata,
+        url: "/api/saveVars",
+      });
+      if (res.data.status === 200) {
+        setAlerts(true, "success", res.data.message);
+      } else {
+        swal("error", res.data.message, "success");
+      }
     } else {
-      swal("error", res.data.message, "error");
+      setAlerts(true, "error", "Data Not Saved Please check the inputs");
     }
   };
-  const [values, setValues] = useState([]);
-  let [errors, setErrors] = useState({});
   const Change = (event, item, index) => {
     if (event.target.name == "image") {
       uploadImage(event, index);
@@ -58,7 +85,6 @@ const NewGrid = (props) => {
       formData.append("file[]", event.target.files[i]);
     }
     const images = [];
-
     axios.post("/api/uploadImage", formData).then((res) => {
       if (res.data.status === 200) {
         val[0].image.map((item) => {
@@ -111,7 +137,7 @@ const NewGrid = (props) => {
 
   const outputs = [];
   let i = 0;
-  
+
   numberOfVar.map((item, x) => {
     for (const [key, value] of Object.entries(item)) {
       i++;
@@ -120,20 +146,37 @@ const NewGrid = (props) => {
           <div className={`col-xl-2 col-lg-2 col-sm-2 m-2 `} key={i}>
             <input
               className={
-                errors[key] ? " form-control is-invalid" : "form-control"
+                key == "price" || key == "stock"
+                  ? value < 0 || value == ""
+                    ? " form-control is-invalid"
+                    : "form-control"
+                  : "form-control"
               }
               disabled={key == "sku"}
-              value={key == "image" ? "" : value}
+              value={
+                key == "image"
+                  ? ""
+                  : // : key == "price" || key == "stock"
+                    // ? value == ""
+                    //   ? 0
+                    //   : value
+                    value
+              }
               // onBlur={(event) => {
               //   changeSku(event);
               // }}
               onChange={(event) => Change(event, item, x)}
               name={key}
-              type={key == "image" ? "file" : ""}
+              type={key == "image" ? "file" : key == "sku" ? "text" : "number"}
+              min="0"
               multiple
             ></input>
-            {errors[key] ? (
-              <div className="invalid-feedback">{errors[key + "message"]}</div>
+            {key == "price" || key == "stock" ? (
+              value < 0 || value == "" ? (
+                <div className="invalid-feedback">
+                  Please Enter Positive Number
+                </div>
+              ) : null
             ) : null}
           </div>
         );
@@ -152,7 +195,7 @@ const NewGrid = (props) => {
     }
     if (item.image.length != 0) {
       outputs.push(
-        <div className="col-xl-12 col-lg-12 col-sm-12 " >
+        <div className="col-xl-12 col-lg-12 col-sm-12 ">
           <div className="row">
             {item.image?.map((photo, indexOfImage) => {
               return (
@@ -196,21 +239,33 @@ const NewGrid = (props) => {
 
   const removeVar = (e, val) => {
     e.preventDefault();
+    let count = -1;
     setNumberOfVar((prevState) =>
       prevState
         .filter((item) => {
           return item.postion != val;
         })
         .map((item) => {
+          count = count + 1;
           return {
             ...item,
-            postion: item.postion > val ? item.postion - 1 : item.postion,
+            postion: count,
           };
         })
     );
   };
   return (
     <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <div className="col-xl-12 col-lg-12 col-sm-12 ">
         <div className="row">
           <div className="col-md-2  p-4 text-center">{t("actions")}</div>
@@ -222,7 +277,6 @@ const NewGrid = (props) => {
         <div className="col-xl-12 col-lg-12 col-sm-12 ">
           <div className="row">{outputs}</div>
         </div>
-
         <div className="col-xl-12 col-lg-12 col-sm-12">
           <div className="row ">
             <div className="col-xl-1 col-lg-1 col-sm-1">

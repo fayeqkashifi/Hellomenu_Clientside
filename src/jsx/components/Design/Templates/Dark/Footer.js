@@ -22,6 +22,7 @@ function Footer(props) {
   return (
     <Box
       component="footer"
+      style={{ position: "fixed", width: "100%" }}
       sx={{
         bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
         position: "sticky",

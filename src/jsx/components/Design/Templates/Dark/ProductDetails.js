@@ -101,10 +101,9 @@ const ProductDetails = (props) => {
         url: `/api/Getvariations/${id}`,
       });
       setFetchData(data[0]);
-
       if (res.data.fetchData !== "") {
-        varData = JSON.parse(res.data.fetchData);
-        setVarPics(JSON.parse(res.data.fetchData));
+        varData = JSON.parse(res.data.fetchData.variants);
+        setVarPics(JSON.parse(res.data.fetchData.variants));
 
         parseVariants(varData);
       }
