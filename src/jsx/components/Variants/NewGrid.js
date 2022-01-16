@@ -143,7 +143,14 @@ const NewGrid = (props) => {
       i++;
       if (key == "sku" || key == "price" || key == "stock" || key == "image") {
         outputs.push(
-          <div className={`col-xl-2 col-lg-2 col-sm-2 m-2 `} key={i}>
+          <div
+            className={`col-xl-${
+              key == "sku" || key == "image" ? 3 : 2
+            } col-lg-${key == "sku" || key == "image" ? 3 : 2} col-sm-${
+              key == "sku" || key == "image" ? 3 : 2
+            } my-2  `}
+            key={i}
+          >
             <input
               className={
                 key == "price" || key == "stock"
@@ -185,8 +192,8 @@ const NewGrid = (props) => {
           <div className={`col-xl-2 col-lg-2 col-sm-2 col-md-2`} key={i}>
             <Tooltip title="Delete">
               <IconButton onClick={(e) => removeVar(e, value)}>
-                {value}
-                <DeleteIcon fontSize="small" sx={{ color: "red" }} />
+                {/* {value} */}
+                <DeleteIcon sx={{ color: "red" }} />
               </IconButton>
             </Tooltip>
           </div>
@@ -266,30 +273,25 @@ const NewGrid = (props) => {
       ) : (
         ""
       )}
-      <div className="col-xl-12 col-lg-12 col-sm-12 ">
-        <div className="row">
-          <div className="col-md-2  p-4 text-center">{t("actions")}</div>
-          <div className="col-md-3  p-4 text-center ">{t("sku")}</div>
-          <div className="col-md-2  p-4 text-center">{t("price")}</div>
-          <div className="col-md-2  p-4 text-center">{t("stock")}</div>
-          <div className="col-md-3  p-4 text-center">{t("image")}</div>
-        </div>
-        <div className="col-xl-12 col-lg-12 col-sm-12 ">
-          <div className="row">{outputs}</div>
-        </div>
-        <div className="col-xl-12 col-lg-12 col-sm-12">
-          <div className="row ">
-            <div className="col-xl-1 col-lg-1 col-sm-1">
-              <Button
-                onClick={saveVaraiants}
-                disabled={numberOfVar.length == 0 ? "disabled" : ""}
-              >
-                {" "}
-                Save Variants
-              </Button>
-            </div>
-          </div>
-        </div>
+      <div className="card-header">
+        <div className="col-md-2">{t("actions")}</div>
+        <div className="col-md-3">{t("sku")}</div>
+        <div className="col-md-2">{t("price")}</div>
+        <div className="col-md-2">{t("stock")}</div>
+        <div className="col-md-3">{t("image")}</div>
+      </div>
+      <div className={`card-body ${numberOfVar.length == 0 ? "d-none" : ""}`}>
+        <div className="row">{outputs}</div>
+      </div>
+
+      <div className={`card-footer ${numberOfVar.length == 0 ? "d-none" : ""}`}>
+        <Button
+          onClick={saveVaraiants}
+          disabled={numberOfVar.length == 0 ? "disabled" : ""}
+        >
+          {" "}
+          Save Variants
+        </Button>
       </div>
     </Fragment>
   );

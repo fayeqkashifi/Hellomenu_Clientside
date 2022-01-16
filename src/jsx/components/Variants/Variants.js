@@ -420,47 +420,32 @@ const Variants = (props) => {
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-xl-12 col-lg-12 col-sm-12">
-            {" "}
-            <div className="d-flex justify-content-between">
-              <label className="mb-1 "></label>
-              <small
-                style={{ cursor: "pointer" }}
-                onClick={(e) => deleteAll(e)}
-              >
-                {t("remove_all")}
-              </small>
-            </div>
-          </div>
-          <div className="col-xl-12 col-lg-12 col-sm-12 ">
-            <div className="card ">
-              <div className="col-xl-12 col-lg-12 col-sm-12">
-                <NewGrid
-                  numberOfVar={numberOfVar}
-                  setNumberOfVar={setNumberOfVar}
-                  tags={tags}
-                  productid={id}
-                ></NewGrid>
+        <div className="card">
+          <div className="card-body">
+            <div
+              className={`col-xl-12 col-lg-12 col-sm-12 ${
+                numberOfVar.length == 0 ? "d-none" : ""
+              }`}
+            >
+              {" "}
+              <div className="d-flex justify-content-between">
+                <label className="mb-1 "></label>
+                <small
+                  style={{ cursor: "pointer" }}
+                  onClick={(e) => deleteAll(e)}
+                >
+                  {t("remove_all")}
+                </small>
               </div>
             </div>
-          </div>
 
-          {/* <div className="col-xl-12 col-lg-12 col-sm-12 ">
-            <div className="card ">
-              <div className="col-xl-12 col-lg-12 col-sm-12 ">
-                <Grid
-                  recheck={(item) => {
-                    recheckitem(item);
-                  }}
-                  getJSONVaraints={(items) => getJSONVaraints(items)}
-                  numberOfVar={numberOfVar}
-                  setNumberOfVar={setNumberOfVar}
-                  productid={id}
-                ></Grid>
-              </div>
-            </div>
-          </div> */}
+            <NewGrid
+              numberOfVar={numberOfVar}
+              setNumberOfVar={setNumberOfVar}
+              tags={tags}
+              productid={id}
+            ></NewGrid>
+          </div>
         </div>
 
         <Modal className="fade" show={modalCentered}>
