@@ -312,6 +312,8 @@ const Variants = (props) => {
         setCheck(!check);
         setModalCentered(false);
         setAlerts(true, "success", res.data.message);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
   };

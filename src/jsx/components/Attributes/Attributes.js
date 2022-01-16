@@ -43,6 +43,8 @@ const Attributes = (props) => {
         setAlerts(true, "success", res.data.message);
 
         setModalCentered(false);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
   };
@@ -71,10 +73,10 @@ const Attributes = (props) => {
         setCheck(!check);
         setEditModalCentered(false);
         setAlerts(true, "success", res.data.message);
-
-        //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         setAlerts(true, "error", res.data.message);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
   };
