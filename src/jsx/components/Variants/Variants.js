@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect   } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
@@ -16,7 +16,6 @@ import CustomAlert from "../CustomAlert";
 
 const Variants = (props) => {
   // for localization
-
   const { t } = useTranslation();
   const id = props.history.location.state.p_id;
   const branchId = props.history.location.state.id;
@@ -51,7 +50,8 @@ const Variants = (props) => {
         setAttributes(res.data.fetchData);
         // setTags(JSON.parse(jsonvar.data.fetchData.tags));
       } else {
-        setTags(JSON.parse(jsonvar.data.fetchData.tags));
+        const recTags=JSON.parse(jsonvar.data.fetchData.tags);
+        setTags(recTags);
 
         const varLines = [];
 
@@ -186,7 +186,7 @@ const Variants = (props) => {
       }
     }
   };
-
+  const [change, setChange]=useState(false);
   // select box
   const handleSelectEvent = (e) => {
     if (e == null) {
@@ -195,9 +195,9 @@ const Variants = (props) => {
       setTags([]);
     } else {
       if (e.length < variantsTags.length) {
-        console.log();
         setNumberOfVar([]);
         setTags([]);
+        setChange(!change);
       }
       setVariantsTage(e);
     }
@@ -388,16 +388,12 @@ const Variants = (props) => {
               <div className="row m-2" key={i}>
                 <div className="col-xl-3 col-lg-3 col-sm-3 ">{item.label}</div>
                 <div className="col-xl-9 col-lg-9 col-sm-9">
-                  {console.log(
-                    tags[item.label] != undefined ? tags[item.label] : []
-                  )}
                   <TagsInput
+                    key={change}
                     value={
-                      tags[item.label] != undefined ? tags[item.label] : []
+                      tags[item.label] == undefined ? (e) => e=[] : tags[item.label]
                     }
                     onChange={(e) => handleEvent(e, item.label)}
-                    // onBlur={CreateNewVar}
-                    // id={item.label}
                     placeHolder="Please Enter A Value"
                   />
                 </div>
