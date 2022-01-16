@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect   } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
@@ -50,7 +50,7 @@ const Variants = (props) => {
         setAttributes(res.data.fetchData);
         // setTags(JSON.parse(jsonvar.data.fetchData.tags));
       } else {
-        const recTags=JSON.parse(jsonvar.data.fetchData.tags);
+        const recTags = JSON.parse(jsonvar.data.fetchData.tags);
         setTags(recTags);
 
         const varLines = [];
@@ -186,7 +186,7 @@ const Variants = (props) => {
       }
     }
   };
-  const [change, setChange]=useState(false);
+  const [change, setChange] = useState(false);
   // select box
   const handleSelectEvent = (e) => {
     if (e == null) {
@@ -209,22 +209,39 @@ const Variants = (props) => {
     if (variantsTags.length == 1) {
       CreateNewVar({ ...tags, [value]: e });
     } else {
-      if (e.length == tags.length) {
-        setNumberOfVar([]);
-      }
-      let attrs = [];
-      let arrayAttr = [];
-      for (const [attr, values] of Object.entries({ ...tags, [value]: e })) {
-        attrs.push(values.map((v) => ({ [attr]: v })));
-        arrayAttr.push(attr);
-      }
-      attrs = attrs.reduce((a, b) =>
-        a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
-      );
-      if (arrayAttr.length == variantsTags.length) {
-        attrs.map((tag) => {
-          CreateNewVar(tag);
-        });
+      if (e.length < tags[value]?.length) {
+        let count = -1;
+
+        setNumberOfVar(
+          numberOfVar
+            .filter((item) => {
+              if (e.includes(item[value])) {
+                return item;
+              }
+            })
+            .map((item) => {
+              count = count + 1;
+              return {
+                ...item,
+                postion: count,
+              };
+            })
+        );
+      } else {
+        let attrs = [];
+        let arrayAttr = [];
+        for (const [attr, values] of Object.entries({ ...tags, [value]: e })) {
+          attrs.push(values.map((v) => ({ [attr]: v })));
+          arrayAttr.push(attr);
+        }
+        attrs = attrs.reduce((a, b) =>
+          a.flatMap((d) => b.map((e) => ({ ...d, ...e })))
+        );
+        if (arrayAttr.length == variantsTags.length) {
+          attrs.map((tag) => {
+            CreateNewVar(tag);
+          });
+        }
       }
     }
   };
@@ -330,21 +347,21 @@ const Variants = (props) => {
           </Link>
         </CBreadcrumb>
 
-        <div className="row">
-          <div className="col-xl-12 col-lg-12 col-sm-12 ">
-            {" "}
-            <div className="d-flex justify-content-between">
-              <label className="mb-1 "></label>
-              <small
-                style={{ cursor: "pointer" }}
-                onClick={() => setModalCentered(true)}
-              >
-                {t("add_attribute")}
-              </small>
+        <div className="card">
+          <div className="card-body">
+            <div className="col-xl-12 col-lg-12 col-sm-12 ">
+              {" "}
+              <div className="d-flex justify-content-between">
+                <label className="mb-1 "></label>
+                <small
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setModalCentered(true)}
+                >
+                  {t("add_attribute")}
+                </small>
+              </div>
             </div>
-          </div>
-          <div className="col-xl-12 col-lg-12 col-sm-12 ">
-            <div className="card ">
+            <div className="col-xl-12 col-lg-12 col-sm-12 ">
               <Select
                 value={variantsTags}
                 isMulti
@@ -359,50 +376,63 @@ const Variants = (props) => {
             </div>
           </div>
         </div>
-        <div className="col-xl-12 col-lg-12 col-sm-12 ">
-          {" "}
-          <div className="d-flex justify-content-between">
-            <label className="mb-1 "></label>
-            <small style={{ cursor: "pointer" }} onClick={(e) => deleteAll(e)}>
-              {t("remove_all")}
-            </small>
+
+        <div className={`card ${variantsTags.length == 0 ? "d-none" : ""}`}>
+          <div className="card-body">
+            <div className="col-xl-12 col-lg-12 col-sm-12 ">
+              <div
+                className={`col-xl-12 col-lg-12 col-sm-12 ${
+                  variantsTags.length == 0 ? "d-none" : ""
+                }`}
+              >
+                {" "}
+                <div className="d-flex justify-content-between">
+                  <label className="mb-1 "></label>
+                  <small
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => reset(e)}
+                  >
+                    {t("reset_to_default")}
+                  </small>
+                </div>
+              </div>
+              {variantsTags?.map((item, i) => {
+                return (
+                  <div className="row m-2" key={i}>
+                    <div className="col-xl-3 col-lg-3 col-sm-3 ">
+                      {item.label}
+                    </div>
+                    <div className="col-xl-9 col-lg-9 col-sm-9">
+                      <TagsInput
+                        key={change}
+                        value={
+                          tags[item.label] == undefined
+                            ? (e) => (e = [])
+                            : tags[item.label]
+                        }
+                        onChange={(e) => handleEvent(e, item.label)}
+                        placeHolder="Please Enter A Value"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-
-        <div className="col-xl-12 col-lg-12 col-sm-12 p-5">
-          <div
-            className={`col-xl-12 col-lg-12 col-sm-12 ${
-              variantsTags.length == 0 ? "d-none" : ""
-            }`}
-          >
+        <div className="row">
+          <div className="col-xl-12 col-lg-12 col-sm-12">
             {" "}
             <div className="d-flex justify-content-between">
               <label className="mb-1 "></label>
-              <small style={{ cursor: "pointer" }} onClick={(e) => reset(e)}>
-                {t("reset_to_default")}
+              <small
+                style={{ cursor: "pointer" }}
+                onClick={(e) => deleteAll(e)}
+              >
+                {t("remove_all")}
               </small>
             </div>
           </div>
-          {variantsTags?.map((item, i) => {
-            return (
-              <div className="row m-2" key={i}>
-                <div className="col-xl-3 col-lg-3 col-sm-3 ">{item.label}</div>
-                <div className="col-xl-9 col-lg-9 col-sm-9">
-                  <TagsInput
-                    key={change}
-                    value={
-                      tags[item.label] == undefined ? (e) => e=[] : tags[item.label]
-                    }
-                    onChange={(e) => handleEvent(e, item.label)}
-                    placeHolder="Please Enter A Value"
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="row">
           <div className="col-xl-12 col-lg-12 col-sm-12 ">
             <div className="card ">
               <div className="col-xl-12 col-lg-12 col-sm-12">
