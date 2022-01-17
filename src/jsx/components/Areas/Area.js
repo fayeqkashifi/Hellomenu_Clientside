@@ -39,32 +39,18 @@ const Area = (props) => {
     });
   };
   const save = (data) => {
-    const checkCate = fetchData.every((item) => {
-      if (item.areaName === data.areaName && item.city_id === data.city) {
-        return false;
-      } else {
-        return true;
+    const formData = new FormData();
+    formData.append("city_id", data.city);
+    formData.append("areaName", data.areaName);
+    axios.post("/api/InsertAreas", formData).then((res) => {
+      if (res.data.status === 200) {
+        setCheck(!check);
+        setModalCentered(false);
+        setAlerts(true, "success", res.data.message);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
-
-    if (checkCate) {
-      const formData = new FormData();
-      formData.append("city_id", data.city);
-      formData.append("areaName", data.areaName);
-      axios.post("/api/InsertAreas", formData).then((res) => {
-        if (res.data.status === 200) {
-          setCheck(!check);
-          setModalCentered(false);
-          setAlerts(true, "success", res.data.message);
-        }
-      });
-    } else {
-      setAlerts(
-        true,
-        "warning",
-        "The name already exists, please try another name."
-      );
-    }
   };
   // insert end
   // edit Attribute start
@@ -110,6 +96,8 @@ const Area = (props) => {
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         setAlerts(true, "error", res.data.message);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
   };

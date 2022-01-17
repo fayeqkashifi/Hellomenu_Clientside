@@ -46,26 +46,16 @@ const Branches = () => {
     });
   };
   const saveBranch = (data) => {
-    // console.log(JSON.stringify(data, null, 2));
     if (atob(localStorage.getItem("auth_company_id")) != "null") {
-      const checkBranch = branchdata.every((item) => {
-        return item.BrancheName !== data.BrancheName;
+      axios.post("/api/InsertBranches", data).then((res) => {
+        if (res.data.status === 200) {
+          setModalCentered(false);
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
+        }
       });
-      if (checkBranch) {
-        axios.post("/api/InsertBranches", data).then((res) => {
-          if (res.data.status === 200) {
-            setModalCentered(false);
-            setCheck(!check);
-            setAlerts(true, "success", res.data.message);
-          }
-        });
-      } else {
-        setAlerts(
-          true,
-          "warning",
-          "The name already exists, please try another name."
-        );
-      }
     } else {
       swal(
         "warning",
@@ -96,26 +86,16 @@ const Branches = () => {
     });
   };
   const updateBranch = (data) => {
-    // const checkBranch = branchdata.every((item) => {
-    //   return item.BrancheName !== data.BrancheName;
-    // });
-    // console.log(checkBranch);
-    // if (checkBranch) {
     axios.post("/api/UpdateBranches", data).then((res) => {
       if (res.data.status === 200) {
-        setEditModalCentered(false);
         setAlerts(true, "success", res.data.message);
         setEditBranchstate([]);
         setCheck(!check);
+        setEditModalCentered(false);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
-    // } else {
-    //   swal(
-    //     "warning",
-    //     "The name already exists, please try another name.",
-    //     "warning"
-    //   );
-    // }
   };
   // edit end
 

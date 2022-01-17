@@ -3,10 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import { Link } from "react-router-dom";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
 import DefaultPic from "../../../images/hellomenu/sub_category.svg";
@@ -38,13 +35,7 @@ const SubCategory = (props) => {
     SubCategoryName: "",
     CategoryID: id,
   });
-  const handleInput = (e) => {
-    e.persist();
-    setSubCategoryInsert({
-      ...subCategoryInsert,
-      [e.target.name]: e.target.value,
-    });
-  };
+
   const [imageState, setImageState] = useState([]);
 
   const handleImage = (e) => {
@@ -74,23 +65,14 @@ const SubCategory = (props) => {
       formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
       axios.post("/api/InsertSubCategories", formData).then((res) => {
         if (res.data.status === 200) {
-          // console.log(res.data.status);
-
           setImageState([]);
           setCheck(!check);
-
           setAlerts(true, "success", res.data.message);
-
           setModalCentered(false);
-          //  this.props.history.push("/")
         }
       });
     } else {
-      setAlerts(
-        true,
-        "warning",
-        "The name already exists, please try another name."
-      );
+      setAlerts(true, "warning", "Already exists, Please Try another name!");
     }
   };
   // insert End
@@ -127,6 +109,8 @@ const SubCategory = (props) => {
         //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         setAlerts(true, "error", res.data.message);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
   };

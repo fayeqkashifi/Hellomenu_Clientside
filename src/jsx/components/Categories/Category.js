@@ -62,7 +62,6 @@ const Category = (props) => {
     });
   };
   const saveMenu = (data) => {
-    // e.preventDefault();
     const checkCate = fetchData.every((item) => {
       return item.CategoryName !== data.CategoryName;
     });
@@ -81,17 +80,11 @@ const Category = (props) => {
           setShare(false);
           setProductBranches([]);
           setAlerts(true, "success", res.data.message);
-
           setModalCentered(false);
-          //  this.props.history.push("/")
         }
       });
     } else {
-      setAlerts(
-        true,
-        "warning",
-        "The name already exists, please try another name."
-      );
+      setAlerts(true, "warning", "Already exists, Please Try another name!");
     }
   };
   const initialValuesCate = {
@@ -110,9 +103,7 @@ const Category = (props) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setAlerts(true, "success", res.data.message);
-
         setModal(false);
-        //  this.props.history.push("/")
       }
     });
   };
@@ -156,6 +147,8 @@ const Category = (props) => {
         setEditModalCentered(false);
       } else if (res.data.status === 404) {
         setAlerts(true, "error", res.data.message);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
       }
     });
   };
