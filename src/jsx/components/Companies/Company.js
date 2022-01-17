@@ -1,30 +1,23 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 
 const Company = () => {
   // validation start
-  const schema = yup
-    .object()
-    .shape({
-      company: yup.string().required(),
-    })
-    .required();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const initialValues = {
+    company: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      company: Yup.string().required("Company Name is required"),
+    });
+  };
   // validation end
 
   // for localization
@@ -32,11 +25,6 @@ const Company = () => {
 
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
-  const [companyState, setCompanyState] = useState([]);
-  const handleInput = (e) => {
-    e.preventDefault();
-    setCompanyState({ ...companyState, [e.target.name]: e.target.value });
-  };
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -49,16 +37,12 @@ const Company = () => {
       message: message,
     });
   };
-  const saveCompany = (e) => {
-    axios.post("/api/InsertCompanies", companyState).then((res) => {
+  const saveCompany = (data) => {
+    axios.post("/api/InsertCompanies", data).then((res) => {
       if (res.data.status === 200) {
         localStorage.setItem("auth_company_id", btoa(res.data.company_id));
-        setCompanyState([]);
         setCheck(!check);
-
-        reset();
         setAlerts(true, "success", res.data.message);
-
         setModalCentered(false);
         //  this.props.history.push("/")
       }
@@ -68,13 +52,7 @@ const Company = () => {
   // edit Start
   const [editmodalCentered, setEditModalCentered] = useState(false);
   const [editCompanystate, setEditCompanystate] = useState([]);
-  const editHandleInput = (e) => {
-    e.persist();
-    setEditCompanystate({
-      ...editCompanystate,
-      [e.target.name]: e.target.value,
-    });
-  };
+
   const editCompany = (e, id) => {
     e.preventDefault();
     axios.get(`/api/EditCompanies/${id}`).then((res) => {
@@ -86,16 +64,13 @@ const Company = () => {
       }
     });
   };
-  const updateCompany = (e) => {
-    e.preventDefault();
-    axios.post("/api/UpdateCompanies", editCompanystate).then((res) => {
+  const updateCompany = (data) => {
+    axios.post("/api/UpdateCompanies", data).then((res) => {
       if (res.data.status === 200) {
         setEditCompanystate([]);
         setCheck(!check);
         setAlerts(true, "success", res.data.message);
-
         setEditModalCentered(false);
-        //  this.props.history.push("/")
       }
     });
   };
@@ -119,7 +94,6 @@ const Company = () => {
           } else if (res.data.status === 404) {
             setAlerts(true, "error", res.data.message);
           }
-          setCompanyState([]);
         });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
@@ -199,106 +173,124 @@ const Company = () => {
       </CBreadcrumb>
       {/* <!-- Insert  Modal --> */}
       <Modal className="fade" show={modalCentered}>
-        <Form onSubmit={handleSubmit(saveCompany)} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("add_company")}</Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("company_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                {...register("company")}
-                className="form-control"
-                placeholder={t("company_name")}
-                name="company"
-                onChange={handleInput}
-                value={companyState.company}
-              />
-              <div className="text-danger">{errors.company?.message}</div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("save")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Header>
+          <Modal.Title>{t("add_company")}</Modal.Title>
+          <Button
+            onClick={() => setModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={saveCompany}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label className="mb-1 ">
+                    {" "}
+                    <strong>{t("company_name")}</strong>{" "}
+                  </label>
+                  <Field
+                    name="company"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.company && touched.company ? " is-invalid" : "")
+                    }
+                    placeholder="Name...."
+                  />
+                  <ErrorMessage
+                    name="company"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("save")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       {/* Edit Modal */}
       <Modal className="fade" show={editmodalCentered}>
-        <Form onSubmit={updateCompany} method="POST">
-          <Modal.Header>
-            <Modal.Title>{t("edit_company")}</Modal.Title>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form-group d-none">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("id")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                disabled="disabled"
-                className="form-control"
-                // placeholder="Company Name"
-                name="id"
-                required
-                onChange={editHandleInput}
-                value={editCompanystate.id}
-              />
-            </div>
-            <div className="form-group">
-              <label className="mb-1 ">
-                {" "}
-                <strong>{t("company_name")}</strong>{" "}
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("company_name")}
-                name="company"
-                required
-                onChange={editHandleInput}
-                value={editCompanystate.company}
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => setEditModalCentered(false)}
-              variant="danger light"
-            >
-              {t("close")}
-            </Button>
-            <Button variant="primary" type="submit">
-              {t("update")}{" "}
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Header>
+          <Modal.Title>{t("edit_company")}</Modal.Title>
+          <Button
+            onClick={() => setEditModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={editCompanystate}
+          validationSchema={validationSchema}
+          onSubmit={updateCompany}
+        >
+          {({ errors, status, touched }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label className="mb-1 ">
+                    {" "}
+                    <strong>{t("company_name")}</strong>{" "}
+                  </label>
+                  <Field
+                    name="company"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.company && touched.company ? " is-invalid" : "")
+                    }
+                    placeholder="Name...."
+                  />
+                  <ErrorMessage
+                    name="company"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                  {/* <input
+                    type="text"
+                    className="form-control"
+                    placeholder={t("company_name")}
+                    name="company"
+                    required
+                    onChange={editHandleInput}
+                    value={editCompanystate.company}
+                  /> */}
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setEditModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <Button variant="primary" type="submit">
+                  {t("update")}{" "}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
       </Modal>
       <div className="row">
         <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
