@@ -8,10 +8,19 @@ import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
+
 function Header(props) {
   const history = useHistory();
 
-  const { menu, activeMenu, setProducts, setActiveMenu, custom, cart } = props;
+  const {
+    menu,
+    activeMenu,
+    setProducts,
+    setActiveMenu,
+    custom,
+    cart,
+    setCart,
+  } = props;
   const filterProducts = (menu) => {
     if (menu.sub_category_id === null) {
       setActiveMenu(menu.CategoryName + menu.category_id);
@@ -51,34 +60,34 @@ function Header(props) {
           align="center"
           sx={{ flex: 1 }}
         ></Typography>
-        <Link
+        {/* <Link
           to={{
             pathname: `/dark-templates/cart`,
-            state: { custom: custom },
+            // state: { custom: custom, cart: cart, setCart: setCart },
           }}
+        > */}
+        <Badge
+          badgeContent={cart.length}
+          sx={{
+            "& .MuiBadge-badge": {
+              color: custom?.menusDeactiveColor
+                ? custom.menusDeactiveColor
+                : "#fff",
+              backgroundColor: custom?.menusAcriveColor
+                ? custom.menusAcriveColor
+                : "#f27d1e",
+            },
+          }}
+          overlap="circular"
         >
-          <Badge
-            badgeContent={cart}
+          <AddShoppingCartIcon
+            fontSize="small"
             sx={{
-              "& .MuiBadge-badge": {
-                color: custom?.menusDeactiveColor
-                  ? custom.menusDeactiveColor
-                  : "#fff",
-                backgroundColor: custom?.menusAcriveColor
-                  ? custom.menusAcriveColor
-                  : "#f27d1e",
-              },
+              color: "#fff",
             }}
-            overlap="circular"
-          >
-            <AddShoppingCartIcon
-              fontSize="small"
-              sx={{
-                color: "#fff",
-              }}
-            />
-          </Badge>
-        </Link>
+          />
+        </Badge>
+        {/* </Link> */}
       </Toolbar>
 
       {menu === 0 ? (

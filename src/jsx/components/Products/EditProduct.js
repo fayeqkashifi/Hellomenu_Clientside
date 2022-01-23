@@ -546,7 +546,7 @@ const EditProduct = (props) => {
                   <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                     <div className="form-group">
                       <label className="mb-1 ">
-                        <strong>{t("recommendation_roducts")}</strong>
+                        <strong>{t("recommendation_products")}</strong>
                       </label>
                       <Select
                         defaultValue={productRecom}

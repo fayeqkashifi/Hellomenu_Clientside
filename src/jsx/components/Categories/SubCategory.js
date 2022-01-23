@@ -31,10 +31,6 @@ const SubCategory = (props) => {
 
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
-  const [subCategoryInsert, setSubCategoryInsert] = useState({
-    SubCategoryName: "",
-    CategoryID: id,
-  });
 
   const [imageState, setImageState] = useState([]);
 
@@ -154,7 +150,7 @@ const SubCategory = (props) => {
       }
       setLoading(false);
     });
-  }, [check]);
+  }, [check, id]);
   const [layout, setLayout] = useState(
     JSON.parse(
       localStorage.getItem("layoutSubCategory")

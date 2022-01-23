@@ -3,7 +3,6 @@ import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import QRCode from "qrcode.react";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
@@ -20,12 +19,17 @@ const Tables = (props) => {
   const initialValues = {
     tableId: "",
     tableName: "",
+    numberOfSeats: "",
     branchId: id,
   };
   const validationSchema = () => {
     return Yup.object().shape({
-      tableId: Yup.string().required("Table ID is required"),
-      tableName: Yup.string().required("Table Name is required"),
+      tableId: Yup.string().required("Table Number is required"),
+      numberOfSeats: Yup.number()
+        .integer()
+        .required("Number Of Seats is required")
+        .min(1, "Please add greater than 1"),
+      // tableName: Yup.string().required("Table Name is required"),
     });
   };
   // validation end
@@ -67,6 +71,7 @@ const Tables = (props) => {
   const [editTable, setEditTable] = useState({
     tableId: "",
     tableName: "",
+    numberOfSeats: "",
     branchId: id,
   });
 
@@ -88,8 +93,6 @@ const Tables = (props) => {
 
         setEditModalCentered(false);
         setCheck(!check);
-
-        //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         setAlerts(true, "error", res.data.message);
       }
@@ -128,17 +131,15 @@ const Tables = (props) => {
   useEffect(() => {
     axios.get(`/api/GetTables/${id}`).then((res) => {
       if (res.data.status === 200) {
-        // console.log(res.data.fetchData);
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
-  }, [check]);
+  }, [check, id]);
   // download QRcode
   const downloadQRCode = (e, id) => {
     e.preventDefault();
     // console.log(id)
-
     const qrCodeURL = document
       .getElementById(id)
       .toDataURL("image/png")
@@ -180,9 +181,7 @@ const Tables = (props) => {
               level={"H"}
               size={256}
               fgColor="#f50b65"
-              value={`http://192.168.1.103:3000/show-branch-details/${btoa(
-                item.id
-              )}`}
+              value={item.tableId}
               className="primary d-none"
             />
             <div
@@ -245,7 +244,7 @@ const Tables = (props) => {
             <Form>
               <Modal.Body>
                 <div className="form-group">
-                  <label> {t("table_id")}</label>
+                  <label> {t("table_number")}</label>
                   <Field
                     name="tableId"
                     type="text"
@@ -253,7 +252,7 @@ const Tables = (props) => {
                       "form-control" +
                       (errors.tableId && touched.tableId ? " is-invalid" : "")
                     }
-                    placeholder="ID...."
+                    placeholder="Number...."
                   />
                   <ErrorMessage
                     name="tableId"
@@ -276,6 +275,25 @@ const Tables = (props) => {
                   />
                   <ErrorMessage
                     name="tableName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("number_of_seats")}</label>
+                  <Field
+                    name="numberOfSeats"
+                    type="Number"
+                    className={
+                      "form-control" +
+                      (errors.numberOfSeats && touched.numberOfSeats
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="A Number..."
+                  />
+                  <ErrorMessage
+                    name="numberOfSeats"
                     component="div"
                     className="invalid-feedback"
                   />
@@ -321,13 +339,11 @@ const Tables = (props) => {
                     level={"H"}
                     size={128}
                     fgColor="#f50b65"
-                    value={`http://192.168.1.103:3000/show-branch-details/${btoa(
-                      editTable.tableId
-                    )}`}
+                    value={editTable.tableId}
                   />
                 </div>
                 <div className="form-group">
-                  <label> {t("table_id")}</label>
+                  <label> {t("table_number")}</label>
                   <Field
                     name="tableId"
                     type="text"
@@ -335,7 +351,7 @@ const Tables = (props) => {
                       "form-control" +
                       (errors.tableId && touched.tableId ? " is-invalid" : "")
                     }
-                    placeholder="ID...."
+                    placeholder="Number...."
                   />
                   <ErrorMessage
                     name="tableId"
@@ -358,6 +374,25 @@ const Tables = (props) => {
                   />
                   <ErrorMessage
                     name="tableName"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("number_of_seats")}</label>
+                  <Field
+                    name="numberOfSeats"
+                    type="Number"
+                    className={
+                      "form-control" +
+                      (errors.numberOfSeats && touched.numberOfSeats
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="A Number..."
+                  />
+                  <ErrorMessage
+                    name="numberOfSeats"
                     component="div"
                     className="invalid-feedback"
                   />
@@ -431,46 +466,43 @@ const Tables = (props) => {
                 <div className="card overflow-hidden">
                   <div className="card-body">
                     <div className="text-center">
-                      <Link
-                        to={{
-                          pathname: `/branches/show`,
-                          state: { id: item.id, BrancheName: item.BrancheName },
-                        }}
+                      <QRCode
+                        id={btoa(item.id)}
+                        level={"H"}
+                        size={128}
+                        fgColor="#f50b65"
+                        value={item.tableId}
+                        className="primary "
+                      />
+                      <div
+                        onClick={(e) => downloadQRCode(e, btoa(item.id))}
+                        style={{ cursor: "pointer" }}
                       >
-                        <QRCode
-                          id={btoa(item.id)}
-                          level={"H"}
-                          size={128}
-                          fgColor="#f50b65"
-                          value={`http://192.168.1.103:3000/show-branch-details/${btoa(
-                            item.id
-                          )}`}
-                          className="primary "
-                        />
-                        <div
-                          onClick={(e) => downloadQRCode(e, btoa(item.id))}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {" "}
-                          {t("download_qr_code")}
-                        </div>
+                        {" "}
+                        {t("download_qr_code")}
+                      </div>
 
-                        <h6> {item.tableId}</h6>
-                        <h4> {item.tableName}</h4>
-                      </Link>
+                      <h6> {item.tableId}</h6>
+                      <h4> {item.tableName}</h4>
                     </div>
                   </div>
                   <div className="card-footer pt-0 pb-0 text-center">
                     <div className="row">
                       <div className="col-6 pt-3 pb-3 border-right">
-                        <Link to="" onClick={(e) => fetchTable(e, item.id)}>
+                        <div
+                          style={{ cursor: "pointer" }}
+                          onClick={(e) => fetchTable(e, item.id)}
+                        >
                           <span>{t("edit")}</span>
-                        </Link>
+                        </div>
                       </div>
                       <div className="col-6 pt-3 pb-3">
-                        <Link to="" onClick={(e) => deleteTable(e, item.id)}>
+                        <div
+                          style={{ cursor: "pointer" }}
+                          onClick={(e) => deleteTable(e, item.id)}
+                        >
                           <span>{t("delete")}</span>
-                        </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

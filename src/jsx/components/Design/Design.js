@@ -36,7 +36,7 @@ import Grid from "@mui/material/Grid";
 import CustomAlert from "../CustomAlert";
 
 const Design = (props) => {
-  const { path, url } = useRouteMatch();
+  const { url } = useRouteMatch();
 
   const { t } = useTranslation();
   // const branchId = atob(props.match.params.id);

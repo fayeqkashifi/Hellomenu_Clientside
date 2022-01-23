@@ -22,8 +22,8 @@ import Box from "@mui/material/Box";
 import getSymbolFromCurrency from "currency-symbol-map";
 import FormGroup from "@mui/material/FormGroup";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
-import ReactWhatsapp from "react-whatsapp";
 import { Swiper, SwiperSlide } from "swiper/react";
+import CustomAlert from "../../../CustomAlert";
 
 const OrderDetails = (props) => {
   const custom = props.history.location.state.custom;
@@ -74,11 +74,12 @@ const OrderDetails = (props) => {
   const countryCode = props.history.location.state.countryCode;
   const extraValue = props.history.location.state.extraValue;
   const ingredients = props.history.location.state.ingredients;
+  const skuarray = props.history.location.state.skuarray;
 
   const id = atob(props.match.params.id);
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [item, setItem] = useState([]);
   useEffect(() => {
     const getdata = async () => {
       const product = await axios({
@@ -86,7 +87,19 @@ const OrderDetails = (props) => {
         url: `/api/GetProduct/${id}`,
       });
       const data = product.data.fetchData;
+      setItem(data);
+      // const reArray = [];
       setFetchData(JSON.parse(data[0].recommendations));
+      // .map((item) => {
+      //   axios.get(`/api/GetProduct/${item.value}`).then((res) => {
+      //     if (res.data.status === 200 && res.data.fetchData[0].stock > 0) {
+      //       reArray.push(item);
+      //     }
+      //   });
+      // });
+      // setFetchData(reArray);
+      // console.log(recArray);
+      // setFetchData(recArray);
 
       setLoading(false);
     };
@@ -96,7 +109,6 @@ const OrderDetails = (props) => {
 
   const extraHandlers = (e, price, id, qty) => {
     if (e.target.checked) {
-      // console.log((sum += parseInt(price)));
       setSum((sum += parseInt(price)));
       setFetchData((fetchData) =>
         fetchData.map((item) =>
@@ -128,18 +140,84 @@ const OrderDetails = (props) => {
   };
   const handelIncrement = (e, qty, id, price) => {
     e.preventDefault();
-    // console.log();
-    setFetchData((fetchData) =>
-      fetchData.map((item) =>
-        id == item.value ? { ...item, qty: item.qty + 1 } : item
-      )
-    );
-    setSum((sum += parseInt(price)));
+    let stock;
+    axios.get(`/api/GetProduct/${id}`).then((res) => {
+      if (res.data.status === 200) {
+        stock = res.data.fetchData[0].stock;
+        if (stock > qty) {
+          setFetchData((fetchData) =>
+            fetchData.map((item) =>
+              id == item.value ? { ...item, qty: item.qty + 1 } : item
+            )
+          );
+          setSum((sum += parseInt(price)));
+        } else {
+          setAlerts(
+            true,
+            "warning",
+            "More than that isn't available because it's out of stock."
+          );
+        }
+      }
+    });
   };
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
+  const [note, setNote] = useState([]);
+  const changeHandle = (e) => {
+    setNote({ ...note, [e.target.name]: e.target.value });
+  };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
+  const addItem = (e) => {
+    e.preventDefault();
+    const check = cart.every((val) => {
+      return val.id !== item[0].id;
+    });
+    if (check) {
+      item[0].price = orignalPrice;
+      item[0].itemNote = note.itemNote;
+      item[0].recommendations = fetchData;
+      item[0].extras = extraValue;
+      item[0].ingredients = ingredients;
+      item[0].totalPrice = (parseInt(price) + sum).toFixed(2);
+      item[0].variantSKU = skuarray;
 
+      setItem(item);
+      localStorage.setItem("cart", JSON.stringify(cart.concat(item)));
+      setCart(cart.concat(item));
+      setAlerts(true, "success", "Successfully added to cart");
+    } else {
+      let data = cart.filter((val) => {
+        return val.id === item[0].id;
+      });
+      data[0].price = orignalPrice;
+      data[0].itemNote = note.itemNote;
+      data[0].recommendations = fetchData;
+      data[0].extras = extraValue;
+      data[0].ingredients = ingredients;
+      data[0].totalPrice = (parseInt(price) + sum).toFixed(2);
+      data[0].variantSKU = skuarray;
+
+      const otherData = cart.filter((val) => {
+        return val.id !== item[0].id;
+      });
+      localStorage.setItem("cart", JSON.stringify(otherData.concat(data)));
+      setCart(otherData.concat(data));
+      setAlerts(true, "success", "Cart Updated");
+    }
+  };
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -158,7 +236,6 @@ const OrderDetails = (props) => {
       return (
         <Grid container spacing={2} key={i}>
           <Grid item xs={8} sm={8} md={8}>
-            {/* {console.log(item)} */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -253,10 +330,19 @@ const OrderDetails = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth="lg ">
-        <Header subcategories={0} cart={cart.length} />
-
-        <Container className="mt-3 d-flex justify-content-center">
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
+      <Container maxWidth="lg">
+        <Header subcategories={0} cart={cart} />
+        <Container className="d-flex justify-content-center">
           <Grid container spacing={2} className="d-flex justify-content-center">
             <Grid item xs={12} sm={8} md={8}>
               <Card
@@ -269,27 +355,38 @@ const OrderDetails = (props) => {
                     : "#2d3134",
                 }}
               >
-                {/* {console.log(picture)} */}
-                {JSON.parse(picture)?.map((image, i) => {
-                  return (
-                    <SwiperSlide key={i}>
-                      <img
-                        src={
-                          stock === "No Stock" || stock === 0
-                            ? `http://${base_url}:${port}/images/products/${image}`
-                            : `http://${base_url}:${port}/images/variants_pics/${image}`
-                        }
-                        alt=""
-                        style={{
-                          height: "250px",
-                          width: "100%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </SwiperSlide>
-                  );
-                })}
-                {/* <img alt="Image" className="m-1" /> */}
+                <Swiper
+                  speed={2500}
+                  className="mySwiper2"
+                  style={{
+                    "--swiper-navigation-color": "#fff",
+                    "--swiper-pagination-color": "#fff",
+                  }}
+                  // navigation={true}
+                >
+                  {JSON.parse(picture)?.map((image, i) => {
+                    return (
+                      <SwiperSlide key={i}>
+                        <img
+                          src={
+                            stock === "No Stock" || stock === 0
+                              ? `http://${base_url}:${port}/images/products/${image}`
+                              : `http://${base_url}:${port}/images/variants_pics/${image}`
+                          }
+                          alt=""
+                          style={{
+                            height: "200px",
+                            width: "100%",
+                            borderRadius: "5%",
+
+                            objectFit: "contain",
+                          }}
+                          // className="m-1"
+                        />
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
                 <FavoriteIcon sx={{ color: "#ff751d" }} className="mx-4 my-2" />
 
                 <div className="row mx-3">
@@ -334,6 +431,8 @@ const OrderDetails = (props) => {
                   )}
                   <TextareaAutosize
                     // aria-label="empty textarea"
+                    onChange={(e) => changeHandle(e)}
+                    name="itemNote"
                     className="my-3"
                     minRows={3}
                     placeholder="Note"
@@ -357,12 +456,18 @@ const OrderDetails = (props) => {
         </Container>
       </Container>
       <Box
+        // style={{ position: "fixed", width: "100%" }}
         sx={{
-          borderRadius: "5%",
-          backgroundColor: "light",
+          bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
           position: "sticky",
           bottom: "0px",
         }}
+        // sx={{
+        //   borderRadius: "5%",
+        //   backgroundColor: "light",
+        //   position: "sticky",
+        //   bottom: "0px",
+        // }}
         className="bottom-0 text-center p-1"
       >
         <Grid container spacing={2}>
@@ -378,7 +483,7 @@ const OrderDetails = (props) => {
             </Typography>
           </Grid>
           <Grid item xs={5}>
-            <Link
+            <button
               className="col-12 btn"
               style={{
                 textTransform: "capitalize",
@@ -390,10 +495,10 @@ const OrderDetails = (props) => {
                   : "#f1fcfe",
                 fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1rem",
               }}
-              to=""
+              onClick={(e) => addItem(e)}
             >
-              Add
-            </Link>
+              Add to Cart
+            </button>
           </Grid>
         </Grid>
       </Box>

@@ -21,7 +21,7 @@ const Shared = (props) => {
         setLoading(false);
       }
     });
-  }, []);
+  }, [sub_id]);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {

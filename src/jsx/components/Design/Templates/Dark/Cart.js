@@ -20,17 +20,19 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import CardContent from "@mui/material/CardContent";
 import ClearIcon from "@mui/icons-material/Clear";
 import IconButton from "@mui/material/IconButton";
-import { Link } from "react-router-dom";
 import ReactWhatsapp from "react-whatsapp";
-
+import TextareaAutosize from "@mui/base/TextareaAutosize";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import "../style.css";
-var message = "";
+import QrReader from "react-qr-reader";
+import axios from "axios";
+import SendIcon from "@mui/icons-material/Send";
+import CustomAlert from "../../../CustomAlert";
 
 const Cart = (props) => {
-  // for localization
-  const { t } = useTranslation();
-  const custom = props.history.location.state.custom;
-  // design start
+  let message = "";
+  let { custom, checkBit, cart, branchId, setCart, branch, deliveryFees } =
+    props;
   const theme = createTheme({
     palette: {
       background: {
@@ -66,19 +68,49 @@ const Cart = (props) => {
       },
     },
   });
-  // design end
-  const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
-  );
+  const style = {
+    width: "100%",
+    backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+    color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+    fontSize: 12,
+    borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#ff751d",
+  };
+  const card = {
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+  };
+  const buttonStyle = {
+    textTransform: "capitalize",
+    backgroundColor: custom?.button_background_color
+      ? custom.button_background_color
+      : "#ff751d",
+    color: custom?.button_text_color ? custom.button_text_color : "#f1fcfe",
+    fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1rem",
+  };
+  // for localization
+  const { t } = useTranslation();
+
+  const currency = getSymbolFromCurrency(cart[0]?.currency_code);
   const [loading, setLoading] = useState(true);
   let [sum, setSum] = useState(0);
-
+  const [tables, setTables] = useState([]);
   useEffect(() => {
     setLoading(false);
-    cart.map((item) => {
-      sum += item.price * item.qty;
+    let Total = 0;
+    cart.map(
+      (item) =>
+        (Total +=
+          item.totalPrice === undefined
+            ? item.price * item.qty
+            : parseInt(item.totalPrice) + item.price * (item.qty - 1))
+    );
+    setSum(Total);
+    axios.get(`/api/GetTables/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setTables(res.data.fetchData);
+      }
     });
-    setSum(sum);
   }, []);
 
   const handleDecrement = (e, qty, id, price) => {
@@ -108,7 +140,11 @@ const Cart = (props) => {
 
       setSum((sum += parseInt(price)));
     } else {
-      alert("More than that isn't available because it's out of stock.");
+      setAlerts(
+        true,
+        "warning",
+        "More than that isn't available because it's out of stock."
+      );
     }
   };
   const remItem = (id, qty, price) => {
@@ -120,7 +156,148 @@ const Cart = (props) => {
     localStorage.setItem("cart", JSON.stringify(data));
     setCart(data);
   };
-
+  const [orderingWay, setOrderingWay] = useState();
+  const checkOrderingMethod = (key) => {
+    setOrderingWay(key);
+    setShowReservation([]);
+  };
+  const [showReservation, setShowReservation] = useState([]);
+  const checkReservation = (key) => {
+    setShowReservation(key);
+  };
+  const [userData, setUserData] = useState({ phoneNumber: "" });
+  const changeHandle = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+  const [table, setTable] = useState([]);
+  const handleScan = (data) => {
+    if (data) {
+      axios.get(`/api/checkTheTbl/${data}`).then((res) => {
+        if (res.data.status === 200) {
+          setTable(res.data.data);
+        }
+      });
+    }
+  };
+  const handleError = (err) => {
+    console.error(err);
+  };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
+  const [error, setError] = useState(false);
+  const saveOrder = () => {
+    if (orderingWay !== undefined) {
+      if (orderingWay === "tbl_qrcode" && showReservation.length === 0) {
+        setAlerts(true, "warning", "Please Select Table Reservation.");
+      } else {
+        if (userData.phoneNumber !== "") {
+          orderingWay === "tbl_qrcode"
+            ? showReservation === "outside"
+              ? userData.dateAndTime === undefined ||
+                userData.table_id === undefined
+                ? setError(true)
+                : save()
+              : save()
+            : orderingWay === "delivery"
+            ? userData.address === undefined
+              ? setError(true)
+              : save()
+            : save();
+        } else {
+          setAlerts(true, "warning", "Please enter your phone number.");
+        }
+      }
+    } else {
+      setAlerts(true, "warning", "Please choose at least one way of ordering.");
+    }
+  };
+  const save = () => {
+    const formData = new FormData();
+    formData.append("orderingItems", localStorage.getItem("cart"));
+    formData.append(
+      "table_id",
+      table.id === undefined ? userData.table_id : table.id
+    );
+    formData.append("dateAndTime", userData.dateAndTime);
+    formData.append("orderingMethod", orderingWay);
+    formData.append("generalNote", userData.generalNote);
+    formData.append("phoneNumber", userData.phoneNumber);
+    formData.append("buildingNo", userData.buildingNo);
+    formData.append("address", userData.address);
+    formData.append("floor", userData.floor);
+    formData.append("flat", userData.flat);
+    formData.append("directions", userData.directions);
+    formData.append("deliveryFees", deliveryFees);
+    formData.append("branch_id", branchId);
+    // console.log(deliveryFees);
+    axios.post("/api/InsertOrder", formData).then((res) => {
+      if (res.data.status === 200) {
+        console.log(res.data.message);
+        setAlerts(true, "success", res.data.message);
+        setTable([]);
+        setUserData([]);
+        setCart([]);
+        localStorage.removeItem("cart");
+      }
+    });
+  };
+  const active = {
+    cursor: "pointer",
+    border: "1px solid",
+    textAlign: "center",
+    borderRadius: "10px",
+    borderColor: "black",
+    backgroundColor: custom?.menusAcriveColor
+      ? custom.menusAcriveColor
+      : "black",
+    color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+  };
+  const deactive = {
+    cursor: "pointer",
+    border: "1px solid",
+    textAlign: "center",
+    borderRadius: "10px",
+    borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#ff751d",
+    backgroundColor: "#2d3134",
+    color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+  };
+  const outputs = [];
+  for (const [key, value] of Object.entries(JSON.parse(branch?.orderMethods))) {
+    if (value === 1) {
+      outputs.push(
+        <Grid item xs={12} lg={3} xl={3} sm={12} md={6} key={key}>
+          <div
+            onClick={() => checkOrderingMethod(key)}
+            style={orderingWay === key ? active : deactive}
+          >
+            <Typography
+              variant="button"
+              style={{ textTransform: "capitalize" }}
+              // className="font-weight-bold"
+            >
+              {key === "tbl_qrcode"
+                ? "Table Reservation"
+                : key === "delivery"
+                ? "Home Delivery"
+                : key === "whatsApp"
+                ? "WhatsApp"
+                : key}
+            </Typography>
+          </div>
+        </Grid>
+      );
+    }
+  }
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -140,25 +317,45 @@ const Cart = (props) => {
         message +
         `*Product Name*: ${item.ProductName} \n*Category*: ${
           item.CategoryName
-        } \n*Sub Category*: ${item.SubCategoryName} \n*QTY*: ${
-          item.qty
-        } \n*Price*: ${item.price} \n*Total Price*: ${
-          item.qty * item.price
-        } *${getSymbolFromCurrency(item.currency_code)}* \n\n`;
+        } ${
+          item.SubCategoryName === undefined
+            ? ""
+            : ` \n*Sub Category*: ${item.SubCategoryName}`
+        } \n*QTY*: ${item.qty} \n*Price*: ${item.price + " " + currency} ${
+          item.itemNote === undefined ? "" : `\n*Item Note*: ${item.itemNote}`
+        } ${
+          item.variantSKU === undefined
+            ? ""
+            : `\n*Item Variant*: ${item.variantSKU}`
+        } ${
+          item.extras === undefined || item.extras?.length === 0
+            ? ""
+            : `\n*Extras*: ${item.extras.map((val) => val.value)} INCLUDED`
+        } ${
+          item.ingredients === undefined || item.ingredients?.length === 0
+            ? ""
+            : `\n*Ingredients*: ${item.ingredients} NOT INCLUDED`
+        } ${
+          item.recommendations === undefined ||
+          item.recommendations?.length === 0
+            ? ""
+            : `\n*Recommendations*: ${item.recommendations.map((val) =>
+                val.show
+                  ? val.label +
+                    " price: " +
+                    val.price +
+                    currency +
+                    " qty: " +
+                    val.qty
+                  : ""
+              )}`
+        } ${
+          item.totalPrice === undefined
+            ? `\n*Item Total Price*: ${item.qty * item.price + " " + currency}`
+            : `\n*Item Total Price*: ${item.totalPrice + " " + currency}`
+        }\n\n`;
       return (
-        <Card
-          key={i}
-          sx={{
-            // height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            // borderRadius: "%",
-            backgroundColor: custom?.cardBgColor
-              ? custom.cardBgColor
-              : "#2d3134",
-          }}
-          className="m-1"
-        >
+        <Card key={i} sx={card} className="m-1">
           <div className="text-right">
             <IconButton onClick={() => remItem(item.id, item.qty, item.price)}>
               <ClearIcon
@@ -173,7 +370,7 @@ const Cart = (props) => {
 
           <CardContent sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
-              <Grid item xs={3} sm={3} md={3}>
+              <Grid item xs={12} lg={2} xl={3} sm={6} md={6}>
                 <img
                   style={{
                     height: "100px",
@@ -188,7 +385,7 @@ const Cart = (props) => {
                   // className="h-100"
                 />
               </Grid>
-              <Grid item xs={5} sm={5} md={5}>
+              <Grid item xs={12} lg={3} xl={3} sm={6} md={6}>
                 <Typography
                   variant="button"
                   style={{ textTransform: "capitalize" }}
@@ -196,23 +393,86 @@ const Cart = (props) => {
                 >
                   {item.ProductName}
                 </Typography>
+                {item?.variantSKU === undefined ? null : (
+                  <Typography variant="subtitle1" gutterBottom>
+                    <b>Variants: </b>
+
+                    {item?.variantSKU?.map((val, i) => {
+                      if (item?.variantSKU.length === i + 1) {
+                        return val;
+                      } else {
+                        return val + ", ";
+                      }
+                    })}
+                  </Typography>
+                )}
                 <Typography
                   variant="body1"
                   gutterBottom
                   className="font-weight-bold"
                 >
-                  {getSymbolFromCurrency(item.currency_code) +
-                    "  " +
-                    (item.price * item.qty).toFixed(2)}
+                  {parseInt(item.price).toFixed(2) + "  " + currency}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                  {item.UnitName}
+                  <b>Qty:</b> {item.qty + " " + item.UnitName}
                 </Typography>
+
                 <Typography variant="subtitle1" gutterBottom>
+                  <b>Discription: </b>
                   {item.Description}
                 </Typography>
               </Grid>
-              <Grid item xs={4} sm={4} md={4}>
+              <Grid item xs={12} lg={5} xl={5} sm={6} md={6}>
+                {" "}
+                {item?.ingredients === undefined ? null : (
+                  <Typography variant="subtitle1" gutterBottom>
+                    <b>Ingredients: </b>
+                    {item?.ingredients?.map((val, i) => {
+                      if (item?.ingredients.length === i + 1) {
+                        return val + " - Not Included";
+                      } else {
+                        return val + ", ";
+                      }
+                    })}
+                  </Typography>
+                )}
+                {item?.extras === undefined ? null : (
+                  <Typography variant="subtitle1" gutterBottom>
+                    <b>Extras: </b>
+
+                    {item?.extras?.map((val, i) => {
+                      if (item?.extras.length == i + 1) {
+                        return val.value + " - Included";
+                      } else {
+                        return val.value + " , ";
+                      }
+                    })}
+                  </Typography>
+                )}
+                {item?.recommendations === undefined ? null : (
+                  <Typography variant="subtitle1" gutterBottom>
+                    <b>Recommendations: </b>
+
+                    {item?.recommendations?.map((val, i) => {
+                      if (val.show) {
+                        return (
+                          val.label +
+                          " (Qty: " +
+                          val.qty +
+                          " * " +
+                          val.price +
+                          " = " +
+                          (val.price * val.qty).toFixed(2) +
+                          " " +
+                          currency +
+                          " )"
+                        );
+                      }
+                    })}
+                  </Typography>
+                )}
+              </Grid>
+              <Grid item xs={12} lg={2} xl={2} sm={6} md={6}>
                 <div className="row mt-2">
                   <div className={`row`}>
                     <div className="col-4 ">
@@ -275,6 +535,30 @@ const Cart = (props) => {
                   </div>
                 </div>
               </Grid>
+              <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                {item?.itemNote === undefined ? null : (
+                  <Typography variant="subtitle1" gutterBottom className="mx-1">
+                    <b>Item Note: </b>
+                    {item?.itemNote}
+                  </Typography>
+                )}
+              </Grid>
+              <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  className="text-right mx-5"
+                >
+                  <b>Total Price: </b>
+                  {item?.totalPrice !== undefined
+                    ? (
+                        parseInt(item.totalPrice) +
+                        item.price * (item.qty - 1)
+                      ).toFixed(2)
+                    : (parseInt(item.price) * item.qty).toFixed(2)}
+                  {" " + currency}
+                </Typography>
+              </Grid>
             </Grid>
           </CardContent>
         </Card>
@@ -285,7 +569,17 @@ const Cart = (props) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="lg" className="mb-2">
-        <Header subcategories={0} cart={cart.length} />
+        {alert.open ? (
+          <CustomAlert
+            open={alert.open}
+            severity={alert.severity}
+            message={alert.message}
+            setAlert={setAlert}
+          />
+        ) : (
+          ""
+        )}
+        {checkBit ? "" : <Header subcategories={0} cart={cart.length} />}
         {cart.length === 0 ? (
           <Grid container spacing={2} className="text-center">
             <Grid item xs={12} sm={12} md={12}>
@@ -295,80 +589,326 @@ const Cart = (props) => {
         ) : (
           <>
             {viewImages_HTMLTABLE}
-            <Card
-              sx={{
-                // height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                // borderRadius: "%",
-                backgroundColor: custom?.cardBgColor
-                  ? custom.cardBgColor
-                  : "#2d3134",
-              }}
-              className="m-1"
-            >
+            <Card sx={card} className="m-1">
               <CardContent sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={4} sm={4} md={4}>
+                  <Grid item xs={12} lg={3} xl={3} sm={12} md={6}>
                     <Typography
-                      variant="body1"
-                      className="font-weight-bold col-12 btn"
+                      variant="button"
+                      style={{ textTransform: "capitalize" }}
                     >
-                      {sum.toFixed(2) +
-                        "  " +
-                        getSymbolFromCurrency(cart[0]?.currency_code)}
+                      Ordering Methods
                     </Typography>
                   </Grid>
-                  <Grid item xs={4} sm={4} md={4}>
-                    <p className="d-none">
-                      {console.log(message)}
-                      {(message = `\n\n\n${message} *Grand Total*: ${sum}`)}
-                    </p>
-                    {console.log(message)}
-
-                    <ReactWhatsapp
-                      className="col-12 btn"
-                      style={{
-                        textTransform: "capitalize",
-                        backgroundColor: theme?.button_background_color
-                          ? theme.button_background_color
-                          : "#ff751d",
-                        color: theme?.button_text_color
-                          ? theme.button_text_color
-                          : "#f1fcfe",
-                        fontSize: theme?.bTextSize
-                          ? theme.bTextSize + "rem"
-                          : "1rem",
-                      }}
-                      number="+93744647067"
-                      message={message}
-                      max="4096"
-                      type="submit"
-                    >
-                      {t("send_order")}{" "}
-                    </ReactWhatsapp>
+                  {outputs}
+                  {orderingWay === "tbl_qrcode" ? (
+                    <>
+                      <Grid item xs={12} lg={4} xl={4} sm={12} md={6}>
+                        <Typography
+                          variant="button"
+                          style={{ textTransform: "capitalize" }}
+                        >
+                          Table Reservation
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} lg={4} xl={4} sm={12} md={6}>
+                        <div
+                          onClick={() => checkReservation("inside")}
+                          style={
+                            showReservation === "inside" ? active : deactive
+                          }
+                        >
+                          <Typography
+                            variant="button"
+                            style={{ textTransform: "capitalize" }}
+                            // className="font-weight-bold"
+                          >
+                            Scan QR Code
+                          </Typography>
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} lg={4} xl={4} sm={12} md={6}>
+                        <div
+                          onClick={() => checkReservation("outside")}
+                          style={
+                            showReservation === "outside" ? active : deactive
+                          }
+                        >
+                          <Typography
+                            variant="button"
+                            style={{ textTransform: "capitalize" }}
+                          >
+                            Reserve a table
+                          </Typography>
+                        </div>
+                      </Grid>
+                    </>
+                  ) : null}
+                </Grid>
+              </CardContent>
+            </Card>
+            <Card sx={card} className="m-1">
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2}>
+                  <Grid
+                    item
+                    xs={12}
+                    lg={6}
+                    xl={6}
+                    sm={12}
+                    md={6}
+                    className="text-center"
+                  >
+                    <Typography variant="body1">Delivery Fee</Typography>
+                    <Typography variant="body1" className="font-weight-bold ">
+                      {deliveryFees.toFixed(2) + "  " + currency}
+                    </Typography>
                   </Grid>
-                  <Grid item xs={4} sm={4} md={4}>
+                  <Grid
+                    item
+                    xs={12}
+                    lg={6}
+                    xl={6}
+                    sm={12}
+                    md={6}
+                    className="text-center"
+                  >
+                    <Typography variant="body1">Grand Total</Typography>
+                    <Typography variant="body1" className="font-weight-bold ">
+                      {(sum + deliveryFees).toFixed(2) + "  " + currency}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+            {showReservation === "inside" ? (
+              <Card sx={card} className="m-1">
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <div>
+                    <QrReader
+                      delay={300}
+                      onError={handleError}
+                      onScan={handleScan}
+                      style={{ width: "100%" }}
+                    />
+                    {table.length !== 0 ? (
+                      <Typography variant="subtitle1" gutterBottom>
+                        successfully authenticated: {table.tableId}
+                      </Typography>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : showReservation === "outside" ? (
+              <Card sx={card} className="m-1">
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                      <div className="form-group">
+                        <select
+                          className={`form-control ${
+                            error ? "is-invalid" : ""
+                          }`}
+                          aria-label="Default select example"
+                          onChange={changeHandle}
+                          style={style}
+                          name="table_id"
+                        >
+                          <option selected> Select a Table</option>
+                          {tables.map((item) => {
+                            return (
+                              <option value={item.id}>
+                                {item.tableId +
+                                  " - " +
+                                  item.numberOfSeats +
+                                  " Seater"}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                      <div className="form-group">
+                        <input
+                          name="dateAndTime"
+                          type="datetime-local"
+                          className={`form-control ${
+                            error ? "is-invalid" : ""
+                          }`}
+                          placeholder="Date and Time"
+                          onChange={changeHandle}
+                          style={style}
+                        />
+                      </div>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            ) : null}
+            {orderingWay === "delivery" ? (
+              <Card sx={card} className="m-1">
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                      <TextareaAutosize
+                        name="address"
+                        onChange={changeHandle}
+                        className={`form-control ${error ? "is-invalid" : ""}`}
+                        minRows={1}
+                        placeholder="Address"
+                        style={style}
+                      />
+                    </Grid>
+                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                      <div className="form-group">
+                        <input
+                          name="buildingNo"
+                          type="text"
+                          className={"form-control"}
+                          placeholder="Building No"
+                          onChange={changeHandle}
+                          style={style}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                      <div className="form-group">
+                        <input
+                          name="floor"
+                          type="text"
+                          className={"form-control"}
+                          placeholder="Floor"
+                          onChange={changeHandle}
+                          style={style}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                      <div className="form-group">
+                        <input
+                          name="flat"
+                          type="text"
+                          className={"form-control"}
+                          placeholder="Flat"
+                          onChange={changeHandle}
+                          style={style}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                      <div className="form-group">
+                        <input
+                          name="directions"
+                          type="text"
+                          className={"form-control"}
+                          placeholder="Directions"
+                          onChange={changeHandle}
+                          style={style}
+                        />
+                      </div>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            ) : null}
+            <Card sx={card} className="m-1">
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
+                    <div className="form-group">
+                      <input
+                        name="phoneNumber"
+                        type="text"
+                        className={"form-control"}
+                        placeholder="Phone"
+                        onChange={changeHandle}
+                        style={style}
+                      />
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
+                    <TextareaAutosize
+                      name="generalNote"
+                      onChange={changeHandle}
+                      className={"form-control"}
+                      minRows={3}
+                      placeholder="General Note"
+                      style={style}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+            <Card sx={card} className="m-1">
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                    {orderingWay !== "tbl_qrcode" ? (
+                      <>
+                        <p className="d-none">
+                          {
+                            (message = `\n\n${message} ------------------------- \n *Sub Total*: ${
+                              sum.toFixed(2) + "  " + currency
+                            }\n *Delivery Fee*: ${
+                              deliveryFees.toFixed(2) + "  " + currency
+                            }\n *Grand Total*: ${
+                              (sum + deliveryFees).toFixed(2) + "  " + currency
+                            }\n *Phone Number*: ${userData?.phoneNumber}${
+                              userData?.generalNote === undefined
+                                ? ""
+                                : `\n *General Note*: ${userData?.generalNote}`
+                            }
+                           `)
+                          }
+                          {orderingWay === "delivery"
+                            ? (message = `${message} \n---------------- \n *Ordering Method*: Home Delivery\n *Address*: ${userData?.address}\n *Building No*: ${userData?.buildingNo}\n *Floor*: ${userData?.floor}\n *Flat*: ${userData?.flat}\n *Directions*: ${userData?.directions}`)
+                            : null}
+                        </p>
+                        {orderingWay === undefined ||
+                        userData.phoneNumber === "" ||
+                        userData.address === undefined ? (
+                          <button
+                            className="col-12 btn"
+                            style={buttonStyle}
+                            onClick={() => saveOrder()}
+                          >
+                            <WhatsAppIcon /> {t("send_order")}
+                          </button>
+                        ) : (
+                          <ReactWhatsapp
+                            className="col-12 btn"
+                            style={buttonStyle}
+                            number={branch?.phoneNumber}
+                            message={message}
+                            max="4096"
+                            onClick={() => saveOrder()}
+                          >
+                            <WhatsAppIcon /> {t("send_order")}
+                          </ReactWhatsapp>
+                        )}
+                      </>
+                    ) : (
+                      <button
+                        className="col-12 btn"
+                        style={buttonStyle}
+                        onClick={() => saveOrder()}
+                      >
+                        <SendIcon /> {t("send_order")}
+                      </button>
+                    )}
+                  </Grid>
+                  <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                     <button
                       className="col-12 btn"
-                      style={{
-                        textTransform: "capitalize",
-                        backgroundColor: theme?.button_background_color
-                          ? theme.button_background_color
-                          : "#ff751d",
-                        color: theme?.button_text_color
-                          ? theme.button_text_color
-                          : "#f1fcfe",
-                        fontSize: theme?.bTextSize
-                          ? theme.bTextSize + "rem"
-                          : "1rem",
-                      }}
+                      style={buttonStyle}
                       onClick={() => [
                         localStorage.removeItem("cart"),
                         setCart([]),
+                        setUserData([]),
                       ]}
                     >
-                      {t("empty_cart")}{" "}
+                      <ClearIcon /> {t("empty_cart")}
                     </button>
                   </Grid>
                 </Grid>

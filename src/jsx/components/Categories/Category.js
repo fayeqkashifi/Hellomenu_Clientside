@@ -22,7 +22,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import CustomAlert from "../CustomAlert";
 
 const Category = (props) => {
-  const { path, url } = useRouteMatch();
+  const { url } = useRouteMatch();
   // for localization
   const { t } = useTranslation();
   // ID
@@ -67,9 +67,7 @@ const Category = (props) => {
     });
     if (checkCate) {
       const formData = new FormData();
-      productbranches.map((item) => {
-        formData.append("branches[]", item.value);
-      });
+      productbranches.map((item) => formData.append("branches[]", item.value));
       formData.append("CategoryIcon", imageState.CategoryIcon);
       formData.append("CategoryName", data.CategoryName);
       formData.append("branchID", id);
@@ -189,7 +187,7 @@ const Category = (props) => {
       if (res.data.status === 200) {
         setBranches(
           res.data.branches.filter((item) => {
-            return item.id != id;
+            return item.id !== id;
           })
         );
       }
@@ -205,7 +203,7 @@ const Category = (props) => {
       }
       setLoading(false);
     });
-  }, [check]);
+  }, [check, id]);
 
   const [layout, setLayout] = useState(
     JSON.parse(

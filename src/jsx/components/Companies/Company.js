@@ -266,15 +266,6 @@ const Company = () => {
                     component="div"
                     className="invalid-feedback"
                   />
-                  {/* <input
-                    type="text"
-                    className="form-control"
-                    placeholder={t("company_name")}
-                    name="company"
-                    required
-                    onChange={editHandleInput}
-                    value={editCompanystate.company}
-                  /> */}
                 </div>
               </Modal.Body>
               <Modal.Footer>
@@ -300,7 +291,7 @@ const Company = () => {
                 <h4 className="card-title mb-2">{t("companies")} </h4>
               </div>
               <div
-                className={`dropdown ${fetchData.length == 1 ? "d-none" : ""}`}
+                className={`dropdown ${fetchData.length === 1 ? "d-none" : ""}`}
               >
                 <Button
                   variant="primary"

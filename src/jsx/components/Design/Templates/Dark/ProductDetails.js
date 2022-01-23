@@ -32,9 +32,8 @@ const ProductDetails = (props) => {
   // for localization
   const { t } = useTranslation();
   const id = atob(props.match.params.id);
-  //for retriving data using laravel API
   const custom = props.history.location.state.custom;
-  const deliveryFees = props.history.location.state.deliveryFees;
+  const deliveryFees = parseInt(props.history.location.state.deliveryFees);
   // design start
   const theme = createTheme({
     palette: {
@@ -82,7 +81,6 @@ const ProductDetails = (props) => {
   const [loading, setLoading] = useState(true);
   const [skuarray, setSkuArray] = useState([]);
   const [varPics, setVarPics] = useState([]);
-  // console.log(variantData);
   const [productDetails, setProductDetails] = useState({
     price: 0,
     stock: 0,
@@ -95,7 +93,6 @@ const ProductDetails = (props) => {
         url: `/api/GetProduct/${id}`,
       });
       const data = product.data.fetchData;
-
       const res = await axios({
         method: "GET",
         url: `/api/Getvariations/${id}`,
@@ -240,7 +237,7 @@ const ProductDetails = (props) => {
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
-      <div className="container ">
+      <div className="container">
         <div
           className="spinner-border text-primary "
           role="status"
@@ -270,7 +267,7 @@ const ProductDetails = (props) => {
                     onSwiper={(s) => {
                       setSwiper(s);
                     }}
-                    className="mySwiper2"
+                    className="mySwiper2 m-1"
                   >
                     {varPics?.map((section) => {
                       return section.image?.map((image, i) => {
@@ -293,14 +290,13 @@ const ProductDetails = (props) => {
                       });
                     })}
                   </Swiper>
-                  <br></br>
                   <Swiper
                     onSwiper={setThumbsSwiper}
                     spaceBetween={10}
                     slidesPerView={5}
                     freeMode={true}
                     watchSlidesProgress={true}
-                    className="mySwiper"
+                    className="mySwiper m-1"
                   >
                     {varPics?.map((section) => {
                       return section.image?.map((image) => {
@@ -337,7 +333,7 @@ const ProductDetails = (props) => {
                     onSwiper={(s) => {
                       setSwiper(s);
                     }}
-                    className="mySwiper2"
+                    className="mySwiper2 m-1"
                   >
                     {JSON.parse(fetchData.image).map((image) => {
                       return (
@@ -365,14 +361,13 @@ const ProductDetails = (props) => {
                       );
                     })}
                   </Swiper>
-                  <br></br>
                   <Swiper
                     onSwiper={setThumbsSwiper}
                     spaceBetween={10}
                     slidesPerView={5}
                     freeMode={true}
                     watchSlidesProgress={true}
-                    className="mySwiper"
+                    className="mySwiper m-1"
                   >
                     {JSON.parse(fetchData.image)?.map((image) => {
                       return (
@@ -430,7 +425,7 @@ const ProductDetails = (props) => {
                 {fetchData?.Description}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                {custom?.preparation_time == 0 ||
+                {custom?.preparation_time === 0 ||
                 fetchData?.preparationTime == null ? (
                   ""
                 ) : (
@@ -463,7 +458,7 @@ const ProductDetails = (props) => {
                   : productDetails.stock}
               </Typography>
             </div>
-            {custom?.show_ingredients == 0 ||
+            {custom?.show_ingredients === 0 ||
             JSON.parse(fetchData.ingredients).length === 0 ? (
               ""
             ) : (
@@ -532,7 +527,7 @@ const ProductDetails = (props) => {
                 </div>
               </>
             )}
-            {custom?.show_extras == 0 ||
+            {custom?.show_extras === 0 ||
             JSON.parse(fetchData.extras).length === 0 ? (
               ""
             ) : (
@@ -572,7 +567,7 @@ const ProductDetails = (props) => {
                 </FormGroup>
               </div>
             )}
-            {custom?.show_variants == 0 ||
+            {custom?.show_variants === 0 ||
             Object.keys(showVaralint).length === 0 ? (
               ""
             ) : (
@@ -654,8 +649,8 @@ const ProductDetails = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth="lg" className="mb-2">
-        <Header subcategories={0} cart={cart.length} />
+      <Container maxWidth="lg">
+        <Header subcategories={0} cart={cart} />
         {viewImages_HTMLTABLE}
       </Container>
       <Footer
@@ -672,9 +667,7 @@ const ProductDetails = (props) => {
             productName: fetchData.ProductName,
 
             picture: productDetails.image
-              ? Array.isArray(productDetails.image)
-                ? productDetails.image[0]
-                : productDetails?.image
+              ? JSON.stringify(productDetails?.image)
               : fetchData?.image,
 
             stock: productDetails.stock,
@@ -690,6 +683,7 @@ const ProductDetails = (props) => {
                 : productDetails.price,
             ingredients: ingredients,
             custom: custom,
+            skuarray: skuarray,
           },
         }}
       />

@@ -1,6 +1,5 @@
-import React, { Fragment, useState, useEffect, SyntheticEvent } from "react";
+import React, {  useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // Import css files
 import "slick-carousel/slick/slick.css";
@@ -12,12 +11,7 @@ import Container from "@mui/material/Container";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 
 import { Zoom } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";

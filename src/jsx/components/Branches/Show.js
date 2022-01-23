@@ -1,6 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
-import axios from "axios";
 
 import {
   Link,
@@ -35,16 +34,16 @@ const Show = (props) => {
   const id = props.history.location.state.id;
   const BrancheName = props.history.location.state.BrancheName;
   const { path, url } = useRouteMatch();
-  const [template, setTemplate] = useState("");
+  // const [template, setTemplate] = useState("");
   const [check, setCheck] = useState(true);
 
-  useEffect(() => {
-    axios.get(`/api/GetTempBasedOnBranch/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setTemplate(res.data.fetchData[0]);
-      }
-    });
-  }, [check]);
+  // useEffect(() => {
+  //   axios.get(`/api/GetTempBasedOnBranch/${id}`).then((res) => {
+  //     if (res.data.status === 200) {
+  //       setTemplate(res.data.fetchData[0]);
+  //     }
+  //   });
+  // }, [check]);
   const tabData = [
     {
       name: t("categories"),
@@ -135,8 +134,8 @@ const Show = (props) => {
                     <div className="card-action card-tabs mt-3 mt-3 mt-lg-0">
                       <Tab.Container
                         defaultActiveKey={
-                          geturl[5] != "sub-category" &&
-                          geturl[5] != "cat-shared"
+                          geturl[5] !== "sub-category" &&
+                          geturl[5] !== "cat-shared"
                             ? geturl[5]
                               ? geturl[5]
                               : tabData[0].name.toLowerCase()

@@ -32,6 +32,7 @@
   "select_subCategory": "Select SubCategory",
 
   "companies": "Companies",
+  "company": "Company",
   "add_company": "Add Company",
   "user_id": "User ID",
   "company_name": "Company Name",
@@ -132,7 +133,7 @@
   "hello_menu": "Hello Menu",
   "tables": "Tables",
   "add_table": "Add Table",
-  "table_id": "Table ID",
+  "table_number": "Table Number",
   "table_name": "Table Name",
   "edit_table": "Edit Table",
   "download_qr_code": "Download QR Code",
@@ -259,5 +260,9 @@
   "cityName": "City Name",
   "city":"City",
   "back_to_categories": "Back to Categories",
-  "share_with": "Share With"
+  "share_with": "Share With",
+  "ordering_methods":"Ordering Methods",
+  "order_details":"Order Details",
+  "ordering_phone_number": "Ordering Phone Number",
+  "number_of_seats":"Number of seats"
 }

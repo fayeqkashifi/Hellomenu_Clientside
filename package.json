@@ -95,6 +95,7 @@
       "react-offcanvas": "^0.4.0",
       "react-perfect-scrollbar": "^1.5.8",
       "react-qr-code": "^2.0.2",
+      "react-qr-reader": "^2.2.1",
       "react-redux": "^7.2.5",
       "react-resize-detector": "^5.2.0",
       "react-responsive-carousel": "^3.2.22",

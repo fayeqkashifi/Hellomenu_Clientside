@@ -15,6 +15,9 @@ import AddIcon from "@mui/icons-material/Add";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 const Branches = () => {
   // localization
@@ -23,11 +26,13 @@ const Branches = () => {
   const initialValues = {
     BrancheName: "",
     currencyID: "",
+    phoneNumber: "",
   };
   const validationSchema = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
+      phoneNumber: Yup.string().required("Phone Number is required"),
     });
   };
   // insert start
@@ -46,16 +51,30 @@ const Branches = () => {
     });
   };
   const saveBranch = (data) => {
-    if (atob(localStorage.getItem("auth_company_id")) != "null") {
-      axios.post("/api/InsertBranches", data).then((res) => {
-        if (res.data.status === 200) {
-          setModalCentered(false);
-          setCheck(!check);
-          setAlerts(true, "success", res.data.message);
-        } else if (res.data.status === 304) {
-          setAlerts(true, "warning", res.data.message);
-        }
-      });
+    if (atob(localStorage.getItem("auth_company_id")) !== "null") {
+      if (orderMethods.length !== 0) {
+        const formData = new FormData();
+        formData.append("orderMethods", JSON.stringify(orderMethods));
+        formData.append("BrancheName", data.BrancheName);
+        formData.append("currencyID", data.currencyID);
+        formData.append("phoneNumber", data.phoneNumber);
+        axios.post("/api/InsertBranches", formData).then((res) => {
+          if (res.data.status === 200) {
+            setModalCentered(false);
+            setOrderMethods([]);
+            setCheck(!check);
+            setAlerts(true, "success", res.data.message);
+          } else if (res.data.status === 304) {
+            setAlerts(true, "warning", res.data.message);
+          }
+        });
+      } else {
+        setAlerts(
+          true,
+          "warning",
+          "Please choose at least one way of ordering."
+        );
+      }
     } else {
       swal(
         "warning",
@@ -63,7 +82,7 @@ const Branches = () => {
         "warning"
       ).then((value) => {
         if (value) {
-          history.push("/companies");
+          history.push("/company");
         }
       });
     }
@@ -74,11 +93,13 @@ const Branches = () => {
   const [editmodalCentered, setEditModalCentered] = useState(false);
 
   const [editBranchstate, setEditBranchstate] = useState([]);
+  const [orderMethodsEdit, setOrderMethodsEdit] = useState([]);
   const editBranch = (e, id) => {
     e.preventDefault();
     axios.get(`/api/EditBranches/${id}`).then((res) => {
       if (res.data.status === 200) {
         setEditBranchstate(res.data.branch);
+        setOrderMethodsEdit(JSON.parse(res.data.branch.orderMethods));
         setEditModalCentered(true);
       } else if (res.data.status === 404) {
         setAlerts(true, "error", res.data.message);
@@ -86,16 +107,30 @@ const Branches = () => {
     });
   };
   const updateBranch = (data) => {
-    axios.post("/api/UpdateBranches", data).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        setEditBranchstate([]);
-        setCheck(!check);
-        setEditModalCentered(false);
-      } else if (res.data.status === 304) {
-        setAlerts(true, "warning", res.data.message);
-      }
-    });
+    const ArrayValue = [];
+    for (const [key, value] of Object.entries(orderMethodsEdit)) {
+      ArrayValue.push(value);
+    }
+    if (ArrayValue.includes(1)) {
+      const formData = new FormData();
+      formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
+      formData.append("BrancheName", data.BrancheName);
+      formData.append("currencyID", data.currencyID);
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("id", data.id);
+      axios.post("/api/UpdateBranches", formData).then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          setEditBranchstate([]);
+          setCheck(!check);
+          setEditModalCentered(false);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
+        }
+      });
+    } else {
+      setAlerts(true, "warning", "Please choose at least one way of ordering.");
+    }
   };
   // edit end
 
@@ -129,6 +164,19 @@ const Branches = () => {
   const [currency, setCurrency] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
+  const [orderMethods, setOrderMethods] = useState([]);
+  const orderHandle = (e) => {
+    setOrderMethods({
+      ...orderMethods,
+      [e.target.name]: e.target.checked ? 1 : 0,
+    });
+  };
+  const editOrderHandle = (e) => {
+    setOrderMethodsEdit({
+      ...orderMethodsEdit,
+      [e.target.name]: e.target.checked ? 1 : 0,
+    });
+  };
 
   // for mobile
   useEffect(() => {
@@ -315,6 +363,61 @@ const Branches = () => {
                     className="invalid-feedback"
                   />
                 </div>
+                <div className="form-group">
+                  <label> {t("ordering_phone_number")}</label>
+                  <Field
+                    name="phoneNumber"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.phoneNumber && touched.phoneNumber
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="+93--- ---- ---"
+                  />
+                  <ErrorMessage
+                    name="phoneNumber"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("ordering_methods")}</label>
+
+                  <FormGroup row>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="tbl_qrcode"
+                          onChange={(e) => orderHandle(e)}
+                          color="secondary"
+                        />
+                      }
+                      label="Table Reservation"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="delivery"
+                          onChange={(e) => orderHandle(e)}
+                          color="secondary"
+                        />
+                      }
+                      label="Home Delivery"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="whatsApp"
+                          onChange={(e) => orderHandle(e)}
+                          color="secondary"
+                        />
+                      }
+                      label="WhatsApp"
+                    />
+                  </FormGroup>
+                </div>
               </Modal.Body>
               <Modal.Footer>
                 <Button
@@ -394,6 +497,64 @@ const Branches = () => {
                     component="div"
                     className="invalid-feedback"
                   />
+                </div>
+                <div className="form-group">
+                  <label> {t("ordering_phone_number")}</label>
+                  <Field
+                    name="phoneNumber"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.phoneNumber && touched.phoneNumber
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="+93--- ---- ---"
+                  />
+                  <ErrorMessage
+                    name="phoneNumber"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("ordering_methods")}</label>
+
+                  <FormGroup row>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={orderMethodsEdit.tbl_qrcode ? true : false}
+                          name="tbl_qrcode"
+                          onChange={(e) => editOrderHandle(e)}
+                          color="secondary"
+                        />
+                      }
+                      label="Table Reservation"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={orderMethodsEdit.delivery ? true : false}
+                          name="delivery"
+                          onChange={(e) => editOrderHandle(e)}
+                          color="secondary"
+                        />
+                      }
+                      label="Home Delivery"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={orderMethodsEdit.whatsApp ? true : false}
+                          name="whatsApp"
+                          onChange={(e) => editOrderHandle(e)}
+                          color="secondary"
+                        />
+                      }
+                      label="WhatsApp"
+                    />
+                  </FormGroup>
                 </div>
               </Modal.Body>
               <Modal.Footer>

@@ -45,7 +45,7 @@ const DefaultMain = (props) => {
     });
     axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
       if (res.data.status === 200) {
-        setData(res.data.data[0]);
+        setData(res.data.data);
       }
       setLoading(false);
     });

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Select from "react-select";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import AsyncSelect from "react-select/async";
@@ -10,7 +9,6 @@ import AsyncSelect from "react-select/async";
 const FilterSelection = () => {
   const [areaLocation, setAreaLocation] = useState([]);
   const [branches, setBranches] = useState([]);
-  const history = useHistory();
   const { t } = useTranslation();
 
   // useEffect(() => {
@@ -31,14 +29,7 @@ const FilterSelection = () => {
     });
   };
 
-  const [inputValue, setValue] = useState("");
   const [selectedValue, setSelectedValue] = useState(null);
-
-  // handle input change event
-  const handleInputChange = (value) => {
-    setValue("");
-    setValue(value);
-  };
 
   // handle selection
   const handleChange = (value) => {
@@ -83,7 +74,6 @@ const FilterSelection = () => {
               getOptionLabel={(e) => e.cityName}
               getOptionValue={(e) => e.id}
               loadOptions={loadOptions}
-              onInputChange={handleInputChange}
               onChange={handleChange}
             />
           </div>

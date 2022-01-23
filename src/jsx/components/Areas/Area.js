@@ -143,14 +143,7 @@ const Area = (props) => {
     });
   }, [check]);
 
-  const [inputValue, setValue] = useState("");
   const [selectedValue, setSelectedValue] = useState(null);
-
-  // handle input change event
-  const handleInputChange = (value) => {
-    setValue("");
-    setValue(value);
-  };
 
   // handle selection
   const handleChange = (value) => {
@@ -255,8 +248,6 @@ const Area = (props) => {
                     getOptionLabel={(e) => e.cityName}
                     getOptionValue={(e) => e.id}
                     loadOptions={loadOptions}
-                    onInputChange={handleInputChange}
-                    // onChange={handleChange}
                     onChange={(getOptionValue) => {
                       setFieldValue("city", getOptionValue.id);
                     }}
@@ -339,7 +330,6 @@ const Area = (props) => {
                     getOptionLabel={(e) => e.cityName}
                     getOptionValue={(e) => e.id}
                     loadOptions={loadOptions}
-                    onInputChange={handleInputChange}
                     onChange={handleChange}
                   />
                 </div>

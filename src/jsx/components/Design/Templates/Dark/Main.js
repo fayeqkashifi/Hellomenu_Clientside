@@ -24,13 +24,16 @@ export default function Main(props) {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const branchId = atob(props.match.params.id);
-  const deliveryFees = props.history.location.state.deliveryFees;
+  const deliveryFees = parseInt(props.history.location.state.deliveryFees);
 
   const [branch, setBranch] = useState([]);
   const [menu, setMenu] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeMenu, setActiveMenu] = useState(0);
   const [custom, setCustom] = useState([]);
+  const [cart, setCart] = useState(
+    JSON.parse(localStorage.getItem("cart")) || []
+  );
 
   useEffect(() => {
     axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
@@ -65,7 +68,6 @@ export default function Main(props) {
             res.data.fetchData[0]?.SubCategoryName +
               res.data.fetchData[0]?.sub_category_id
           );
-
           axios
             .get(
               `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_category_id}`
@@ -79,7 +81,7 @@ export default function Main(props) {
         setLoading(false);
       }
     });
-  }, []);
+  }, [cart]);
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
     if (hold < menu.length) {
@@ -166,9 +168,6 @@ export default function Main(props) {
     },
   });
   // theme end
-  const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
-  );
 
   var viewShow_HTMLTABLE = "";
   if (loading) {
@@ -282,7 +281,7 @@ export default function Main(props) {
               <Link
                 to={{
                   pathname: `/dark-template/product/${btoa(item.id)}`,
-                  state: { custom: custom },
+                  state: { custom: custom, deliveryFees: deliveryFees },
                 }}
               >
                 <div className="text-center">
@@ -297,7 +296,6 @@ export default function Main(props) {
                       JSON.parse(item.image)[0]
                     }`}
                     alt="Image"
-                    // className="h-100"
                   />
                 </div>
               </Link>
@@ -328,27 +326,6 @@ export default function Main(props) {
                       setCart={setCart}
                       products={products}
                     />
-                    {/* <IconButton onClick={() => addItem(item.id)}>
-                      {cart.every((val) => {
-                        return val.id !== item.id;
-                      }) ? (
-                        <AddIcon
-                          sx={{
-                            color: custom?.menusDeactiveColor
-                              ? custom.menusDeactiveColor
-                              : "#fff",
-                          }}
-                        />
-                      ) : (
-                        <AddIcon
-                          sx={{
-                            color: custom?.menusActiveColor
-                              ? custom.menusActiveColor
-                              : "#ff751d",
-                          }}
-                        />
-                      )}
-                    </IconButton> */}
                   </Grid>
                 </Grid>
 
@@ -376,8 +353,9 @@ export default function Main(props) {
       <CssBaseline />
       <Container maxWidth="lg">
         <Header
-          cart={cart.length}
-          title={branch[0]?.BrancheName}
+          cart={cart}
+          setCart={setCart}
+          title={branch?.BrancheName}
           menu={menu}
           activeMenu={activeMenu}
           setProducts={setProducts}
@@ -409,9 +387,11 @@ export default function Main(props) {
       <Footer
         title="Checkout Order"
         theme={custom}
-        url={""}
         cart={cart}
+        branch={branch}
+        setCart={setCart}
         deliveryFees={deliveryFees}
+        branchId={branchId}
       />
     </ThemeProvider>
   );

@@ -71,16 +71,16 @@ class SideBar extends Component {
             </li>
             <li
               className={`${
-                this.state.path === "companies" ? "mm-active" : ""
+                this.state.path === "company" ? "mm-active" : ""
               }`}
             >
               <Link
                 className="ai-icon"
-                to="/companies"
-                onClick={() => this.setState({ path: "companies" })}
+                to="/company"
+                onClick={() => this.setState({ path: "company" })}
               >
                 <i className="flaticon-381-internet"></i>
-                <span className="nav-text">{t("companies")}</span>
+                <span className="nav-text">{t("company")}</span>
               </Link>
             </li>
             <li
