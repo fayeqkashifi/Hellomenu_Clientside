@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -7,10 +7,14 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Badge from "@mui/material/Badge";
-import { Link } from "react-router-dom";
-
+import { Modal } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import Cart from "./Cart";
 function Header(props) {
+  const { t } = useTranslation();
+
   const history = useHistory();
+  const [modalCentered, setModalCentered] = useState(false);
 
   const {
     menu,
@@ -19,7 +23,10 @@ function Header(props) {
     setActiveMenu,
     custom,
     cart,
+    branch,
     setCart,
+    deliveryFees,
+    branchId,
   } = props;
   const filterProducts = (menu) => {
     if (menu.sub_category_id === null) {
@@ -54,40 +61,30 @@ function Header(props) {
             }}
           />
         </IconButton>
-        <Typography
-          // component="h2"
-          // variant="h6"
-          align="center"
-          sx={{ flex: 1 }}
-        ></Typography>
-        {/* <Link
-          to={{
-            pathname: `/dark-templates/cart`,
-            // state: { custom: custom, cart: cart, setCart: setCart },
-          }}
-        > */}
-        <Badge
-          badgeContent={cart.length}
-          sx={{
-            "& .MuiBadge-badge": {
-              color: custom?.menusDeactiveColor
-                ? custom.menusDeactiveColor
-                : "#fff",
-              backgroundColor: custom?.menusAcriveColor
-                ? custom.menusAcriveColor
-                : "#f27d1e",
-            },
-          }}
-          overlap="circular"
-        >
-          <AddShoppingCartIcon
-            fontSize="small"
+        <Typography align="center" sx={{ flex: 1 }}></Typography>
+        <IconButton onClick={() => setModalCentered(true)}>
+          <Badge
+            badgeContent={cart.length}
             sx={{
-              color: "#fff",
+              "& .MuiBadge-badge": {
+                color: custom?.menusDeactiveColor
+                  ? custom.menusDeactiveColor
+                  : "#fff",
+                backgroundColor: custom?.menusAcriveColor
+                  ? custom.menusAcriveColor
+                  : "#f27d1e",
+              },
             }}
-          />
-        </Badge>
-        {/* </Link> */}
+            overlap="circular"
+          >
+            <AddShoppingCartIcon
+              fontSize="small"
+              sx={{
+                color: "#fff",
+              }}
+            />
+          </Badge>
+        </IconButton>
       </Toolbar>
 
       {menu === 0 ? (
@@ -142,6 +139,38 @@ function Header(props) {
           </Toolbar>
         </div>
       )}
+      <Modal
+        className="fade bd-example-modal-lg"
+        size="lg"
+        show={modalCentered}
+        onHide={() => setModalCentered(false)}
+      >
+        <Modal.Header
+          style={{
+            backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
+            borderColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+          }}
+        >
+          <Modal.Title>
+            <Typography variant="h6">{t("order_details")}</Typography>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body
+          style={{
+            backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
+          }}
+        >
+          <Cart
+            custom={custom}
+            checkBit={true}
+            branch={branch}
+            cart={cart}
+            setCart={setCart}
+            deliveryFees={deliveryFees}
+            branchId={branchId}
+          />
+        </Modal.Body>
+      </Modal>
     </React.Fragment>
   );
 }

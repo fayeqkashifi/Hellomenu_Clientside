@@ -86,311 +86,319 @@ const EditTheme = (props) => {
         setThemes(res.data.data);
       }
     });
-  }, []);
+  }, [id]);
   return (
     <>
-      <div className="">
-        <Form onSubmit={update} method="POST" encType="multipart/form-data">
-          <div className="row">
-            <div className="col-12 mb-2">
-              <input
-                type="text"
-                style={{ border: "none" }}
-                value={themes.ThemeName}
-                className="form-control"
-                placeholder={t("theme_name")}
-                onChange={handleInput}
-                value={themes.ThemeName}
-                name="ThemeName"
-              />
-            </div>
-            <div className="col-6">
-              <CCard>
-                <CCardHeader component="h5">{t("theme_colors")}</CCardHeader>
-                <CCardBody>
-                  <CRow className="mb-3">
-                    <CFormLabel
-                      htmlFor="staticEmail"
-                      className="col-sm-6 col-form-label"
-                    >
-                      {t("text_color")}
-                    </CFormLabel>
-                    <CCol sm={6} className="text-center">
-                      <input
-                        type="color"
-                        onChange={handleInput}
-                        value={themes.TextColor}
-                        id="favcolor"
-                        name="TextColor"
-                      />
-                    </CCol>
-                  </CRow>
-                  <CRow className="mb-3">
-                    <CFormLabel
-                      htmlFor="inputPassword"
-                      className="col-sm-6 col-form-label"
-                    >
-                      {t("background_color")}
-                    </CFormLabel>
-                    <CCol sm={6} className="text-center">
-                      <input
-                        type="color"
-                        id="favcolor"
-                        onChange={handleInput}
-                        value={themes.BackgroundColor}
-                        name="BackgroundColor"
-                      />
-                    </CCol>
-                  </CRow>
-                  <CRow className="mb-3">
-                    <CFormLabel
-                      htmlFor="inputPassword"
-                      className="col-sm-6 col-form-label"
-                    >
-                      {t("highlight_color")}
-                    </CFormLabel>
-                    <CCol sm={6} className="text-center">
-                      <input
-                        type="color"
-                        id="favcolor"
-                        onChange={handleInput}
-                        value={themes.HighlightColor}
-                        name="HighlightColor"
-                      />
-                    </CCol>
-                  </CRow>
-                  <CRow className="mb-3">
-                    <button className="btn btn-light m-1" type="button">
-                      {t("advanced_customization")}
-                    </button>
-                  </CRow>
-                </CCardBody>
-              </CCard>
-            </div>
-            <div className="col-6">
-              <div className="row">
-                <div className="col-12">
-                  <CCard>
-                    <CCardHeader component="h5">
-                      {t("home_screen_background")}
-                    </CCardHeader>
-                    <CCardBody>
-                      <RadioGroup
-                        aria-label="HomeScreen"
-                        defaultValue="1"
-                        name="radio-buttons-group"
+      {themes.length !== 0 ? (
+        <div className="">
+          <Form onSubmit={update} method="POST" encType="multipart/form-data">
+            <div className="row">
+              <div className="col-12 mb-2">
+                <input
+                  type="text"
+                  style={{ border: "none" }}
+                  value={themes.ThemeName}
+                  className="form-control"
+                  placeholder={t("theme_name")}
+                  onChange={handleInput}
+                  value={themes.ThemeName}
+                  name="ThemeName"
+                />
+              </div>
+              <div className="col-6">
+                <CCard>
+                  <CCardHeader component="h5">{t("theme_colors")}</CCardHeader>
+                  <CCardBody>
+                    <CRow className="mb-3">
+                      <CFormLabel
+                        htmlFor="staticEmail"
+                        className="col-sm-6 col-form-label"
                       >
-                        <FormControlLabel
-                          value="1"
-                          control={
-                            <Radio
-                              onClick={() => setHomeScreen(false)}
-                              color="secondary"
-                            />
-                          }
-                          label={t("solid_color")}
+                        {t("text_color")}
+                      </CFormLabel>
+                      <CCol sm={6} className="text-center">
+                        <input
+                          type="color"
+                          onChange={handleInput}
+                          value={themes.TextColor}
+                          id="favcolor"
+                          name="TextColor"
                         />
-                        <FormControlLabel
-                          value="0"
-                          control={
-                            <Radio
-                              onClick={() => setHomeScreen(true)}
-                              color="secondary"
-                            />
-                          }
-                          label={t("image_or_video")}
-                        />
-                      </RadioGroup>
-                      <CRow className="mb-3">
-                        <CCol sm={12} className="text-right">
-                          {homeScreen ? (
-                            " "
-                          ) : (
-                            <input
-                              type="color"
-                              id="favcolor"
-                              onChange={handleInput}
-                              value={themes.HomeScreenBackground}
-                              name="HomeScreenBackground"
-                            />
-                          )}
-                        </CCol>
-                      </CRow>
-                      {homeScreen ? (
-                        <div className="form-group">
-                          <div className="input-group">
-                            <div className="custom-file">
-                              <input
-                                type="file"
-                                className="form-control"
-                                name="HomeScreenBackground"
-                                required
-                                onChange={handleImage}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        " "
-                      )}
-                    </CCardBody>
-                  </CCard>
-                </div>
-                <div className="col-12">
-                  <CCard>
-                    <CCardHeader component="h5">
-                      {t("menu_screen_background")}
-                    </CCardHeader>
-                    <CCardBody>
-                      <RadioGroup
-                        aria-label="MenuScreen"
-                        defaultValue="1"
-                        name="radio-buttons-group"
+                      </CCol>
+                    </CRow>
+                    <CRow className="mb-3">
+                      <CFormLabel
+                        htmlFor="inputPassword"
+                        className="col-sm-6 col-form-label"
                       >
-                        <FormControlLabel
-                          value="1"
-                          control={
-                            <Radio
-                              onClick={() => setMenuScreen(false)}
-                              color="secondary"
-                            />
-                          }
-                          label={t("solid_color")}
+                        {t("background_color")}
+                      </CFormLabel>
+                      <CCol sm={6} className="text-center">
+                        <input
+                          type="color"
+                          id="favcolor"
+                          onChange={handleInput}
+                          value={themes.BackgroundColor}
+                          name="BackgroundColor"
                         />
-                        <FormControlLabel
-                          value="0"
-                          control={
-                            <Radio
-                              onClick={() => setMenuScreen(true)}
-                              color="secondary"
-                            />
-                          }
-                          label={t("image")}
+                      </CCol>
+                    </CRow>
+                    <CRow className="mb-3">
+                      <CFormLabel
+                        htmlFor="inputPassword"
+                        className="col-sm-6 col-form-label"
+                      >
+                        {t("highlight_color")}
+                      </CFormLabel>
+                      <CCol sm={6} className="text-center">
+                        <input
+                          type="color"
+                          id="favcolor"
+                          onChange={handleInput}
+                          value={themes.HighlightColor}
+                          name="HighlightColor"
                         />
-                      </RadioGroup>
-                      <CRow className="mb-3">
-                        <CCol sm={12} className="text-right">
-                          {menuScreen ? (
-                            " "
-                          ) : (
-                            <input
-                              type="color"
-                              onChange={handleInput}
-                              value={themes.MenuScreenBackground}
-                              name="MenuScreenBackground"
-                            />
-                          )}
-                        </CCol>
-                      </CRow>
-                      {menuScreen ? (
-                        <div className="form-group">
-                          <div className="input-group">
-                            <div className="custom-file">
-                              <input
-                                type="file"
-                                className="form-control"
-                                name="MenuScreenBackground"
-                                required
-                                onChange={handleImageMenu}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        " "
-                      )}
-                    </CCardBody>
-                  </CCard>
-                </div>
-                <div className="col-12">
-                  <CCard>
-                    <CCardHeader component="h5">{t("menu_button")}</CCardHeader>
-                    <CCardBody>
-                      <CRow className="mb-3">
-                        <CFormLabel
-                          htmlFor="staticEmail"
-                          className="col-sm-6 col-form-label"
+                      </CCol>
+                    </CRow>
+                    <CRow className="mb-3">
+                      <button className="btn btn-light m-1" type="button">
+                        {t("advanced_customization")}
+                      </button>
+                    </CRow>
+                  </CCardBody>
+                </CCard>
+              </div>
+              <div className="col-6">
+                <div className="row">
+                  <div className="col-12">
+                    <CCard>
+                      <CCardHeader component="h5">
+                        {t("home_screen_background")}
+                      </CCardHeader>
+                      <CCardBody>
+                        <RadioGroup
+                          aria-label="HomeScreen"
+                          defaultValue="1"
+                          name="radio-buttons-group"
                         >
-                          {t("show_button")}
-                        </CFormLabel>
-                        <CCol sm={6} className="text-center">
-                          <Switch
-                            defaultChecked
-                            onChange={() => setButtonShow(!buttonShow)}
-                            value={buttonShow}
-                            name="ShowButton"
-                            color="secondary"
+                          <FormControlLabel
+                            value="1"
+                            control={
+                              <Radio
+                                onClick={() => setHomeScreen(false)}
+                                color="secondary"
+                              />
+                            }
+                            label={t("solid_color")}
                           />
-                        </CCol>
-                      </CRow>
-                      {buttonShow ? (
+                          <FormControlLabel
+                            value="0"
+                            control={
+                              <Radio
+                                onClick={() => setHomeScreen(true)}
+                                color="secondary"
+                              />
+                            }
+                            label={t("image_or_video")}
+                          />
+                        </RadioGroup>
                         <CRow className="mb-3">
-                          <CFormLabel
-                            htmlFor="inputPassword"
-                            className="col-sm-12 col-form-label"
-                          >
-                            {t("button_shape")}
-                          </CFormLabel>
-                          <CCol sm={12} className="text-center">
-                            <RadioGroup
-                              aria-label="menu_button"
-                              defaultValue="P"
-                              name="ButtonShape"
-                              onChange={handleInput}
-                              value={themes.ButtonShape}
-                            >
-                              <FormControlLabel
-                                value="R"
-                                control={
-                                  <div>
-                                    <Radio value="R" color="secondary" />{" "}
-                                    <img
-                                      src={circle_menu_button}
-                                      alt=""
-                                      width="80"
-                                    />
-                                  </div>
-                                }
-                                label={t("round")}
+                          <CCol sm={12} className="text-right">
+                            {homeScreen ? (
+                              " "
+                            ) : (
+                              <input
+                                type="color"
+                                id="favcolor"
+                                onChange={handleInput}
+                                value={themes.HomeScreenBackground}
+                                name="HomeScreenBackground"
                               />
-                              <FormControlLabel
-                                value="P"
-                                control={
-                                  <div>
-                                    <Radio value="P" color="secondary" />{" "}
-                                    <img
-                                      src={pill_menu_button}
-                                      alt=""
-                                      width="80"
-                                    />
-                                  </div>
-                                }
-                                label={t("pill")}
-                              />
-                            </RadioGroup>
+                            )}
                           </CCol>
                         </CRow>
-                      ) : null}
-                    </CCardBody>
-                  </CCard>
+                        {homeScreen ? (
+                          <div className="form-group">
+                            <div className="input-group">
+                              <div className="custom-file">
+                                <input
+                                  type="file"
+                                  className="form-control"
+                                  name="HomeScreenBackground"
+                                  required
+                                  onChange={handleImage}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          " "
+                        )}
+                      </CCardBody>
+                    </CCard>
+                  </div>
+                  <div className="col-12">
+                    <CCard>
+                      <CCardHeader component="h5">
+                        {t("menu_screen_background")}
+                      </CCardHeader>
+                      <CCardBody>
+                        <RadioGroup
+                          aria-label="MenuScreen"
+                          defaultValue="1"
+                          name="radio-buttons-group"
+                        >
+                          <FormControlLabel
+                            value="1"
+                            control={
+                              <Radio
+                                onClick={() => setMenuScreen(false)}
+                                color="secondary"
+                              />
+                            }
+                            label={t("solid_color")}
+                          />
+                          <FormControlLabel
+                            value="0"
+                            control={
+                              <Radio
+                                onClick={() => setMenuScreen(true)}
+                                color="secondary"
+                              />
+                            }
+                            label={t("image")}
+                          />
+                        </RadioGroup>
+                        <CRow className="mb-3">
+                          <CCol sm={12} className="text-right">
+                            {menuScreen ? (
+                              " "
+                            ) : (
+                              <input
+                                type="color"
+                                onChange={handleInput}
+                                value={themes.MenuScreenBackground}
+                                name="MenuScreenBackground"
+                              />
+                            )}
+                          </CCol>
+                        </CRow>
+                        {menuScreen ? (
+                          <div className="form-group">
+                            <div className="input-group">
+                              <div className="custom-file">
+                                <input
+                                  type="file"
+                                  className="form-control"
+                                  name="MenuScreenBackground"
+                                  required
+                                  onChange={handleImageMenu}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          " "
+                        )}
+                      </CCardBody>
+                    </CCard>
+                  </div>
+                  <div className="col-12">
+                    <CCard>
+                      <CCardHeader component="h5">
+                        {t("menu_button")}
+                      </CCardHeader>
+                      <CCardBody>
+                        <CRow className="mb-3">
+                          <CFormLabel
+                            htmlFor="staticEmail"
+                            className="col-sm-6 col-form-label"
+                          >
+                            {t("show_button")}
+                          </CFormLabel>
+                          <CCol sm={6} className="text-center">
+                            <Switch
+                              defaultChecked
+                              onChange={() => setButtonShow(!buttonShow)}
+                              value={buttonShow}
+                              name="ShowButton"
+                              color="secondary"
+                            />
+                          </CCol>
+                        </CRow>
+                        {buttonShow ? (
+                          <CRow className="mb-3">
+                            <CFormLabel
+                              htmlFor="inputPassword"
+                              className="col-sm-12 col-form-label"
+                            >
+                              {t("button_shape")}
+                            </CFormLabel>
+                            <CCol sm={12} className="text-center">
+                              <RadioGroup
+                                aria-label="menu_button"
+                                defaultValue="P"
+                                name="ButtonShape"
+                                onChange={handleInput}
+                                value={themes.ButtonShape}
+                              >
+                                <FormControlLabel
+                                  value="R"
+                                  control={
+                                    <div>
+                                      <Radio value="R" color="secondary" />{" "}
+                                      <img
+                                        src={circle_menu_button}
+                                        alt=""
+                                        width="80"
+                                      />
+                                    </div>
+                                  }
+                                  label={t("round")}
+                                />
+                                <FormControlLabel
+                                  value="P"
+                                  control={
+                                    <div>
+                                      <Radio value="P" color="secondary" />{" "}
+                                      <img
+                                        src={pill_menu_button}
+                                        alt=""
+                                        width="80"
+                                      />
+                                    </div>
+                                  }
+                                  label={t("pill")}
+                                />
+                              </RadioGroup>
+                            </CCol>
+                          </CRow>
+                        ) : null}
+                      </CCardBody>
+                    </CCard>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="text-center mx-4 mb-4">
-            <button className="btn btn-primary" type="submit">
-              {t("update")}
-            </button>
-            <Link
-              className="btn btn-light m-1"
-              to=""
-              onClick={() => history.goBack()}
-            >
-              {t("back")}
-            </Link>
-          </div>
-        </Form>
-      </div>
+            <div className="text-center mx-4 mb-4">
+              <button className="btn btn-primary" type="submit">
+                {t("update")}
+              </button>
+              <Link
+                className="btn btn-light m-1"
+                to=""
+                onClick={() => history.goBack()}
+              >
+                {t("back")}
+              </Link>
+            </div>
+          </Form>
+        </div>
+      ) : (
+        <div className="spinner-border text-primary " role="status">
+          <span className="sr-only">{t("loading")}</span>
+        </div>
+      )}
     </>
   );
 };

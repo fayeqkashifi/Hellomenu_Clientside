@@ -1,6 +1,5 @@
 {
   "dashboard": "Dashboard",
-  "baskets": "Baskets",
 
   "branches": "Branches",
   "branch_text": "Create new branches, add or edit your categories, subCategories and inventory.",
@@ -12,7 +11,7 @@
   "order_text": "Design your menu to reflect your business and your brand.",
 
   "products": "Products",
-  "basket_text": "List of baskets, approve and reject options.",
+  "areas_text": "List of Areas.",
   "product_name": "Product Name",
   "select_a_product": "Select A Product",
   "add_product": "Add Product",
@@ -54,9 +53,6 @@
   "images": "Images",
   "edit_inventory": "Edit Inventory",
   "variant_quantity": "Variant Quantity",
-  "add_to_basket": "Add To Basket",
-  "basket": "Basket",
-  "basket_list": "Basket List",
   "variant_details": "Variant Details",
   "variant_list": "Variant List",
   "edit_variant": "Edit Variant",

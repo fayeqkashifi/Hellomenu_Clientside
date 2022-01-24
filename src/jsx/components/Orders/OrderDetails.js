@@ -82,7 +82,7 @@ const OrderDetails = (props) => {
         <Card key={i} className="m-1">
           <CardContent sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
-              <Grid item xs={2} sm={2} md={2}>
+              <Grid item xs={12} lg={2} xl={3} sm={6} md={6}>
                 <img
                   style={{
                     height: "100px",
@@ -97,7 +97,7 @@ const OrderDetails = (props) => {
                   // className="h-100"
                 />
               </Grid>
-              <Grid item xs={4} sm={4} md={4}>
+              <Grid item xs={12} lg={3} xl={3} sm={6} md={6}>
                 <Typography
                   variant="body1"
                   style={{ textTransform: "capitalize" }}
@@ -127,7 +127,7 @@ const OrderDetails = (props) => {
                   <b>Description:</b> {item.Description}
                 </Typography>
               </Grid>
-              <Grid item xs={6} sm={6} md={6}>
+              <Grid item xs={6} xs={12} lg={5} xl={5} sm={6} md={6}>
                 {item?.ingredients === undefined ? null : (
                   <Typography variant="subtitle1" gutterBottom>
                     <b>Ingredients:</b>
@@ -176,7 +176,7 @@ const OrderDetails = (props) => {
                   </Typography>
                 )}
               </Grid>
-              <Grid item xs={6} sm={6} md={6}>
+              <Grid item xs={12} lg={2} xl={2} sm={6} md={6}>
                 {item?.itemNote === undefined ? null : (
                   <Typography variant="body1" gutterBottom className="mx-1">
                     <b>Item Note: </b>
@@ -184,7 +184,7 @@ const OrderDetails = (props) => {
                   </Typography>
                 )}
               </Grid>
-              <Grid item xs={6} sm={6} md={6}>
+              <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                 <Typography
                   variant="body1"
                   gutterBottom
@@ -234,7 +234,7 @@ const OrderDetails = (props) => {
       <Card className="m-1">
         <CardContent sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={6} sm={6} md={6}>
+            <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
               <Typography variant="body1" gutterBottom>
                 <b>Prdering Method: </b>
                 {order.orderingMethod === "whatsApp"
@@ -272,7 +272,7 @@ const OrderDetails = (props) => {
                   : " Pending"}
               </Typography>
             </Grid>
-            <Grid item xs={6} sm={6} md={6}>
+            <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
               <Typography variant="body1" gutterBottom>
                 <b>Address: </b> {order.address}
               </Typography>
@@ -295,13 +295,13 @@ const OrderDetails = (props) => {
       <Card className="m-1">
         <CardContent sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={6} sm={6} md={6}>
+            <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
               <Typography variant="body1" gutterBottom>
                 <b>Delivery Fees: </b>
                 {order.deliveryFees + "  " + currency}
               </Typography>
             </Grid>
-            <Grid item xs={6} sm={6} md={6}>
+            <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
               <Typography variant="body1" gutterBottom>
                 <b>Grand Total: </b>
                 {(sum + order.deliveryFees).toFixed(2) + "  " + currency}

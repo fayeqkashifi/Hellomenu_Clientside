@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { base_url, port } from "../../../Consts";
@@ -202,7 +202,7 @@ const NewGrid = (props) => {
     }
     if (item.image.length != 0) {
       outputs.push(
-        <div className="col-xl-12 col-lg-12 col-sm-12 ">
+        <div className="col-xl-12 col-lg-12 col-sm-12 " key={i}>
           <div className="row">
             {item.image?.map((photo, indexOfImage) => {
               return (

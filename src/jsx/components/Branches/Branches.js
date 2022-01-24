@@ -6,8 +6,6 @@ import axios from "axios";
 import swal from "sweetalert";
 import QRCode from "qrcode.react";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
-// import ReactWhatsapp from 'react-whatsapp';
-// import FloatingWhatsApp from 'react-floating-whatsapp'
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";

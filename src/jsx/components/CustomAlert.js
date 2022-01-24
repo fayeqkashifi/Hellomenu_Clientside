@@ -1,21 +1,21 @@
-import * as React from "react";
+import React, { useEffect, useState, forwardRef } from "react";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export default function CustomAlert(props) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   // const handleClick = () => {
   //   setOpen(true);
   // };
-  React.useEffect(() => {
+  useEffect(() => {
     setOpen(props.open);
-  }, []);
+  }, [props.open]);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;

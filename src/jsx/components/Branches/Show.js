@@ -97,7 +97,7 @@ const Show = (props) => {
     {
       name: t("preview"),
       url: {
-        pathname: ``,
+        pathname: `#`,
       },
     },
     // {
@@ -146,26 +146,24 @@ const Show = (props) => {
                           {tabData.map((data, i) =>
                             data.name === t("preview") ? (
                               <Nav.Item as="li" key={i}>
-                                <Link to={data.url} onClick={(e) => phone(e)}>
-                                  <Nav.Link eventKey={data.name.toLowerCase()}>
-                                    {data.name}
-                                  </Nav.Link>
-                                </Link>
+                                <Nav.Link
+                                  as={Link}
+                                  to={data.url}
+                                  onClick={(e) => phone(e)}
+                                  eventKey={data.name.toLowerCase()}
+                                >
+                                  {data.name}
+                                </Nav.Link>
                               </Nav.Item>
                             ) : (
                               <Nav.Item as="li" key={i}>
-                                <Link
+                                <Nav.Link
+                                  as={Link}
                                   to={data.url}
-                                  // target={
-                                  //   data.name === t("public_link")
-                                  //     ? "_blank"
-                                  //     : ""
-                                  // }
+                                  eventKey={data.name.toLowerCase()}
                                 >
-                                  <Nav.Link eventKey={data.name.toLowerCase()}>
-                                    {data.name}
-                                  </Nav.Link>
-                                </Link>
+                                  {data.name}
+                                </Nav.Link>
                               </Nav.Item>
                             )
                           )}

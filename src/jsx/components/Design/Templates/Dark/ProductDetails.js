@@ -34,6 +34,9 @@ const ProductDetails = (props) => {
   const id = atob(props.match.params.id);
   const custom = props.history.location.state.custom;
   const deliveryFees = parseInt(props.history.location.state.deliveryFees);
+  const branchId = props.history.location.state.branchId;
+  const branch = props.history.location.state.branch;
+
   // design start
   const theme = createTheme({
     palette: {
@@ -81,6 +84,7 @@ const ProductDetails = (props) => {
   const [loading, setLoading] = useState(true);
   const [skuarray, setSkuArray] = useState([]);
   const [varPics, setVarPics] = useState([]);
+  const [activeSKU, setActiveSKU] = useState([]);
   const [productDetails, setProductDetails] = useState({
     price: 0,
     stock: 0,
@@ -104,7 +108,6 @@ const ProductDetails = (props) => {
 
         parseVariants(varData);
       }
-      // console.log(variantData);
       setLoading(false);
     };
     getdata(); // axios
@@ -172,6 +175,7 @@ const ProductDetails = (props) => {
         });
       });
     }
+    setActiveSKU(sku);
   };
   const parseVariants = (variantData) => {
     const variants = [];
@@ -650,11 +654,23 @@ const ProductDetails = (props) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="lg">
-        <Header subcategories={0} cart={cart} />
+        <Header
+          subcategories={0}
+          theme={custom}
+          cart={cart}
+          branch={branch}
+          setCart={setCart}
+          deliveryFees={deliveryFees}
+          branchId={branchId}
+        />
         {viewImages_HTMLTABLE}
       </Container>
       <Footer
         title="Checkout"
+        theme={custom}
+        branch={branch}
+        setCart={setCart}
+        branchId={branchId}
         theme={custom}
         stock={
           productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
@@ -684,6 +700,11 @@ const ProductDetails = (props) => {
             ingredients: ingredients,
             custom: custom,
             skuarray: skuarray,
+            activeSKU: activeSKU,
+            orignalStock: productDetails.stock,
+            branchId: branchId,
+            branch: branch,
+            deliveryFees: deliveryFees,
           },
         }}
       />

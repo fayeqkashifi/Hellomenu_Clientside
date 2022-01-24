@@ -315,28 +315,27 @@ const AddProduct = (props) => {
                       />
                     </div>
                   </div>
-
-                  <div
-                    className={`col-xl-6 col-xxl-6 col-lg-6 col-sm-12 ${
-                      subCategories.length === 0 ? "d-none" : ""
-                    }`}
-                  >
-                    <div className="form-group">
-                      <label> {t("sub_categories")}</label>
-                      <Field
-                        as="select"
-                        name="sub_category"
-                        className={"form-control"}
-                      >
-                        <option value="">{t("select_a_option")}</option>
-                        {subCategories.map((item) => (
-                          <option value={item.sub_id} key={item.sub_id}>
-                            {item.SubCategoryName}
+                  {subCategories.length !== 0 ? (
+                    <div className={`col-xl-6 col-xxl-6 col-lg-6 col-sm-12 `}>
+                      <div className="form-group">
+                        <label> {t("sub_categories")}</label>
+                        <Field
+                          as="select"
+                          name="sub_category"
+                          className={"form-control"}
+                        >
+                          <option key="empty" value="">
+                            {t("select_a_option")}
                           </option>
-                        ))}
-                      </Field>
+                          {subCategories.map((item) => (
+                            <option value={item.sub_id} key={item.sub_id}>
+                              {item.SubCategoryName}
+                            </option>
+                          ))}
+                        </Field>
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
                   <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                     <div className="form-group">
                       <label> {t("unit")}</label>

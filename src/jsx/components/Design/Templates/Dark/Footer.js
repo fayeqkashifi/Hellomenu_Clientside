@@ -48,16 +48,17 @@ function Footer(props) {
     <>
       <Box
         component="footer"
-        style={{ position: "fixed", width: "100%" }}
+        // style={{ position: "fixed", }}
         sx={{
           bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
           position: "sticky",
-          bottom: "0px",
+          bottom: 0,
+          width: "100%",
         }}
-        className="bottom-0 py-1"
+        className="bottom-0 mt-5"
       >
         <Grid container spacing={2} className="text-center">
-          <Grid item xs={4}>
+          <Grid item xs={6} lg={4} xl={4} sm={4} md={4}>
             <Typography variant="subtitle1">
               Sub Total
               <p>
@@ -69,7 +70,7 @@ function Footer(props) {
               </p>
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6} lg={4} xl={4} sm={4} md={4}>
             <Typography variant="subtitle1">
               Delivery Fee
               <p>
@@ -81,7 +82,7 @@ function Footer(props) {
               </p>
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} lg={4} xl={4} sm={4} md={4}>
             {url !== undefined ? (
               <Link
                 className={`col-12 btn ${

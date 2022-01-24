@@ -47,13 +47,13 @@ const Home = () => {
           <div className="card overflow-hidden">
             <div className="card-header media border-0 pb-0">
               <div className="media-body">
-                <h4 className="text-info">{t("baskets")}</h4>
+                <h4 className="text-info">{t("areas")}</h4>
               </div>
             </div>
             <div className="card-body ">
-              <p>{t("basket_text")}</p>
-              <Link to="/baskets" className="btn btn-outline-info">
-                {t("baskets")}
+              <p>{t("areas_text")}</p>
+              <Link to="/areas" className="btn btn-outline-info">
+                {t("areas")}
               </Link>
             </div>
           </div>

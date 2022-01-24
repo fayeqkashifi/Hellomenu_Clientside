@@ -35,53 +35,63 @@ export default function Main(props) {
     JSON.parse(localStorage.getItem("cart")) || []
   );
 
+  // const lengthArray = cart.length;
   useEffect(() => {
-    axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setCustom(res.data.fetchData[0]?.Customization);
-      }
-    });
-    axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setBranch(res.data.data);
-      }
-    });
-    axios.get(`/api/getCategoriesBasedProducts/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setMenu(res.data.fetchData);
-        if (res.data.fetchData[0]?.sub_category_id === null) {
-          setActiveMenu(
-            res.data.fetchData[0]?.CategoryName +
-              res.data.fetchData[0]?.category_id
-          );
-          axios
-            .get(
-              `/api/GetProductsBasedCategory/${res.data.fetchData[0]?.category_id}`
-            )
-            .then((res) => {
-              if (res.data.status === 200) {
-                setProducts(res.data.data);
-              }
-            });
-        } else {
-          setActiveMenu(
-            res.data.fetchData[0]?.SubCategoryName +
-              res.data.fetchData[0]?.sub_category_id
-          );
-          axios
-            .get(
-              `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_category_id}`
-            )
-            .then((res) => {
-              if (res.data.status === 200) {
-                setProducts(res.data.data);
-              }
-            });
+    const getdata = () => {
+      axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
+        if (res.data.status === 200) {
+          setCustom(res.data.fetchData[0]?.Customization);
         }
-        setLoading(false);
-      }
-    });
-  }, [cart]);
+      });
+      axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
+        if (res.data.status === 200) {
+          setBranch(res.data.data);
+        }
+      });
+      axios.get(`/api/getCategoriesBasedProducts/${branchId}`).then((res) => {
+        if (res.data.status === 200) {
+          setMenu(res.data.fetchData);
+          if (res.data.fetchData[0]?.sub_category_id === null) {
+            setActiveMenu(
+              res.data.fetchData[0]?.CategoryName +
+                res.data.fetchData[0]?.category_id
+            );
+            axios
+              .get(
+                `/api/GetProductsBasedCategory/${res.data.fetchData[0]?.category_id}`
+              )
+              .then((res) => {
+                if (res.data.status === 200) {
+                  setProducts(res.data.data);
+                }
+              });
+          } else {
+            setActiveMenu(
+              res.data.fetchData[0]?.SubCategoryName +
+                res.data.fetchData[0]?.sub_category_id
+            );
+            axios
+              .get(
+                `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_category_id}`
+              )
+              .then((res) => {
+                if (res.data.status === 200) {
+                  setProducts(res.data.data);
+                }
+              });
+          }
+          setLoading(false);
+        }
+      });
+    };
+    // const cartdata = localStorage.getItem("cart");
+    // if (cartdata == cart) {
+    //   setCart(JSON.parse(localStorage.getItem("cart")));
+    // } else {
+    getdata();
+    // }
+  }, [cart.length]);
+
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
     if (hold < menu.length) {
@@ -281,7 +291,12 @@ export default function Main(props) {
               <Link
                 to={{
                   pathname: `/dark-template/product/${btoa(item.id)}`,
-                  state: { custom: custom, deliveryFees: deliveryFees },
+                  state: {
+                    custom: custom,
+                    deliveryFees: deliveryFees,
+                    branchId: branchId,
+                    branch: branch,
+                  },
                 }}
               >
                 <div className="text-center">
@@ -356,11 +371,13 @@ export default function Main(props) {
           cart={cart}
           setCart={setCart}
           title={branch?.BrancheName}
+          branch={branch}
           menu={menu}
           activeMenu={activeMenu}
           setProducts={setProducts}
           setActiveMenu={setActiveMenu}
           custom={custom}
+          deliveryFees={deliveryFees}
         />
 
         <Container className="mt-3 d-flex justify-content-center">
@@ -373,12 +390,12 @@ export default function Main(props) {
           next={fetchMoreData}
           hasMore={changeState}
           loader={
-            <p className="text-center pt-5">
+            <p className="text-center py-5">
               <b>{t("loading")}</b>
             </p>
           }
           endMessage={
-            <p style={{ textAlign: "center " }}>
+            <p style={{ textAlign: "center" }} className="py-5">
               <b>{t("yay_you_have_seen_it_all")}</b>
             </p>
           }

@@ -20,7 +20,6 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import Switch from "@mui/material/Switch";
@@ -151,93 +150,93 @@ const Theme = (props) => {
                             </Typography>
                           </Grid>
                           <Grid item xs={6} md={4}>
-                            <Typography sx={{ color: "text.secondary" }}>
-                              <AvatarGroup max={4}>
-                                <Avatar
-                                  sx={{
-                                    bgcolor: themes.TextColor,
-                                    width: 20,
-                                    height: 20,
-                                  }}
-                                >
-                                  {" "}
-                                </Avatar>
-                                <Avatar
-                                  sx={{
-                                    bgcolor: themes.BackgroundColor,
-                                    width: 20,
-                                    height: 20,
-                                  }}
-                                >
-                                  {" "}
-                                </Avatar>
-                                <Avatar
-                                  sx={{
-                                    bgcolor: themes.HighlightColor,
-                                    width: 20,
-                                    height: 20,
-                                  }}
-                                >
-                                  {" "}
-                                </Avatar>
-                              </AvatarGroup>
-                            </Typography>
+                            {/* <Typography sx={{ color: "text.secondary" }}> */}
+                            <AvatarGroup max={4}>
+                              <Avatar
+                                sx={{
+                                  bgcolor: themes.TextColor,
+                                  width: 20,
+                                  height: 20,
+                                }}
+                              >
+                                {" "}
+                              </Avatar>
+                              <Avatar
+                                sx={{
+                                  bgcolor: themes.BackgroundColor,
+                                  width: 20,
+                                  height: 20,
+                                }}
+                              >
+                                {" "}
+                              </Avatar>
+                              <Avatar
+                                sx={{
+                                  bgcolor: themes.HighlightColor,
+                                  width: 20,
+                                  height: 20,
+                                }}
+                              >
+                                {" "}
+                              </Avatar>
+                            </AvatarGroup>
+                            {/* </Typography> */}
                           </Grid>
                         </Grid>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography>
-                          <List>
-                            <ListItem disablePadding>
-                              <ListItemButton
-                                onClick={() =>
-                                  changeColor("red", "green", "black")
-                                }
-                              >
-                                <Grid container spacing={2}>
-                                  <Grid item xs={6} md={8}>
-                                    <ListItemText primary="First Color Theme" />
-                                  </Grid>
-                                  <Grid item xs={6} md={4}>
-                                    <Typography
-                                      sx={{ color: "text.secondary" }}
-                                    >
-                                      <AvatarGroup max={4}>
-                                        <Avatar
-                                          sx={{
-                                            bgcolor: "red",
-                                            width: 20,
-                                            height: 20,
-                                          }}
-                                        >
-                                          {" "}
-                                        </Avatar>
-                                        <Avatar
-                                          sx={{
-                                            bgcolor: "green",
-                                            width: 20,
-                                            height: 20,
-                                          }}
-                                        >
-                                          {" "}
-                                        </Avatar>
-                                        <Avatar
-                                          sx={{
-                                            bgcolor: "black",
-                                            width: 20,
-                                            height: 20,
-                                          }}
-                                        >
-                                          {" "}
-                                        </Avatar>
-                                      </AvatarGroup>
-                                    </Typography>
-                                  </Grid>
+                        {/* <Typography> */}
+                        <List>
+                          <ListItem disablePadding>
+                            <ListItemButton
+                              onClick={() =>
+                                changeColor("red", "green", "black")
+                              }
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item xs={6} md={8}>
+                                  <ListItemText primary="First Color Theme" />
                                 </Grid>
-                              </ListItemButton>
-                            </ListItem>
-                          </List>
-                        </Typography>
+                                <Grid item xs={6} md={4}>
+                                  {/* <Typography
+                                      sx={{ color: "text.secondary" }}
+                                    > */}
+                                  <AvatarGroup max={4}>
+                                    <Avatar
+                                      sx={{
+                                        bgcolor: "red",
+                                        width: 20,
+                                        height: 20,
+                                      }}
+                                    >
+                                      {" "}
+                                    </Avatar>
+                                    <Avatar
+                                      sx={{
+                                        bgcolor: "green",
+                                        width: 20,
+                                        height: 20,
+                                      }}
+                                    >
+                                      {" "}
+                                    </Avatar>
+                                    <Avatar
+                                      sx={{
+                                        bgcolor: "black",
+                                        width: 20,
+                                        height: 20,
+                                      }}
+                                    >
+                                      {" "}
+                                    </Avatar>
+                                  </AvatarGroup>
+                                  {/* </Typography> */}
+                                </Grid>
+                              </Grid>
+                            </ListItemButton>
+                          </ListItem>
+                        </List>
+                        {/* </Typography> */}
                       </AccordionDetails>
                     </Accordion>
                   </div>
@@ -520,13 +519,13 @@ const Theme = (props) => {
             <button className="btn btn-primary" type="submit">
               {t("save")}
             </button>
-            <Link
+            <div
+              style={{ cursor: "pointer" }}
               className="btn btn-light m-1"
-              to=""
               onClick={() => history.goBack()}
             >
               {t("back")}
-            </Link>
+            </div>
           </div>
         </Form>
       </div>
