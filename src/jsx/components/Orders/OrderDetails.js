@@ -9,10 +9,16 @@ import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
 import getSymbolFromCurrency from "currency-symbol-map";
-import { Button } from "react-bootstrap";
 import CustomAlert from "../CustomAlert";
+import { Button, Modal } from "react-bootstrap";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import ReactWhatsapp from "react-whatsapp";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 const OrderDetails = (props) => {
+  let message = "";
+
   const { t } = useTranslation();
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,6 +27,8 @@ const OrderDetails = (props) => {
   const [order, setOrder] = useState([]);
   let [sum, setSum] = useState(0);
   const [check, setCheck] = useState(false);
+  const [modalCentered, setModalCentered] = useState(false);
+
   useEffect(() => {
     axios.get(`/api/getOrder/${id}`).then((res) => {
       if (res.data.status === 200) {
@@ -41,6 +49,15 @@ const OrderDetails = (props) => {
       setLoading(false);
     });
   }, [check]);
+
+  const initialValues = {
+    discardReason: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      discardReason: Yup.string().required("Reason is required"),
+    });
+  };
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -53,11 +70,12 @@ const OrderDetails = (props) => {
       message: message,
     });
   };
-  const discardOrder = () => {
-    axios.get(`/api/discardOrder/${id}`).then((res) => {
+  const discardOrder = (data) => {
+    axios.post(`/api/discardOrder/${id}`, data).then((res) => {
       if (res.data.status === 200) {
         setAlerts(true, "success", res.data.message);
         setCheck(!check);
+        setModalCentered(false);
       }
     });
   };
@@ -176,11 +194,11 @@ const OrderDetails = (props) => {
                   </Typography>
                 )}
               </Grid>
-              <Grid item xs={12} lg={2} xl={2} sm={6} md={6}>
+              <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                 {item?.itemNote === undefined ? null : (
-                  <Typography variant="body1" gutterBottom className="mx-1">
+                  <Typography variant="body1" className="mx-1">
                     <b>Item Note: </b>
-                    {item?.itemNote}
+                    {item.itemNote}
                   </Typography>
                 )}
               </Grid>
@@ -271,6 +289,12 @@ const OrderDetails = (props) => {
                   ? " Completed"
                   : " Pending"}
               </Typography>
+              {order.status === 0 ? (
+                <Typography variant="body1" gutterBottom>
+                  <b>Discard Reason: </b>
+                  {order.discardReason}
+                </Typography>
+              ) : null}
             </Grid>
             <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
               <Typography variant="body1" gutterBottom>
@@ -315,11 +339,89 @@ const OrderDetails = (props) => {
           <Button variant="success" className="m-1" onClick={completedOrder}>
             Complete Order{" "}
           </Button>
-          <Button variant="danger" className="m-1" onClick={discardOrder}>
+          <Button
+            variant="danger"
+            className="m-1"
+            //  onClick={discardOrder}
+            onClick={() => setModalCentered(true)}
+          >
             Discard Order{" "}
           </Button>
         </div>
       )}
+      <Modal className="fade" show={modalCentered}>
+        <Modal.Header>
+          <Modal.Title>Discard Order</Modal.Title>
+          <Button
+            onClick={() => setModalCentered(false)}
+            variant=""
+            className="close"
+          >
+            <span>&times;</span>
+          </Button>
+        </Modal.Header>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={discardOrder}
+        >
+          {({ errors, status, touched, values }) => (
+            <Form>
+              <Modal.Body>
+                <div className="form-group">
+                  <label> Reason </label>
+                  <Field
+                    as="textarea"
+                    name="discardReason"
+                    className={
+                      "form-control" +
+                      (errors.discardReason && touched.discardReason
+                        ? " is-invalid"
+                        : "")
+                    }
+                    placeholder="Reason..."
+                  />
+                  <ErrorMessage
+                    name="discardReason"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setModalCentered(false)}
+                  variant="danger light"
+                >
+                  {t("close")}
+                </Button>
+                <p className="d-none">
+                  {
+                    (message = `*Order Number*: ${order.id} \n*Status*:* Discarded* \n*Reason*: ${values?.discardReason} \n`)
+                  }
+                </p>
+                {values?.discardReason === "" ? (
+                  <Button variant="primary" type="submit">
+                    {t("save")}{" "}
+                  </Button>
+                ) : (
+                  <ReactWhatsapp
+                    className="btn btn-primary"
+                    type="submit"
+                    // style={buttonStyle}
+                    number={order.phoneNumber}
+                    message={message}
+                    max="4096"
+                    onClick={() => discardOrder()}
+                  >
+                    <WhatsAppIcon fontSize="small" /> {t("send_order")}
+                  </ReactWhatsapp>
+                )}
+              </Modal.Footer>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
     </Fragment>
   );
 };
