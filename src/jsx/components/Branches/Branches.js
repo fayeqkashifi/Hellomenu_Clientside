@@ -16,6 +16,7 @@ import CustomAlert from "../CustomAlert";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import "yup-phone";
 
 const Branches = () => {
   // localization
@@ -30,7 +31,9 @@ const Branches = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      phoneNumber: Yup.string().required("Phone Number is required"),
+      phoneNumber: Yup.string()
+        .phone()
+        .required("Phone Number is required"),
     });
   };
   // insert start

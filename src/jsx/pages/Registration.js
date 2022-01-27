@@ -6,19 +6,14 @@ import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../components/CustomAlert";
-
+import "yup-phone";
 const Registration = () => {
-  // validation start
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
   const validationSchema = () => {
     return Yup.object().shape({
       name: Yup.string().required("Fullname is required"),
       phone_number: Yup.string()
-        .required("Phone number is required")
-        .matches(phoneRegExp, "Phone number is not valid"),
-      // .matches(phoneRegExp, "Phone number is not valid"),
+        .phone()
+        .required("Phone number is required"),
       email: Yup.string()
         .required("Email is required")
         .email("Email is invalid"),
@@ -143,7 +138,7 @@ const Registration = () => {
                                 ? " is-invalid"
                                 : "")
                             }
-                            placeholder="0093--- ---- ----"
+                            placeholder="+93--- ---- ----"
                           />
                           <ErrorMessage
                             name="phone_number"

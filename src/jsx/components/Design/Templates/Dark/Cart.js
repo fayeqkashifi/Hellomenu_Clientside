@@ -12,7 +12,6 @@ import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
-
 import "react-slideshow-image/dist/styles.css";
 import getSymbolFromCurrency from "currency-symbol-map";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -28,11 +27,22 @@ import QrReader from "react-qr-reader";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import CustomAlert from "../../../CustomAlert";
+import * as Yup from "yup";
+import "yup-phone";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 
 const Cart = (props) => {
   let message = "";
   let { custom, checkBit, cart, branchId, setCart, branch, deliveryFees } =
     props;
+  const initialValues = {
+    phoneNumber: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      phoneNumber: Yup.string().phone().required("Phone Number is required"),
+    });
+  };
   const theme = createTheme({
     palette: {
       background: {
@@ -195,35 +205,31 @@ const Cart = (props) => {
     });
   };
   const [error, setError] = useState(false);
-  const saveOrder = () => {
+  const saveOrder = (data) => {
     if (orderingWay !== undefined) {
       if (orderingWay === "tbl_qrcode" && showReservation.length === 0) {
         setAlerts(true, "warning", "Please Select Table Reservation.");
       } else {
-        if (userData.phoneNumber !== "") {
-          orderingWay === "tbl_qrcode"
-            ? showReservation === "outside"
-              ? userData.dateAndTime === undefined ||
-                userData.table_id === undefined
-                ? setError(true)
-                : save()
-              : table.length === 0
-              ? setAlerts(true, "warning", "Please Scan The Table QR-Code.")
-              : save()
-            : orderingWay === "delivery"
-            ? userData.address === undefined
+        orderingWay === "tbl_qrcode"
+          ? showReservation === "outside"
+            ? userData.dateAndTime === undefined ||
+              userData.table_id === undefined
               ? setError(true)
-              : save()
-            : save();
-        } else {
-          setAlerts(true, "warning", "Please enter your phone number.");
-        }
+              : save(data)
+            : table.length === 0
+            ? setAlerts(true, "warning", "Please Scan The Table QR-Code.")
+            : save(data)
+          : orderingWay === "delivery"
+          ? userData.address === undefined || userData.address === ""
+            ? setError(true)
+            : save(data)
+          : save(data);
       }
     } else {
       setAlerts(true, "warning", "Please choose at least one way of ordering.");
     }
   };
-  const save = () => {
+  const save = (data) => {
     const formData = new FormData();
     formData.append("orderingItems", localStorage.getItem("cart"));
     formData.append(
@@ -233,7 +239,7 @@ const Cart = (props) => {
     formData.append("dateAndTime", userData.dateAndTime);
     formData.append("orderingMethod", orderingWay);
     formData.append("generalNote", userData.generalNote);
-    formData.append("phoneNumber", userData.phoneNumber);
+    formData.append("phoneNumber", data.phoneNumber);
     formData.append("buildingNo", userData.buildingNo);
     formData.append("address", userData.address);
     formData.append("floor", userData.floor);
@@ -820,109 +826,171 @@ const Cart = (props) => {
                 </CardContent>
               </Card>
             ) : null}
-            <Card sx={card} className="m-1">
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
-                    <div className="form-group">
-                      <input
-                        name="phoneNumber"
-                        type="text"
-                        className={"form-control"}
-                        placeholder="Phone"
-                        onChange={changeHandle}
-                        style={style}
-                      />
-                    </div>
-                  </Grid>
-                  <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
-                    <TextareaAutosize
-                      name="generalNote"
-                      onChange={changeHandle}
-                      className={"form-control"}
-                      minRows={3}
-                      placeholder="General Note"
-                      style={style}
-                    />
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-            <Card sx={card} className="m-1">
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
-                    {orderingWay !== "tbl_qrcode" ? (
-                      <>
-                        <p className="d-none">
-                          {
-                            (message = `\n\n${message} ------------------------- \n *Sub Total*: ${
-                              sum.toFixed(2) + "  " + currency
-                            }\n *Delivery Fee*: ${
-                              deliveryFees.toFixed(2) + "  " + currency
-                            }\n *Grand Total*: ${
-                              (sum + deliveryFees).toFixed(2) + "  " + currency
-                            }\n *Phone Number*: ${userData?.phoneNumber}${
-                              userData?.generalNote === undefined
-                                ? ""
-                                : `\n *General Note*: ${userData?.generalNote}`
-                            }
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={saveOrder}
+            >
+              {({ errors, status, touched, values }) => (
+                <Form>
+                  <Card sx={card} className="m-1">
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Grid container spacing={1}>
+                        <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
+                          <div className="form-group">
+                            <Field
+                              name="phoneNumber"
+                              type="text"
+                              className={
+                                "form-control" +
+                                (errors.phoneNumber && touched.phoneNumber
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                              placeholder="+93--- ---- ---"
+                              style={style}
+                            />
+                            <ErrorMessage
+                              name="phoneNumber"
+                              component="div"
+                              style={{ fontSize: "0.7em" }}
+                              className="invalid-feedback"
+                            />
+                            {/* <input
+                              name="phoneNumber"
+                              type="text"
+                              className={`form-control`}
+                              placeholder="Phone"
+                              onChange={changeHandle}
+                              style={style}
+                            /> */}
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
+                          <TextareaAutosize
+                            name="generalNote"
+                            onChange={changeHandle}
+                            className={"form-control"}
+                            minRows={3}
+                            placeholder="General Note"
+                            style={style}
+                          />
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  <Card sx={card} className="m-1">
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                          {orderingWay !== "tbl_qrcode" ? (
+                            <>
+                              <p className="d-none">
+                                {
+                                  (message = `\n\n${message} ------------------------- \n *Sub Total*: ${
+                                    sum.toFixed(2) + "  " + currency
+                                  }\n *Delivery Fee*: ${
+                                    deliveryFees.toFixed(2) + "  " + currency
+                                  }\n *Grand Total*: ${
+                                    (sum + deliveryFees).toFixed(2) +
+                                    "  " +
+                                    currency
+                                  }\n *Phone Number*: ${values?.phoneNumber}${
+                                    userData?.generalNote === undefined
+                                      ? ""
+                                      : `\n *General Note*: ${userData?.generalNote}`
+                                  }
                            `)
-                          }
-                          {orderingWay === "delivery"
-                            ? (message = `${message} \n---------------- \n *Ordering Method*: Home Delivery\n *Address*: ${userData?.address}\n *Building No*: ${userData?.buildingNo}\n *Floor*: ${userData?.floor}\n *Flat*: ${userData?.flat}\n *Directions*: ${userData?.directions}`)
-                            : null}
-                        </p>
-                        {orderingWay === undefined ||
-                        userData.phoneNumber === "" ||
-                        error ? (
-                          // userData.address === undefined
+                                }
+                                {orderingWay === "delivery"
+                                  ? (message = `${message} \n---------------- \n *Ordering Method*: Home Delivery\n *Address*: ${userData?.address}\n *Building No*: ${userData?.buildingNo}\n *Floor*: ${userData?.floor}\n *Flat*: ${userData?.flat}\n *Directions*: ${userData?.directions}`)
+                                  : null}
+                              </p>
+                              {orderingWay === undefined ? (
+                                <button
+                                  className="col-12 btn"
+                                  style={buttonStyle}
+                                  type="submit"
+                                  // onClick={() => saveOrder()}
+                                >
+                                  <WhatsAppIcon /> {t("send_order")}
+                                </button>
+                              ) : orderingWay === "delivery" ? (
+                                userData.address === undefined ||
+                                userData.address === "" ? (
+                                  <button
+                                    className="col-12 btn"
+                                    style={buttonStyle}
+                                    type="submit"
+                                    // onClick={() => saveOrder()}
+                                  >
+                                    <WhatsAppIcon /> {t("send_order")}
+                                  </button>
+                                ) : (
+                                  <ReactWhatsapp
+                                    className="col-12 btn"
+                                    type="submit"
+                                    style={buttonStyle}
+                                    number={branch?.phoneNumber}
+                                    message={message}
+                                    max="4096"
+                                    // onClick={() => saveOrder()}
+                                  >
+                                    <WhatsAppIcon /> {t("send_order")}
+                                  </ReactWhatsapp>
+                                )
+                              ) : errors.phoneNumber && touched.phoneNumber ? (
+                                <button
+                                  className="col-12 btn"
+                                  style={buttonStyle}
+                                  type="submit"
+                                  // onClick={() => saveOrder()}
+                                >
+                                  <WhatsAppIcon /> {t("send_order")}
+                                </button>
+                              ) : (
+                                <ReactWhatsapp
+                                  className="col-12 btn"
+                                  type="submit"
+                                  style={buttonStyle}
+                                  number={branch?.phoneNumber}
+                                  message={message}
+                                  max="4096"
+                                  // onClick={() => saveOrder()}
+                                >
+                                  <WhatsAppIcon /> {t("send_order")}
+                                </ReactWhatsapp>
+                              )}
+                            </>
+                          ) : (
+                            <button
+                              className="col-12 btn"
+                              style={buttonStyle}
+                              onClick={() => saveOrder()}
+                            >
+                              <SendIcon /> {t("send_order")}
+                            </button>
+                          )}
+                        </Grid>
+                        <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                           <button
                             className="col-12 btn"
                             style={buttonStyle}
-                            onClick={() => saveOrder()}
+                            onClick={() => [
+                              localStorage.removeItem("cart"),
+                              setCart([]),
+                              setUserData([]),
+                            ]}
                           >
-                            <WhatsAppIcon /> {t("send_order")}
+                            <ClearIcon /> {t("empty_cart")}
                           </button>
-                        ) : (
-                          <ReactWhatsapp
-                            className="col-12 btn"
-                            style={buttonStyle}
-                            number={branch?.phoneNumber}
-                            message={message}
-                            max="4096"
-                            onClick={() => saveOrder()}
-                          >
-                            <WhatsAppIcon /> {t("send_order")}
-                          </ReactWhatsapp>
-                        )}
-                      </>
-                    ) : (
-                      <button
-                        className="col-12 btn"
-                        style={buttonStyle}
-                        onClick={() => saveOrder()}
-                      >
-                        <SendIcon /> {t("send_order")}
-                      </button>
-                    )}
-                  </Grid>
-                  <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
-                    <button
-                      className="col-12 btn"
-                      style={buttonStyle}
-                      onClick={() => [
-                        localStorage.removeItem("cart"),
-                        setCart([]),
-                        setUserData([]),
-                      ]}
-                    >
-                      <ClearIcon /> {t("empty_cart")}
-                    </button>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </Form>
+              )}
+            </Formik>
           </>
         )}
       </Container>
