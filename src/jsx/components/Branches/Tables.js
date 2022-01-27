@@ -136,17 +136,24 @@ const Tables = (props) => {
       setLoading(false);
     });
   }, [check, id]);
-  // download QRcode
-  const downloadQRCode = (e, id) => {
+  const downloadAll = (e) => {
     e.preventDefault();
-    // console.log(id)
+
+    fetchData.map((item, i) => {
+      downloadQRCode(e, btoa(item.id), item.tableId);
+    });
+  };
+  // download QRcode
+  const downloadQRCode = (e, id, tableId) => {
+    e.preventDefault();
+    console.log(id);
     const qrCodeURL = document
       .getElementById(id)
       .toDataURL("image/png")
       .replace("image/png", "image/octet-stream");
     let aEl = document.createElement("a");
     aEl.href = qrCodeURL;
-    aEl.download = "Table_QR_Code.png";
+    aEl.download = tableId + ".png";
     document.body.appendChild(aEl);
     aEl.click();
     document.body.removeChild(aEl);
@@ -186,7 +193,7 @@ const Tables = (props) => {
             />
             <div
               style={{ cursor: "pointer" }}
-              onClick={(e) => downloadQRCode(e, btoa(item.id))}
+              onClick={(e) => downloadQRCode(e, btoa(item.id), item.tableId)}
             >
               {t("download_qr_code")}
             </div>
@@ -432,10 +439,18 @@ const Tables = (props) => {
                   <Button
                     variant="primary"
                     type="button"
-                    className="mb-2 mr-2"
+                    className="mx-1"
                     onClick={() => setModalCentered(true)}
                   >
                     {t("add_table")}
+                  </Button>
+                  <Button
+                    variant="info"
+                    type="button"
+                    className="mx-1"
+                    onClick={(e) => downloadAll(e)}
+                  >
+                    {t("download_all")}
                   </Button>
                 </div>
               </div>

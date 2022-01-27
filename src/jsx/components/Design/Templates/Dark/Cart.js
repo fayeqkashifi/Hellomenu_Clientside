@@ -874,7 +874,8 @@ const Cart = (props) => {
                             : null}
                         </p>
                         {orderingWay === undefined ||
-                        userData.phoneNumber === "" ? (
+                        userData.phoneNumber === "" ||
+                        error ? (
                           // userData.address === undefined
                           <button
                             className="col-12 btn"
