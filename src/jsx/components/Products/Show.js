@@ -13,7 +13,7 @@ import AddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
 
 const ProductShow = (props) => {
-  const { path, url } = useRouteMatch();
+  const { path } = useRouteMatch();
   // const { t } = useTranslation();
   // const id = props.history.location.state.id;
 

@@ -37,7 +37,7 @@ const Ingredients = (props) => {
   };
   const save = (e) => {
     e.preventDefault();
-    if (form.length != 0) {
+    if (form.length !== 0) {
       if (prevIsValid()) {
         const formData = new FormData();
         formData.append("form", JSON.stringify(form));
@@ -55,7 +55,7 @@ const Ingredients = (props) => {
             ]);
             setModalCentered(false);
             console.log(res.data.duplicate_array.length);
-            res.data.duplicate_array.length == 0
+            res.data.duplicate_array.length === 0
               ? setAlerts(true, "success", res.data.message)
               : setAlerts(
                   true,
@@ -167,7 +167,7 @@ const Ingredients = (props) => {
         //  if (allPrev.some((val) => val.name == form[index].name)) {
         //   allPrev[index].errors.name = "Duplicate Entry";
         // }
-        setForm(allPrev);
+        return setForm(allPrev);
       });
     }
 

@@ -32,7 +32,7 @@ const ServiceArea = (props) => {
   };
   const saveServiceAreas = (e) => {
     e.preventDefault();
-    if (servicesAreas.length != 0) {
+    if (servicesAreas.length !== 0) {
       const formData = new FormData();
       formData.append("BranchID", id);
       formData.append("AreaName", JSON.stringify(servicesAreas));
@@ -132,7 +132,6 @@ const ServiceArea = (props) => {
   const [check, setCheck] = useState(true);
 
   useEffect(() => {
-    let locations = [];
     axios.get(`/api/getAreasBranch/${id}`).then((res) => {
       if (res.data.status === 200) {
         console.log(res.data.fetchData);
@@ -155,7 +154,7 @@ const ServiceArea = (props) => {
       }
       setLoading(false);
     });
-  }, [check]);
+  }, [check,id]);
   const [servicesAreas, setServicesAreas] = useState([]);
   const handleSelectEvent = (e) => {
     setServicesAreas(e);

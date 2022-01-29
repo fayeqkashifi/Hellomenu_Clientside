@@ -140,7 +140,7 @@ const Tables = (props) => {
     e.preventDefault();
 
     fetchData.map((item, i) => {
-      downloadQRCode(e, btoa(item.id), item.tableId);
+      return downloadQRCode(e, btoa(item.id), item.tableId);
     });
   };
   // download QRcode

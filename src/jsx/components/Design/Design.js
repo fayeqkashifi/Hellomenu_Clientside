@@ -6,7 +6,6 @@ import {
   CTabContent,
   CTabPane,
   CCard,
-  CCardText,
   CCardBody,
   CCardHeader,
   CCardImage,
@@ -119,11 +118,12 @@ const Design = (props) => {
     axios.get(`/api/GetThemes/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
-        res.data.fetchData.map((item, i) => {
+        res.data.fetchData.map((item, i) =>{ 
           if (item.Status == 1) {
             setActiveThemeId(item.id);
             setThemes(item);
           }
+          return console.log("");
         });
       }
       setLoading(false);
