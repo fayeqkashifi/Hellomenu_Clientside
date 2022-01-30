@@ -106,7 +106,6 @@ const Cart = (props) => {
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
   useEffect(() => {
-    setLoading(false);
     let Total = 0;
     cart.map(
       (item) =>
@@ -121,12 +120,13 @@ const Cart = (props) => {
         setTables(res.data.fetchData);
       }
     });
-  }, []);
+    setLoading(false);
+  }, [branchId]);
 
   const handleDecrement = (e, qty, id, price) => {
     e.preventDefault();
     let vars = cart.map((item) =>
-      id == item.id
+      id === item.id
         ? {
             ...item,
             qty: item.qty - (item.qty > 0 ? 1 : 0),
@@ -143,7 +143,7 @@ const Cart = (props) => {
     e.preventDefault();
     if (stock > qty) {
       let vars = cart.map((item) =>
-        id == item.id ? { ...item, qty: qty + 1 } : item
+        id === item.id ? { ...item, qty: qty + 1 } : item
       );
       setCart((cart) => vars);
       localStorage.setItem("cart", JSON.stringify(vars));
@@ -447,7 +447,7 @@ const Cart = (props) => {
                     <b>Extras: </b>
 
                     {item?.extras?.map((val, i) => {
-                      if (item?.extras.length == i + 1) {
+                      if (item?.extras.length === i + 1) {
                         return val.value + " - Included";
                       } else {
                         return val.value + " , ";
@@ -473,6 +473,8 @@ const Cart = (props) => {
                           currency +
                           " )"
                         );
+                      } else {
+                        return "";
                       }
                     })}
                   </Typography>

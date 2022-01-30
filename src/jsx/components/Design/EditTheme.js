@@ -97,7 +97,6 @@ const EditTheme = (props) => {
                 <input
                   type="text"
                   style={{ border: "none" }}
-                  value={themes.ThemeName}
                   className="form-control"
                   placeholder={t("theme_name")}
                   onChange={handleInput}

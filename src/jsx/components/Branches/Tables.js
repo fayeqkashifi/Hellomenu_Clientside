@@ -11,10 +11,13 @@ import AddIcon from "@mui/icons-material/Add";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
-
+import DownloadIcon from "@mui/icons-material/Download";
+import Tooltip from "@mui/material/Tooltip";
+// import ReactToPrint from "react-to-print";
+// import QRCodePrint from "./QRCodePrint";
+// import PrintIcon from "@mui/icons-material/Print";
 const Tables = (props) => {
   const id = props.history.location.state.id;
-
   // validation start
   const initialValues = {
     tableId: "",
@@ -139,9 +142,7 @@ const Tables = (props) => {
   const downloadAll = (e) => {
     e.preventDefault();
 
-    fetchData.map((item, i) => {
-      return downloadQRCode(e, btoa(item.id), item.tableId);
-    });
+    fetchData.map((item, i) => downloadQRCode(e, btoa(item.id), item.tableId));
   };
   // download QRcode
   const downloadQRCode = (e, id, tableId) => {
@@ -183,14 +184,17 @@ const Tables = (props) => {
           <td> {item.tableId}</td>
           <td> {item.tableName}</td>
           <td>
-            <QRCode
-              id={btoa(item.id)}
-              level={"H"}
-              size={256}
-              fgColor="#f50b65"
-              value={item.tableId}
-              className="primary d-none"
-            />
+            <div>
+              <QRCode
+                id={btoa(item.id)}
+                level={"H"}
+                size={256}
+                fgColor="#f50b65"
+                value={item.tableId}
+                className="primary d-none "
+              />
+              {item.tableName}
+            </div>
             <div
               style={{ cursor: "pointer" }}
               onClick={(e) => downloadQRCode(e, btoa(item.id), item.tableId)}
@@ -231,6 +235,7 @@ const Tables = (props) => {
       ) : (
         ""
       )}
+
       <Modal className="fade" show={modalCentered}>
         <Modal.Header>
           <Modal.Title>{t("add_table")}</Modal.Title>
@@ -420,12 +425,18 @@ const Tables = (props) => {
           )}
         </Formik>
       </Modal>
-      <div className="row justify-content-end">
-        <div className="col-1">
+
+      <div className="d-flex justify-content-end">
+        <Tooltip title="Download All">
+          <IconButton aria-label="Example" onClick={(e) => downloadAll(e)}>
+            <DownloadIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Change Layout">
           <IconButton aria-label="Example" onClick={changeLayout}>
             {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
           </IconButton>
-        </div>
+        </Tooltip>
       </div>
       {layout ? (
         <div className="row">
@@ -443,14 +454,6 @@ const Tables = (props) => {
                     onClick={() => setModalCentered(true)}
                   >
                     {t("add_table")}
-                  </Button>
-                  <Button
-                    variant="info"
-                    type="button"
-                    className="mx-1"
-                    onClick={(e) => downloadAll(e)}
-                  >
-                    {t("download_all")}
                   </Button>
                 </div>
               </div>

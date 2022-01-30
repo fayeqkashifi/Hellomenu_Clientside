@@ -38,13 +38,13 @@ const Variants = (props) => {
       });
 
       const nameAtter = {};
-      res.data.fetchData.map((fetchData) => {
-        nameAtter[fetchData.attributeName] = "";
-      });
+      res.data.fetchData.map(
+        (fetchData) => (nameAtter[fetchData.attributeName] = "")
+      );
 
       if (
         res.data.fetchData.length !== attributes.length &&
-        jsonvar.data.fetchData == ""
+        jsonvar.data.fetchData === ""
       ) {
         setAttributes(res.data.fetchData);
         // setTags(JSON.parse(jsonvar.data.fetchData.tags));

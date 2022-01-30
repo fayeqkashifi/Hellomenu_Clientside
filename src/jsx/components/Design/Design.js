@@ -118,8 +118,8 @@ const Design = (props) => {
     axios.get(`/api/GetThemes/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
-        res.data.fetchData.map((item, i) =>{ 
-          if (item.Status == 1) {
+        res.data.fetchData.map((item, i) => {
+          if (item.Status === 1) {
             setActiveThemeId(item.id);
             setThemes(item);
           }
@@ -133,7 +133,7 @@ const Design = (props) => {
         setTemplates(res.data.data);
       }
     });
-  }, [check]);
+  }, [check, branchId]);
   // delete start
   const deleteTheme = (e, id) => {
     e.preventDefault();
@@ -203,7 +203,7 @@ const Design = (props) => {
                 <EditIcon />
                 {t("edit")}
               </Link>
-              {item.Status == 1 ? (
+              {item.Status === 1 ? (
                 " "
               ) : (
                 <Link
@@ -229,8 +229,8 @@ const Design = (props) => {
                 </div>
                 <div className="col-4 text-right">
                   <Switch
-                    disabled={item.Status == 1 ? true : false}
-                    checked={item.Status == 1 ? true : false}
+                    disabled={item.Status === 1 ? true : false}
+                    checked={item.Status === 1 ? true : false}
                     color="secondary"
                     onChange={(e) => changeTheActiveTheme(e, item.id)}
                   />
@@ -314,7 +314,7 @@ const Design = (props) => {
                               </Link>
                             </Grid>
                             <Grid item xs={8}>
-                              {item.Status == 1 ? (
+                              {item.Status === 1 ? (
                                 <Link
                                   to={{
                                     pathname: `${url}/${item.CustomizationURL}`,
@@ -329,8 +329,8 @@ const Design = (props) => {
                             </Grid>
                             <Grid item xs={4}>
                               <Switch
-                                disabled={item.Status == 1 ? true : false}
-                                checked={item.Status == 1 ? true : false}
+                                disabled={item.Status === 1 ? true : false}
+                                checked={item.Status === 1 ? true : false}
                                 color="secondary"
                                 onChange={(e) =>
                                   changeTheActiveTemplate(e, item.id)
