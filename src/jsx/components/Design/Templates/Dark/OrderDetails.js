@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 
 // Import css files
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+// import "slick-carousel/slick/slick.css";
+// import "slick-carousel/slick/slick-theme.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
@@ -25,7 +25,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import CustomAlert from "../../../CustomAlert";
 import IconButton from "@mui/material/IconButton";
 // import { useHistory } from "react-router-dom";
-
+import "swiper/swiper-bundle.min.css";
+import "swiper/swiper.min.css";
 const OrderDetails = (props) => {
   const custom = props.history.location.state.custom;
   // design start
