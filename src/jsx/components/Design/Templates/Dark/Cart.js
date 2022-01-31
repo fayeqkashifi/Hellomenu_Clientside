@@ -33,8 +33,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 
 const Cart = (props) => {
   let message = "";
-  let { custom, checkBit, cart, branchId, setCart, branch, deliveryFees } =
-    props;
+  let { custom, checkBit, cart, setCart, branch, deliveryFees } = props;
   const initialValues = {
     phoneNumber: "",
   };
@@ -105,7 +104,7 @@ const Cart = (props) => {
   const [loading, setLoading] = useState(true);
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
-  useEffect(() => {
+  const dataLoad = () => {
     let Total = 0;
     cart.map(
       (item) =>
@@ -115,13 +114,20 @@ const Cart = (props) => {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(Total);
-    axios.get(`/api/GetTables/${branchId}`).then((res) => {
+    axios.get(`/api/GetTables/${branch.id}`).then((res) => {
       if (res.data.status === 200) {
         setTables(res.data.fetchData);
       }
     });
     setLoading(false);
-  }, [branchId]);
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
+  }, []);
 
   const handleDecrement = (e, qty, id, price) => {
     e.preventDefault();
@@ -230,32 +236,34 @@ const Cart = (props) => {
     }
   };
   const save = (data) => {
-    const formData = new FormData();
-    formData.append("orderingItems", localStorage.getItem("cart"));
-    formData.append(
-      "table_id",
-      table.id === undefined ? userData.table_id : table.id
-    );
-    formData.append("dateAndTime", userData.dateAndTime);
-    formData.append("orderingMethod", orderingWay);
-    formData.append("generalNote", userData.generalNote);
-    formData.append("phoneNumber", data.phoneNumber);
-    formData.append("buildingNo", userData.buildingNo);
-    formData.append("address", userData.address);
-    formData.append("floor", userData.floor);
-    formData.append("flat", userData.flat);
-    formData.append("directions", userData.directions);
-    formData.append("deliveryFees", deliveryFees);
-    formData.append("branch_id", branchId);
-    axios.post("/api/InsertOrder", formData).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        setTable([]);
-        setUserData([]);
-        setCart([]);
-        localStorage.removeItem("cart");
-      }
-    });
+    if (data !== undefined) {
+      const formData = new FormData();
+      formData.append("orderingItems", localStorage.getItem("cart"));
+      formData.append(
+        "table_id",
+        table.id === undefined ? userData.table_id : table.id
+      );
+      formData.append("dateAndTime", userData.dateAndTime);
+      formData.append("orderingMethod", orderingWay);
+      formData.append("generalNote", userData.generalNote);
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("buildingNo", userData.buildingNo);
+      formData.append("address", userData.address);
+      formData.append("floor", userData.floor);
+      formData.append("flat", userData.flat);
+      formData.append("directions", userData.directions);
+      formData.append("deliveryFees", deliveryFees);
+      formData.append("branch_id", branch.id);
+      axios.post("/api/InsertOrder", formData).then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          setTable([]);
+          setUserData([]);
+          setCart([]);
+          localStorage.removeItem("cart");
+        }
+      });
+    }
   };
   const active = {
     cursor: "pointer",
@@ -941,6 +949,16 @@ const Cart = (props) => {
                                     <WhatsAppIcon /> {t("send_order")}
                                   </ReactWhatsapp>
                                 )
+                              ) : orderingWay === "whatsApp" &&
+                                values.phoneNumber === "" ? (
+                                <button
+                                  className="col-12 btn"
+                                  style={buttonStyle}
+                                  type="submit"
+                                  // onClick={() => saveOrder()}
+                                >
+                                  <WhatsAppIcon /> {t("send_order")}
+                                </button>
                               ) : errors.phoneNumber && touched.phoneNumber ? (
                                 <button
                                   className="col-12 btn"

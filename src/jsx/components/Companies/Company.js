@@ -106,14 +106,20 @@ const Company = () => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get("/api/GetCompanies").then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   var viewCompanies_HTMLTABLE = "";

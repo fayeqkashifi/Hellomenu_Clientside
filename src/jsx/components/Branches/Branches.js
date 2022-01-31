@@ -31,9 +31,7 @@ const Branches = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      phoneNumber: Yup.string()
-        .phone()
-        .required("Phone Number is required"),
+      phoneNumber: Yup.string().phone().required("Phone Number is required"),
     });
   };
   // insert start
@@ -178,9 +176,7 @@ const Branches = () => {
       [e.target.name]: e.target.checked ? 1 : 0,
     });
   };
-
-  // for mobile
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get("/api/GetBranches").then((res) => {
       if (res.data.status === 200) {
         setBranchdata(res.data.branches);
@@ -192,6 +188,14 @@ const Branches = () => {
         setCurrency(res.data.fetchData);
       }
     });
+  };
+  // for mobile
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
   // for download QRCode
 
@@ -573,12 +577,10 @@ const Branches = () => {
           )}
         </Formik>
       </Modal>
-      <div className="row justify-content-end">
-        <div className="col-1">
-          <IconButton aria-label="Example" onClick={changeLayout}>
-            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-          </IconButton>
-        </div>
+      <div className="d-flex justify-content-end">
+        <IconButton aria-label="Example" onClick={changeLayout}>
+          {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+        </IconButton>
       </div>
       {layout ? (
         <div className="row">

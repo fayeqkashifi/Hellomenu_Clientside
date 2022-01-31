@@ -28,8 +28,7 @@ const OrderDetails = (props) => {
   let [sum, setSum] = useState(0);
   const [check, setCheck] = useState(false);
   const [modalCentered, setModalCentered] = useState(false);
-
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/getOrder/${id}`).then((res) => {
       if (res.data.status === 200) {
         let items = JSON.parse(res.data.fetchData.orderingItems);
@@ -48,6 +47,13 @@ const OrderDetails = (props) => {
 
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   const initialValues = {

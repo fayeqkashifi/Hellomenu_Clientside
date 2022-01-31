@@ -53,13 +53,20 @@ const Product = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/GetProducts/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   const columns = [
@@ -281,21 +288,22 @@ const Product = (props) => {
   return (
     <>
       <Fragment>
-        <div className="row justify-content-end">
-          <div className="col-3 text-right">
+        <div className="d-flex justify-content-end">
+          <IconButton aria-label="Example">
             <Link
-              className="btn btn-primary mb-2 mr-2"
+              // className="btn btn-primary mb-2 mr-2"
               to={{
                 pathname: `${url}/add-product`,
                 state: { id: branchId },
               }}
             >
-              {t("add_product")}
+              <AddIcon />
             </Link>
-            <IconButton aria-label="Example" onClick={changeLayout}>
-              {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-            </IconButton>
-          </div>
+          </IconButton>
+
+          <IconButton aria-label="Example" onClick={changeLayout}>
+            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+          </IconButton>
         </div>
         {layout ? (
           <div style={{ overflow: "scroll" }}>{viewProducts_HTMLTABLE}</div>

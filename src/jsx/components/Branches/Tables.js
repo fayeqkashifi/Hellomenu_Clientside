@@ -131,14 +131,21 @@ const Tables = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/GetTables/${id}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
-  }, [check, id]);
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
+  }, [check]);
   const downloadAll = (e) => {
     e.preventDefault();
 
@@ -147,7 +154,6 @@ const Tables = (props) => {
   // download QRcode
   const downloadQRCode = (e, id, tableId) => {
     e.preventDefault();
-    console.log(id);
     const qrCodeURL = document
       .getElementById(id)
       .toDataURL("image/png")
@@ -193,7 +199,6 @@ const Tables = (props) => {
                 value={item.tableId}
                 className="primary d-none "
               />
-              {item.tableName}
             </div>
             <div
               style={{ cursor: "pointer" }}

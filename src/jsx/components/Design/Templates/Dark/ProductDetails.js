@@ -254,11 +254,11 @@ const ProductDetails = (props) => {
   } else {
     viewImages_HTMLTABLE = (
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={5} md={5} lg={5}>
+        <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
           {(() => {
             if (varPics.length != 0) {
               return (
-                <>
+                <div className="swiper">
                   <Swiper
                     style={{
                       "--swiper-navigation-color": "#fff",
@@ -324,11 +324,11 @@ const ProductDetails = (props) => {
                       });
                     })}
                   </Swiper>
-                </>
+                </div>
               );
             } else {
               return (
-                <>
+                <div className="swiper">
                   <Swiper
                     spaceBetween={10}
                     speed={2500}
@@ -393,13 +393,13 @@ const ProductDetails = (props) => {
                       );
                     })}
                   </Swiper>
-                </>
+                </div>
               );
             }
           })()}
         </Grid>
 
-        <Grid item xs={12} sm={7} md={7} lg={7}>
+        <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
           <Card
             sx={{
               // height: "100%",
@@ -653,7 +653,7 @@ const ProductDetails = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" style={{ marginBottom: "100px" }}>
         <Header
           subcategories={0}
           theme={custom}
@@ -661,7 +661,6 @@ const ProductDetails = (props) => {
           branch={branch}
           setCart={setCart}
           deliveryFees={deliveryFees}
-          branchId={branchId}
         />
         {viewImages_HTMLTABLE}
       </Container>

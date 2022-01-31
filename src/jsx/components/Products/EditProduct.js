@@ -136,7 +136,7 @@ const EditProduct = (props) => {
   const handleSelectEventRecom = (e) => {
     setProductRecom(e);
   };
-  useEffect(() => {
+  const dataLoad = () => {
     axios.post(`/api/GetIngredient`).then((res) => {
       if (res.data.status === 200) {
         setIntgredients(res.data.fetchData);
@@ -171,6 +171,13 @@ const EditProduct = (props) => {
         swal("Error", res.data.message, "error");
       }
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
   const getSubCategories = (e) => {
     e.preventDefault();

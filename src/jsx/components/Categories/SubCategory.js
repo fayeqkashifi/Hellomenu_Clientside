@@ -143,14 +143,21 @@ const SubCategory = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/GetSubCategories/${id}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
-  }, [check, id]);
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
+  }, [check]);
   const [layout, setLayout] = useState(
     JSON.parse(
       localStorage.getItem("layoutSubCategory")
@@ -375,12 +382,10 @@ const SubCategory = (props) => {
           )}
         </Formik>
       </Modal>
-      <div className="row justify-content-end">
-        <div className="col-1">
-          <IconButton aria-label="Example" onClick={changeLayout}>
-            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-          </IconButton>
-        </div>
+      <div className="d-flex justify-content-end">
+        <IconButton aria-label="Example" onClick={changeLayout}>
+          {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+        </IconButton>
       </div>
       {layout ? (
         <div className="row">

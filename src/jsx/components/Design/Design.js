@@ -113,8 +113,7 @@ const Design = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState([]);
-
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/GetThemes/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
@@ -133,7 +132,14 @@ const Design = (props) => {
         setTemplates(res.data.data);
       }
     });
-  }, [check, branchId]);
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
+  }, [check]);
   // delete start
   const deleteTheme = (e, id) => {
     e.preventDefault();

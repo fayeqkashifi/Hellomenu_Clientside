@@ -181,8 +181,7 @@ const Category = (props) => {
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
   const [cats, setCates] = useState([]);
-
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/GetBranches`).then((res) => {
       if (res.data.status === 200) {
         setBranches(
@@ -203,7 +202,14 @@ const Category = (props) => {
       }
       setLoading(false);
     });
-  }, [check, id]);
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
+  }, [check]);
 
   const [layout, setLayout] = useState(
     JSON.parse(
@@ -551,13 +557,10 @@ const Category = (props) => {
           )}
         </Formik>
       </Modal>
-
-      <div className="row justify-content-end">
-        <div className="col-1">
-          <IconButton aria-label="Example" onClick={changeLayout}>
-            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-          </IconButton>
-        </div>
+      <div className="d-flex justify-content-end">
+        <IconButton aria-label="Example" onClick={changeLayout}>
+          {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+        </IconButton>
       </div>
       <div>
         <Backdrop

@@ -127,8 +127,7 @@ const AddProduct = (props) => {
   const [branches, setBranches] = useState([]);
   const [check, setCheck] = useState(true);
   const [share, setShare] = useState(false);
-
-  useEffect(() => {
+  const dataLoad = () => {
     axios.post(`/api/GetIngredient`).then((res) => {
       if (res.data.status === 200) {
         setIntgredients(res.data.fetchData);
@@ -155,6 +154,13 @@ const AddProduct = (props) => {
         );
       }
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
   const [productIngredient, setProductIngredient] = useState([]);
   const handleSelectEvent = (e) => {

@@ -26,7 +26,6 @@ function Header(props) {
     branch,
     setCart,
     deliveryFees,
-    branchId,
   } = props;
   const filterProducts = (menu) => {
     if (menu.sub_category_id === null) {
@@ -167,7 +166,6 @@ function Header(props) {
             cart={cart}
             setCart={setCart}
             deliveryFees={deliveryFees}
-            branchId={branchId}
           />
         </Modal.Body>
       </Modal>

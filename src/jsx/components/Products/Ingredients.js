@@ -54,7 +54,7 @@ const Ingredients = (props) => {
               },
             ]);
             setModalCentered(false);
-            console.log(res.data.duplicate_array.length);
+            // console.log(res.data.duplicate_array.length);
             res.data.duplicate_array.length === 0
               ? setAlerts(true, "success", res.data.message)
               : setAlerts(
@@ -131,7 +131,7 @@ const Ingredients = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  useEffect(() => {
+  const dataLoad = () => {
     axios.post(`/api/GetIngredient`).then((res) => {
       if (res.data.status === 200) {
         // console.log(res.data.fetchData);
@@ -139,6 +139,13 @@ const Ingredients = (props) => {
       }
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   const [form, setForm] = useState([

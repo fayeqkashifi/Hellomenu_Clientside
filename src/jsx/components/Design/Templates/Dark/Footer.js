@@ -23,7 +23,7 @@ function Footer(props) {
   const { t } = useTranslation();
 
   let [sum, setSum] = useState(0);
-  useEffect(() => {
+  const dataLoad = () => {
     let count = 0;
     cart.map(
       (item) =>
@@ -33,6 +33,13 @@ function Footer(props) {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(count);
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [cart]);
   const [modalCentered, setModalCentered] = useState(false);
 
@@ -48,7 +55,7 @@ function Footer(props) {
     <>
       <Box
         component="footer"
-        // style={{ position: "fixed", }}
+        style={{ position: "fixed" }}
         sx={{
           bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
           position: "sticky",

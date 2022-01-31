@@ -13,14 +13,20 @@ const Order = () => {
   const { t } = useTranslation();
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/getOrders`).then((res) => {
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
       }
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
   var viewOrders_HTMLTABLE = "";

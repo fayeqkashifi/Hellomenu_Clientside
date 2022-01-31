@@ -75,8 +75,7 @@ const Customization = (props) => {
   };
   const [template, setTemplate] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const dataLoad = () => {
     axios.get(`/api/GetTemplate/${templateId}`).then((res) => {
       if (res.data.status === 200) {
         setSettings(res.data.fetchData.Customization);
@@ -84,6 +83,13 @@ const Customization = (props) => {
       }
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [loading]);
 
   var viewPreview_HTMLTABLE = "";

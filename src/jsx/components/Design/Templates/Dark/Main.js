@@ -34,62 +34,60 @@ export default function Main(props) {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-
+  const dataLoad = () => {
+    axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setCustom(res.data.fetchData[0]?.Customization);
+      }
+    });
+    axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setBranch(res.data.data);
+      }
+    });
+    axios.get(`/api/getCategoriesBasedProducts/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setMenu(res.data.fetchData);
+        if (res.data.fetchData[0]?.sub_category_id === null) {
+          setActiveMenu(
+            res.data.fetchData[0]?.CategoryName +
+              res.data.fetchData[0]?.category_id
+          );
+          axios
+            .get(
+              `/api/GetProductsBasedCategory/${res.data.fetchData[0]?.category_id}`
+            )
+            .then((res) => {
+              if (res.data.status === 200) {
+                setProducts(res.data.data);
+              }
+            });
+        } else {
+          setActiveMenu(
+            res.data.fetchData[0]?.SubCategoryName +
+              res.data.fetchData[0]?.sub_category_id
+          );
+          axios
+            .get(
+              `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_category_id}`
+            )
+            .then((res) => {
+              if (res.data.status === 200) {
+                setProducts(res.data.data);
+              }
+            });
+        }
+        setLoading(false);
+      }
+    });
+  };
   // const lengthArray = cart.length;
   useEffect(() => {
-    const getdata = () => {
-      axios.get(`/api/GetTempBasedOnBranch/${branchId}`).then((res) => {
-        if (res.data.status === 200) {
-          setCustom(res.data.fetchData[0]?.Customization);
-        }
-      });
-      axios.get(`/api/GetBranchForShow/${branchId}`).then((res) => {
-        if (res.data.status === 200) {
-          setBranch(res.data.data);
-        }
-      });
-      axios.get(`/api/getCategoriesBasedProducts/${branchId}`).then((res) => {
-        if (res.data.status === 200) {
-          setMenu(res.data.fetchData);
-          if (res.data.fetchData[0]?.sub_category_id === null) {
-            setActiveMenu(
-              res.data.fetchData[0]?.CategoryName +
-                res.data.fetchData[0]?.category_id
-            );
-            axios
-              .get(
-                `/api/GetProductsBasedCategory/${res.data.fetchData[0]?.category_id}`
-              )
-              .then((res) => {
-                if (res.data.status === 200) {
-                  setProducts(res.data.data);
-                }
-              });
-          } else {
-            setActiveMenu(
-              res.data.fetchData[0]?.SubCategoryName +
-                res.data.fetchData[0]?.sub_category_id
-            );
-            axios
-              .get(
-                `/api/GetProductsBasedOnSubCategory/${res.data.fetchData[0]?.sub_category_id}`
-              )
-              .then((res) => {
-                if (res.data.status === 200) {
-                  setProducts(res.data.data);
-                }
-              });
-          }
-          setLoading(false);
-        }
-      });
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
     };
-    // const cartdata = localStorage.getItem("cart");
-    // if (cartdata == cart) {
-    //   setCart(JSON.parse(localStorage.getItem("cart")));
-    // } else {
-    getdata();
-    // }
   }, [cart.length]);
 
   const [changeState, setChangeState] = useState(true);
@@ -380,7 +378,10 @@ export default function Main(props) {
           deliveryFees={deliveryFees}
         />
 
-        <Container className="mt-3 d-flex justify-content-center">
+        <Container
+          className="mt-3 d-flex justify-content-center"
+          style={{ marginBottom: "50px" }}
+        >
           <Grid container spacing={2} className="d-flex justify-content-center">
             {viewShow_HTMLTABLE}
           </Grid>
@@ -390,12 +391,15 @@ export default function Main(props) {
           next={fetchMoreData}
           hasMore={changeState}
           loader={
-            <p className="text-center py-5">
+            <p className="text-center py-4" style={{ marginBottom: "100px" }}>
               <b>{t("loading")}</b>
             </p>
           }
           endMessage={
-            <p style={{ textAlign: "center" }} className="py-5">
+            <p
+              style={{ textAlign: "center", marginBottom: "100px" }}
+              className="py-4"
+            >
               <b>{t("yay_you_have_seen_it_all")}</b>
             </p>
           }

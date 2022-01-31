@@ -370,9 +370,11 @@ const OrderDetails = (props) => {
           branch={branch}
           setCart={setCart}
           deliveryFees={deliveryFees}
-          branchId={branchId}
         />
-        <Container className="d-flex justify-content-center">
+        <Container
+          className="d-flex justify-content-center "
+          style={{ marginBottom: "100px" }}
+        >
           <Grid container spacing={2} className="d-flex justify-content-center">
             <Grid item xs={12} sm={8} md={8}>
               <Card
@@ -488,7 +490,7 @@ const OrderDetails = (props) => {
         </Container>
       </Container>
       <Box
-        // style={{ position: "fixed", width: "100%" }}
+        style={{ position: "fixed", width: "100%" }}
         sx={{
           bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
           position: "sticky",
@@ -500,7 +502,7 @@ const OrderDetails = (props) => {
         //   position: "sticky",
         //   bottom: "0px",
         // }}
-        className="bottom-0 text-center p-1 mt-5"
+        className="bottom-0 text-center p-1"
       >
         <Grid container spacing={2}>
           <Grid item xs={7}>

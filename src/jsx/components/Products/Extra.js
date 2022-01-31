@@ -113,7 +113,7 @@ const Extra = (props) => {
   //retriving data using laravel API for show
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
+  const dataLoad = () => {
     axios.post(`/api/GetExtra`).then((res) => {
       if (res.data.status === 200) {
         // console.log(res.data.fetchData);
@@ -121,6 +121,13 @@ const Extra = (props) => {
       }
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
   }, [insert]);
 
   var viewProducts_HTMLTABLE = "";
