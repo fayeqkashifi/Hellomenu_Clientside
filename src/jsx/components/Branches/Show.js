@@ -20,7 +20,6 @@ import {
 import Customization from "../Design/Templates/Dark/Customization";
 import SubCategory from "../Categories/SubCategory";
 import Category from "../Categories/Category";
-import Inventory from "../Inventories/Inventory";
 import PrivateRoute from "../PrivateRoute";
 import ServiceArea from "../Services/ServiceArea";
 import Tables from "./Tables";
@@ -247,7 +246,6 @@ const Show = (props) => {
             path={`${path}/services-areas`}
             component={ServiceArea}
           />
-          <PrivateRoute path={`${path}/inventory`} component={Inventory} />
           <PrivateRoute path={`${path}/tables`} component={Tables} />
           <PrivateRoute
             path={`/dark-template-customization`}

@@ -181,34 +181,29 @@ const Category = (props) => {
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
   const [cats, setCates] = useState([]);
-  const dataLoad = () => {
-    axios.get(`/api/GetBranches`).then((res) => {
-      if (res.data.status === 200) {
-        setBranches(
-          res.data.branches.filter((item) => {
-            return item.id !== id;
-          })
-        );
+  const dataLoad = async () => {
+    try {
+      const result = await axios.get(`/api/GetBranches`);
+      setBranches(
+        result.data.branches.filter((item) => {
+          return item.id !== id;
+        })
+      );
+      const shared = await axios.get(`/api/sharedCates/${id}`);
+      if (shared.status === 200) {
+        setCates(shared.data);
       }
-    });
-    axios.get(`/api/sharedCates/${id}`).then((res) => {
-      if (res.status === 200) {
-        setCates(res.data);
-      }
-    });
-    axios.get(`/api/GetCategories/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setFetchData(res.data.fetchData);
+      const cat = await axios.get(`/api/GetCategories/${id}`);
+      if (cat.data.status === 200) {
+        setFetchData(cat.data.fetchData);
       }
       setLoading(false);
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, [check]);
 
   const [layout, setLayout] = useState(

@@ -136,24 +136,22 @@ const EditProduct = (props) => {
   const handleSelectEventRecom = (e) => {
     setProductRecom(e);
   };
-  const dataLoad = () => {
-    axios.post(`/api/GetIngredient`).then((res) => {
-      if (res.data.status === 200) {
-        setIntgredients(res.data.fetchData);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.post(`/api/GetIngredient`);
+      if (result.data.status === 200) {
+        setIntgredients(result.data.fetchData);
       }
-    });
-    axios.get(`/api/GetCategories/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setCategories(res.data.fetchData);
+      const cat = await axios.get(`/api/GetCategories/${branchId}`);
+      if (cat.data.status === 200) {
+        setCategories(cat.data.fetchData);
       }
-    });
 
-    axios.get(`/api/GetProducts/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setFetchData(res.data.fetchData);
+      const response = await axios.get(`/api/GetProducts/${branchId}`);
+      if (response.data.status === 200) {
+        setFetchData(response.data.fetchData);
       }
-    });
-    axios.get(`/api/EditProducts/${productId}`).then((res) => {
+      const res = await axios.get(`/api/EditProducts/${productId}`);
       if (res.data.status === 200) {
         setEditProduct(res.data.product);
         setProductIngredient(JSON.parse(res.data.product.ingredients));
@@ -170,14 +168,12 @@ const EditProduct = (props) => {
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
       }
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, [check]);
   const getSubCategories = (e) => {
     e.preventDefault();

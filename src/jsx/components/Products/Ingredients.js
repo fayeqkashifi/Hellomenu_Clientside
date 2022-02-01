@@ -41,29 +41,35 @@ const Ingredients = (props) => {
       if (prevIsValid()) {
         const formData = new FormData();
         formData.append("form", JSON.stringify(form));
-        axios.post("/api/InsertIngredient", formData).then((res) => {
-          if (res.data.status === 200) {
-            setCheck(!check);
-            setForm([
-              {
-                name: "",
+        axios
+          .post("/api/InsertIngredient", formData)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setCheck(!check);
+              setForm([
+                {
+                  name: "",
 
-                errors: {
-                  name: null,
+                  errors: {
+                    name: null,
+                  },
                 },
-              },
-            ]);
-            setModalCentered(false);
-            // console.log(res.data.duplicate_array.length);
-            res.data.duplicate_array.length === 0
-              ? setAlerts(true, "success", res.data.message)
-              : setAlerts(
-                  true,
-                  "warning",
-                  "Duplicate Entry:" + res.data.duplicate_array
-                );
-          }
-        });
+              ]);
+              setModalCentered(false);
+              // console.log(res.data.duplicate_array.length);
+              res.data.duplicate_array.length === 0
+                ? setAlerts(true, "success", res.data.message)
+                : setAlerts(
+                    true,
+                    "warning",
+                    "Duplicate Entry:" + res.data.duplicate_array
+                  );
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            // return Promise.reject(error);
+          });
       }
     } else {
       setAlerts(true, "error", "Please add a name.");
@@ -131,21 +137,19 @@ const Ingredients = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = () => {
-    axios.post(`/api/GetIngredient`).then((res) => {
-      if (res.data.status === 200) {
-        // console.log(res.data.fetchData);
-        setFetchData(res.data.fetchData);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.post(`/api/GetIngredient`);
+      if (result.data.status === 200) {
+        setFetchData(result.data.fetchData);
       }
       setLoading(false);
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, [check]);
 
   const [form, setForm] = useState([

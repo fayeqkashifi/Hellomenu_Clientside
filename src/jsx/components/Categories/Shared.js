@@ -15,13 +15,18 @@ const Shared = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`/api/GetSharedCatBranches/${sub_id}`).then((res) => {
-      if (res.status === 200) {
-        setFetchData(res.data);
-        setLoading(false);
+    (async () => {
+      try {
+        const result = await axios.get(`/api/GetSharedCatBranches/${sub_id}`);
+        if (result.status === 200) {
+          setFetchData(result.data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    });
-  }, [sub_id]);
+    })();
+  }, []);
 
   var viewProducts_HTMLTABLE = "";
   if (loading) {

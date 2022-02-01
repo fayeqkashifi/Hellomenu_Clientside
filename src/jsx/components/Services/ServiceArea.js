@@ -130,29 +130,27 @@ const ServiceArea = (props) => {
   const [areaLocation, setAreaLocation] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = () => {
-    axios.get(`/api/getAreasBranch/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setAreaLocation(res.data.fetchData);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.get(`/api/getAreasBranch/${id}`);
+      if (result.data.status === 200) {
+        setAreaLocation(result.data.fetchData);
       }
-    });
-    axios.get(`/api/GetServiceAreas/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setFetchData(res.data.fetchData);
+      const response = await axios.get(`/api/GetServiceAreas/${id}`);
+      if (response.data.status === 200) {
+        setFetchData(response.data.fetchData);
         let arrayData = [];
-        res.data.fetchData?.map((val) => {
+        response.data.fetchData?.map((val) => {
           return arrayData.push(val.areaName);
         });
       }
       setLoading(false);
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, [check]);
   const [servicesAreas, setServicesAreas] = useState([]);
   const handleSelectEvent = (e) => {

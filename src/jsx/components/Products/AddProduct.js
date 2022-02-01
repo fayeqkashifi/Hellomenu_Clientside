@@ -127,25 +127,22 @@ const AddProduct = (props) => {
   const [branches, setBranches] = useState([]);
   const [check, setCheck] = useState(true);
   const [share, setShare] = useState(false);
-  const dataLoad = () => {
-    axios.post(`/api/GetIngredient`).then((res) => {
-      if (res.data.status === 200) {
-        setIntgredients(res.data.fetchData);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.post(`/api/GetIngredient`);
+      if (result.data.status === 200) {
+        setIntgredients(result.data.fetchData);
       }
-    });
-    axios.get(`/api/GetCategories/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setCategories(res.data.fetchData);
+      const cat = await axios.get(`/api/GetCategories/${branchId}`);
+      if (cat.data.status === 200) {
+        setCategories(cat.data.fetchData);
       }
-    });
 
-    axios.get(`/api/GetProducts/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setFetchData(res.data.fetchData);
+      const response = await axios.get(`/api/GetProducts/${branchId}`);
+      if (response.data.status === 200) {
+        setFetchData(response.data.fetchData);
       }
-      setLoading(false);
-    });
-    axios.get(`/api/GetBranches`).then((res) => {
+      const res = await axios.get(`/api/GetBranches`);
       if (res.data.status === 200) {
         setBranches(
           res.data.branches.filter((item) => {
@@ -153,14 +150,13 @@ const AddProduct = (props) => {
           })
         );
       }
-    });
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, [check]);
   const [productIngredient, setProductIngredient] = useState([]);
   const handleSelectEvent = (e) => {

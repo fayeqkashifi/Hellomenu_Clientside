@@ -79,19 +79,18 @@ const EditTheme = (props) => {
     });
   };
   // update End
-  const dataLoad = () => {
-    axios.get(`/api/EditTheme/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setThemes(res.data.data);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.get(`/api/EditTheme/${id}`);
+      if (result.data.status === 200) {
+        setThemes(result.data.data);
       }
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, []);
   return (
     <>

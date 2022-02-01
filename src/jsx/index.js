@@ -20,15 +20,12 @@ import BranchShow from "./components/Branches/Show";
 
 import Company from "./components/Companies/Company";
 import ServiceArea from "./components/Services/ServiceArea";
-import Inventory from "./components/Inventories/Inventory";
 import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
-import Basket from "./components/Orders/Basket";
 import Tables from "./components/Branches/Tables";
 import Attributes from "./components/Attributes/Attributes";
 import Error404 from "./pages/Error404";
 import Ingredients from "./components/Products/Ingredients";
-import Extra from "./components/Products/Extra";
 import Area from "./components/Areas/Area";
 import OrderDetails from "./components/Orders/OrderDetails";
 
@@ -38,14 +35,11 @@ const Markup = () => {
     { url: "dashboard", component: Home },
     { url: "branches", component: Branches },
     { url: "ingredients", component: Ingredients },
-    { url: "extras", component: Extra },
     { url: "company", component: Company },
     { url: "branches/service-area", component: ServiceArea },
-    { url: "branches/inventory", component: Inventory },
     { url: "profile", component: Profile },
     { url: "orders", component: Order },
     { url: "orders/orders-details", component: OrderDetails },
-    { url: "baskets", component: Basket },
     { url: "branches/tables", component: Tables },
     { url: "attributes", component: Attributes },
     { url: "areas", component: Area },

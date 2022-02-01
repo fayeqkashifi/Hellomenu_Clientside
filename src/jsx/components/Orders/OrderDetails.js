@@ -28,12 +28,13 @@ const OrderDetails = (props) => {
   let [sum, setSum] = useState(0);
   const [check, setCheck] = useState(false);
   const [modalCentered, setModalCentered] = useState(false);
-  const dataLoad = () => {
-    axios.get(`/api/getOrder/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        let items = JSON.parse(res.data.fetchData.orderingItems);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.get(`/api/getOrder/${id}`);
+      if (result.data.status === 200) {
+        let items = JSON.parse(result.data.fetchData.orderingItems);
         setFetchData(items);
-        setOrder(res.data.fetchData);
+        setOrder(result.data.fetchData);
         let TotalSum = 0;
         items.map(
           (item) =>
@@ -44,16 +45,13 @@ const OrderDetails = (props) => {
         );
         setSum(TotalSum);
       }
-
       setLoading(false);
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, [check]);
 
   const initialValues = {

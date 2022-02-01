@@ -176,26 +176,24 @@ const Branches = () => {
       [e.target.name]: e.target.checked ? 1 : 0,
     });
   };
-  const dataLoad = () => {
-    axios.get("/api/GetBranches").then((res) => {
-      if (res.data.status === 200) {
-        setBranchdata(res.data.branches);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.get("/api/GetBranches");
+      if (result.data.status === 200) {
+        setBranchdata(result.data.branches);
+      }
+      const response = await axios.get("/api/GetCurrencies");
+      if (response.data.status === 200) {
+        setCurrency(response.data.fetchData);
       }
       setLoading(false);
-    });
-    axios.get("/api/GetCurrencies").then((res) => {
-      if (res.data.status === 200) {
-        setCurrency(res.data.fetchData);
-      }
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
   // for mobile
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
-    return () => {
-      unmounted = true;
-    };
   }, [check]);
   // for download QRCode
 
