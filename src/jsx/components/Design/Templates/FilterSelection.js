@@ -9,19 +9,11 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import QRCode from "qrcode.react";
-import { base_url, port } from "../../../../../Consts";
+import { base_url, port } from "../../../../Consts";
 
 const FilterSelection = () => {
   const { t } = useTranslation();
 
-  // useEffect(() => {
-  //   axios.get(`/api/GetAreas`).then((res) => {
-  //     if (res.data.status === 200) {
-  //       setAreaLocation(res.data.fetchData);
-  //       // console.log(res.data.fetchData);
-  //     }
-  //   });
-  // }, []);
   const [branches, setBranches] = useState(
     localStorage.getItem("branches")
       ? JSON.parse(localStorage.getItem("branches"))

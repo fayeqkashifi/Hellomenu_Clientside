@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
@@ -7,19 +6,10 @@ import Typography from "@mui/material/Typography";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import Cart from "./Cart";
+import Cart from "../Common/Cart";
 function Footer(props) {
-  const {
-    title,
-    url,
-    theme,
-    stock,
-    cart,
-    branchId,
-    setCart,
-    deliveryFees,
-    branch,
-  } = props;
+  const { title, url, theme, stock, cart, setCart, deliveryFees, branch } =
+    props;
   const { t } = useTranslation();
 
   let [sum, setSum] = useState(0);
@@ -42,7 +32,7 @@ function Footer(props) {
     };
   }, [cart]);
   const [modalCentered, setModalCentered] = useState(false);
-
+  // dark template Style
   const buttonStyle = {
     textTransform: "capitalize",
     backgroundColor: theme?.button_background_color
@@ -51,17 +41,25 @@ function Footer(props) {
     color: theme?.button_text_color ? theme.button_text_color : "#f1fcfe",
     fontSize: theme?.bTextSize ? theme.bTextSize + "rem" : "1rem",
   };
+  const footerStyle = {
+    bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
+    position: "fixed",
+    bottom: 0,
+    width: "100%",
+  };
+  const cardHeader = {
+    backgroundColor: theme?.bgColor ? theme.bgColor : "#22252a",
+    borderColor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
+  };
+  const cardBody = {
+    backgroundColor: theme?.bgColor ? theme.bgColor : "#22252a",
+  };
   return (
     <>
       <Box
         component="footer"
-        style={{ position: "fixed" }}
-        sx={{
-          bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
-          position: "sticky",
-          bottom: 0,
-          width: "100%",
-        }}
+        // style={{ position: "fixed" }}
+        sx={footerStyle}
         className="bottom-0 mt-5"
       >
         <Grid container spacing={2} className="text-center">
@@ -119,21 +117,12 @@ function Footer(props) {
         show={modalCentered}
         onHide={() => setModalCentered(false)}
       >
-        <Modal.Header
-          style={{
-            backgroundColor: theme?.bgColor ? theme.bgColor : "#22252a",
-            borderColor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
-          }}
-        >
+        <Modal.Header style={cardHeader}>
           <Modal.Title>
             <Typography variant="h6">{t("order_details")}</Typography>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body
-          style={{
-            backgroundColor: theme?.bgColor ? theme.bgColor : "#22252a",
-          }}
-        >
+        <Modal.Body style={cardBody}>
           <Cart
             custom={theme}
             checkBit={true}
@@ -141,16 +130,11 @@ function Footer(props) {
             cart={cart}
             setCart={setCart}
             deliveryFees={deliveryFees}
-            branchId={branchId}
           />
         </Modal.Body>
       </Modal>
     </>
   );
 }
-
-Footer.propTypes = {
-  title: PropTypes.string.isRequired,
-};
 
 export default Footer;

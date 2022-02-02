@@ -17,7 +17,7 @@ import {
   COffcanvasHeader,
   COffcanvasTitle,
 } from "@coreui/react";
-import Customization from "../Design/Templates/Dark/Customization";
+import Customization from "../Design/Templates/Customization";
 import SubCategory from "../Categories/SubCategory";
 import Category from "../Categories/Category";
 import PrivateRoute from "../PrivateRoute";

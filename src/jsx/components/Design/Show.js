@@ -8,7 +8,7 @@ import {
 import Design from "./Design";
 import PrivateRoute from "../PrivateRoute";
 // import { useTranslation } from "react-i18next";
-import Customization from "./Templates/Dark/Customization";
+import Customization from "./Templates/Customization";
 import Theme from "./Theme";
 import EditTheme from "./EditTheme";
 import DefaultCustomization from "./Templates/Default/Customization";

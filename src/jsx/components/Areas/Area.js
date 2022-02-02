@@ -7,8 +7,11 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
 import CustomAlert from "../CustomAlert";
+import { useHistory } from "react-router-dom";
 
 const Area = (props) => {
+  const history = useHistory();
+
   // validation start
   const initialValues = {
     areaName: "",
@@ -39,18 +42,30 @@ const Area = (props) => {
     });
   };
   const save = (data) => {
-    const formData = new FormData();
-    formData.append("city_id", data.city);
-    formData.append("areaName", data.areaName);
-    axios.post("/api/InsertAreas", formData).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setModalCentered(false);
-        setAlerts(true, "success", res.data.message);
-      } else if (res.data.status === 304) {
-        setAlerts(true, "warning", res.data.message);
-      }
-    });
+    if (atob(localStorage.getItem("auth_company_id")) !== "null") {
+      const formData = new FormData();
+      formData.append("city_id", data.city);
+      formData.append("areaName", data.areaName);
+      axios.post("/api/InsertAreas", formData).then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setModalCentered(false);
+          setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
+        }
+      });
+    } else {
+      swal(
+        "warning",
+        "Please add the company first, then the branches.",
+        "warning"
+      ).then((value) => {
+        if (value) {
+          history.push("/company");
+        }
+      });
+    }
   };
   // insert end
   // edit Attribute start

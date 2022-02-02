@@ -17,7 +17,6 @@ import CustomAlert from "../CustomAlert";
 const EditProduct = (props) => {
   const history = useHistory();
 
-  const { path, url } = useRouteMatch();
   // validation start
 
   const validationSchema = () => {

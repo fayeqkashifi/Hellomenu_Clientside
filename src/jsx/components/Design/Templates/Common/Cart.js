@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-// Import css files
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-// import Slider from "react-slick";
 import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
-import "react-slideshow-image/dist/styles.css";
 import getSymbolFromCurrency from "currency-symbol-map";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-// import { Carousel } from "react-responsive-carousel";
 import CardContent from "@mui/material/CardContent";
 import ClearIcon from "@mui/icons-material/Clear";
 import IconButton from "@mui/material/IconButton";
 import ReactWhatsapp from "react-whatsapp";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import "../style.css";
 import QrReader from "react-qr-reader";
-import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import CustomAlert from "../../../CustomAlert";
 import * as Yup from "yup";
 import "yup-phone";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-
+import {
+  getTables,
+  checkTheTbl,
+  insertOrder,
+  remCartItem,
+  emptyCart,
+} from "../Functionality";
+import Counter from "../Common/Counter";
 const Cart = (props) => {
   let message = "";
   let { custom, checkBit, cart, setCart, branch, deliveryFees } = props;
@@ -114,10 +112,8 @@ const Cart = (props) => {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(Total);
-    axios.get(`/api/GetTables/${branch.id}`).then((res) => {
-      if (res.data.status === 200) {
-        setTables(res.data.fetchData);
-      }
+    getTables(branch.id).then((res) => {
+      setTables(res);
     });
     setLoading(false);
   };
@@ -127,50 +123,13 @@ const Cart = (props) => {
     return () => {
       unmounted = true;
     };
-  }, []);
+  }, [cart]);
 
-  const handleDecrement = (e, qty, id, price) => {
-    e.preventDefault();
-    let vars = cart.map((item) =>
-      id === item.id
-        ? {
-            ...item,
-            qty: item.qty - (item.qty > 0 ? 1 : 0),
-          }
-        : item
-    );
-    if (qty > 1) {
-      setCart((cart) => vars);
-      setSum((sum -= parseInt(price)));
-      localStorage.setItem("cart", JSON.stringify(vars));
-    }
-  };
-  const handelIncrement = (e, qty, id, price, stock) => {
-    e.preventDefault();
-    if (stock > qty) {
-      let vars = cart.map((item) =>
-        id === item.id ? { ...item, qty: qty + 1 } : item
-      );
-      setCart((cart) => vars);
-      localStorage.setItem("cart", JSON.stringify(vars));
-
-      setSum((sum += parseInt(price)));
-    } else {
-      setAlerts(
-        true,
-        "warning",
-        "More than that isn't available because it's out of stock."
-      );
-    }
-  };
   const remItem = (id, qty, price) => {
     setSum((sum -= price * qty));
-
-    const data = cart.filter((cart) => {
-      return cart.id !== id;
+    remCartItem(id, cart).then((data) => {
+      setCart(data);
     });
-    localStorage.setItem("cart", JSON.stringify(data));
-    setCart(data);
   };
   const [orderingWay, setOrderingWay] = useState();
   const checkOrderingMethod = (key) => {
@@ -188,10 +147,8 @@ const Cart = (props) => {
   const [table, setTable] = useState([]);
   const handleScan = (data) => {
     if (data) {
-      axios.get(`/api/checkTheTbl/${data}`).then((res) => {
-        if (res.data.status === 200) {
-          setTable(res.data.data);
-        }
+      checkTheTbl(data).then((res) => {
+        setTable(res);
       });
     }
   };
@@ -254,14 +211,12 @@ const Cart = (props) => {
       formData.append("directions", userData.directions);
       formData.append("deliveryFees", deliveryFees);
       formData.append("branch_id", branch.id);
-      axios.post("/api/InsertOrder", formData).then((res) => {
-        if (res.data.status === 200) {
-          setAlerts(true, "success", res.data.message);
-          setTable([]);
-          setUserData([]);
-          setCart([]);
-          localStorage.removeItem("cart");
-        }
+      insertOrder(formData).then((msg) => {
+        setAlerts(true, "success", msg);
+        setTable([]);
+        setUserData([]);
+        setCart([]);
+        localStorage.removeItem("cart");
       });
     }
   };
@@ -489,75 +444,14 @@ const Cart = (props) => {
                 )}
               </Grid>
               <Grid item xs={12} lg={2} xl={2} sm={6} md={6}>
-                <div className="row mt-2">
-                  <div className={`row`}>
-                    <div className="col-4 ">
-                      <IconButton
-                        onClick={(e) =>
-                          handleDecrement(e, item.qty, item.id, item.price)
-                        }
-                      >
-                        <Typography
-                          style={{ cursor: "pointer" }}
-                          variant="h6"
-                          gutterBottom
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            fill="currentColor"
-                            className="bi bi-dash-square-dotted  "
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M2.5 0c-.166 0-.33.016-.487.048l.194.98A1.51 1.51 0 0 1 2.5 1h.458V0H2.5zm2.292 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zm1.833 0h-.916v1h.916V0zm1.834 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zM13.5 0h-.458v1h.458c.1 0 .199.01.293.029l.194-.981A2.51 2.51 0 0 0 13.5 0zm2.079 1.11a2.511 2.511 0 0 0-.69-.689l-.556.831c.164.11.305.251.415.415l.83-.556zM1.11.421a2.511 2.511 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415L1.11.422zM16 2.5c0-.166-.016-.33-.048-.487l-.98.194c.018.094.028.192.028.293v.458h1V2.5zM.048 2.013A2.51 2.51 0 0 0 0 2.5v.458h1V2.5c0-.1.01-.199.029-.293l-.981-.194zM0 3.875v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 5.708v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 7.542v.916h1v-.916H0zm15 .916h1v-.916h-1v.916zM0 9.375v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .916v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .917v.458c0 .166.016.33.048.487l.98-.194A1.51 1.51 0 0 1 1 13.5v-.458H0zm16 .458v-.458h-1v.458c0 .1-.01.199-.029.293l.981.194c.032-.158.048-.32.048-.487zM.421 14.89c.183.272.417.506.69.689l.556-.831a1.51 1.51 0 0 1-.415-.415l-.83.556zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373c.158.032.32.048.487.048h.458v-1H2.5c-.1 0-.199-.01-.293-.029l-.194.981zM13.5 16c.166 0 .33-.016.487-.048l-.194-.98A1.51 1.51 0 0 1 13.5 15h-.458v1h.458zm-9.625 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zm1.834 0h.916v-1h-.916v1zm1.833 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z" />
-                          </svg>
-                        </Typography>
-                      </IconButton>
-                    </div>
-                    <div className="col-4">
-                      <IconButton>
-                        <Typography
-                          variant="subtitle1"
-                          gutterBottom
-                          className="mt-1"
-                        >
-                          {item.qty}
-                        </Typography>
-                      </IconButton>
-                    </div>
-                    <div className="col-4">
-                      <IconButton
-                        onClick={(e) =>
-                          handelIncrement(
-                            e,
-                            item.qty,
-                            item.id,
-                            item.price,
-                            item.stock
-                          )
-                        }
-                      >
-                        <Typography
-                          style={{ cursor: "pointer" }}
-                          variant="h6"
-                          gutterBottom
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            fill="currentColor"
-                            className="bi bi-plus-square-dotted"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M2.5 0c-.166 0-.33.016-.487.048l.194.98A1.51 1.51 0 0 1 2.5 1h.458V0H2.5zm2.292 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zm1.833 0h-.916v1h.916V0zm1.834 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zM13.5 0h-.458v1h.458c.1 0 .199.01.293.029l.194-.981A2.51 2.51 0 0 0 13.5 0zm2.079 1.11a2.511 2.511 0 0 0-.69-.689l-.556.831c.164.11.305.251.415.415l.83-.556zM1.11.421a2.511 2.511 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415L1.11.422zM16 2.5c0-.166-.016-.33-.048-.487l-.98.194c.018.094.028.192.028.293v.458h1V2.5zM.048 2.013A2.51 2.51 0 0 0 0 2.5v.458h1V2.5c0-.1.01-.199.029-.293l-.981-.194zM0 3.875v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 5.708v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 7.542v.916h1v-.916H0zm15 .916h1v-.916h-1v.916zM0 9.375v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .916v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .917v.458c0 .166.016.33.048.487l.98-.194A1.51 1.51 0 0 1 1 13.5v-.458H0zm16 .458v-.458h-1v.458c0 .1-.01.199-.029.293l.981.194c.032-.158.048-.32.048-.487zM.421 14.89c.183.272.417.506.69.689l.556-.831a1.51 1.51 0 0 1-.415-.415l-.83.556zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373c.158.032.32.048.487.048h.458v-1H2.5c-.1 0-.199-.01-.293-.029l-.194.981zM13.5 16c.166 0 .33-.016.487-.048l-.194-.98A1.51 1.51 0 0 1 13.5 15h-.458v1h.458zm-9.625 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zm1.834-1v1h.916v-1h-.916zm1.833 1h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
-                          </svg>
-                        </Typography>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div>
+                {/* <div className="row"> */}
+                <Counter
+                  custom={custom}
+                  cart={cart}
+                  setCart={setCart}
+                  item={item}
+                />
+                {/* </div> */}
               </Grid>
               <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                 {item?.itemNote === undefined ? null : (
@@ -997,7 +891,7 @@ const Cart = (props) => {
                             className="col-12 btn"
                             style={buttonStyle}
                             onClick={() => [
-                              localStorage.removeItem("cart"),
+                              emptyCart(),
                               setCart([]),
                               setUserData([]),
                             ]}

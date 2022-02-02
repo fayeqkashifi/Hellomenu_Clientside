@@ -77,7 +77,7 @@ const OrderDetails = (props) => {
   const discardOrder = (data) => {
     axios.post(`/api/discardOrder/${id}`, data).then((res) => {
       if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
+        setAlerts(true, "error", res.data.message);
         setCheck(!check);
         setModalCentered(false);
       }

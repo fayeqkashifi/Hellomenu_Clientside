@@ -1,31 +1,27 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useTranslation } from "react-i18next";
 // Import css files
-import Footer from "./Footer";
+import Footer from "../Common/Footer";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-import Header from "./Header";
+import Header from "../Common/Header";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 
-// import "react-slideshow-image/dist/styles.css";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
-// import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import SwiperCore, { Navigation, Thumbs } from "swiper";
-
-// install Swiper modules
+import { getProduct, getvariations } from "../Functionality";
 SwiperCore.use([Navigation, Thumbs]);
 
 const ProductDetails = (props) => {
@@ -34,7 +30,6 @@ const ProductDetails = (props) => {
   const id = atob(props.match.params.id);
   const custom = props.history.location.state.custom;
   const deliveryFees = parseInt(props.history.location.state.deliveryFees);
-  const branchId = props.history.location.state.branchId;
   const branch = props.history.location.state.branch;
 
   // design start
@@ -91,26 +86,25 @@ const ProductDetails = (props) => {
     image: fetchData?.image,
   });
   useEffect(() => {
-    const getdata = async () => {
-      const product = await axios({
-        method: "GET",
-        url: `/api/GetProduct/${id}`,
-      });
-      const data = product.data.fetchData;
-      const res = await axios({
-        method: "GET",
-        url: `/api/Getvariations/${id}`,
-      });
-      setFetchData(data[0]);
-      if (res.data.fetchData !== "") {
-        varData = JSON.parse(res.data.fetchData.variants);
-        setVarPics(JSON.parse(res.data.fetchData.variants));
+    let unmounted = false;
 
-        parseVariants(varData);
-      }
-      setLoading(false);
+    const getdata = async () => {
+      getProduct(id).then((result) => {
+        setFetchData(result.data.fetchData[0]);
+      });
+      getvariations(id).then((res) => {
+        if (res !== "") {
+          varData = JSON.parse(res.variants);
+          setVarPics(JSON.parse(res.variants));
+          parseVariants(varData);
+        }
+        setLoading(false);
+      });
     };
     getdata(); // axios
+    return () => {
+      unmounted = true;
+    };
   }, [id]);
   const changePrice = (varName, variant) => {
     const keys = Object.keys(showVaralint);
@@ -231,7 +225,6 @@ const ProductDetails = (props) => {
       setSum((sum -= parseInt(price)));
       setExtraValue(extraValue.filter((item) => item.value != e.target.value));
     }
-    console.log(extraValue);
   };
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
@@ -655,7 +648,6 @@ const ProductDetails = (props) => {
       <CssBaseline />
       <Container maxWidth="lg" style={{ marginBottom: "100px" }}>
         <Header
-          subcategories={0}
           theme={custom}
           cart={cart}
           branch={branch}
@@ -669,7 +661,6 @@ const ProductDetails = (props) => {
         theme={custom}
         branch={branch}
         setCart={setCart}
-        branchId={branchId}
         theme={custom}
         stock={
           productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
@@ -701,7 +692,6 @@ const ProductDetails = (props) => {
             skuarray: skuarray,
             activeSKU: activeSKU,
             orignalStock: productDetails.stock,
-            branchId: branchId,
             branch: branch,
             deliveryFees: deliveryFees,
           },

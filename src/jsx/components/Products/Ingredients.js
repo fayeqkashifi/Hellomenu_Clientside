@@ -8,9 +8,11 @@ import * as Yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import CustomAlert from "../CustomAlert";
+import { useHistory } from "react-router-dom";
 
 const Ingredients = (props) => {
   // validation start
+  const history = useHistory();
 
   const validationSchema = () => {
     return Yup.object().shape({
@@ -37,42 +39,54 @@ const Ingredients = (props) => {
   };
   const save = (e) => {
     e.preventDefault();
-    if (form.length !== 0) {
-      if (prevIsValid()) {
-        const formData = new FormData();
-        formData.append("form", JSON.stringify(form));
-        axios
-          .post("/api/InsertIngredient", formData)
-          .then((res) => {
-            if (res.data.status === 200) {
-              setCheck(!check);
-              setForm([
-                {
-                  name: "",
+    if (atob(localStorage.getItem("auth_company_id")) !== "null") {
+      if (form.length !== 0) {
+        if (prevIsValid()) {
+          const formData = new FormData();
+          formData.append("form", JSON.stringify(form));
+          axios
+            .post("/api/InsertIngredient", formData)
+            .then((res) => {
+              if (res.data.status === 200) {
+                setCheck(!check);
+                setForm([
+                  {
+                    name: "",
 
-                  errors: {
-                    name: null,
+                    errors: {
+                      name: null,
+                    },
                   },
-                },
-              ]);
-              setModalCentered(false);
-              // console.log(res.data.duplicate_array.length);
-              res.data.duplicate_array.length === 0
-                ? setAlerts(true, "success", res.data.message)
-                : setAlerts(
-                    true,
-                    "warning",
-                    "Duplicate Entry:" + res.data.duplicate_array
-                  );
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            // return Promise.reject(error);
-          });
+                ]);
+                setModalCentered(false);
+                // console.log(res.data.duplicate_array.length);
+                res.data.duplicate_array.length === 0
+                  ? setAlerts(true, "success", res.data.message)
+                  : setAlerts(
+                      true,
+                      "warning",
+                      "Duplicate Entry:" + res.data.duplicate_array
+                    );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              // return Promise.reject(error);
+            });
+        }
+      } else {
+        setAlerts(true, "error", "Please add a name.");
       }
     } else {
-      setAlerts(true, "error", "Please add a name.");
+      swal(
+        "warning",
+        "Please add the company first, then the branches.",
+        "warning"
+      ).then((value) => {
+        if (value) {
+          history.push("/company");
+        }
+      });
     }
   };
   // insert end
