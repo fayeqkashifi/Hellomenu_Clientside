@@ -234,7 +234,7 @@ const Branches = () => {
   } else {
     viewBranches_HTMLTABLE = branchdata.map((item, i) => {
       return (
-        <div className="col-xl-4 col-lg-6 col-sm-6" key={item.id}>
+        <div className="col-xl-3 col-md-4 col-lg-6 col-sm-6" key={item.id}>
           <div className="card overflow-hidden">
             <div className="card-body">
               <div className="text-center">
@@ -583,7 +583,7 @@ const Branches = () => {
       {layout ? (
         <div className="row">
           {viewBranches_HTMLTABLE}
-          <div className="col-xl-4 col-lg-6 col-sm-6 ">
+          <div className="col-xl-3 col-lg-6 col-md-4 col-sm-6">
             <div className="card overflow-hidden ">
               <div
                 className="card-body d-flex justify-content-center text-center"

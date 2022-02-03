@@ -288,6 +288,8 @@ const Product = (props) => {
     <>
       <Fragment>
         <div className="d-flex justify-content-end">
+        <Tooltip title="Add New Product">
+
           <IconButton aria-label="Example">
             <Link
               // className="btn btn-primary mb-2 mr-2"
@@ -299,10 +301,13 @@ const Product = (props) => {
               <AddIcon />
             </Link>
           </IconButton>
+          </Tooltip>
+          <Tooltip title="Change Layout">
+            <IconButton aria-label="Example" onClick={changeLayout}>
+              {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+            </IconButton>
+          </Tooltip>
 
-          <IconButton aria-label="Example" onClick={changeLayout}>
-            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-          </IconButton>
         </div>
         {layout ? (
           <div style={{ overflow: "scroll" }}>{viewProducts_HTMLTABLE}</div>

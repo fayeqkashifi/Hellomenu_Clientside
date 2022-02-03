@@ -139,6 +139,8 @@ const Category = (props) => {
           CategoryIcon: "",
           branchID: id,
         });
+        setImageState([]);
+
         setCheck(!check);
         setAlerts(true, "success", res.data.message);
 

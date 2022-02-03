@@ -98,7 +98,7 @@ const SubCategory = (props) => {
     axios.post("/api/UpdateSubCategory", formData).then((res) => {
       if (res.data.status === 200) {
         setAlerts(true, "success", res.data.message);
-
+        setImageState([]);
         setEditModalCentered(false);
         setCheck(!check);
 
