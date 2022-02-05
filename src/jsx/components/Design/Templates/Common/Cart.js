@@ -405,8 +405,18 @@ const Cart = (props) => {
                   item={item}
                 />
               </Grid>
-              <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
-                {item?.itemNote === undefined ? null : (
+              <Grid
+                item
+                // xs={12}
+                // lg={6}
+                // xl={6}
+                // sm={6}
+                // md={6}
+                style={style?.cartNoteDiv}
+              >
+                {item?.itemNote === undefined ? (
+                  ""
+                ) : (
                   <Typography
                     style={style?.cartDescription}
                     gutterBottom
@@ -417,11 +427,19 @@ const Cart = (props) => {
                   </Typography>
                 )}
               </Grid>
-              <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+              <Grid
+                item
+                // xs={12}
+                // lg={6}
+                // xl={6}
+                // sm={6}
+                // md={6}
+                style={style?.cartTotalDiv}
+              >
                 <Typography
                   style={style?.cartDescription}
                   gutterBottom
-                  className="text-right mx-5"
+                  // className=""
                 >
                   <b>Total Price: </b>
                   {item?.totalPrice !== undefined

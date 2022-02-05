@@ -203,6 +203,13 @@ export const SecondStyle = (custom) => {
     cartCounterDiv: {
       width: "100%",
     },
+    cartNoteDiv: {
+      width: "100%",
+    },
+    cartTotalDiv: {
+      width: "100%",
+      textAlign: "right",
+    },
     cartProductName: {
       textTransform: "capitalize",
       fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "0.75rem",

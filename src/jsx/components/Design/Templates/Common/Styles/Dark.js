@@ -211,7 +211,7 @@ export const DarkStyle = (custom) => {
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
     },
     cartImageDiv: {
-      width: "15%",
+      width: "20%",
       "@media (minWidth: 480px)": {
         width: "100%",
       },
@@ -235,10 +235,17 @@ export const DarkStyle = (custom) => {
       flexWrap: "wrap",
     },
     cartVariantDiv: {
-      width: "40%",
+      width: "35%",
     },
     cartCounterDiv: {
       width: "15%",
+    },
+    cartNoteDiv: {
+      width: "50%",
+    },
+    cartTotalDiv: {
+      width: "50%",
+      textAlign: "right",
     },
     clearIcon: {
       color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
