@@ -133,7 +133,7 @@ export const SecondStyle = (custom) => {
         : "#33cd6b",
     },
     card: {
-      display: "flex",
+      display: "grid",
       flexDirection: "column",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
     },
@@ -183,16 +183,16 @@ export const SecondStyle = (custom) => {
       borderRadius: "15%",
       objectFit: "contain",
     },
-    cartMainDiv: {
-      // display: "flex",
-      // flexDirection: "column",
-      // flexWrap: "wrap",
-    },
+    // cartMainDiv: {
+    // display: "flex",
+    // flexDirection: "column",
+    // flexWrap: "wrap",
+    // },
     cartImageDiv: {
-      display: "none",
+      width: "100%",
     },
     cartProductDiv: {
-      maxWidth: "100%",
+      width: "100%",
       display: "flex",
       flexDirection: "column",
       flexWrap: "wrap",
@@ -201,8 +201,7 @@ export const SecondStyle = (custom) => {
       width: "100%",
     },
     cartCounterDiv: {
-      width: "200px",
-      height: "200px",
+      width: "100%",
     },
     cartProductName: {
       textTransform: "capitalize",

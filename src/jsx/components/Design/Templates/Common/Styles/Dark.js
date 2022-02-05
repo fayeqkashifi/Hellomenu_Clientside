@@ -187,6 +187,7 @@ export const DarkStyle = (custom) => {
       flexDirection: "column",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
     },
+
     active: {
       cursor: "pointer",
       border: "1px solid",
@@ -208,6 +209,36 @@ export const DarkStyle = (custom) => {
         : "#ff751d",
       backgroundColor: "#2d3134",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+    },
+    cartImageDiv: {
+      width: "15%",
+      "@media (minWidth: 480px)": {
+        width: "100%",
+      },
+      "@media (minWidth: 768px)": {
+        width: "100%",
+      },
+      "@media  (minWidth: 1024px )": {
+        width: "10%",
+      },
+      "@media (minWidth: 1200px)": {
+        width: "10%",
+      },
+      "@media  (minWidth: 1900px)": {
+        width: "10%",
+      },
+    },
+    cartProductDiv: {
+      width: "30%",
+      display: "flex",
+      flexDirection: "column",
+      flexWrap: "wrap",
+    },
+    cartVariantDiv: {
+      width: "40%",
+    },
+    cartCounterDiv: {
+      width: "15%",
     },
     clearIcon: {
       color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",

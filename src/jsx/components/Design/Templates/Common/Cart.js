@@ -49,7 +49,7 @@ const Cart = (props) => {
   const [loading, setLoading] = useState(true);
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
-  const dataLoad = () => {
+  const dataLoad = async () => {
     let Total = 0;
     cart.map(
       (item) =>
@@ -59,7 +59,7 @@ const Cart = (props) => {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(Total);
-    getTables(branch.id).then((res) => {
+    await getTables(branch.id).then((res) => {
       setTables(res);
     });
     setLoading(false);
@@ -186,11 +186,7 @@ const Cart = (props) => {
             onClick={() => checkOrderingMethod(key)}
             style={orderingWay === key ? style.active : style.deactive}
           >
-            <Typography
-              variant="button"
-              style={{ textTransform: "capitalize" }}
-              // className="font-weight-bold"
-            >
+            <Typography style={style?.cartDescription}>
               {key === "tbl_qrcode"
                 ? "Table Reservation"
                 : key === "delivery"
@@ -276,12 +272,12 @@ const Cart = (props) => {
             >
               <Grid
                 item
-                xs={12}
-                lg={2}
-                xl={3}
-                sm={6}
-                md={6}
-                // style={style?.cartImageDiv}
+                // xs={12}
+                // lg={2}
+                // xl={3}
+                // sm={6}
+                // md={6}
+                style={style?.cartImageDiv}
               >
                 <img
                   style={style?.cartImage}
@@ -294,12 +290,12 @@ const Cart = (props) => {
               </Grid>
               <Grid
                 item
-                // sx={style?.cartProductDiv}
-                xs={12}
-                lg={3}
-                xl={3}
-                sm={6}
-                md={6}
+                sx={style?.cartProductDiv}
+                // xs={12}
+                // lg={3}
+                // xl={3}
+                // sm={6}
+                // md={6}
               >
                 <Typography style={style?.cartProductName}>
                   {item.ProductName}
@@ -335,12 +331,12 @@ const Cart = (props) => {
               </Grid>
               <Grid
                 item
-                xs={12}
-                lg={5}
-                xl={5}
-                sm={6}
-                md={6}
-                // style={style?.cartVariantDiv}
+                // xs={12}
+                // lg={5}
+                // xl={5}
+                // sm={6}
+                // md={6}
+                style={style?.cartVariantDiv}
               >
                 {" "}
                 {item?.ingredients === undefined ? null : (
@@ -395,12 +391,12 @@ const Cart = (props) => {
               </Grid>
               <Grid
                 item
-                xs={12}
-                lg={2}
-                xl={2}
-                sm={6}
-                md={6}
-                // style={style?.cartCounterDiv}
+                // xs={12}
+                // lg={2}
+                // xl={2}
+                // sm={6}
+                // md={6}
+                style={style?.cartCounterDiv}
               >
                 <Counter
                   style={style}
@@ -479,7 +475,7 @@ const Cart = (props) => {
                     md={6}
                     style={style?.ordersText}
                   >
-                    <Typography style={style?.cartProductName}>
+                    <Typography style={style?.cartDescription}>
                       Ordering Methods
                     </Typography>
                   </Grid>
@@ -495,7 +491,7 @@ const Cart = (props) => {
                         md={6}
                         style={style?.ordersText}
                       >
-                        <Typography style={style?.cartProductName}>
+                        <Typography style={style?.cartDescription}>
                           Table Reservation
                         </Typography>
                       </Grid>
@@ -515,10 +511,7 @@ const Cart = (props) => {
                               : style.deactive
                           }
                         >
-                          <Typography
-                            variant="button"
-                            style={{ textTransform: "capitalize" }}
-                          >
+                          <Typography style={style?.cartDescription}>
                             Scan QR Code
                           </Typography>
                         </div>
@@ -539,10 +532,7 @@ const Cart = (props) => {
                               : style.deactive
                           }
                         >
-                          <Typography
-                            variant="button"
-                            style={{ textTransform: "capitalize" }}
-                          >
+                          <Typography style={style?.cartDescription}>
                             Reserve a table
                           </Typography>
                         </div>
