@@ -95,7 +95,7 @@ export const SecondStyle = (custom) => {
       position: "fixed",
       top: 0,
       bottom: 0,
-      marginLeft: "10%",
+      marginLeft: "5px",
       marginTop: "5%",
       marginBottom: "5%",
       zIndex: 1,

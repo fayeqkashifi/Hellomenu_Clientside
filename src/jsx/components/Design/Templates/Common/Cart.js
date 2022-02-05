@@ -169,6 +169,7 @@ const Cart = (props) => {
   };
 
   const outputs = [];
+  console.log(branch?.orderMethods);
   for (const [key, value] of Object.entries(JSON.parse(branch?.orderMethods))) {
     if (value === 1) {
       outputs.push(

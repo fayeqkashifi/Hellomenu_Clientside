@@ -65,8 +65,8 @@ const OrderDetails = (props) => {
           }
         });
         setFetchData(recData);
-        setLoading(false);
       });
+      setLoading(false);
     };
     // dataLoad();
     getdata(); // axios
@@ -317,6 +317,8 @@ const OrderDetails = (props) => {
                       <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
                     </>
                   )}
+                </div>
+                <div className="row mx-3">
                   <TextareaAutosize
                     // aria-label="empty textarea"
                     onChange={(e) => changeHandle(e)}
