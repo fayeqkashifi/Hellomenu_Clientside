@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../Common/Header";
 import Footer from "../Common/Footer";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import { base_url, port } from "../../../../../Consts";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Link } from "react-router-dom";
-import getSymbolFromCurrency from "currency-symbol-map";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import Grid from "@mui/material/Grid";
 
-import Counter from "../Common/Counter";
 import ShowCards from "../Common/ShowCards";
 import {
   getThemplate,
@@ -24,6 +16,8 @@ import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
+import { SecondStyle } from "../Common/Styles/Second";
+import { DarkStyle } from "../Common/Styles/Dark";
 var hold = 1;
 export default function Main(props) {
   const [loading, setLoading] = useState(true);
@@ -32,9 +26,9 @@ export default function Main(props) {
   const deliveryFees = parseInt(props.history.location.state.deliveryFees);
 
   const [branch, setBranch] = useState([]);
-  const [menu, setMenu] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [activeMenu, setActiveMenu] = useState(0);
+  const [activeCategory, setActiveCategory] = useState(0);
   const [custom, setCustom] = useState([]);
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
@@ -47,15 +41,17 @@ export default function Main(props) {
       setBranch(data);
     });
     getCategoriesBasedProduct(branchId).then((data) => {
-      setMenu(data);
+      setCategories(data);
       const category = data[0];
       if (category?.sub_category_id === null) {
-        setActiveMenu(category?.CategoryName + category?.category_id);
+        setActiveCategory(category?.CategoryName + category?.category_id);
         getProductBasedOnCategory(category?.category_id).then((data) => {
           setProducts(data);
         });
       } else {
-        setActiveMenu(category?.SubCategoryName + category?.sub_category_id);
+        setActiveCategory(
+          category?.SubCategoryName + category?.sub_category_id
+        );
         getProductBasedOnSubCategory(category?.sub_category_id).then((data) => {
           setProducts(data);
         });
@@ -74,16 +70,16 @@ export default function Main(props) {
 
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
-    if (hold < menu.length) {
+    if (hold < categories.length) {
       getCategoriesBasedProduct(branchId).then((data) => {
         if (data[hold]?.sub_category_id === null) {
-          setActiveMenu(data[hold]?.CategoryName + data[hold]?.category_id);
+          setActiveCategory(data[hold]?.CategoryName + data[hold]?.category_id);
           getProductBasedOnCategory(data[hold]?.category_id).then((res) => {
             hold = hold + 1;
             setProducts(products.concat(res));
           });
         } else {
-          setActiveMenu(
+          setActiveCategory(
             data[hold]?.SubCategoryName + data[hold]?.sub_category_id
           );
           getProductBasedOnSubCategory(data[hold]?.sub_category_id).then(
@@ -98,44 +94,13 @@ export default function Main(props) {
       setChangeState(false);
     }
   };
-
-  // theme start
-  const theme = createTheme({
-    palette: {
-      background: {
-        default: custom?.bgColor ? custom.bgColor : "#22252a",
-      },
-    },
-    typography: {
-      fontFamily: custom?.font ? custom.font : "sans-serif",
-      // discription
-      subtitle1: {
-        fontSize: custom?.pDiscriptionSize
-          ? custom.pDiscriptionSize + "rem"
-          : "0.75rem",
-
-        color: custom?.product_discription_color
-          ? custom.product_discription_color
-          : "#fff",
-      },
-      // price
-      body1: {
-        fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
-        color: custom?.price_color ? custom.price_color : "#fff",
-      },
-      // product Names
-      button: {
-        fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
-        color: custom?.product_name_color ? custom.product_name_color : "#fff",
-      },
-      // Menus
-      h6: {
-        fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
-        color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
-      },
-    },
-  });
-  // theme end
+  const template = "dark";
+  var style = "";
+  if (template === "dark") {
+    style = DarkStyle(custom);
+  } else if (template === "second") {
+    style = SecondStyle(custom);
+  }
   var viewShow_HTMLTABLE = "";
   if (loading) {
     return (
@@ -149,30 +114,32 @@ export default function Main(props) {
     );
   } else {
     viewShow_HTMLTABLE = (
-      <ShowCards
-        custom={custom}
-        cart={cart}
-        setCart={setCart}
-        deliveryFees={deliveryFees}
-        products={products}
-        branch={branch}
-      />
+      <Grid container spacing={2} className="d-flex justify-content-center">
+        <ShowCards
+          style={style}
+          cart={cart}
+          setCart={setCart}
+          deliveryFees={deliveryFees}
+          products={products}
+          branch={branch}
+        />
+      </Grid>
     );
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <div style={style?.background}>
+      {/* <CssBaseline /> */}
       <Container maxWidth="lg">
         <Header
           cart={cart}
           setCart={setCart}
           branch={branch}
-          menu={menu}
-          activeMenu={activeMenu}
+          categories={categories}
+          activeCategory={activeCategory}
           setProducts={setProducts}
-          setActiveMenu={setActiveMenu}
-          custom={custom}
+          setActiveCategory={setActiveCategory}
+          style={style}
           deliveryFees={deliveryFees}
         />
 
@@ -203,12 +170,12 @@ export default function Main(props) {
       </Container>
       <Footer
         title="Checkout Order"
-        theme={custom}
+        style={style}
         cart={cart}
         branch={branch}
         setCart={setCart}
         deliveryFees={deliveryFees}
       />
-    </ThemeProvider>
+    </div>
   );
 }

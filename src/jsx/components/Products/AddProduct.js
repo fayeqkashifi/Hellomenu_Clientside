@@ -86,6 +86,7 @@ const AddProduct = (props) => {
     formData.append("Description", data.Description);
     formData.append("ProductName", data.ProductName);
     formData.append("sub_category", data.sub_category);
+
     formData.append("category", data.category);
     formData.append("price", data.price);
     formData.append("stock", data.stock);

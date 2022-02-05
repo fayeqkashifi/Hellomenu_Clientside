@@ -6,14 +6,16 @@ import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import AddBoxIcon from "@mui/icons-material/AddBox";
 import {
   addItemWithdoutDetails,
   remCartItem,
   handleDecrementQuantity,
   handelIncrementQuantity,
 } from "../Functionality";
+import { style } from "@mui/system";
 const Counter = (props) => {
-  const { custom, products, item, cart, setCart } = props;
+  const { style, products, item, cart, setCart } = props;
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -67,7 +69,7 @@ const Counter = (props) => {
   }
 
   return (
-    <div className="mr-3" style={{ marginTop: "-5px" }}>
+    <div style={style?.divCounter}>
       {alert.open ? (
         <CustomAlert
           open={alert.open}
@@ -85,16 +87,11 @@ const Counter = (props) => {
       >
         <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
           <IconButton onClick={(e) => [addItem(item.id)]}>
-            <Typography variant="h6">
-              <AddBoxOutlinedIcon
-                style={{
-                  cursor: "pointer",
-                  color: custom?.menusDeactiveColor
-                    ? custom.menusDeactiveColor
-                    : "#fff",
-                }}
-              />
-            </Typography>
+            {style?.template === "second" ? (
+              <AddBoxIcon style={style?.addToCartIcon} />
+            ) : (
+              <AddBoxOutlinedIcon style={style?.addToCartIcon} />
+            )}
           </IconButton>
         </div>
       </div>
@@ -106,8 +103,8 @@ const Counter = (props) => {
         <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 ">
           {(cartItem.length !== 0 ? cartItem[0].qty : item.qty) === 1 ? (
             <IconButton onClick={() => remItem(item.id)}>
-              <Typography variant="h6">
-                <DeleteRoundedIcon className="text-danger" fontSize="small" />
+              <Typography style={style?.counterRemovIcon}>
+                <DeleteRoundedIcon fontSize="small" />
               </Typography>
             </IconButton>
           ) : (
@@ -120,7 +117,7 @@ const Counter = (props) => {
                 )
               }
             >
-              <Typography variant="h6">
+              <Typography style={style?.counterDecrementIcon}>
                 <RemoveRoundedIcon fontSize="small" />
               </Typography>
             </IconButton>
@@ -128,7 +125,7 @@ const Counter = (props) => {
         </div>
         <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
           <IconButton>
-            <Typography variant="body1">
+            <Typography style={style?.counterValue}>
               {cartItem.length !== 0 ? cartItem[0].qty : item.qty}
             </Typography>
           </IconButton>
@@ -145,7 +142,7 @@ const Counter = (props) => {
               )
             }
           >
-            <Typography variant="h6">
+            <Typography style={style?.counterIncrementIcon}>
               <AddRoundedIcon fontSize="small" />
             </Typography>
           </IconButton>

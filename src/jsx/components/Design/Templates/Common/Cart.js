@@ -31,7 +31,8 @@ import {
 import Counter from "../Common/Counter";
 const Cart = (props) => {
   let message = "";
-  let { custom, checkBit, cart, setCart, branch, deliveryFees } = props;
+  let { style, checkBit, cart, setCart, branch, deliveryFees, template } =
+    props;
   const initialValues = {
     phoneNumber: "",
   };
@@ -40,61 +41,7 @@ const Cart = (props) => {
       phoneNumber: Yup.string().phone().required("Phone Number is required"),
     });
   };
-  const theme = createTheme({
-    palette: {
-      background: {
-        default: custom?.bgColor ? custom.bgColor : "#22252a",
-      },
-    },
-    typography: {
-      fontFamily: custom?.font ? custom.font : "sans-serif",
-      // discription
-      subtitle1: {
-        fontSize: custom?.pDiscriptionSize
-          ? custom.pDiscriptionSize + "rem"
-          : "0.75rem",
 
-        color: custom?.product_discription_color
-          ? custom.product_discription_color
-          : "#fff",
-      },
-      // price
-      body1: {
-        fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
-        color: custom?.price_color ? custom.price_color : "#fff",
-      },
-      // product Names
-      button: {
-        fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
-        color: custom?.product_name_color ? custom.product_name_color : "#fff",
-      },
-      // Menus
-      h6: {
-        fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
-        color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
-      },
-    },
-  });
-  const style = {
-    width: "100%",
-    backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
-    color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
-    fontSize: 12,
-    borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#ff751d",
-  };
-  const card = {
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
-  };
-  const buttonStyle = {
-    textTransform: "capitalize",
-    backgroundColor: custom?.button_background_color
-      ? custom.button_background_color
-      : "#ff751d",
-    color: custom?.button_text_color ? custom.button_text_color : "#f1fcfe",
-    fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1rem",
-  };
   // for localization
   const { t } = useTranslation();
 
@@ -220,34 +167,24 @@ const Cart = (props) => {
       });
     }
   };
-  const active = {
-    cursor: "pointer",
-    border: "1px solid",
-    textAlign: "center",
-    borderRadius: "10px",
-    borderColor: "black",
-    backgroundColor: custom?.menusAcriveColor
-      ? custom.menusAcriveColor
-      : "black",
-    color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
-  };
-  const deactive = {
-    cursor: "pointer",
-    border: "1px solid",
-    textAlign: "center",
-    borderRadius: "10px",
-    borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#ff751d",
-    backgroundColor: "#2d3134",
-    color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
-  };
+
   const outputs = [];
   for (const [key, value] of Object.entries(JSON.parse(branch?.orderMethods))) {
     if (value === 1) {
       outputs.push(
-        <Grid item xs={12} lg={3} xl={3} sm={12} md={6} key={key}>
+        <Grid
+          item
+          xs={12}
+          lg={style?.orderingOptions ? style?.orderingOptions : 3}
+          xl={3}
+          sm={12}
+          md={6}
+          key={key}
+          // style={}
+        >
           <div
             onClick={() => checkOrderingMethod(key)}
-            style={orderingWay === key ? active : deactive}
+            style={orderingWay === key ? style.active : style.deactive}
           >
             <Typography
               variant="button"
@@ -324,29 +261,30 @@ const Cart = (props) => {
             : `\n*Item Total Price*: ${item.totalPrice + " " + currency}`
         }\n\n`;
       return (
-        <Card key={i} sx={card} className="m-1">
+        <Card key={i} sx={style?.card} className="m-1">
           <div className="text-right">
             <IconButton onClick={() => remItem(item.id, item.qty, item.price)}>
-              <ClearIcon
-                sx={{
-                  color: custom?.menusAcriveColor
-                    ? custom.menusAcriveColor
-                    : "#f27d1e",
-                }}
-              />
+              <ClearIcon sx={style.clearIcon} />
             </IconButton>
           </div>
 
           <CardContent sx={{ flexGrow: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} lg={2} xl={3} sm={6} md={6}>
+            <Grid
+              container
+              spacing={2}
+              // style={style?.cartMainDiv}
+            >
+              <Grid
+                item
+                xs={12}
+                lg={2}
+                xl={3}
+                sm={6}
+                md={6}
+                // style={style?.cartImageDiv}
+              >
                 <img
-                  style={{
-                    height: "100px",
-                    width: "100%",
-                    borderRadius: "15%",
-                    objectFit: "contain",
-                  }}
+                  style={style?.cartImage}
                   src={`http://${base_url}:${port}/images/products/${
                     JSON.parse(item.image)[0]
                   }`}
@@ -354,16 +292,20 @@ const Cart = (props) => {
                   // className="h-100"
                 />
               </Grid>
-              <Grid item xs={12} lg={3} xl={3} sm={6} md={6}>
-                <Typography
-                  variant="button"
-                  style={{ textTransform: "capitalize" }}
-                  // className="font-weight-bold"
-                >
+              <Grid
+                item
+                // sx={style?.cartProductDiv}
+                xs={12}
+                lg={3}
+                xl={3}
+                sm={6}
+                md={6}
+              >
+                <Typography style={style?.cartProductName}>
                   {item.ProductName}
                 </Typography>
                 {item?.variantSKU === undefined ? null : (
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography style={style?.cartDescription} gutterBottom>
                     <b>Variants: </b>
 
                     {item?.variantSKU?.map((val, i) => {
@@ -376,25 +318,33 @@ const Cart = (props) => {
                   </Typography>
                 )}
                 <Typography
-                  variant="body1"
+                  style={style?.cartPrice}
                   gutterBottom
                   className="font-weight-bold"
                 >
                   {parseInt(item.price).toFixed(2) + "  " + currency}
                 </Typography>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography style={style?.cartDescription} gutterBottom>
                   <b>Qty:</b> {item.qty + " " + item.UnitName}
                 </Typography>
 
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography style={style?.cartDescription} gutterBottom>
                   <b>Discription: </b>
                   {item.Description}
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={5} xl={5} sm={6} md={6}>
+              <Grid
+                item
+                xs={12}
+                lg={5}
+                xl={5}
+                sm={6}
+                md={6}
+                // style={style?.cartVariantDiv}
+              >
                 {" "}
                 {item?.ingredients === undefined ? null : (
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography style={style?.cartDescription} gutterBottom>
                     <b>Ingredients: </b>
                     {item?.ingredients?.map((val, i) => {
                       if (item?.ingredients.length === i + 1) {
@@ -406,7 +356,7 @@ const Cart = (props) => {
                   </Typography>
                 )}
                 {item?.extras === undefined ? null : (
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography style={style?.cartDescription} gutterBottom>
                     <b>Extras: </b>
 
                     {item?.extras?.map((val, i) => {
@@ -419,7 +369,7 @@ const Cart = (props) => {
                   </Typography>
                 )}
                 {item?.recommendations === undefined ? null : (
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography style={style?.cartDescription} gutterBottom>
                     <b>Recommendations: </b>
 
                     {item?.recommendations?.map((val, i) => {
@@ -443,19 +393,29 @@ const Cart = (props) => {
                   </Typography>
                 )}
               </Grid>
-              <Grid item xs={12} lg={2} xl={2} sm={6} md={6}>
-                {/* <div className="row"> */}
+              <Grid
+                item
+                xs={12}
+                lg={2}
+                xl={2}
+                sm={6}
+                md={6}
+                // style={style?.cartCounterDiv}
+              >
                 <Counter
-                  custom={custom}
+                  style={style}
                   cart={cart}
                   setCart={setCart}
                   item={item}
                 />
-                {/* </div> */}
               </Grid>
               <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                 {item?.itemNote === undefined ? null : (
-                  <Typography variant="subtitle1" gutterBottom className="mx-1">
+                  <Typography
+                    style={style?.cartDescription}
+                    gutterBottom
+                    className="mx-1"
+                  >
                     <b>Item Note: </b>
                     {item?.itemNote}
                   </Typography>
@@ -463,7 +423,7 @@ const Cart = (props) => {
               </Grid>
               <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                 <Typography
-                  variant="subtitle1"
+                  style={style?.cartDescription}
                   gutterBottom
                   className="text-right mx-5"
                 >
@@ -484,8 +444,8 @@ const Cart = (props) => {
     });
   }
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <div>
+      {/* <CssBaseline /> */}
       <Container maxWidth="lg" className="mb-2">
         {alert.open ? (
           <CustomAlert
@@ -507,49 +467,76 @@ const Cart = (props) => {
         ) : (
           <>
             {viewImages_HTMLTABLE}
-            <Card sx={card} className="m-1">
+            <Card sx={style?.card} className="m-1">
               <CardContent sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} lg={3} xl={3} sm={12} md={6}>
-                    <Typography
-                      variant="button"
-                      style={{ textTransform: "capitalize" }}
-                    >
+                  <Grid
+                    item
+                    xs={12}
+                    lg={3}
+                    xl={3}
+                    sm={12}
+                    md={6}
+                    style={style?.ordersText}
+                  >
+                    <Typography style={style?.cartProductName}>
                       Ordering Methods
                     </Typography>
                   </Grid>
                   {outputs}
                   {orderingWay === "tbl_qrcode" ? (
                     <>
-                      <Grid item xs={12} lg={4} xl={4} sm={12} md={6}>
-                        <Typography
-                          variant="button"
-                          style={{ textTransform: "capitalize" }}
-                        >
+                      <Grid
+                        item
+                        xs={12}
+                        lg={style?.orderingOptions ? style?.orderingOptions : 4}
+                        xl={4}
+                        sm={12}
+                        md={6}
+                        style={style?.ordersText}
+                      >
+                        <Typography style={style?.cartProductName}>
                           Table Reservation
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} lg={4} xl={4} sm={12} md={6}>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={style?.orderingOptions ? style?.orderingOptions : 4}
+                        xl={4}
+                        sm={12}
+                        md={6}
+                      >
                         <div
                           onClick={() => checkReservation("inside")}
                           style={
-                            showReservation === "inside" ? active : deactive
+                            showReservation === "inside"
+                              ? style.active
+                              : style.deactive
                           }
                         >
                           <Typography
                             variant="button"
                             style={{ textTransform: "capitalize" }}
-                            // className="font-weight-bold"
                           >
                             Scan QR Code
                           </Typography>
                         </div>
                       </Grid>
-                      <Grid item xs={12} lg={4} xl={4} sm={12} md={6}>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={style?.orderingOptions ? style?.orderingOptions : 4}
+                        xl={4}
+                        sm={12}
+                        md={6}
+                      >
                         <div
                           onClick={() => checkReservation("outside")}
                           style={
-                            showReservation === "outside" ? active : deactive
+                            showReservation === "outside"
+                              ? style.active
+                              : style.deactive
                           }
                         >
                           <Typography
@@ -565,7 +552,7 @@ const Cart = (props) => {
                 </Grid>
               </CardContent>
             </Card>
-            <Card sx={card} className="m-1">
+            <Card sx={style?.card} className="m-1">
               <CardContent sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
                   <Grid
@@ -577,8 +564,10 @@ const Cart = (props) => {
                     md={6}
                     className="text-center"
                   >
-                    <Typography variant="body1">Delivery Fee</Typography>
-                    <Typography variant="body1" className="font-weight-bold ">
+                    <Typography style={style?.cartPrice}>
+                      Delivery Fee
+                    </Typography>
+                    <Typography style={style?.cartPrice}>
                       {deliveryFees.toFixed(2) + "  " + currency}
                     </Typography>
                   </Grid>
@@ -591,8 +580,10 @@ const Cart = (props) => {
                     md={6}
                     className="text-center"
                   >
-                    <Typography variant="body1">Grand Total</Typography>
-                    <Typography variant="body1" className="font-weight-bold ">
+                    <Typography style={style?.cartPrice}>
+                      Grand Total
+                    </Typography>
+                    <Typography style={style?.cartPrice}>
                       {(sum + deliveryFees).toFixed(2) + "  " + currency}
                     </Typography>
                   </Grid>
@@ -600,7 +591,7 @@ const Cart = (props) => {
               </CardContent>
             </Card>
             {showReservation === "inside" ? (
-              <Card sx={card} className="m-1">
+              <Card sx={style?.card} className="m-1">
                 <CardContent sx={{ flexGrow: 1 }}>
                   <div>
                     <QrReader
@@ -610,7 +601,7 @@ const Cart = (props) => {
                       style={{ width: "100%" }}
                     />
                     {table.length !== 0 ? (
-                      <Typography variant="subtitle1" gutterBottom>
+                      <Typography style={style?.cartDescription} gutterBottom>
                         successfully authenticated: {table.tableId}
                       </Typography>
                     ) : null}
@@ -618,7 +609,7 @@ const Cart = (props) => {
                 </CardContent>
               </Card>
             ) : showReservation === "outside" ? (
-              <Card sx={card} className="m-1">
+              <Card sx={style?.card} className="m-1">
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Grid container spacing={1}>
                     <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
@@ -629,7 +620,7 @@ const Cart = (props) => {
                           }`}
                           aria-label="Default select example"
                           onChange={changeHandle}
-                          style={style}
+                          style={style?.inputfield}
                           name="table_id"
                         >
                           <option> Select a Table</option>
@@ -656,7 +647,7 @@ const Cart = (props) => {
                           }`}
                           placeholder="Date and Time"
                           onChange={changeHandle}
-                          style={style}
+                          style={style?.inputfield}
                         />
                       </div>
                     </Grid>
@@ -665,7 +656,7 @@ const Cart = (props) => {
               </Card>
             ) : null}
             {orderingWay === "delivery" ? (
-              <Card sx={card} className="m-1">
+              <Card sx={style?.card} className="m-1">
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Grid container spacing={1}>
                     <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
@@ -675,7 +666,7 @@ const Cart = (props) => {
                         className={`form-control ${error ? "is-invalid" : ""}`}
                         minRows={1}
                         placeholder="Address"
-                        style={style}
+                        style={style?.inputfield}
                       />
                     </Grid>
                     <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
@@ -686,7 +677,7 @@ const Cart = (props) => {
                           className={"form-control"}
                           placeholder="Building No"
                           onChange={changeHandle}
-                          style={style}
+                          style={style?.inputfield}
                         />
                       </div>
                     </Grid>
@@ -698,7 +689,7 @@ const Cart = (props) => {
                           className={"form-control"}
                           placeholder="Floor"
                           onChange={changeHandle}
-                          style={style}
+                          style={style?.inputfield}
                         />
                       </div>
                     </Grid>
@@ -710,7 +701,7 @@ const Cart = (props) => {
                           className={"form-control"}
                           placeholder="Flat"
                           onChange={changeHandle}
-                          style={style}
+                          style={style?.inputfield}
                         />
                       </div>
                     </Grid>
@@ -722,7 +713,7 @@ const Cart = (props) => {
                           className={"form-control"}
                           placeholder="Directions"
                           onChange={changeHandle}
-                          style={style}
+                          style={style?.inputfield}
                         />
                       </div>
                     </Grid>
@@ -737,7 +728,7 @@ const Cart = (props) => {
             >
               {({ errors, status, touched, values }) => (
                 <Form>
-                  <Card sx={card} className="m-1">
+                  <Card sx={style?.card} className="m-1">
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Grid container spacing={1}>
                         <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
@@ -752,7 +743,7 @@ const Cart = (props) => {
                                   : "")
                               }
                               placeholder="+93--- ---- ---"
-                              style={style}
+                              style={style?.inputfield}
                             />
                             <ErrorMessage
                               name="phoneNumber"
@@ -777,13 +768,13 @@ const Cart = (props) => {
                             className={"form-control"}
                             minRows={3}
                             placeholder="General Note"
-                            style={style}
+                            style={style?.inputfield}
                           />
                         </Grid>
                       </Grid>
                     </CardContent>
                   </Card>
-                  <Card sx={card} className="m-1">
+                  <Card sx={style?.card} className="m-1">
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Grid container spacing={2}>
                         <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
@@ -813,7 +804,7 @@ const Cart = (props) => {
                               {orderingWay === undefined ? (
                                 <button
                                   className="col-12 btn"
-                                  style={buttonStyle}
+                                  style={style?.buttonStyle}
                                   type="submit"
                                   // onClick={() => saveOrder()}
                                 >
@@ -824,7 +815,7 @@ const Cart = (props) => {
                                 userData.address === "" ? (
                                   <button
                                     className="col-12 btn"
-                                    style={buttonStyle}
+                                    style={style?.buttonStyle}
                                     type="submit"
                                     // onClick={() => saveOrder()}
                                   >
@@ -834,7 +825,7 @@ const Cart = (props) => {
                                   <ReactWhatsapp
                                     className="col-12 btn"
                                     type="submit"
-                                    style={buttonStyle}
+                                    style={style?.buttonStyle}
                                     number={branch?.phoneNumber}
                                     message={message}
                                     max="4096"
@@ -847,7 +838,7 @@ const Cart = (props) => {
                                 values.phoneNumber === "" ? (
                                 <button
                                   className="col-12 btn"
-                                  style={buttonStyle}
+                                  style={style?.buttonStyle}
                                   type="submit"
                                   // onClick={() => saveOrder()}
                                 >
@@ -856,7 +847,7 @@ const Cart = (props) => {
                               ) : errors.phoneNumber && touched.phoneNumber ? (
                                 <button
                                   className="col-12 btn"
-                                  style={buttonStyle}
+                                  style={style?.buttonStyle}
                                   type="submit"
                                   // onClick={() => saveOrder()}
                                 >
@@ -866,7 +857,7 @@ const Cart = (props) => {
                                 <ReactWhatsapp
                                   className="col-12 btn"
                                   type="submit"
-                                  style={buttonStyle}
+                                  style={style?.buttonStyle}
                                   number={branch?.phoneNumber}
                                   message={message}
                                   max="4096"
@@ -879,7 +870,7 @@ const Cart = (props) => {
                           ) : (
                             <button
                               className="col-12 btn"
-                              style={buttonStyle}
+                              style={style?.buttonStyle}
                               onClick={() => saveOrder()}
                             >
                               <SendIcon /> {t("send_order")}
@@ -889,7 +880,7 @@ const Cart = (props) => {
                         <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
                           <button
                             className="col-12 btn"
-                            style={buttonStyle}
+                            style={style?.buttonStyle}
                             onClick={() => [
                               emptyCart(),
                               setCart([]),
@@ -908,7 +899,7 @@ const Cart = (props) => {
           </>
         )}
       </Container>
-    </ThemeProvider>
+    </div>
   );
 };
 

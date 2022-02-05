@@ -202,7 +202,6 @@ export const recIncrementQuantity = async (qty, id, stock, recs) => {
 };
 export const recDecrementQuantity = async (qty, id, recs) => {
   try {
-    console.log(qty);
     if (qty > 1) {
       let vars = recs.map((item) =>
         id == item.value
