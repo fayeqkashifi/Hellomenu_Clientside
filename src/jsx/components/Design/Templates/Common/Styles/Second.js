@@ -17,7 +17,7 @@ export const SecondStyle = (custom) => {
       display: "none",
     },
     imageStyle: {
-      height: "290px",
+      height: "250px",
       width: "100%",
       borderRadius: "15%",
       objectFit: "contain",

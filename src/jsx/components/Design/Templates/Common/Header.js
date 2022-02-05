@@ -59,7 +59,7 @@ function Header(props) {
           {activeCategory?.split("-")[0]}
         </Typography>
         <Typography sx={{ flex: 1 }}></Typography>
-        <IconButton onClick={() => setModalCentered(true)}>
+        <IconButton>
           <SearchOutlinedIcon fontSize="small" sx={style?.searchIcon} />
         </IconButton>
         <IconButton onClick={() => setModalCentered(true)}>

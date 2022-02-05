@@ -25,7 +25,7 @@ const MainPublic = (props) => {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-  const dataLoad = () => {
+  const dataLoad = async () => {
     getThemplate(branchId).then((data) => {
       // console.log(data);
       setCustom(data);

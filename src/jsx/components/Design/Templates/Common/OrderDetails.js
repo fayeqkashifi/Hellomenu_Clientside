@@ -75,11 +75,7 @@ const OrderDetails = (props) => {
     };
   }, [id]);
   let [sum, setSum] = useState(0);
-  // const dataLoad = () => {
-  //   let Total = 0;
-  //   fetchData.map((item) => (Total += item.price * item.qty));
-  //   setSum(Total)
-  // };
+
   const extraHandlers = (e, price, id, qty) => {
     if (e.target.checked) {
       setSum((sum += parseInt(price)));
@@ -98,36 +94,6 @@ const OrderDetails = (props) => {
     }
   };
 
-  const handleDecrement = (e, qty, id, price) => {
-    e.preventDefault();
-    if (qty > 1) {
-      setFetchData((fetchData) =>
-        fetchData.map((item) =>
-          id == item.value
-            ? { ...item, qty: item.qty - (item.qty > 0 ? 1 : 0) }
-            : item
-        )
-      );
-      setSum((sum -= parseInt(price)));
-    }
-  };
-  const handelIncrement = (e, qty, id, stock, price) => {
-    e.preventDefault();
-    if (stock > qty) {
-      setFetchData((fetchData) =>
-        fetchData.map((item) =>
-          id == item.value ? { ...item, qty: item.qty + 1 } : item
-        )
-      );
-      setSum((sum += parseInt(price)));
-    } else {
-      setAlerts(
-        true,
-        "warning",
-        "More than that isn't available because it's out of stock."
-      );
-    }
-  };
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );

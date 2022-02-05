@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 // Import css files
 import Footer from "../Common/Footer";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Header from "../Common/Header";
 import { base_url, port } from "../../../../../Consts";
@@ -28,11 +26,6 @@ const ProductDetails = (props) => {
   // for localization
   const { id, style, branch, deliveryFees } = props;
   const { t } = useTranslation();
-  // const id = atob(props.match.params.id);
-  // const custom = props.history.location.state.custom;
-  // const deliveryFees = parseInt(props.history.location.state.deliveryFees);
-  // const branch = props.history.location.state.branch;
-
   const [swiper, setSwiper] = useState(null);
 
   let varData = [];
@@ -52,7 +45,7 @@ const ProductDetails = (props) => {
   useEffect(() => {
     let unmounted = false;
 
-    const getdata = async () => {
+    const getdata = () => {
       getProduct(id).then((result) => {
         setFetchData(result.data.fetchData[0]);
       });

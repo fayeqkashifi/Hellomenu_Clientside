@@ -54,7 +54,8 @@ export default function Drawer(props) {
       ) : (
         <COffcanvas
           placement="end"
-          className="fade bd-example-modal-lg"
+          // className="fade bd-example-modal-lg"
+          // style={{ width: "70px" }}
           scroll
           visible={modalCentered}
           onHide={() => setModalCentered(false)}
