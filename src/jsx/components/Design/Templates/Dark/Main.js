@@ -32,14 +32,16 @@ export default function Main(props) {
     if (hold < categories.length) {
       getCategoriesBasedProduct(branch.id).then((data) => {
         if (data[hold]?.sub_category_id === null) {
-          setActiveCategory(data[hold]?.CategoryName + data[hold]?.category_id);
+          setActiveCategory(
+            data[hold]?.CategoryName + "-" + data[hold]?.category_id
+          );
           getProductBasedOnCategory(data[hold]?.category_id).then((res) => {
             hold = hold + 1;
             setProducts(products.concat(res));
           });
         } else {
           setActiveCategory(
-            data[hold]?.SubCategoryName + data[hold]?.sub_category_id
+            data[hold]?.SubCategoryName + "-" + data[hold]?.sub_category_id
           );
           getProductBasedOnSubCategory(data[hold]?.sub_category_id).then(
             (value) => {

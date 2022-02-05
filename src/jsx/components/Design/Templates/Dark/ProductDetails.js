@@ -341,7 +341,7 @@ const ProductDetails = (props) => {
             <div className="row mx-3 mt-3">
               <Grid container spacing={2}>
                 <Grid item xs={10}>
-                  <Typography style={style?.cartProductName}>
+                  <Typography style={style?.price}>
                     {fetchData.ProductName}
                   </Typography>
                 </Grid>

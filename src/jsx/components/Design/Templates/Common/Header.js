@@ -32,12 +32,12 @@ function Header(props) {
 
   const filterProducts = (menu) => {
     if (menu.sub_category_id === null) {
-      setActiveCategory(menu.CategoryName + menu.category_id);
+      setActiveCategory(menu.CategoryName + "-" + menu.category_id);
       getProductBasedOnCategory(menu.category_id).then((data) => {
         setProducts(data);
       });
     } else {
-      setActiveCategory(menu.SubCategoryName + menu.sub_category_id);
+      setActiveCategory(menu.SubCategoryName + "-" + menu.sub_category_id);
       getProductBasedOnSubCategory(menu.sub_category_id).then((res) => {
         setProducts(res);
       });
@@ -84,8 +84,8 @@ function Header(props) {
                 style={
                   activeCategory ===
                   (section.sub_category_id === null
-                    ? section.CategoryName + section.category_id
-                    : section.SubCategoryName + section.sub_category_id)
+                    ? section.CategoryName + "-" + section.category_id
+                    : section.SubCategoryName + "-" + section.sub_category_id)
                     ? style?.cateActive
                     : style?.cateDeActive
                 }
