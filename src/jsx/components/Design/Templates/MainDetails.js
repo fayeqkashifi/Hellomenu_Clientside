@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import ProductDetails from "./Dark/ProductDetails";
+import React, { useState } from "react";
+import ProductDetails from "./Common/ProductDetails";
 const MainDetails = (props) => {
   const [loading, setLoading] = useState(false);
   const style = props.history.location.state.style;

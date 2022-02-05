@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-import Header from "../Common/Header";
+import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -21,7 +21,7 @@ import CustomAlert from "../../../CustomAlert";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import { getProduct } from "../Functionality";
-import RecCounter from "../Common/RecCounter";
+import RecCounter from "./RecCounter";
 // import { addExistingItem } from "../Functionality";
 const OrderDetails = (props) => {
   const { t } = useTranslation();

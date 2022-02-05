@@ -21,12 +21,10 @@ import { base_url, port } from "./Consts";
 import Main from "./jsx/components/Design/Templates/First/Main";
 import DarkTemplate from "./jsx/components/Design/Templates/Dark/Main";
 import Thrid from "./jsx/components/Design/Templates/Thrid/Main";
-import ProductDetails from "./jsx/components/Design/Templates/Dark/ProductDetails";
+import ProductDetails from "./jsx/components/Design/Templates/Common/ProductDetails";
 import FirstProductDetails from "./jsx/components/Design/Templates/First/ProductDetails";
-import SecondProductDetails from "./jsx/components/Design/Templates/Second/ProductDetails";
 import ThridProductDetails from "./jsx/components/Design/Templates/Thrid/ProductDetails";
-import OrderDetails from "./jsx/components/Design/Templates/Dark/OrderDetails";
-import SecondTemplate from "./jsx/components/Design/Templates/Second/Main";
+import OrderDetails from "./jsx/components/Design/Templates/Common/OrderDetails";
 import ProductsList from "./jsx/components/Design/Templates/Thrid/ProductsList";
 import ForgotPassword from "./jsx/pages/ForgotPassword";
 import FilterSelection from "./jsx/components/Design/Templates/FilterSelection";
@@ -108,17 +106,6 @@ const App = () => {
 
         <PublicRoute
           exact
-          component={StandardTemplate}
-          path="/standard-template/:id"
-        />
-        <PublicRoute
-          component={SecondTemplate}
-          path="/second-template/:id"
-          exact
-        />
-
-        <PublicRoute
-          exact
           component={ShowProducts}
           path="/standard-template/product/:id"
         />
@@ -135,11 +122,6 @@ const App = () => {
           path="/dark-template/product/order-details/:id"
         />
 
-        <PublicRoute
-          exact
-          component={SecondProductDetails}
-          path="/second-template/product/:id"
-        />
         <PublicRoute
           exact
           component={ProductsList}
