@@ -118,6 +118,11 @@ export const SecondStyle = (custom) => {
       textAlign: "center",
     },
     // cart
+    // cartMainDiv: {
+    //   textAlign: "right",
+    //   backgroundColor: "red",
+
+    // },
     inputfield: {
       width: "100%",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",

@@ -6,7 +6,6 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Badge from "@mui/material/Badge";
-import { useTranslation } from "react-i18next";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 import {
@@ -15,7 +14,6 @@ import {
 } from "../Functionality";
 import Drawer from "./Drawer";
 function Header(props) {
-  const { t } = useTranslation();
   const history = useHistory();
   const [modalCentered, setModalCentered] = useState(false);
   const {
