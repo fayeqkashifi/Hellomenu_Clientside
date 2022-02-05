@@ -212,21 +212,6 @@ export const DarkStyle = (custom) => {
     },
     cartImageDiv: {
       width: "20%",
-      "@media (minWidth: 480px)": {
-        width: "100%",
-      },
-      "@media (minWidth: 768px)": {
-        width: "100%",
-      },
-      "@media  (minWidth: 1024px )": {
-        width: "10%",
-      },
-      "@media (minWidth: 1200px)": {
-        width: "10%",
-      },
-      "@media  (minWidth: 1900px)": {
-        width: "10%",
-      },
     },
     cartProductDiv: {
       width: "30%",

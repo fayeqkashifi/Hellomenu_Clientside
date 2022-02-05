@@ -339,7 +339,9 @@ const Cart = (props) => {
                 style={style?.cartVariantDiv}
               >
                 {" "}
-                {item?.ingredients === undefined ? null : (
+                {item?.ingredients === undefined ? (
+                  ""
+                ) : (
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Ingredients: </b>
                     {item?.ingredients?.map((val, i) => {
@@ -351,7 +353,9 @@ const Cart = (props) => {
                     })}
                   </Typography>
                 )}
-                {item?.extras === undefined ? null : (
+                {item?.extras === undefined ? (
+                  ""
+                ) : (
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Extras: </b>
 
@@ -364,7 +368,9 @@ const Cart = (props) => {
                     })}
                   </Typography>
                 )}
-                {item?.recommendations === undefined ? null : (
+                {item?.recommendations === undefined ? (
+                  ""
+                ) : (
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Recommendations: </b>
 
