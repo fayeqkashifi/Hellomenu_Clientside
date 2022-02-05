@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import SecondMain from "./Second/SecondMain";
+import DarkMain from "./Dark/Main";
 import {
   getThemplate,
   getBranch,
@@ -11,11 +9,13 @@ import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "./Functionality";
+import { SecondStyle } from "./Common/Styles/Second";
+import { DarkStyle } from "./Common/Styles/Dark";
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const branchId = atob(props.match.params.id);
-  // const deliveryFees = parseInt(props.history.location.state.deliveryFees);
+  const deliveryFees = parseInt(props.history.location.state.deliveryFees);
 
   const [branch, setBranch] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -27,6 +27,7 @@ const MainPublic = (props) => {
   );
   const dataLoad = () => {
     getThemplate(branchId).then((data) => {
+      // console.log(data);
       setCustom(data);
     });
     getBranch(branchId).then((data) => {
@@ -51,7 +52,7 @@ const MainPublic = (props) => {
       setLoading(false);
     });
   };
-  // const lengthArray = cart.length;
+
   useEffect(() => {
     let unmounted = false;
     dataLoad();
@@ -71,8 +72,8 @@ const MainPublic = (props) => {
       </div>
     );
   } else {
-    view = (
-      <>
+    if (custom.checkTemplate === "second") {
+      view = (
         <SecondMain
           branchId={branch.id}
           branch={branch}
@@ -83,11 +84,26 @@ const MainPublic = (props) => {
           setCart={setCart}
           setProducts={setProducts}
           cart={cart}
-          custom={custom}
-          deliveryFees={0}
+          style={SecondStyle(custom?.Customization)}
+          deliveryFees={deliveryFees}
         />
-      </>
-    );
+      );
+    } else if (custom.checkTemplate === "dark") {
+      view = (
+        <DarkMain
+          branch={branch}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+          categories={categories}
+          products={products}
+          setCart={setCart}
+          setProducts={setProducts}
+          cart={cart}
+          style={DarkStyle(custom?.Customization)}
+          deliveryFees={deliveryFees}
+        />
+      );
+    }
   }
 
   return view;

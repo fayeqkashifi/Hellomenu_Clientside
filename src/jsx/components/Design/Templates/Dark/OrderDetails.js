@@ -24,60 +24,25 @@ import { getProduct } from "../Functionality";
 import RecCounter from "../Common/RecCounter";
 // import { addExistingItem } from "../Functionality";
 const OrderDetails = (props) => {
-  const custom = props.history.location.state.custom;
-  // design start
-  const theme = createTheme({
-    palette: {
-      background: {
-        default: custom?.bgColor ? custom.bgColor : "#22252a",
-      },
-    },
-    typography: {
-      fontFamily: custom?.font ? custom.font : "sans-serif",
-      // discription
-      subtitle1: {
-        fontSize: custom?.pDiscriptionSize
-          ? custom.pDiscriptionSize + "rem"
-          : "0.75rem",
-
-        color: custom?.product_discription_color
-          ? custom.product_discription_color
-          : "#fff",
-      },
-      // price
-      body1: {
-        fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
-        color: custom?.price_color ? custom.price_color : "#fff",
-      },
-      // product Names
-      button: {
-        fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
-        color: custom?.product_name_color ? custom.product_name_color : "#fff",
-      },
-      // Menus
-      h6: {
-        fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
-        color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
-      },
-    },
-  });
-  // design end
   const { t } = useTranslation();
-  const deliveryFees = props.history.location.state.deliveryFees;
-  const branch = props.history.location.state.branch;
-  const productName = props.history.location.state.productName;
-  const picture = props.history.location.state.picture;
-  const stock = props.history.location.state.stock;
-  const price = props.history.location.state.price;
-  const orignalPrice = props.history.location.state.orignalPrice;
-  const orignalStock = props.history.location.state.orignalStock;
-  const countryCode = props.history.location.state.countryCode;
-  const extraValue = props.history.location.state.extraValue;
-  const ingredients = props.history.location.state.ingredients;
-  const skuarray = props.history.location.state.skuarray;
-  const activeSKU = props.history.location.state.activeSKU;
 
-  const id = atob(props.match.params.id);
+  const {
+    id,
+    style,
+    orignalPrice,
+    orignalStock,
+    extraValue,
+    ingredients,
+    price,
+    stock,
+    productName,
+    countryCode,
+    picture,
+    deliveryFees,
+    skuarray,
+    activeSKU,
+    branch,
+  } = props;
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState([]);
@@ -250,15 +215,11 @@ const OrderDetails = (props) => {
                   onChange={(e) => {
                     extraHandlers(e, item.price, item.value, item.qty);
                   }}
-                  sx={{
-                    color: custom?.menusAcriveColor
-                      ? custom.menusAcriveColor
-                      : "#ff751d",
-                  }}
+                  sx={style?.checkbox}
                 />
               }
               label={
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography style={style?.cartDescription}>
                   {item.label +
                     " ( +" +
                     (item.price * item.qty).toFixed(2) +
@@ -272,7 +233,7 @@ const OrderDetails = (props) => {
           {item?.show ? (
             <Grid item xs={4} sm={4} md={4}>
               <RecCounter
-                custom={custom}
+                style={style}
                 item={item}
                 setFetchData={setFetchData}
                 fetchData={fetchData}
@@ -288,8 +249,7 @@ const OrderDetails = (props) => {
     });
   }
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <div style={style?.background}>
       {alert.open ? (
         <CustomAlert
           open={alert.open}
@@ -304,27 +264,18 @@ const OrderDetails = (props) => {
         <Header
           subcategories={0}
           cart={cart}
-          theme={custom}
+          style={style}
           branch={branch}
           setCart={setCart}
           deliveryFees={deliveryFees}
         />
         <Container
           className="d-flex justify-content-center "
-          style={{ marginBottom: "100px" }}
+          style={style?.varaintContainer}
         >
           <Grid container spacing={2} className="d-flex justify-content-center">
             <Grid item xs={12} sm={8} md={8}>
-              <Card
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  borderRadius: "5%",
-                  backgroundColor: custom?.cardBgColor
-                    ? custom.cardBgColor
-                    : "#2d3134",
-                }}
-              >
+              <Card sx={style?.card}>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <Swiper
                     speed={2500}
@@ -359,20 +310,20 @@ const OrderDetails = (props) => {
                     })}
                   </Swiper>
                 </Grid>
-                <FavoriteIcon sx={{ color: "#ff751d" }} className="mx-4 my-2" />
+                <FavoriteIcon
+                  className="my-4 mx-3"
+                  style={style?.favIconActive}
+                />
 
                 <div className="row mx-3">
-                  <Typography
-                    variant="button"
-                    style={{ textTransform: "capitalize" }}
-                  >
+                  <Typography style={style?.productName}>
                     {productName}{" "}
                     {orignalPrice +
                       ".00" +
                       " " +
                       getSymbolFromCurrency(countryCode)}
                   </Typography>
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography style={style?.cartDescription}>
                     {ingredients?.map((item, i) => {
                       if (ingredients.length == i + 1) {
                         return item + " - Not Included";
@@ -381,7 +332,7 @@ const OrderDetails = (props) => {
                       }
                     })}
                   </Typography>
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography style={style?.cartDescription}>
                     {extraValue?.map((item, i) => {
                       if (extraValue.length == i + 1) {
                         return item.value + " - Included";
@@ -390,12 +341,11 @@ const OrderDetails = (props) => {
                       }
                     })}
                   </Typography>
-                  {custom?.show_recommendation == 0 ||
-                  fetchData.length === 0 ? (
+                  {style?.show_recommendation == 0 || fetchData.length === 0 ? (
                     ""
                   ) : (
                     <>
-                      <Typography variant="h6" gutterBottom>
+                      <Typography style={style?.cartPrice}>
                         {t("recommendation")}
                       </Typography>
                       <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
@@ -408,18 +358,7 @@ const OrderDetails = (props) => {
                     className="my-3"
                     minRows={3}
                     placeholder="Note"
-                    style={{
-                      backgroundColor: custom?.cardBgColor
-                        ? custom.cardBgColor
-                        : "#2d3134",
-                      color: custom?.menusDeactiveColor
-                        ? custom.menusDeactiveColor
-                        : "#fff",
-                      fontSize: 12,
-                      borderColor: custom?.menusAcriveColor
-                        ? custom.menusAcriveColor
-                        : "#ff751d",
-                    }}
+                    style={style?.inputfield}
                   />
                 </div>
               </Card>
@@ -427,26 +366,11 @@ const OrderDetails = (props) => {
           </Grid>
         </Container>
       </Container>
-      <Box
-        style={{ position: "fixed", width: "100%" }}
-        sx={{
-          bgcolor: theme?.cardBgColor ? theme.cardBgColor : "#2d3134",
-          position: "sticky",
-          bottom: "0px",
-        }}
-        // sx={{
-        //   borderRadius: "5%",
-        //   backgroundColor: "light",
-        //   position: "sticky",
-        //   bottom: "0px",
-        // }}
-        className="bottom-0 text-center p-1"
-      >
+      <Box style={style?.footerStyle} className="bottom-0 text-center p-1">
         <Grid container spacing={2}>
           <Grid item xs={7}>
             <Typography
-              variant="body1"
-              gutterBottom
+              style={style?.price}
               className="font-weight-bold text-center col-12 btn"
             >
               {(parseInt(price) + sum).toFixed(2) +
@@ -457,16 +381,7 @@ const OrderDetails = (props) => {
           <Grid item xs={5}>
             <button
               className="col-12 btn"
-              style={{
-                textTransform: "capitalize",
-                backgroundColor: custom?.button_background_color
-                  ? custom.button_background_color
-                  : "#ff751d",
-                color: custom?.button_text_color
-                  ? custom.button_text_color
-                  : "#f1fcfe",
-                fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1rem",
-              }}
+              style={style?.buttonStyle}
               onClick={(e) => addItem(e)}
             >
               Add to Cart
@@ -474,7 +389,7 @@ const OrderDetails = (props) => {
           </Grid>
         </Grid>
       </Box>
-    </ThemeProvider>
+    </div>
   );
 };
 

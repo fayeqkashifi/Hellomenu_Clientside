@@ -4,7 +4,7 @@ export const getThemplate = async (branchId) => {
   try {
     const result = await axios.get(`/api/GetTempBasedOnBranch/${branchId}`);
     if (result.data.status === 200) {
-      return result.data.fetchData[0]?.Customization;
+      return result.data.fetchData[0];
     }
   } catch (err) {
     console.error(err);

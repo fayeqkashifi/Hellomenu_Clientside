@@ -31,6 +31,8 @@ import ProductsList from "./jsx/components/Design/Templates/Thrid/ProductsList";
 import ForgotPassword from "./jsx/pages/ForgotPassword";
 import FilterSelection from "./jsx/components/Design/Templates/FilterSelection";
 import MainPublic from "./jsx/components/Design/Templates/MainPublic";
+import MainDetails from "./jsx/components/Design/Templates/MainDetails";
+import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -97,6 +99,13 @@ const App = () => {
           path="/filterSelection"
         />
         <PublicRoute exact component={MainPublic} path="/public/:id" />
+        <PublicRoute exact component={MainDetails} path="/public/details/:id" />
+        <PublicRoute
+          exact
+          component={MainRrecommend}
+          path="/public/details/recommend/:id"
+        />
+
         <PublicRoute
           exact
           component={StandardTemplate}

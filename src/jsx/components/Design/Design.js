@@ -309,8 +309,8 @@ const Design = (props) => {
                             <Grid item xs={12}>
                               <Link
                                 to={{
-                                  pathname: `/${item.URL}/${btoa(branchId)}`,
-                                  state: { id: item.id },
+                                  pathname: `/filterSelection`,
+                                  // state: { id: item.id },
                                 }}
                                 target="_blank"
                               >

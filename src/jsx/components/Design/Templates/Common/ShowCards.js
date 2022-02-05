@@ -13,9 +13,6 @@ import Counter from "../Common/Counter";
 
 export default function ShowCards(props) {
   let { style, cart, setCart, products, branch, deliveryFees } = props;
-  // style for dark tempalte
-
-  // end
   var viewShow_HTMLTABLE = "";
   viewShow_HTMLTABLE = products?.map((item, i) => {
     return (
@@ -49,7 +46,7 @@ export default function ShowCards(props) {
           <CardContent sx={{ flexGrow: 1 }}>
             <Link
               to={{
-                pathname: `/dark-template/product/${btoa(item.id)}`,
+                pathname: `/public/details/${btoa(item.id)}`,
                 state: {
                   style: style,
                   deliveryFees: deliveryFees,

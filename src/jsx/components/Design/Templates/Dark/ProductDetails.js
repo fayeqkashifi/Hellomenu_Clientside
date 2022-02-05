@@ -26,49 +26,13 @@ SwiperCore.use([Navigation, Thumbs]);
 
 const ProductDetails = (props) => {
   // for localization
+  const { id, style, branch, deliveryFees } = props;
   const { t } = useTranslation();
-  const id = atob(props.match.params.id);
-  const custom = props.history.location.state.custom;
-  const deliveryFees = parseInt(props.history.location.state.deliveryFees);
-  const branch = props.history.location.state.branch;
+  // const id = atob(props.match.params.id);
+  // const custom = props.history.location.state.custom;
+  // const deliveryFees = parseInt(props.history.location.state.deliveryFees);
+  // const branch = props.history.location.state.branch;
 
-  // design start
-  const theme = createTheme({
-    palette: {
-      background: {
-        default: custom?.bgColor ? custom.bgColor : "#22252a",
-      },
-    },
-    typography: {
-      fontFamily: custom?.font ? custom.font : "sans-serif",
-      // discription
-      subtitle1: {
-        fontSize: custom?.pDiscriptionSize
-          ? custom.pDiscriptionSize + "rem"
-          : "0.75rem",
-
-        color: custom?.product_discription_color
-          ? custom.product_discription_color
-          : "#fff",
-      },
-      // price
-      body1: {
-        fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
-        color: custom?.price_color ? custom.price_color : "#fff",
-      },
-      // product Names
-      button: {
-        fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
-        color: custom?.product_name_color ? custom.product_name_color : "#fff",
-      },
-      // Menus
-      h6: {
-        fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
-        color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
-      },
-    },
-  });
-  // design end
   const [swiper, setSwiper] = useState(null);
 
   let varData = [];
@@ -274,12 +238,7 @@ const ProductDetails = (props) => {
                               <img
                                 src={`http://${base_url}:${port}/images/variants_pics/${image}`}
                                 alt=""
-                                style={{
-                                  height: "400px",
-                                  width: "100%",
-                                  borderRadius: "5%",
-                                  objectFit: "contain",
-                                }}
+                                style={style?.variantsImage}
                               />
                             </SwiperSlide>
                           </>
@@ -305,12 +264,7 @@ const ProductDetails = (props) => {
                             <img
                               src={`http://${base_url}:${port}/images/variants_pics/${image}`}
                               alt=""
-                              style={{
-                                height: "70px",
-                                width: "100%",
-                                borderRadius: "5%",
-                                // objectFit: "contain",
-                              }}
+                              style={style?.variantsThumbs}
                             />
                           </SwiperSlide>
                         );
@@ -347,12 +301,7 @@ const ProductDetails = (props) => {
                                 : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
                             }
                             alt=""
-                            style={{
-                              height: "400px",
-                              width: "100%",
-                              borderRadius: "5%",
-                              objectFit: "contain",
-                            }}
+                            style={style?.variantsImage}
                           />
                         </SwiperSlide>
                       );
@@ -375,12 +324,7 @@ const ProductDetails = (props) => {
                           <img
                             src={`http://${base_url}:${port}/images/products/${image}`}
                             alt=""
-                            style={{
-                              height: "70px",
-                              width: "100%",
-                              borderRadius: "5%",
-                              // objectFit: "contain",
-                            }}
+                            style={style?.variantsThumbs}
                           />
                         </SwiperSlide>
                       );
@@ -393,36 +337,24 @@ const ProductDetails = (props) => {
         </Grid>
 
         <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
-          <Card
-            sx={{
-              // height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "5%",
-              backgroundColor: custom?.BgColor ? custom.BgColor : "#22252a",
-            }}
-          >
+          <Card sx={style?.detailsCard}>
             <div className="row mx-3 mt-3">
               <Grid container spacing={2}>
                 <Grid item xs={10}>
-                  <Typography
-                    variant="button"
-                    style={{ textTransform: "capitalize" }}
-                    // className="font-weight-bold"
-                  >
+                  <Typography style={style?.cartProductName}>
                     {fetchData.ProductName}
                   </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <FavoriteIcon sx={{ color: "#ff751d" }} />
+                  <FavoriteIcon style={style?.favIconActive} />
                 </Grid>
               </Grid>
 
-              <Typography variant="subtitle1" gutterBottom>
+              <Typography style={style?.cartDescription}>
                 {fetchData?.Description}
               </Typography>
-              <Typography variant="subtitle1" gutterBottom>
-                {custom?.preparation_time === 0 ||
+              <Typography style={style?.cartDescription}>
+                {style?.preparation_time === 0 ||
                 fetchData?.preparationTime == null ? (
                   ""
                 ) : (
@@ -433,38 +365,30 @@ const ProductDetails = (props) => {
                 )}
               </Typography>
 
-              <Typography
-                variant="body1"
-                gutterBottom
-                className="font-weight-bold"
-              >
+              <Typography style={style?.cartPrice}>
                 {t("price")} :{" "}
                 {productDetails.price === 0
                   ? (fetchData?.price + sum).toFixed(2)
                   : (parseInt(productDetails.price) + sum).toFixed(2)}
                 {"  " + getSymbolFromCurrency(fetchData.currency_code)}
               </Typography>
-              <Typography
-                variant="body1"
-                gutterBottom
-                className="font-weight-bold"
-              >
+              <Typography style={style?.cartPrice}>
                 {t("stock")}:{" "}
                 {productDetails.stock === 0
                   ? fetchData?.stock
                   : productDetails.stock}
               </Typography>
             </div>
-            {custom?.show_ingredients === 0 ||
+            {style?.show_ingredients === 0 ||
             JSON.parse(fetchData.ingredients).length === 0 ? (
               ""
             ) : (
               <>
                 <div className="row mx-3">
-                  <Typography variant="h6" gutterBottom>
+                  <Typography style={style?.cartPrice}>
                     {t("ingredients")}
                   </Typography>
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography style={style?.cartDescription}>
                     Please select the ingredients you want to remove.
                   </Typography>
                 </div>
@@ -479,42 +403,8 @@ const ProductDetails = (props) => {
                         }}
                         style={
                           ingredients.includes(item.label)
-                            ? {
-                                cursor: "pointer",
-
-                                padding: "3px",
-                                margin: "2px",
-                                border: "1px solid",
-                                textAlign: "center",
-                                borderRadius: "5px",
-                                borderColor: custom?.menusAcriveColor
-                                  ? custom.menusAcriveColor
-                                  : "#f27d1e",
-                                textDecoration: "line-through",
-                                color: custom?.menusAcriveColor
-                                  ? custom.menusAcriveColor
-                                  : "#f27d1e",
-                                fontSize: custom?.pDiscriptionSize
-                                  ? custom.pDiscriptionSize + "rem"
-                                  : "0.75rem",
-                              }
-                            : {
-                                cursor: "pointer",
-                                padding: "3px",
-                                margin: "2px",
-                                border: "1px solid",
-                                textAlign: "center",
-                                borderRadius: "5px",
-                                borderColor: custom?.menusDeactiveColor
-                                  ? custom.menusDeactiveColor
-                                  : "#fff",
-                                color: custom?.menusDeactiveColor
-                                  ? custom.menusDeactiveColor
-                                  : "#fff",
-                                fontSize: custom?.pDiscriptionSize
-                                  ? custom.pDiscriptionSize + "rem"
-                                  : "0.75rem",
-                              }
+                            ? style?.ingredientsActive
+                            : style?.ingredientsDeActive
                         }
                       >
                         {item.label}
@@ -524,14 +414,12 @@ const ProductDetails = (props) => {
                 </div>
               </>
             )}
-            {custom?.show_extras === 0 ||
+            {style?.show_extras === 0 ||
             JSON.parse(fetchData.extras).length === 0 ? (
               ""
             ) : (
               <div className="row mx-3">
-                <Typography variant="h6" gutterBottom>
-                  {t("extras")}
-                </Typography>
+                <Typography style={style?.cartPrice}>{t("extras")}</Typography>
                 <FormGroup>
                   {JSON.parse(fetchData.extras)?.map((item, i) => {
                     return (
@@ -543,18 +431,14 @@ const ProductDetails = (props) => {
                               extraHandlers(e, item.price);
                             }}
                             color="default"
-                            sx={{
-                              color: custom?.menusAcriveColor
-                                ? custom.menusAcriveColor
-                                : "#ff751d",
-                            }}
+                            sx={style?.checkbox}
                             value={
                               item.label + " ( +" + item.price + ".00" + " )"
                             }
                           />
                         }
                         label={
-                          <Typography variant="subtitle1" gutterBottom>
+                          <Typography style={style?.cartDescription}>
                             {item.label + " ( +" + item.price + ".00" + " )"}
                           </Typography>
                         }
@@ -564,13 +448,13 @@ const ProductDetails = (props) => {
                 </FormGroup>
               </div>
             )}
-            {custom?.show_variants === 0 ||
+            {style?.show_variants === 0 ||
             Object.keys(showVaralint).length === 0 ? (
               ""
             ) : (
               <>
                 <div className="row mx-3">
-                  <Typography variant="h6" gutterBottom>
+                  <Typography style={style?.cartPrice}>
                     {t("vatiants")}
                   </Typography>
                 </div>
@@ -582,13 +466,7 @@ const ProductDetails = (props) => {
                         {/* {list} */}
                         <div
                           className="row d-flex justify-content-around"
-                          style={{
-                            backgroundColor: custom?.cardBgColor
-                              ? custom.cardBgColor
-                              : "#2d3134",
-                            borderRadius: "50px",
-                            padding: "5px",
-                          }}
+                          style={style?.variantsDiv}
                         >
                           {showVaralint[list].map((variant, z) => {
                             return (
@@ -599,31 +477,8 @@ const ProductDetails = (props) => {
                                   }}
                                   style={
                                     skuarray[i] == variant
-                                      ? {
-                                          cursor: "pointer",
-                                          border: "1px solid",
-                                          textAlign: "center",
-                                          borderRadius: "50px",
-                                          borderColor: "black",
-                                          backgroundColor:
-                                            custom?.menusAcriveColor
-                                              ? custom.menusAcriveColor
-                                              : "black",
-                                          color: custom?.menusDeactiveColor
-                                            ? custom.menusDeactiveColor
-                                            : "#fff",
-                                        }
-                                      : {
-                                          cursor: "pointer",
-                                          border: "1px solid",
-                                          textAlign: "center",
-                                          borderRadius: "50px",
-                                          borderColor: "#2d3134",
-                                          backgroundColor: "#2d3134",
-                                          color: custom?.menusDeactiveColor
-                                            ? custom.menusDeactiveColor
-                                            : "#fff",
-                                        }
+                                      ? style?.variantActive
+                                      : style?.variantDeActive
                                   }
                                 >
                                   {variant}
@@ -644,11 +499,10 @@ const ProductDetails = (props) => {
     );
   }
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Container maxWidth="lg" style={{ marginBottom: "100px" }}>
+    <div style={style?.background}>
+      <Container maxWidth="lg" style={style?.varaintContainer}>
         <Header
-          theme={custom}
+          style={style}
           cart={cart}
           branch={branch}
           setCart={setCart}
@@ -658,17 +512,16 @@ const ProductDetails = (props) => {
       </Container>
       <Footer
         title="Checkout"
-        theme={custom}
+        style={style}
         branch={branch}
         setCart={setCart}
-        theme={custom}
         stock={
           productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
         }
         cart={cart}
         deliveryFees={deliveryFees}
         url={{
-          pathname: `/dark-template/product/order-details/${btoa(id)}`,
+          pathname: `/public/details/recommend/${btoa(id)}`,
           state: {
             productName: fetchData.ProductName,
 
@@ -688,7 +541,7 @@ const ProductDetails = (props) => {
                 ? fetchData?.price
                 : productDetails.price,
             ingredients: ingredients,
-            custom: custom,
+            style: style,
             skuarray: skuarray,
             activeSKU: activeSKU,
             orignalStock: productDetails.stock,
@@ -697,7 +550,7 @@ const ProductDetails = (props) => {
           },
         }}
       />
-    </ThemeProvider>
+    </div>
   );
 };
 

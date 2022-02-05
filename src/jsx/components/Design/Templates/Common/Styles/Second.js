@@ -1,6 +1,9 @@
 export const SecondStyle = (custom) => {
   return {
     template: "second",
+    background: {
+      backgroundColor: custom?.bgColor ? custom.bgColor : "#eee",
+    },
     cardStyle: {
       width: "300px",
       margin: "20px",
@@ -35,7 +38,13 @@ export const SecondStyle = (custom) => {
       fontWeight: "bold",
     },
     description: {
-      display: "none",
+      fontSize: custom?.pDiscriptionSize
+        ? custom.pDiscriptionSize + "rem"
+        : "0.75rem",
+
+      color: custom?.product_discription_color
+        ? custom.product_discription_color
+        : "#000",
     },
 
     BadgeStyle: {
@@ -99,6 +108,14 @@ export const SecondStyle = (custom) => {
       bottom: 0,
       left: 0,
       zIndex: 0,
+    },
+    // footer
+    footerStyle: {
+      bgcolor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      position: "fixed",
+      bottom: 0,
+      width: "100%",
+      textAlign: "center",
     },
     // cart
     inputfield: {
@@ -201,6 +218,98 @@ export const SecondStyle = (custom) => {
       color: custom?.product_discription_color
         ? custom.product_discription_color
         : "#000",
+    },
+    // product details
+    detailsCard: {
+      // height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      borderRadius: "5%",
+      backgroundColor: custom?.BgColor ? custom.BgColor : "#fff",
+    },
+    preparation_time: custom?.preparation_time,
+    show_ingredients: custom?.show_ingredients,
+    ingredientsActive: {
+      cursor: "pointer",
+
+      padding: "3px",
+      margin: "2px",
+      border: "1px solid",
+      textAlign: "center",
+      borderRadius: "5px",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#33cd6b",
+      textDecoration: "line-through",
+      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#33cd6b",
+      fontSize: custom?.pDiscriptionSize
+        ? custom.pDiscriptionSize + "rem"
+        : "0.75rem",
+    },
+    ingredientsDeActive: {
+      cursor: "pointer",
+      padding: "3px",
+      margin: "2px",
+      border: "1px solid",
+      textAlign: "center",
+      borderRadius: "5px",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : "#000",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      fontSize: custom?.pDiscriptionSize
+        ? custom.pDiscriptionSize + "rem"
+        : "0.75rem",
+    },
+    show_extras: custom?.show_extras,
+    show_variants: custom?.show_variants,
+    variantsDiv: {
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#33cd6b",
+      borderRadius: "50px",
+      padding: "5px",
+    },
+    variantActive: {
+      cursor: "pointer",
+      border: "1px solid",
+      textAlign: "center",
+      borderRadius: "50px",
+      borderColor: "#aa3f32",
+      backgroundColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#aa3f32",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+    },
+    variantDeActive: {
+      cursor: "pointer",
+      border: "1px solid",
+      textAlign: "center",
+      borderRadius: "50px",
+      borderColor: "#33cd6b",
+      backgroundColor: "#33cd6b",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+    },
+    checkbox: {
+      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#33cd6b",
+    },
+    variantsImage: {
+      height: "400px",
+      width: "100%",
+      borderRadius: "5%",
+      objectFit: "contain",
+    },
+    variantsThumbs: {
+      height: "70px",
+      width: "100%",
+      borderRadius: "5%",
+      // objectFit: "contain",
+    },
+    varaintContainer: { paddingBottom: "100px" },
+    recomandImage: {
+      height: "200px",
+      width: "100%",
+      borderRadius: "5%",
+
+      objectFit: "contain",
     },
   };
 };

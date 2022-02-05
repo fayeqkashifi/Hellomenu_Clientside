@@ -131,9 +131,7 @@ const FilterSelection = () => {
                             <CardContent sx={{ flexGrow: 1 }}>
                               <Link
                                 to={{
-                                  pathname: `/dark-template/${btoa(
-                                    branch?.BranchID
-                                  )}`,
+                                  pathname: `/public/${btoa(branch?.BranchID)}`,
                                   state: {
                                     deliveryFees: branch.deliveryFees,
                                   },

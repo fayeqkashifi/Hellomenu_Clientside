@@ -70,7 +70,6 @@ export default function Drawer(props) {
             />
           </COffcanvasHeader>
           <COffcanvasBody>
-            
             <Cart
               style={style}
               checkBit={true}

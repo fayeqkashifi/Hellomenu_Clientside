@@ -6,7 +6,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { recDecrementQuantity, recIncrementQuantity } from "../Functionality";
 const RecCounter = (props) => {
-  const { custom, setFetchData, item, fetchData, setSum } = props;
+  const { style, setFetchData, item, fetchData, setSum } = props;
   let { sum } = props;
   const [alert, setAlert] = useState({
     open: false,
@@ -65,11 +65,7 @@ const RecCounter = (props) => {
             <IconButton
               onClick={() => handleDecrement(item.qty, item.value, item.price)}
             >
-              <Typography
-                variant="h6"
-                gutterBottom
-                style={{ cursor: "pointer" }}
-              >
+              <Typography style={style?.counterDecrementIcon}>
                 <RemoveRoundedIcon />
               </Typography>
             </IconButton>
@@ -78,9 +74,7 @@ const RecCounter = (props) => {
         <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 mt-1">
           {" "}
           <IconButton>
-            <Typography variant="subtitle1" gutterBottom>
-              {item.qty}
-            </Typography>
+            <Typography style={style?.counterValue}>{item.qty}</Typography>
           </IconButton>
         </div>
 
@@ -90,7 +84,7 @@ const RecCounter = (props) => {
               handelIncrement(item.qty, item.value, item.price, item.stock)
             }
           >
-            <Typography variant="h6" gutterBottom style={{ cursor: "pointer" }}>
+            <Typography style={style?.counterIncrementIcon}>
               <AddRoundedIcon />
             </Typography>
           </IconButton>
