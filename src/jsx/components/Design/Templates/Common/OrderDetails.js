@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 // Import css files
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
@@ -22,7 +20,6 @@ import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import { getProduct } from "../Functionality";
 import RecCounter from "./RecCounter";
-// import { addExistingItem } from "../Functionality";
 const OrderDetails = (props) => {
   const { t } = useTranslation();
 

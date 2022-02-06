@@ -11,7 +11,6 @@ import PrivateRoute from "../PrivateRoute";
 import Customization from "./Templates/Customization";
 import Theme from "./Theme";
 import EditTheme from "./EditTheme";
-import DefaultCustomization from "./Templates/Default/Customization";
 
 const DesignShow = (props) => {
   const { path } = useRouteMatch();
@@ -26,10 +25,6 @@ const DesignShow = (props) => {
           <PrivateRoute
             path={`${path}/dark-template-customization`}
             component={Customization}
-          />
-          <PrivateRoute
-            path={`${path}/defualt-template-customization`}
-            component={DefaultCustomization}
           />
           <PrivateRoute path={`${path}/add-theme`} component={Theme} />
           <PrivateRoute path={`${path}/edit-theme`} component={EditTheme} />

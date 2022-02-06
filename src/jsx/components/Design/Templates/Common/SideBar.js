@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Card from "@mui/material/Card";
 import { base_url, port } from "../../../../../Consts";
 import Typography from "@mui/material/Typography";
 import DefaultPic from "../../../../../images/hellomenu/category.svg";

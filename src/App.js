@@ -15,17 +15,7 @@ import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
 
 import PublicRoute from "./jsx/components/PublicRoute";
 import axios from "axios";
-import StandardTemplate from "./jsx/components/Design/Templates/Default/Main";
-import ShowProducts from "./jsx/components/Design/Templates/Default/ShowProducts";
 import { base_url, port } from "./Consts";
-import Main from "./jsx/components/Design/Templates/First/Main";
-import DarkTemplate from "./jsx/components/Design/Templates/Dark/Main";
-import Thrid from "./jsx/components/Design/Templates/Thrid/Main";
-import ProductDetails from "./jsx/components/Design/Templates/Common/ProductDetails";
-import FirstProductDetails from "./jsx/components/Design/Templates/First/ProductDetails";
-import ThridProductDetails from "./jsx/components/Design/Templates/Thrid/ProductDetails";
-import OrderDetails from "./jsx/components/Design/Templates/Common/OrderDetails";
-import ProductsList from "./jsx/components/Design/Templates/Thrid/ProductsList";
 import ForgotPassword from "./jsx/pages/ForgotPassword";
 import FilterSelection from "./jsx/components/Design/Templates/FilterSelection";
 import MainPublic from "./jsx/components/Design/Templates/MainPublic";
@@ -96,6 +86,7 @@ const App = () => {
           component={FilterSelection}
           path="/filterSelection"
         />
+
         <PublicRoute exact component={MainPublic} path="/public/:id" />
         <PublicRoute exact component={MainDetails} path="/public/details/:id" />
         <PublicRoute
@@ -103,44 +94,6 @@ const App = () => {
           component={MainRrecommend}
           path="/public/details/recommend/:id"
         />
-
-        <PublicRoute
-          exact
-          component={ShowProducts}
-          path="/standard-template/product/:id"
-        />
-        <PublicRoute component={DarkTemplate} path="/dark-template/:id" exact />
-
-        <PublicRoute
-          exact
-          component={ProductDetails}
-          path="/dark-template/product/:id"
-        />
-        <PublicRoute
-          exact
-          component={OrderDetails}
-          path="/dark-template/product/order-details/:id"
-        />
-
-        <PublicRoute
-          exact
-          component={ProductsList}
-          path="/thrid-template/products-list/:id"
-        />
-        <PublicRoute
-          exact
-          component={ThridProductDetails}
-          path="/thrid-template/products-list/product-details/:id"
-        />
-        <PublicRoute
-          exact
-          component={FirstProductDetails}
-          path="/template-first/product/:id"
-        />
-        <PublicRoute component={Main} path="/template-first/:id" exact />
-        <PublicRoute component={Thrid} path="/template-thrid/:id" exact />
-        {/* <Route component={Error404} /> */}
-
         <Markup />
       </Switch>
     </Router>

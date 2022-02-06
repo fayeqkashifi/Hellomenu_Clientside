@@ -48,14 +48,7 @@ function Header(props) {
         <IconButton onClick={() => history.goBack()}>
           <KeyboardBackspaceIcon fontSize="small" sx={style?.backIcon} />
         </IconButton>
-        <Typography
-          // sx={{ flex: 1 }}
-          // component="h2"
-          // variant="h3"
-          align="left"
-          style={style?.title}
-          noWrap
-        >
+        <Typography align="left" style={style?.title} noWrap>
           {activeCategory?.split("-")[0]}
         </Typography>
         <Typography sx={{ flex: 1 }}></Typography>
