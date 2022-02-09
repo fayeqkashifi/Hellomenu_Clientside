@@ -11,6 +11,8 @@ import {
 } from "./Functionality";
 import { SecondStyle } from "./Common/Styles/Second";
 import { DarkStyle } from "./Common/Styles/Dark";
+import { ThridStyle } from "./Common/Styles/Thrid";
+import ThridMain from "./Thrid/Main";
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -60,6 +62,17 @@ const MainPublic = (props) => {
       unmounted = true;
     };
   }, []);
+  const properties = {
+    branch: branch,
+    deliveryFees: deliveryFees,
+    activeCategory: activeCategory,
+    setActiveCategory: setActiveCategory,
+    categories: categories,
+    products: products,
+    setCart: setCart,
+    setProducts: setProducts,
+    cart: cart,
+  };
   var view = "";
   if (loading) {
     return (
@@ -72,36 +85,20 @@ const MainPublic = (props) => {
       </div>
     );
   } else {
-    if (custom.checkTemplate === "second") {
+    if (custom.checkTemplate === "dark") {
+      view = (
+        <DarkMain {...properties} style={DarkStyle(custom?.Customization)} />
+      );
+    } else if (custom.checkTemplate === "second") {
       view = (
         <SecondMain
-          branchId={branch.id}
-          branch={branch}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          categories={categories}
-          products={products}
-          setCart={setCart}
-          setProducts={setProducts}
-          cart={cart}
+          {...properties}
           style={SecondStyle(custom?.Customization)}
-          deliveryFees={deliveryFees}
         />
       );
-    } else if (custom.checkTemplate === "dark") {
+    } else if (custom.checkTemplate === "thrid") {
       view = (
-        <DarkMain
-          branch={branch}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          categories={categories}
-          products={products}
-          setCart={setCart}
-          setProducts={setProducts}
-          cart={cart}
-          style={DarkStyle(custom?.Customization)}
-          deliveryFees={deliveryFees}
-        />
+        <ThridMain {...properties} style={ThridStyle(custom?.Customization)} />
       );
     }
   }

@@ -261,5 +261,8 @@
   "order_details":"Order Details",
   "ordering_phone_number": "Ordering Phone Number",
   "number_of_seats":"Number of seats",
-  "download_all":"Download All"
+  "download_all":"Download All",
+  "addressing_method":"Addressing Method",
+  "add_more":"Add More"
+  
 }

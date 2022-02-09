@@ -9,6 +9,9 @@ export const DarkStyle = (custom) => {
       overflowX: "auto",
       // marginTop: "-15px",
     },
+    headerTotalDiv: {
+      display: "none",
+    },
     cardStyle: {
       display: "flex",
       flexDirection: "column",
@@ -80,6 +83,9 @@ export const DarkStyle = (custom) => {
       color: custom?.price_color ? custom.price_color : "#fff",
       fontWeight: "bold",
     },
+    unitName: {
+      display: "none",
+    },
     description: {
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
@@ -136,6 +142,9 @@ export const DarkStyle = (custom) => {
     },
     searchIcon: { visibility: "hidden" },
     title: { visibility: "hidden" },
+    searchFields: {
+      visibility: "hidden",
+    },
     addIcon: {
       width: "40%",
     },

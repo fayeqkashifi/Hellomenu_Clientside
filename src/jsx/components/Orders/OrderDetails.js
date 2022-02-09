@@ -300,23 +300,28 @@ const OrderDetails = (props) => {
                 </Typography>
               ) : null}
             </Grid>
-            <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
-              <Typography variant="body1" gutterBottom>
-                <b>Address: </b> {order.address}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <b>Building No: </b> {order.buildingNo}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <b>Floor: </b> {order.floor}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <b>Flat: </b> {order.flat}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <b>Directions: </b> {order.directions}
-              </Typography>
-            </Grid>
+            {order.orderingMethod === "delivery" ? (
+              <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
+                {order.fullAddress ? (
+                  <Typography variant="body1" gutterBottom>
+                    <b>Full Address: </b> {order.fullAddress}
+                  </Typography>
+                ) : null}
+                {(() => {
+                  const rows = [];
+                  for (const [key, value] of Object.entries(
+                    JSON.parse(order.otherAddressFields)
+                  )) {
+                    rows.push(
+                      <Typography variant="body1" gutterBottom key={key}>
+                        <b>{key}: </b> {value}
+                      </Typography>
+                    );
+                  }
+                  return rows;
+                })()}
+              </Grid>
+            ) : null}
           </Grid>
         </CardContent>
       </Card>

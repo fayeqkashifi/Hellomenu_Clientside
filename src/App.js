@@ -81,12 +81,12 @@ const App = () => {
           path="/forgot-password"
           exact
         />
+
         <PublicRoute
           exact
           component={FilterSelection}
           path="/filterSelection"
         />
-
         <PublicRoute exact component={MainPublic} path="/public/:id" />
         <PublicRoute exact component={MainDetails} path="/public/details/:id" />
         <PublicRoute

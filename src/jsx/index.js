@@ -19,28 +19,28 @@ import Branches from "./components/Branches/Branches";
 import BranchShow from "./components/Branches/Show";
 
 import Company from "./components/Companies/Company";
-import ServiceArea from "./components/Services/ServiceArea";
 import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
-import Tables from "./components/Branches/Tables";
 import Attributes from "./components/Attributes/Attributes";
 import Error404 from "./pages/Error404";
 import Ingredients from "./components/Products/Ingredients";
 import Area from "./components/Areas/Area";
 import OrderDetails from "./components/Orders/OrderDetails";
+import AddBranch from "./components/Branches/AddBranch";
+import EditBranch from "./components/Branches/EditBranch";
 
 const Markup = () => {
   const routes = [
     /// Login
     { url: "dashboard", component: Home },
     { url: "branches", component: Branches },
+    { url: "branches/add-branch", component: AddBranch },
+    { url: "branches/edit-branch", component: EditBranch },
     { url: "ingredients", component: Ingredients },
     { url: "company", component: Company },
-    { url: "branches/service-area", component: ServiceArea },
     { url: "profile", component: Profile },
     { url: "orders", component: Order },
     { url: "orders/orders-details", component: OrderDetails },
-    { url: "branches/tables", component: Tables },
     { url: "attributes", component: Attributes },
     { url: "areas", component: Area },
   ];

@@ -1,14 +1,53 @@
-export const SecondStyle = (custom) => {
+export const ThridStyle = (custom) => {
   return {
-    template: "second",
+    template: "thrid",
     background: {
-      backgroundColor: custom?.bgColor ? custom.bgColor : "#eee",
+      backgroundColor: custom?.bgColor ? custom.bgColor : "#f8f8f8",
     },
+    // header
+    title: {
+      display: "none",
+    },
+    backIcon: { visibility: "hidden" },
+    cartIcon: {
+      color: "#000",
+    },
+    searchIcon: {
+      display: "none",
+    },
+    searchFields: {
+      marginLeft: "20px",
+      marginRight: "20px",
+    },
+    headerTotalDiv: {
+      marginLeft: "20px",
+      marginRight: "20px",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      fontWeight: "bold",
+      borderRadius: "10%",
+    },
+    totalPriceIcon: {
+      backgroundColor: "#503e9d",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+
+      margin: "5px",
+    },
+    totalPriceDiv: {
+      marginRight: "20px",
+    },
+    // header End
+    // card
+
     cardStyle: {
-      width: "300px",
-      margin: "20px",
       display: "flex",
       flexDirection: "column",
+      borderRadius: "5%",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+    },
+    cardIconButton: {
+      backgroundColor: "#fbd460",
+      color: "#000",
     },
     favIconDeactive: {
       display: "none",
@@ -16,77 +55,99 @@ export const SecondStyle = (custom) => {
     favIconActive: {
       display: "none",
     },
+    shoppingIcon: {
+      color: "#000",
+    },
     imageStyle: {
-      height: "250px",
+      height: "150px",
       width: "100%",
       borderRadius: "15%",
       objectFit: "contain",
     },
     productName: {
       textTransform: "capitalize",
-      textAlign: "center",
-      fontSize: "25px",
+      textAlign: "left",
+      fontSize: "20px",
     },
-    productDiv: { width: "100%", textAlign: "center" },
+    productDiv: { width: "100%", textAlign: "left" },
     addIcon: {
       width: "100%",
+      textAlign: "center",
+      borderRadius: "50px",
+      border: "1px solid #aaa",
+    },
+    counterPosition: "last",
+    description: {
+      display: "none",
+    },
+    priceDiv: {
+      textAlign: "right",
+      margin: "10px",
     },
     price: {
-      textAlign: "center",
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.5rem",
-      color: custom?.price_color ? custom.price_color : "#aa3f32",
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
+      color: custom?.price_color ? custom.price_color : "#000",
       fontWeight: "bold",
     },
-    description: {
-      fontSize: custom?.pDiscriptionSize
-        ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
-
-      color: custom?.product_discription_color
-        ? custom.product_discription_color
-        : "#000",
-    },
-
     BadgeStyle: {
       "& .MuiBadge-badge": {
         color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
         backgroundColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
-          : "#33cd6b",
+          : "#fbd460",
       },
     },
     unitName: {
-      display: "none",
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "0.75rem",
+      color: custom?.price_color ? custom.price_color : "#000",
     },
-    cartIcon: {
-      color: "#000",
-    },
-    searchIcon: {
-      color: "#000",
-    },
-    title: {
-      marginLeft: 200,
-      paddingBottom: "2px",
-      marginBottom: "10px",
-      borderBottomStyle: "solid",
-      borderottomWidth: "3.1px",
-      width: "fit-content",
-      borderColor: "#33cd6b",
-      color: "#000",
-      fontSize: "3rem",
-      fontWeight: "bold",
-    },
-    searchFields: {
-      visibility: "hidden",
-    },
-    headerTotalDiv: {
-      display: "none",
-    },
-    backIcon: { visibility: "hidden" },
-    divCounter: { marginTop: "0px", textAlign: "center", display: "grid" },
+    xs: custom?.numberProductInRowMobile
+      ? custom.numberProductInRowMobile === 1
+        ? 12
+        : custom.numberProductInRowMobile === 2
+        ? 6
+        : custom.numberProductInRowMobile === 3
+        ? 4
+        : custom.numberProductInRowMobile === 4 ||
+          custom.numberProductInRowMobile === 5
+        ? 3
+        : custom.numberProductInRowMobile === 6
+        ? 2
+        : 6
+      : 6,
+    sm: custom?.numberProductInRowTablet
+      ? custom.numberProductInRowTablet === 1
+        ? 12
+        : custom.numberProductInRowTablet === 2
+        ? 6
+        : custom.numberProductInRowTablet === 3
+        ? 4
+        : custom.numberProductInRowTablet === 4 ||
+          custom.numberProductInRowTablet === 5
+        ? 3
+        : custom.numberProductInRowTablet === 6
+        ? 2
+        : 4
+      : 4,
+    md: custom?.numberProductInRowComputer
+      ? custom.numberProductInRowComputer === 1
+        ? 12
+        : custom.numberProductInRowComputer === 2
+        ? 6
+        : custom.numberProductInRowComputer === 3
+        ? 4
+        : custom.numberProductInRowComputer === 4 ||
+          custom.numberProductInRowComputer === 5
+        ? 3
+        : custom.numberProductInRowComputer === 6
+        ? 2
+        : 3
+      : 3,
+    // counter
+    divCounter: {},
     addToCartIcon: {
       cursor: "pointer",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#33cd6b",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fbd460",
     },
     counterRemovIcon: {
       color: "rgb(223, 71, 89)",
@@ -98,40 +159,46 @@ export const SecondStyle = (custom) => {
       color: "#000",
     },
     counterValue: {
-      color: "#33cd6b",
+      color: "#000",
     },
-    sidebarCard: {
-      position: "fixed",
-      top: 0,
-      bottom: 0,
-      marginLeft: "5px",
-      marginTop: "5%",
-      marginBottom: "5%",
-      zIndex: 1,
-      borderRadius: "30px",
-    },
-    sidebarMainDiv: {
-      position: "relative",
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      zIndex: 0,
-    },
-    // footer
-    footerStyle: {
-      bgcolor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-      position: "fixed",
-      bottom: 0,
+    // sideBar
+    sidebarPosition: "horizontal",
+    sideBarBox: {
+      flexGrow: 1,
+      // display: "flex",
       width: "100%",
-      textAlign: "center",
+      // height: "100%",
     },
-    // cart
-    // cartMainDiv: {
-    //   textAlign: "right",
-    //   backgroundColor: "red",
-
-    // },
+    sidebarActive: {
+      background: "#fbd460",
+      borderRadius: "40px",
+      padding: "20px",
+      maring: "40px",
+    },
+    sidebarDeActive: {
+      borderRadius: "40px",
+      padding: "20px",
+      maring: "40px",
+    },
+    icon: {
+      height: "50px",
+      width: "50px",
+      objectFit: "contain",
+      margin: "5px",
+    },
+    textActive: {
+      color: "#000",
+      fontSize: 14,
+      fontWeight: "bold",
+      textTransform: "capitalize",
+    },
+    textDeactive: {
+      color: "#000",
+      fontSize: 14,
+      fontWeight: "bold",
+      textTransform: "capitalize",
+    },
+    // General
     inputfield: {
       width: "100%",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
@@ -139,7 +206,7 @@ export const SecondStyle = (custom) => {
       fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
-        : "#33cd6b",
+        : "#fbd460",
     },
     card: {
       display: "grid",
@@ -150,7 +217,7 @@ export const SecondStyle = (custom) => {
       textTransform: "capitalize",
       backgroundColor: custom?.button_background_color
         ? custom.button_background_color
-        : "#33cd6b",
+        : "#fbd460",
       color: custom?.button_text_color ? custom.button_text_color : "#fff",
       fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "0.75rem",
     },
@@ -159,10 +226,10 @@ export const SecondStyle = (custom) => {
       border: "1px solid",
       textAlign: "center",
       borderRadius: "10px",
-      borderColor: "#33cd6b",
+      borderColor: "#fbd460",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
-        : "#33cd6b",
+        : "#fbd460",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
       fontSize: "0.5rem",
     },
@@ -173,7 +240,7 @@ export const SecondStyle = (custom) => {
       borderRadius: "10px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
-        : "#33cd6b",
+        : "#fbd460",
       backgroundColor: "#fff",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
       fontSize: "0.25rem",
@@ -229,7 +296,7 @@ export const SecondStyle = (custom) => {
     // productDiv: { width: "60%", textAlign: "left" },
     cartPrice: {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
-      color: custom?.price_color ? custom.price_color : "#aa3f32",
+      color: custom?.price_color ? custom.price_color : "#000",
       fontWeight: "bold",
     },
     cartDescription: {
@@ -261,9 +328,9 @@ export const SecondStyle = (custom) => {
       borderRadius: "5px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
-        : "#33cd6b",
+        : "#fbd460",
       textDecoration: "line-through",
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#33cd6b",
+      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
         : "0.75rem",
@@ -286,7 +353,7 @@ export const SecondStyle = (custom) => {
     show_extras: custom?.show_extras,
     show_variants: custom?.show_variants,
     variantsDiv: {
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#33cd6b",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#503e9d",
       borderRadius: "50px",
       padding: "5px",
     },
@@ -295,10 +362,10 @@ export const SecondStyle = (custom) => {
       border: "1px solid",
       textAlign: "center",
       borderRadius: "50px",
-      borderColor: "#aa3f32",
+      borderColor: "#fbd460",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
-        : "#aa3f32",
+        : "#fbd460",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
     },
     variantDeActive: {
@@ -306,12 +373,12 @@ export const SecondStyle = (custom) => {
       border: "1px solid",
       textAlign: "center",
       borderRadius: "50px",
-      borderColor: "#33cd6b",
-      backgroundColor: "#33cd6b",
+      borderColor: "#503e9d",
+      backgroundColor: "#503e9d",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
     },
     checkbox: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#33cd6b",
+      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
     },
     variantsImage: {
       height: "400px",
@@ -333,44 +400,13 @@ export const SecondStyle = (custom) => {
 
       objectFit: "contain",
     },
-
-    // sideBar
-    sidebarPosition: "vertical",
-
-    sideBarBox: {
-      flexGrow: 1,
-      display: "flex",
-      // width: "10%",
-      height: "100%",
-    },
-    sidebarActive: {
-      background: "#33cd6b",
-      borderRadius: "10px",
-      padding: "15px",
-      maring: "20px",
-    },
-    sidebarDeActive: {
-      borderRadius: "10px",
-      padding: "15px",
-      maring: "20px",
-    },
-    icon: {
-      height: "50px",
-      width: "50px",
-      objectFit: "contain",
-      margin: "5px",
-    },
-    textActive: {
-      color: "white",
-      fontSize: 14,
-      fontWeight: "bold",
-      textTransform: "capitalize",
-    },
-    textDeactive: {
-      color: "black",
-      fontSize: 14,
-      fontWeight: "bold",
-      textTransform: "capitalize",
+    // footer
+    footerStyle: {
+      bgcolor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      position: "fixed",
+      bottom: 0,
+      width: "100%",
+      textAlign: "center",
     },
   };
 };

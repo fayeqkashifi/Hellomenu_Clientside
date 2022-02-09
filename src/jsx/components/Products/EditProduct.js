@@ -569,7 +569,7 @@ const EditProduct = (props) => {
                   </div>
                 </div>
 
-                <div className="card-footer">
+                <div className="card-footer text-right">
                   <Button
                     variant="danger light"
                     className="m-1"

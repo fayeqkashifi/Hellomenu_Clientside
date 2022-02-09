@@ -29,8 +29,7 @@ import {
 import Counter from "../Common/Counter";
 const Cart = (props) => {
   let message = "";
-  let { style, checkBit, cart, setCart, branch, deliveryFees, template } =
-    props;
+  let { style, checkBit, cart, setCart, branch, deliveryFees } = props;
   const initialValues = {
     phoneNumber: "",
   };
@@ -60,11 +59,15 @@ const Cart = (props) => {
     await getTables(branch.id).then((res) => {
       setTables(res);
     });
-    setLoading(false);
   };
+  console.log(branch.id);
+  var orderMethods = JSON.parse(branch.orderMethods);
+  var otherAddressFields = JSON.parse(branch.otherAddressFields);
   useEffect(() => {
     let unmounted = false;
     dataLoad();
+    setLoading(false);
+
     return () => {
       unmounted = true;
     };
@@ -89,6 +92,11 @@ const Cart = (props) => {
   const changeHandle = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
+  const [otherAddress, setOtherAddress] = useState([]);
+  const changeHandleAddress = (e) => {
+    setOtherAddress({ ...otherAddress, [e.target.name]: e.target.value });
+  };
+
   const [table, setTable] = useState([]);
   const handleScan = (data) => {
     if (data) {
@@ -128,8 +136,10 @@ const Cart = (props) => {
             ? setAlerts(true, "warning", "Please Scan The Table QR-Code.")
             : save(data)
           : orderingWay === "delivery"
-          ? userData.address === undefined || userData.address === ""
-            ? setError(true)
+          ? branch.fullAddress
+            ? userData.address === undefined || userData.address === ""
+              ? setError(true)
+              : save(data)
             : save(data)
           : save(data);
       }
@@ -149,11 +159,8 @@ const Cart = (props) => {
       formData.append("orderingMethod", orderingWay);
       formData.append("generalNote", userData.generalNote);
       formData.append("phoneNumber", data.phoneNumber);
-      formData.append("buildingNo", userData.buildingNo);
-      formData.append("address", userData.address);
-      formData.append("floor", userData.floor);
-      formData.append("flat", userData.flat);
-      formData.append("directions", userData.directions);
+      formData.append("fullAddress", userData.address);
+      formData.append("otherAddressFields", JSON.stringify(otherAddress));
       formData.append("deliveryFees", deliveryFees);
       formData.append("branch_id", branch.id);
       insertOrder(formData).then((msg) => {
@@ -167,8 +174,7 @@ const Cart = (props) => {
   };
 
   const outputs = [];
-  console.log(branch?.orderMethods);
-  for (const [key, value] of Object.entries(JSON.parse(branch?.orderMethods))) {
+  for (const [key, value] of Object.entries(orderMethods)) {
     if (value === 1) {
       outputs.push(
         <Grid
@@ -672,29 +678,38 @@ const Cart = (props) => {
               <Card sx={style?.card} className="m-1">
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Grid container spacing={1}>
-                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
-                      <TextareaAutosize
-                        name="address"
-                        onChange={changeHandle}
-                        className={`form-control ${error ? "is-invalid" : ""}`}
-                        minRows={1}
-                        placeholder="Address"
-                        style={style?.inputfield}
-                      />
-                    </Grid>
-                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
-                      <div className="form-group">
-                        <input
-                          name="buildingNo"
-                          type="text"
-                          className={"form-control"}
-                          placeholder="Building No"
+                    {branch.fullAddress ? (
+                      <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                        <TextareaAutosize
+                          name="address"
                           onChange={changeHandle}
+                          className={`form-control ${
+                            error ? "is-invalid" : ""
+                          }`}
+                          minRows={1}
+                          placeholder="Full Address"
                           style={style?.inputfield}
                         />
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                      </Grid>
+                    ) : null}
+                    {otherAddressFields?.map((item, i) => {
+                      return (
+                        <Grid item xs={12} lg={4} xl={3} sm={6} md={6} key={i}>
+                          <div className="form-group">
+                            <input
+                              name={item}
+                              type="text"
+                              className={"form-control"}
+                              placeholder={item}
+                              onChange={changeHandleAddress}
+                              style={style?.inputfield}
+                            />
+                          </div>
+                        </Grid>
+                      );
+                    })}
+
+                    {/* <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
                       <div className="form-group">
                         <input
                           name="floor"
@@ -729,7 +744,7 @@ const Cart = (props) => {
                           style={style?.inputfield}
                         />
                       </div>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </CardContent>
               </Card>
@@ -824,16 +839,30 @@ const Cart = (props) => {
                                   <WhatsAppIcon /> {t("send_order")}
                                 </button>
                               ) : orderingWay === "delivery" ? (
-                                userData.address === undefined ||
-                                userData.address === "" ? (
-                                  <button
-                                    className="col-12 btn"
-                                    style={style?.buttonStyle}
-                                    type="submit"
-                                    // onClick={() => saveOrder()}
-                                  >
-                                    <WhatsAppIcon /> {t("send_order")}
-                                  </button>
+                                branch.fullAddress ? (
+                                  userData.address === undefined ||
+                                  userData.address === "" ? (
+                                    <button
+                                      className="col-12 btn"
+                                      style={style?.buttonStyle}
+                                      type="submit"
+                                      // onClick={() => saveOrder()}
+                                    >
+                                      <WhatsAppIcon /> {t("send_order")}
+                                    </button>
+                                  ) : (
+                                    <ReactWhatsapp
+                                      className="col-12 btn"
+                                      type="submit"
+                                      style={style?.buttonStyle}
+                                      number={branch?.phoneNumber}
+                                      message={message}
+                                      max="4096"
+                                      // onClick={() => saveOrder()}
+                                    >
+                                      <WhatsAppIcon /> {t("send_order")}
+                                    </ReactWhatsapp>
+                                  )
                                 ) : (
                                   <ReactWhatsapp
                                     className="col-12 btn"

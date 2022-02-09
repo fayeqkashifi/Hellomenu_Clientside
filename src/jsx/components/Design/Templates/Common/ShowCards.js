@@ -10,7 +10,8 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import Counter from "../Common/Counter";
-
+import IconButton from "@mui/material/IconButton";
+import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
 export default function ShowCards(props) {
   let { style, cart, setCart, products, branch, deliveryFees } = props;
   var viewShow_HTMLTABLE = "";
@@ -34,13 +35,17 @@ export default function ShowCards(props) {
       >
         <Card sx={style?.cardStyle}>
           <div className="px-2 pt-2">
-            {cart.every((val) => {
-              return val.id !== item.id;
-            }) ? (
-              <FavoriteBorderIcon sx={style?.favIconDeactive} />
-            ) : (
-              <FavoriteIcon sx={style?.favIconActive} />
-            )}
+            <IconButton style={style?.cardIconButton}>
+              {style.template === "thrid" ? (
+                <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
+              ) : cart.every((val) => {
+                  return val.id !== item.id;
+                }) ? (
+                <FavoriteBorderIcon sx={style?.favIconDeactive} />
+              ) : (
+                <FavoriteIcon sx={style?.favIconActive} />
+              )}
+            </IconButton>
           </div>
 
           <CardContent sx={{ flexGrow: 1 }}>
@@ -68,10 +73,35 @@ export default function ShowCards(props) {
             <div className="mt-2">
               <div className="row">
                 <div style={style?.productDiv}>
-                  <Typography variant="button" style={style?.productName}>
+                  <Typography style={style?.productName}>
                     {item.ProductName}
                   </Typography>
                 </div>
+                <div style={style?.unitName}>{item.UnitName}</div>
+                {style.counterPosition === "last" ? null : (
+                  <div style={style?.addIcon}>
+                    <Counter
+                      style={style}
+                      item={item}
+                      cart={cart}
+                      setCart={setCart}
+                      products={products}
+                    />
+                  </div>
+                )}
+              </div>
+              <div style={style?.priceDiv}>
+                <Typography style={style?.price}>
+                  {getSymbolFromCurrency(item.currency_code) +
+                    "  " +
+                    item.price.toFixed(2)}
+                </Typography>
+              </div>
+              <Typography style={style?.description}>
+                {item.Description}
+              </Typography>
+
+              {style.counterPosition === "last" ? (
                 <div style={style?.addIcon}>
                   <Counter
                     style={style}
@@ -81,25 +111,7 @@ export default function ShowCards(props) {
                     products={products}
                   />
                 </div>
-              </div>
-
-              <Typography
-                variant="body1"
-                gutterBottom
-                // className="font-weight-bold"
-                style={style?.price}
-              >
-                {getSymbolFromCurrency(item.currency_code) +
-                  "  " +
-                  item.price.toFixed(2)}
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                style={style?.description}
-              >
-                {item.Description}
-              </Typography>
+              ) : null}
             </div>
           </CardContent>
         </Card>

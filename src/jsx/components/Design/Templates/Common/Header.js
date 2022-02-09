@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -7,12 +7,14 @@ import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Badge from "@mui/material/Badge";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-
+import FunctionsIcon from "@mui/icons-material/Functions";
 import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
 import Drawer from "./Drawer";
+import getSymbolFromCurrency from "currency-symbol-map";
+
 function Header(props) {
   const history = useHistory();
   const [modalCentered, setModalCentered] = useState(false);
@@ -41,19 +43,45 @@ function Header(props) {
       });
     }
   };
-
+  let [sum, setSum] = useState(0);
+  const dataLoad = () => {
+    let count = 0;
+    cart.map(
+      (item) =>
+        (count +=
+          item.totalPrice === undefined
+            ? item.price * item.qty
+            : parseInt(item.totalPrice) + item.price * (item.qty - 1))
+    );
+    setSum(count);
+  };
+  useEffect(() => {
+    let unmounted = false;
+    dataLoad();
+    return () => {
+      unmounted = true;
+    };
+  }, [cart]);
   return (
     <React.Fragment>
       <Toolbar sx={{ position: "sticky" }} className="top-0">
-        <IconButton onClick={() => history.goBack()}>
-          <KeyboardBackspaceIcon fontSize="small" sx={style?.backIcon} />
+        <IconButton onClick={() => history.goBack()} sx={style?.backIcon}>
+          <KeyboardBackspaceIcon fontSize="small" />
         </IconButton>
         <Typography align="left" style={style?.title} noWrap>
           {activeCategory?.split("-")[0]}
         </Typography>
-        <Typography sx={{ flex: 1 }}></Typography>
-        <IconButton>
-          <SearchOutlinedIcon fontSize="small" sx={style?.searchIcon} />
+        <Typography sx={{ flex: 1 }} style={style?.searchFields}>
+          <input
+            name="dateAndTime"
+            type="text"
+            className={`form-control`}
+            placeholder="Search By Categories"
+            style={style?.inputfield}
+          />
+        </Typography>
+        <IconButton sx={style?.searchIcon}>
+          <SearchOutlinedIcon fontSize="small" />
         </IconButton>
         <IconButton onClick={() => setModalCentered(true)}>
           <Badge
@@ -64,10 +92,20 @@ function Header(props) {
             <AddShoppingCartIcon fontSize="small" sx={style?.cartIcon} />
           </Badge>
         </IconButton>
+        <div style={style?.headerTotalDiv}>
+          {" "}
+          <IconButton sx={style?.totalPriceIcon}>
+            <FunctionsIcon fontSize="small" />
+          </IconButton>
+          {sum.toFixed(2) +
+            "  " +
+            (getSymbolFromCurrency(cart[0]?.currency_code) === undefined
+              ? " "
+              : getSymbolFromCurrency(cart[0]?.currency_code))}{" "}
+          &nbsp;
+        </div>
       </Toolbar>
-      {style?.template !== "dark" ? (
-        " "
-      ) : (
+      {style?.template === "dark" ? (
         <div>
           <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
             {categories?.map((section, i) => (
@@ -91,6 +129,8 @@ function Header(props) {
             ))}
           </Toolbar>
         </div>
+      ) : (
+        ""
       )}
       <Drawer
         modalCentered={modalCentered}

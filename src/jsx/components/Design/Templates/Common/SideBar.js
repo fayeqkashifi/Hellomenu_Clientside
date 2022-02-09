@@ -11,7 +11,8 @@ import {
   getProductBasedOnSubCategory,
 } from "../Functionality";
 const SideBar = (props) => {
-  const { categories, activeCategory, setProducts, setActiveCategory } = props;
+  const { style, categories, activeCategory, setProducts, setActiveCategory } =
+    props;
   const [value, setValue] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -32,24 +33,9 @@ const SideBar = (props) => {
     }
   };
   return (
-    // <Card>
-    <Box
-      sx={{
-        flexGrow: 1,
-        // zIndex: 9999,
-        // top: "0px",
-        // left: "0px",
-
-        // positions: "absolute",
-        // marginLeft:"1000"
-        //   bgcolor: "background.paper",
-        display: "flex",
-        // width: "10%",
-        height: "100%",
-      }}
-    >
+    <Box sx={style?.sideBarBox}>
       <Tabs
-        orientation="vertical"
+        orientation={style?.sidebarPosition}
         value={value}
         onChange={handleChange}
         variant="scrollable"
@@ -77,26 +63,12 @@ const SideBar = (props) => {
               (section.sub_category_id === null
                 ? section.CategoryName + "-" + section.category_id
                 : section.SubCategoryName + "-" + section.sub_category_id)
-                ? {
-                    background: "#33cd6b",
-                    borderRadius: "10px",
-                    padding: "15px",
-                    maring: "20px",
-                  }
-                : {
-                    borderRadius: "10px",
-                    padding: "15px",
-                    maring: "20px",
-                  }
+                ? style?.sidebarActive
+                : style?.sidebarDeActive
             }
             icon={
               <img
-                style={{
-                  height: "50px",
-                  width: "50px",
-                  objectFit: "contain",
-                  margin: "5px",
-                }}
+                style={style?.icon}
                 src={
                   section.CategoryIcon !== null
                     ? `http://${base_url}:${port}/images/catagories/${section.CategoryIcon}`
@@ -113,18 +85,8 @@ const SideBar = (props) => {
                   (section.sub_category_id === null
                     ? section.CategoryName + "-" + section.category_id
                     : section.SubCategoryName + "-" + section.sub_category_id)
-                    ? {
-                        color: "white",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                        textTransform: "capitalize",
-                      }
-                    : {
-                        color: "black",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                        textTransform: "capitalize",
-                      }
+                    ? style?.textActive
+                    : style?.textDeactive
                 }
               >
                 {section.SubCategoryName === null
@@ -136,7 +98,6 @@ const SideBar = (props) => {
         ))}
       </Tabs>
     </Box>
-    // </Card>
   );
 };
 export default SideBar;

@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert";
@@ -10,33 +9,11 @@ import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import "yup-phone";
 
 const Branches = () => {
-  // localization
-
   const { t } = useTranslation();
-  const initialValues = {
-    BrancheName: "",
-    currencyID: "",
-    phoneNumber: "",
-  };
-  const validationSchema = () => {
-    return Yup.object().shape({
-      BrancheName: Yup.string().required("Branch Name is required"),
-      currencyID: Yup.string().required("Currency is required"),
-      phoneNumber: Yup.string().phone().required("Phone Number is required"),
-    });
-  };
-  // insert start
-  const [modalCentered, setModalCentered] = useState(false);
-  const history = useHistory();
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -49,90 +26,6 @@ const Branches = () => {
       message: message,
     });
   };
-  const saveBranch = (data) => {
-    if (atob(localStorage.getItem("auth_company_id")) !== "null") {
-      if (orderMethods.length !== 0) {
-        const formData = new FormData();
-        formData.append("orderMethods", JSON.stringify(orderMethods));
-        formData.append("BrancheName", data.BrancheName);
-        formData.append("currencyID", data.currencyID);
-        formData.append("phoneNumber", data.phoneNumber);
-        axios.post("/api/InsertBranches", formData).then((res) => {
-          if (res.data.status === 200) {
-            setModalCentered(false);
-            setOrderMethods([]);
-            setCheck(!check);
-            setAlerts(true, "success", res.data.message);
-          } else if (res.data.status === 304) {
-            setAlerts(true, "warning", res.data.message);
-          }
-        });
-      } else {
-        setAlerts(
-          true,
-          "warning",
-          "Please choose at least one way of ordering."
-        );
-      }
-    } else {
-      swal(
-        "warning",
-        "Please add the company first, then the branches.",
-        "warning"
-      ).then((value) => {
-        if (value) {
-          history.push("/company");
-        }
-      });
-    }
-  };
-  // insert end
-
-  // edit start
-  const [editmodalCentered, setEditModalCentered] = useState(false);
-
-  const [editBranchstate, setEditBranchstate] = useState([]);
-  const [orderMethodsEdit, setOrderMethodsEdit] = useState([]);
-  const editBranch = (e, id) => {
-    e.preventDefault();
-    axios.get(`/api/EditBranches/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditBranchstate(res.data.branch);
-        setOrderMethodsEdit(JSON.parse(res.data.branch.orderMethods));
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
-  };
-  const updateBranch = (data) => {
-    const ArrayValue = [];
-    for (const [key, value] of Object.entries(orderMethodsEdit)) {
-      ArrayValue.push(value);
-    }
-    if (ArrayValue.includes(1)) {
-      const formData = new FormData();
-      formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
-      formData.append("BrancheName", data.BrancheName);
-      formData.append("currencyID", data.currencyID);
-      formData.append("phoneNumber", data.phoneNumber);
-      formData.append("id", data.id);
-      axios.post("/api/UpdateBranches", formData).then((res) => {
-        if (res.data.status === 200) {
-          setAlerts(true, "success", res.data.message);
-          setEditBranchstate([]);
-          setCheck(!check);
-          setEditModalCentered(false);
-        } else if (res.data.status === 304) {
-          setAlerts(true, "warning", res.data.message);
-        }
-      });
-    } else {
-      setAlerts(true, "warning", "Please choose at least one way of ordering.");
-    }
-  };
-  // edit end
-
   // delete start
   const deleteBranch = (e, id) => {
     e.preventDefault();
@@ -158,33 +51,14 @@ const Branches = () => {
     });
   };
   // delete end
-  //for retriving data using laravel API
   const [branchdata, setBranchdata] = useState([]);
-  const [currency, setCurrency] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const [orderMethods, setOrderMethods] = useState([]);
-  const orderHandle = (e) => {
-    setOrderMethods({
-      ...orderMethods,
-      [e.target.name]: e.target.checked ? 1 : 0,
-    });
-  };
-  const editOrderHandle = (e) => {
-    setOrderMethodsEdit({
-      ...orderMethodsEdit,
-      [e.target.name]: e.target.checked ? 1 : 0,
-    });
-  };
   const dataLoad = async () => {
     try {
       const result = await axios.get("/api/GetBranches");
       if (result.data.status === 200) {
         setBranchdata(result.data.branches);
-      }
-      const response = await axios.get("/api/GetCurrencies");
-      if (response.data.status === 200) {
-        setCurrency(response.data.fetchData);
       }
       setLoading(false);
     } catch (error) {
@@ -195,12 +69,9 @@ const Branches = () => {
   useEffect(() => {
     dataLoad();
   }, [check]);
-  // for download QRCode
 
   const downloadQRCode = (e, id) => {
     e.preventDefault();
-    // console.log(id)
-
     const qrCodeURL = document
       .getElementById(id)
       .toDataURL("image/png")
@@ -268,14 +139,23 @@ const Branches = () => {
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
                 <div className="col-6 pt-3 pb-3 border-right">
-                  <Link to="" onClick={(e) => editBranch(e, item.id)}>
+                  <Link
+                    to={{
+                      pathname: `/branches/edit-branch`,
+                      state: { id: item.id },
+                    }}
+                    // onClick={(e) => editBranch(e, item.id)}
+                  >
                     <span>{t("edit")}</span>
                   </Link>
                 </div>
                 <div className="col-6 pt-3 pb-3">
-                  <Link to="" onClick={(e) => deleteBranch(e, item.id)}>
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => deleteBranch(e, item.id)}
+                  >
                     <span>{t("delete")}</span>
-                  </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -284,7 +164,6 @@ const Branches = () => {
       );
     });
   }
-
   return (
     <Fragment>
       {alert.open ? (
@@ -301,280 +180,6 @@ const Branches = () => {
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
         <CBreadcrumbItem active>{t("Branches")}</CBreadcrumbItem>
       </CBreadcrumb>
-      {/* <PageTItle headingPara={t('Branches')} activeMenu={t('add_branch')} motherMenu={t('Branches')} /> */}
-      {/* <!-- Insert  Modal --> */}
-      <Modal className="fade" show={modalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("add_branch")}</Modal.Title>
-          <Button
-            onClick={() => setModalCentered(false)}
-            variant=""
-            className="close"
-          >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={saveBranch}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("branch_name")}</label>
-                  <Field
-                    name="BrancheName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.BrancheName && touched.BrancheName
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder="A unique name..."
-                  />
-                  <ErrorMessage
-                    name="BrancheName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("currency")}</label>
-                  <Field
-                    as="select"
-                    name="currencyID"
-                    className={
-                      "form-control" +
-                      (errors.currencyID && touched.currencyID
-                        ? " is-invalid"
-                        : "")
-                    }
-                  >
-                    <option value="">{t("select_currency")}</option> )
-                    {currency.map((item) => (
-                      <option value={item.id} key={item.id}>
-                        {item.currency_name + " / " + item.currency_code}
-                      </option>
-                    ))}
-                  </Field>
-                  <ErrorMessage
-                    name="currencyID"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("ordering_phone_number")}</label>
-                  <Field
-                    name="phoneNumber"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.phoneNumber && touched.phoneNumber
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder="+93--- ---- ---"
-                  />
-                  <ErrorMessage
-                    name="phoneNumber"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("ordering_methods")}</label>
-
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="tbl_qrcode"
-                          onChange={(e) => orderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="Table Reservation"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="delivery"
-                          onChange={(e) => orderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="Home Delivery"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="whatsApp"
-                          onChange={(e) => orderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="WhatsApp"
-                    />
-                  </FormGroup>
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
-      {/* Edit Modal */}
-      <Modal className="fade" show={editmodalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("edit_branch")}</Modal.Title>
-          <Button
-            onClick={() => setEditModalCentered(false)}
-            variant=""
-            className="close"
-          >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={editBranchstate}
-          validationSchema={validationSchema}
-          onSubmit={updateBranch}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("branch_name")}</label>
-                  <Field
-                    name="BrancheName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.BrancheName && touched.BrancheName
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder="A unique name..."
-                  />
-                  <ErrorMessage
-                    name="BrancheName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("currency")}</label>
-                  <Field
-                    as="select"
-                    name="currencyID"
-                    className={
-                      "form-control" +
-                      (errors.currencyID && touched.currencyID
-                        ? " is-invalid"
-                        : "")
-                    }
-                  >
-                    <option value="">{t("select_currency")}</option> )
-                    {currency.map((item) => (
-                      <option value={item.id} key={item.id}>
-                        {item.currency_name + " / " + item.currency_code}
-                      </option>
-                    ))}
-                  </Field>
-                  <ErrorMessage
-                    name="currencyID"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("ordering_phone_number")}</label>
-                  <Field
-                    name="phoneNumber"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.phoneNumber && touched.phoneNumber
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder="+93--- ---- ---"
-                  />
-                  <ErrorMessage
-                    name="phoneNumber"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("ordering_methods")}</label>
-
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={orderMethodsEdit.tbl_qrcode ? true : false}
-                          name="tbl_qrcode"
-                          onChange={(e) => editOrderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="Table Reservation"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={orderMethodsEdit.delivery ? true : false}
-                          name="delivery"
-                          onChange={(e) => editOrderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="Home Delivery"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={orderMethodsEdit.whatsApp ? true : false}
-                          name="whatsApp"
-                          onChange={(e) => editOrderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="WhatsApp"
-                    />
-                  </FormGroup>
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setEditModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("update")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
       <div className="d-flex justify-content-end">
         <IconButton aria-label="Example" onClick={changeLayout}>
           {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
@@ -590,14 +195,13 @@ const Branches = () => {
                 style={{ border: "2px dashed #f50b65" }}
               >
                 <div className="align-self-center text-center">
-                  <button
-                    type="button"
+                  <Link
+                    to={`/branches/add-branch`}
                     className="btn btn-outline-primary"
-                    onClick={() => setModalCentered(true)}
                   >
                     <AddIcon />
                     {t("add_branch")}
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -612,14 +216,9 @@ const Branches = () => {
                   <h4 className="card-title mb-2">{t("branches")}</h4>
                 </div>
                 <div className="dropdown">
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mb-2 mr-2"
-                    onClick={() => setModalCentered(true)}
-                  >
+                  <Link className="btn btn-primary" to={`/branches/add-branch`}>
                     {t("add_branch")}
-                  </Button>
+                  </Link>
                 </div>
               </div>
               <div className="card-body p-0">
@@ -684,13 +283,16 @@ const Branches = () => {
                             </td>
 
                             <td>
-                              <button
-                                type="button"
-                                onClick={(e) => editBranch(e, item.id)}
+                              <Link
+                                to={{
+                                  pathname: `/branches/edit-branch`,
+                                  state: { id: item.id },
+                                }}
+                                // onClick={(e) => editBranch(e, item.id)}
                                 className="btn btn-outline-danger btn-sm"
                               >
                                 {t("edit")}
-                              </button>
+                              </Link>
                               &nbsp;&nbsp;&nbsp;
                               <button
                                 type="button"

@@ -13,7 +13,6 @@ import {
   handleDecrementQuantity,
   handelIncrementQuantity,
 } from "../Functionality";
-import { style } from "@mui/system";
 const Counter = (props) => {
   const { style, products, item, cart, setCart } = props;
   const [alert, setAlert] = useState({
