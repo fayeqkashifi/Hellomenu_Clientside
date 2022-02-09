@@ -25,11 +25,15 @@ import {
   insertOrder,
   remCartItem,
   emptyCart,
+  getBranch
 } from "../Functionality";
+import axios from "axios";
+
 import Counter from "../Common/Counter";
 const Cart = (props) => {
   let message = "";
-  let { style, checkBit, cart, setCart, branch, deliveryFees } = props;
+  let { style, checkBit, cart, setCart, branchId, deliveryFees } = props;
+
   const initialValues = {
     phoneNumber: "",
   };
@@ -46,7 +50,12 @@ const Cart = (props) => {
   const [loading, setLoading] = useState(true);
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
+  const [branch, setBranch] = useState([]);
   const dataLoad = async () => {
+    await getBranch(branchId).then((data) => {
+         setBranch(data);
+        setLoading(false);
+      });
     let Total = 0;
     cart.map(
       (item) =>
@@ -56,21 +65,21 @@ const Cart = (props) => {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(Total);
-    await getTables(branch.id).then((res) => {
+   getTables(branchId).then((res) => {
       setTables(res);
     });
+   
+    
   };
-  console.log(branch.id);
-  var orderMethods = JSON.parse(branch.orderMethods);
-  var otherAddressFields = JSON.parse(branch.otherAddressFields);
+ 
   useEffect(() => {
     let unmounted = false;
     dataLoad();
-    setLoading(false);
 
     return () => {
       unmounted = true;
     };
+
   }, [cart]);
 
   const remItem = (id, qty, price) => {
@@ -162,7 +171,7 @@ const Cart = (props) => {
       formData.append("fullAddress", userData.address);
       formData.append("otherAddressFields", JSON.stringify(otherAddress));
       formData.append("deliveryFees", deliveryFees);
-      formData.append("branch_id", branch.id);
+      formData.append("branch_id", branchId);
       insertOrder(formData).then((msg) => {
         setAlerts(true, "success", msg);
         setTable([]);
@@ -174,7 +183,21 @@ const Cart = (props) => {
   };
 
   const outputs = [];
-  for (const [key, value] of Object.entries(orderMethods)) {
+  var viewImages_HTMLTABLE = "";
+  if (loading) {
+    return (
+      <div className="container ">
+        <div
+          className="spinner-border text-primary "
+          role="status"
+          style={{ position: "fixed", top: "50%", left: "50%" }}
+        >
+          <span className="sr-only">{t("loading")}</span>
+        </div>
+      </div>
+    );
+  } else {
+  for (const [key, value] of Object.entries(JSON.parse(branch.orderMethods))) {
     if (value === 1) {
       outputs.push(
         <Grid
@@ -205,20 +228,6 @@ const Cart = (props) => {
       );
     }
   }
-  var viewImages_HTMLTABLE = "";
-  if (loading) {
-    return (
-      <div className="container ">
-        <div
-          className="spinner-border text-primary "
-          role="status"
-          style={{ position: "fixed", top: "50%", left: "50%" }}
-        >
-          <span className="sr-only">{t("loading")}</span>
-        </div>
-      </div>
-    );
-  } else {
     viewImages_HTMLTABLE = cart?.map((item, i) => {
       message =
         message +
@@ -692,7 +701,7 @@ const Cart = (props) => {
                         />
                       </Grid>
                     ) : null}
-                    {otherAddressFields?.map((item, i) => {
+                    {JSON.parse(branch?.otherAddressFields)?.map((item, i) => {
                       return (
                         <Grid item xs={12} lg={4} xl={3} sm={6} md={6} key={i}>
                           <div className="form-group">

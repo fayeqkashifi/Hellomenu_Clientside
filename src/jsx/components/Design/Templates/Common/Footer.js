@@ -7,7 +7,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import Drawer from "./Drawer";
 
 function Footer(props) {
-  const { title, url, style, stock, cart, setCart, deliveryFees, branch } =
+  const { title, url, style, stock, cart, setCart, deliveryFees, branchId } =
     props;
   let [sum, setSum] = useState(0);
   const dataLoad = () => {
@@ -83,7 +83,7 @@ function Footer(props) {
         setModalCentered={setModalCentered}
         style={style}
         checkBit={true}
-        branch={branch}
+        branchId={branchId}
         cart={cart}
         setCart={setCart}
         deliveryFees={deliveryFees}

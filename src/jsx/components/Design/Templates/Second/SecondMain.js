@@ -9,7 +9,7 @@ import Header from "../Common/Header";
 
 export default function SecondMain(props) {
   const {
-    branch,
+    branchId,
     products,
     style,
     cart,
@@ -20,19 +20,22 @@ export default function SecondMain(props) {
     setActiveCategory,
     setProducts,
   } = props;
-
+  const properties = {
+    branchId: branchId,
+    deliveryFees: deliveryFees,
+    setCart: setCart,
+    cart: cart,
+    style:style
+  };
   return (
     <div style={style?.background}>
       <Header
-        cart={cart}
-        setCart={setCart}
-        branch={branch}
+        {...properties}
         categories={categories}
         activeCategory={activeCategory}
         setProducts={setProducts}
         setActiveCategory={setActiveCategory}
-        style={style}
-        deliveryFees={deliveryFees}
+     
       />
       <div style={style?.sidebarMainDiv}>
         <Card style={style?.sidebarCard}>
@@ -47,12 +50,8 @@ export default function SecondMain(props) {
         <Grid container spacing={2}>
           <HorizontalScroller>
             <ShowCards
-              style={style}
-              cart={cart}
-              setCart={setCart}
-              deliveryFees={deliveryFees}
+              {...properties}
               products={products}
-              branch={branch}
             />
           </HorizontalScroller>
         </Grid>

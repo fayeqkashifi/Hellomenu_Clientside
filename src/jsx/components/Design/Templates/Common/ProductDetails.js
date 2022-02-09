@@ -24,7 +24,7 @@ SwiperCore.use([Navigation, Thumbs]);
 
 const ProductDetails = (props) => {
   // for localization
-  const { id, style, branch, deliveryFees } = props;
+  const { id, style, branchId, deliveryFees } = props;
   const { t } = useTranslation();
   const [swiper, setSwiper] = useState(null);
 
@@ -497,7 +497,7 @@ const ProductDetails = (props) => {
         <Header
           style={style}
           cart={cart}
-          branch={branch}
+          branchId={branchId}
           setCart={setCart}
           deliveryFees={deliveryFees}
         />
@@ -506,7 +506,7 @@ const ProductDetails = (props) => {
       <Footer
         title="Checkout"
         style={style}
-        branch={branch}
+        branchId={branchId}
         setCart={setCart}
         stock={
           productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
@@ -538,7 +538,7 @@ const ProductDetails = (props) => {
             skuarray: skuarray,
             activeSKU: activeSKU,
             orignalStock: productDetails.stock,
-            branch: branch,
+            branchId: branchId,
             deliveryFees: deliveryFees,
           },
         }}

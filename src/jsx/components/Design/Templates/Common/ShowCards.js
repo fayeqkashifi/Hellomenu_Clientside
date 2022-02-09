@@ -13,7 +13,7 @@ import Counter from "../Common/Counter";
 import IconButton from "@mui/material/IconButton";
 import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
 export default function ShowCards(props) {
-  let { style, cart, setCart, products, branch, deliveryFees } = props;
+  let { style, cart, setCart, products, branchId, deliveryFees } = props;
   var viewShow_HTMLTABLE = "";
   viewShow_HTMLTABLE = products?.map((item, i) => {
     return (
@@ -55,7 +55,7 @@ export default function ShowCards(props) {
                 state: {
                   style: style,
                   deliveryFees: deliveryFees,
-                  branch: branch,
+                  branchId: branchId,
                 },
               }}
             >

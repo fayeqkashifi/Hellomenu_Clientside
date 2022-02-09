@@ -17,7 +17,7 @@ var hold = 1;
 export default function ThridMain(props) {
   const { t } = useTranslation();
   const {
-    branch,
+    branchId,
     products,
     style,
     cart,
@@ -28,10 +28,17 @@ export default function ThridMain(props) {
     setActiveCategory,
     setProducts,
   } = props;
+  const properties = {
+    branchId: branchId,
+    deliveryFees: deliveryFees,
+    setCart: setCart,
+    cart: cart,
+    style:style
+  };
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
     if (hold < categories.length) {
-      getCategoriesBasedProduct(branch.id).then((data) => {
+      getCategoriesBasedProduct(branchId).then((data) => {
         if (data[hold]?.sub_category_id === null) {
           setActiveCategory(
             data[hold]?.CategoryName + "-" + data[hold]?.category_id
@@ -59,12 +66,8 @@ export default function ThridMain(props) {
   var viewShow_HTMLTABLE = (
     <Grid container spacing={2} className="d-flex justify-content-center">
       <ShowCards
-        style={style}
-        cart={cart}
-        setCart={setCart}
-        deliveryFees={deliveryFees}
+       {...properties}
         products={products}
-        branch={branch}
       />
     </Grid>
   );
@@ -73,15 +76,11 @@ export default function ThridMain(props) {
     <div style={style?.background}>
       <Container maxWidth="lg">
         <Header
-          cart={cart}
-          setCart={setCart}
-          branch={branch}
+         {...properties}
           categories={categories}
           activeCategory={activeCategory}
           setProducts={setProducts}
           setActiveCategory={setActiveCategory}
-          style={style}
-          deliveryFees={deliveryFees}
         />
         <SideBar
           style={style}

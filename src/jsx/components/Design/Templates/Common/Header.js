@@ -25,7 +25,7 @@ function Header(props) {
     setActiveCategory,
     style,
     cart,
-    branch,
+    branchId,
     setCart,
     deliveryFees,
   } = props;
@@ -137,7 +137,7 @@ function Header(props) {
         setModalCentered={setModalCentered}
         style={style}
         checkBit={true}
-        branch={branch}
+        branchId={branchId}
         cart={cart}
         setCart={setCart}
         deliveryFees={deliveryFees}

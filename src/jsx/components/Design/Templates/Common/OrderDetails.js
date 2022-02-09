@@ -38,7 +38,7 @@ const OrderDetails = (props) => {
     deliveryFees,
     skuarray,
     activeSKU,
-    branch,
+    branchId,
   } = props;
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -228,7 +228,7 @@ const OrderDetails = (props) => {
           subcategories={0}
           cart={cart}
           style={style}
-          branch={branch}
+          branchId={branchId}
           setCart={setCart}
           deliveryFees={deliveryFees}
         />

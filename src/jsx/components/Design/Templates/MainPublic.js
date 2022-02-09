@@ -19,7 +19,7 @@ const MainPublic = (props) => {
   const branchId = atob(props.match.params.id);
   const deliveryFees = parseInt(props.history.location.state.deliveryFees);
 
-  const [branch, setBranch] = useState([]);
+  // const [branch, setBranch] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -32,9 +32,7 @@ const MainPublic = (props) => {
       // console.log(data);
       setCustom(data);
     });
-    getBranch(branchId).then((data) => {
-      setBranch(data);
-    });
+   
     getCategoriesBasedProduct(branchId).then((data) => {
       setCategories(data);
       const category = data[0];
@@ -63,7 +61,8 @@ const MainPublic = (props) => {
     };
   }, []);
   const properties = {
-    branch: branch,
+    // branch: branch,
+    branchId: branchId,
     deliveryFees: deliveryFees,
     activeCategory: activeCategory,
     setActiveCategory: setActiveCategory,

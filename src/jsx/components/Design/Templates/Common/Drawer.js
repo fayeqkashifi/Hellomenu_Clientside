@@ -20,7 +20,7 @@ export default function Drawer(props) {
     cart,
     setCart,
     style,
-    branch,
+    branchId,
     deliveryFees,
   } = props;
 
@@ -44,7 +44,7 @@ export default function Drawer(props) {
             <Cart
               style={style}
               checkBit={true}
-              branch={branch}
+              branchId={branchId}
               cart={cart}
               setCart={setCart}
               deliveryFees={deliveryFees}
@@ -74,7 +74,7 @@ export default function Drawer(props) {
             <Cart
               style={style}
               checkBit={true}
-              branch={branch}
+              branchId={branchId}
               cart={cart}
               setCart={setCart}
               deliveryFees={deliveryFees}
