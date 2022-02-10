@@ -22,6 +22,7 @@
       "i18next-browser-languagedetector": "^6.1.3",
       "i18next-http-backend": "^1.3.2",
       "metismenujs": "^1.2.1",
+      "qr-code-styling": "^1.6.0-rc.1",
       "qrcode.react": "^1.0.1",
       "react": "^17.0.2",
       "react-awesome-slider": "^4.1.0",

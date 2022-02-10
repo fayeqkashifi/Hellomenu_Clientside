@@ -28,6 +28,8 @@ import DesignShow from "../Design/Show";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Shared from "../Categories/Shared";
+import QRcodeStyle from "./QRcodeStyle";
+
 const Show = (props) => {
   const { t } = useTranslation();
   const id = props.history.location.state.id;
@@ -48,49 +50,43 @@ const Show = (props) => {
       name: t("categories"),
       url: {
         pathname: `${url}`,
-        state: { id: id, BrancheName: BrancheName },
+        state: { id: id },
       },
     },
     {
       name: t("products"),
       url: {
         pathname: `${url}/products`,
-        state: { id: id, BrancheName: BrancheName },
+        state: { id: id },
       },
     },
     {
       name: t("design"),
       url: {
         pathname: `${url}/design`,
-        state: { id: id, BrancheName: BrancheName },
+        state: { id: id },
       },
     },
     {
       name: t("tables"),
       url: {
         pathname: `${url}/tables`,
+        state: { id: id },
+      },
+    },
+
+    {
+      name: t("qrcode_style"),
+      url: {
+        pathname: `${url}/qrcode_style`,
         state: { id: id, BrancheName: BrancheName },
       },
     },
-    // {
-    //   name: t("inventory"),
-    //   url: {
-    //     pathname: `${url}/inventory`,
-    //     state: { id: id, BrancheName: BrancheName },
-    //   },
-    // },
-    // {
-    //   name: t("units"),
-    //   url: {
-    //     pathname: `${url}/unit`,
-    //     state: { id: id, BrancheName: BrancheName },
-    //   },
-    // },
     {
       name: t("services_areas"),
       url: {
         pathname: `${url}/services-areas`,
-        state: { id: id, BrancheName: BrancheName },
+        state: { id: id },
       },
     },
     {
@@ -247,6 +243,7 @@ const Show = (props) => {
             component={ServiceArea}
           />
           <PrivateRoute path={`${path}/tables`} component={Tables} />
+          <PrivateRoute path={`${path}/qrcode_style`} component={QRcodeStyle} />
           <PrivateRoute
             path={`/dark-template-customization`}
             component={Customization}

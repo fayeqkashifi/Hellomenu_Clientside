@@ -13,6 +13,8 @@ import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
+import { Link } from "react-router-dom";
+
 // import ReactToPrint from "react-to-print";
 // import QRCodePrint from "./QRCodePrint";
 // import PrintIcon from "@mui/icons-material/Print";
@@ -467,7 +469,7 @@ const Tables = (props) => {
                     <thead>
                       <tr className="card-title">
                         {/* <th>{t('number')}</th> */}
-                        <th>{t("table_id")}</th>
+                        <th>{t("table_number")}</th>
                         <th>{t("table_name")}</th>
                         <th>{t("download")}</th>
                         <th>{t("actions")}</th>
