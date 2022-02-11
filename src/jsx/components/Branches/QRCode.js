@@ -2,24 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
 
 const qrCode = new QRCodeStyling({
-  width: 300,
-  height: 300,
-  //   image: logo,
-  dotsOptions: {
-    color: "#4267b2",
-    type: "rounded",
-  },
-  //   cornersSquareOptions: {
-  //     type: "extra-rounded",
-  //   },
-  cornersDotOptions: { type: "dot" },
+  width: 200,
+  height: 250,
   imageOptions: {
     crossOrigin: "anonymous",
-    margin: 20,
+    margin: 5,
   },
 });
 export default function QRCode(props) {
-  const [url, setUrl] = useState(props.BrancheName);
+  const { data } = props;
+  const [url, setUrl] = useState(data.data);
   const [fileExt, setFileExt] = useState("png");
   const ref = useRef(null);
   var [image, setImage] = useState([]);
@@ -31,9 +23,24 @@ export default function QRCode(props) {
   useEffect(() => {
     qrCode.update({
       data: url,
+      dotsOptions: {
+        color: data.DotsColor,
+        type: data.type,
+      },
+      cornersSquareOptions: {
+        color: data.colorCornersSquare,
+        type: data.cornersSquare,
+      },
+      cornersDotOptions: {
+        color: data.cornersDotColor,
+        type: data.cornersDot,
+      },
+      backgroundOptions: {
+        color: data.bgColor,
+      },
       image: image.length === 0 ? "" : image,
     });
-  }, [url, image]);
+  }, [url, image, data]);
 
   const onUrlChange = (event) => {
     event.preventDefault();
@@ -78,7 +85,7 @@ export default function QRCode(props) {
     >
       <div ref={ref} />
 
-      <div className="form-group">
+      <div className="form-group mt-2">
         <input
           type="file"
           name="file"
@@ -89,7 +96,6 @@ export default function QRCode(props) {
           data-min-file-count="1"
         />
       </div>
-      {console.log(image)}
       {image.length !== 0 ? (
         <div className="result">{renderPhotos(image)}</div>
       ) : null}
@@ -118,5 +124,7 @@ const styles = {
   inputBox: {
     flexGrow: 1,
     marginRight: 20,
+    borderRadius: "5px",
+    height: "30px",
   },
 };

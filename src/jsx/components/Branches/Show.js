@@ -78,7 +78,7 @@ const Show = (props) => {
     {
       name: t("qrcode_style"),
       url: {
-        pathname: `${url}/qrcode_style`,
+        pathname: `${url}/qrcode-style`,
         state: { id: id, BrancheName: BrancheName },
       },
     },
@@ -243,7 +243,7 @@ const Show = (props) => {
             component={ServiceArea}
           />
           <PrivateRoute path={`${path}/tables`} component={Tables} />
-          <PrivateRoute path={`${path}/qrcode_style`} component={QRcodeStyle} />
+          <PrivateRoute path={`${path}/qrcode-style`} component={QRcodeStyle} />
           <PrivateRoute
             path={`/dark-template-customization`}
             component={Customization}
