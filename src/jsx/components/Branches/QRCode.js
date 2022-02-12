@@ -1,20 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
-
+import html2canvas from "html2canvas";
 const qrCode = new QRCodeStyling({
   width: 200,
   height: 250,
+
   imageOptions: {
     crossOrigin: "anonymous",
     margin: 5,
   },
 });
 export default function QRCode(props) {
-  const { data } = props;
-  const [url, setUrl] = useState(data.data);
+  const { data, setQrCode, image } = props;
   const [fileExt, setFileExt] = useState("png");
   const ref = useRef(null);
-  var [image, setImage] = useState([]);
 
   useEffect(() => {
     qrCode.append(ref.current);
@@ -22,7 +21,7 @@ export default function QRCode(props) {
 
   useEffect(() => {
     qrCode.update({
-      data: url,
+      data: data.data,
       dotsOptions: {
         color: data.DotsColor,
         type: data.type,
@@ -40,42 +39,28 @@ export default function QRCode(props) {
       },
       image: image.length === 0 ? "" : image,
     });
-  }, [url, image, data]);
+  }, [image, data]);
 
   const onUrlChange = (event) => {
     event.preventDefault();
-    setUrl(event.target.value);
+    setQrCode({ ...data, data: event.target.value });
   };
 
   const onExtensionChange = (event) => {
     setFileExt(event.target.value);
   };
-
   const onDownloadClick = () => {
-    qrCode.download({
-      extension: fileExt,
+    html2canvas(document.body).then((canvas) => {
+      const a = document.createElement("aklkklklklkklkl");
+      a.href = canvas.toDataURL("./" + fileExt);
+      a.download = "qrcode." + fileExt;
+      a.click();
     });
+    // qrCode.download({
+    //   extension: fileExt,
+    // });
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setImage(filesArray);
-      Array.from(e.target.files).map((file) => URL.revokeObjectURL(file));
-    }
-  };
-  const renderPhotos = (source) => {
-    return (
-      <img
-        src={source}
-        alt=""
-        key={source}
-        style={{ width: "100px", height: "80px" }}
-      />
-    );
-  };
   return (
     <div
       style={{
@@ -83,24 +68,14 @@ export default function QRCode(props) {
         textAlign: "center",
       }}
     >
-      <div ref={ref} />
+      <div id="capture" ref={ref} />
 
-      <div className="form-group mt-2">
-        <input
-          type="file"
-          name="file"
-          className="form-control"
-          onChange={handleImageChange}
-          required
-          data-overwrite-initial="false"
-          data-min-file-count="1"
-        />
-      </div>
-      {image.length !== 0 ? (
-        <div className="result">{renderPhotos(image)}</div>
-      ) : null}
       <div style={styles.inputWrapper}>
-        <input value={url} onChange={onUrlChange} style={styles.inputBox} />
+        <input
+          value={data.data}
+          onChange={onUrlChange}
+          style={styles.inputBox}
+        />
         <select onChange={onExtensionChange} value={fileExt}>
           <option value="png">PNG</option>
           <option value="jpeg">JPEG</option>
