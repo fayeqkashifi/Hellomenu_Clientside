@@ -12,7 +12,7 @@ import LebronStretch from "../../../images/hellomenu/circle_menu_button.png";
 // import QRCode from "qrcode.react";
 
 const PDFFile = (props) => {
-  const { inputFields } = props;
+  const { inputFields, source } = props;
   const styles = StyleSheet.create({
     page: {
       backgroundColor: "#2d3134",
@@ -37,10 +37,11 @@ const PDFFile = (props) => {
       fontFamily: "Times-Roman",
       color: "#a7b8c3",
     },
-    canvas: {
-      backgroundColor: "#ffffff",
-      height: 500,
-      width: 500,
+    image: {
+      padding: "10px",
+
+      height: "500px",
+      width: "100%",
     },
   });
   const styles2 = StyleSheet.create({
@@ -67,10 +68,10 @@ const PDFFile = (props) => {
       fontFamily: "Times-Roman",
       color: "#a7b8c3",
     },
-    canvas: {
-      backgroundColor: "#ffffff",
-      height: 500,
-      width: 500,
+    image: {
+      padding: "10px",
+      height: "500px",
+      width: "100%",
     },
   });
   return (
@@ -79,8 +80,7 @@ const PDFFile = (props) => {
         <View style={styles.section}>
           <Text style={styles.title}>{inputFields.title}</Text>
           <Text style={styles.text}>{inputFields.header}</Text>
-          <Image style={styles.image} src={LebronStretch} />
-
+          {source !== null ? <Image style={styles.image} src={source} /> : null}
           <Text style={styles.text}> {inputFields.footer}</Text>
         </View>
       </Page>
@@ -88,7 +88,9 @@ const PDFFile = (props) => {
         <View style={styles2.section}>
           <Text style={styles2.title}>{inputFields.title}</Text>
           <Text style={styles2.text}>{inputFields.header}</Text>
-          <Image style={styles2.image} src={LebronStretch} />
+          {source !== null ? (
+            <Image style={styles2.image} src={source} />
+          ) : null}
 
           <Text style={styles2.text}> {inputFields.footer}</Text>
         </View>

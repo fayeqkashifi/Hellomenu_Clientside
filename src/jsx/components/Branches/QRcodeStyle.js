@@ -17,6 +17,7 @@ const QRcodeStyle = (props) => {
     cornersDotColor: "#000000",
   });
   var [image, setImage] = useState([]);
+  const [source, setSource] = useState(null);
 
   const handleImageChange = (e) => {
     if (e.target.files) {
@@ -294,7 +295,12 @@ const QRcodeStyle = (props) => {
               <h4 className="card-title">Downloader</h4>
             </div>
             <div className="card-body">
-              <QRCode data={qrCode} setQrCode={setQrCode} image={image} />
+              <QRCode
+                data={qrCode}
+                setQrCode={setQrCode}
+                image={image}
+                setSource={setSource}
+              />
             </div>
           </div>
         </div>
@@ -307,7 +313,7 @@ const QRcodeStyle = (props) => {
               className="my-1"
               style={{ width: "100%", height: "80%" }}
             >
-              <PDFFile inputFields={inputFields} />
+              <PDFFile inputFields={inputFields} source={source} />
             </PDFViewer>
 
             <div className="form-group mt-1">
@@ -339,7 +345,7 @@ const QRcodeStyle = (props) => {
             </div>
 
             <PDFDownloadLink
-              document={<PDFFile inputFields={inputFields} />}
+              document={<PDFFile inputFields={inputFields} source={source} />}
               fileName="print.pdf"
             >
               {({ loading }) =>

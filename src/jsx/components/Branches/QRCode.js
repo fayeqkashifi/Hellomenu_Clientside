@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
-import html2canvas from "html2canvas";
 const qrCode = new QRCodeStyling({
-  width: 200,
-  height: 250,
+  width: 300,
+  height: 300,
 
   imageOptions: {
     crossOrigin: "anonymous",
@@ -11,14 +10,13 @@ const qrCode = new QRCodeStyling({
   },
 });
 export default function QRCode(props) {
-  const { data, setQrCode, image } = props;
+  const { data, setQrCode, image, setSource } = props;
   const [fileExt, setFileExt] = useState("png");
   const ref = useRef(null);
 
   useEffect(() => {
     qrCode.append(ref.current);
   }, []);
-
   useEffect(() => {
     qrCode.update({
       data: data.data,
@@ -39,6 +37,10 @@ export default function QRCode(props) {
       },
       image: image.length === 0 ? "" : image,
     });
+    var raw = qrCode.getRawData(fileExt);
+    raw.then((dataUri) => {
+      setSource(URL.createObjectURL(dataUri));
+    });
   }, [image, data]);
 
   const onUrlChange = (event) => {
@@ -49,16 +51,11 @@ export default function QRCode(props) {
   const onExtensionChange = (event) => {
     setFileExt(event.target.value);
   };
+
   const onDownloadClick = () => {
-    html2canvas(document.body).then((canvas) => {
-      const a = document.createElement("aklkklklklkklkl");
-      a.href = canvas.toDataURL("./" + fileExt);
-      a.download = "qrcode." + fileExt;
-      a.click();
+    qrCode.download({
+      extension: fileExt,
     });
-    // qrCode.download({
-    //   extension: fileExt,
-    // });
   };
 
   return (
@@ -68,8 +65,7 @@ export default function QRCode(props) {
         textAlign: "center",
       }}
     >
-      <div id="capture" ref={ref} />
-
+      <div ref={ref} />
       <div style={styles.inputWrapper}>
         <input
           value={data.data}
