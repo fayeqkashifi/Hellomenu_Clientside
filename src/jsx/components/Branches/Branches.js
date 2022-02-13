@@ -11,6 +11,7 @@ import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
 import CustomAlert from "../CustomAlert";
 import "yup-phone";
+import { base_url, port } from "../../../Consts";
 
 const Branches = () => {
   const { t } = useTranslation();
@@ -120,9 +121,7 @@ const Branches = () => {
                     level={"H"}
                     size={180}
                     fgColor="#f50b65"
-                    value={`http://192.168.1.103:3000/show-branch-details/${btoa(
-                      item.id
-                    )}`}
+                    value={`http://${base_url}:${port}/public/${btoa(item.id)}`}
                     className="primary"
                   />
                   <div

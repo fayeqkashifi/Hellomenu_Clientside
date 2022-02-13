@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
 const qrCode = new QRCodeStyling({
-  width: 300,
+  width: 250,
   height: 300,
 
   imageOptions: {

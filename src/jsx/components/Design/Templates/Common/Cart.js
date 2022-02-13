@@ -25,7 +25,7 @@ import {
   insertOrder,
   remCartItem,
   emptyCart,
-  getBranch
+  getBranch,
 } from "../Functionality";
 import axios from "axios";
 
@@ -53,9 +53,9 @@ const Cart = (props) => {
   const [branch, setBranch] = useState([]);
   const dataLoad = async () => {
     await getBranch(branchId).then((data) => {
-         setBranch(data);
-        setLoading(false);
-      });
+      setBranch(data);
+      setLoading(false);
+    });
     let Total = 0;
     cart.map(
       (item) =>
@@ -65,13 +65,11 @@ const Cart = (props) => {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(Total);
-   getTables(branchId).then((res) => {
+    getTables(branchId).then((res) => {
       setTables(res);
     });
-   
-    
   };
- 
+
   useEffect(() => {
     let unmounted = false;
     dataLoad();
@@ -79,7 +77,6 @@ const Cart = (props) => {
     return () => {
       unmounted = true;
     };
-
   }, [cart]);
 
   const remItem = (id, qty, price) => {
@@ -197,37 +194,39 @@ const Cart = (props) => {
       </div>
     );
   } else {
-  for (const [key, value] of Object.entries(JSON.parse(branch.orderMethods))) {
-    if (value === 1) {
-      outputs.push(
-        <Grid
-          item
-          xs={12}
-          lg={style?.orderingOptions ? style?.orderingOptions : 3}
-          xl={3}
-          sm={12}
-          md={6}
-          key={key}
-          // style={}
-        >
-          <div
-            onClick={() => checkOrderingMethod(key)}
-            style={orderingWay === key ? style.active : style.deactive}
+    for (const [key, value] of Object.entries(
+      JSON.parse(branch.orderMethods)
+    )) {
+      if (value === 1) {
+        outputs.push(
+          <Grid
+            item
+            xs={12}
+            lg={style?.orderingOptions ? style?.orderingOptions : 3}
+            xl={3}
+            sm={12}
+            md={6}
+            key={key}
+            // style={}
           >
-            <Typography style={style?.cartDescription}>
-              {key === "tbl_qrcode"
-                ? "Table Reservation"
-                : key === "delivery"
-                ? "Home Delivery"
-                : key === "whatsApp"
-                ? "WhatsApp"
-                : key}
-            </Typography>
-          </div>
-        </Grid>
-      );
+            <div
+              onClick={() => checkOrderingMethod(key)}
+              style={orderingWay === key ? style.active : style.deactive}
+            >
+              <Typography style={style?.cartDescription}>
+                {key === "tbl_qrcode"
+                  ? "Table Reservation"
+                  : key === "delivery"
+                  ? "Home Delivery"
+                  : key === "whatsApp"
+                  ? "WhatsApp"
+                  : key}
+              </Typography>
+            </div>
+          </Grid>
+        );
+      }
     }
-  }
     viewImages_HTMLTABLE = cart?.map((item, i) => {
       message =
         message +

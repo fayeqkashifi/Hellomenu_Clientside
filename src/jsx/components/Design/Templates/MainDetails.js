@@ -5,8 +5,7 @@ const MainDetails = (props) => {
   const style = props.history.location.state.style;
   const id = atob(props.match.params.id);
   const deliveryFees = parseInt(props.history.location.state.deliveryFees);
-  const branch = props.history.location.state.branch;
-
+  const branchId = props.history.location.state.branchId;
   var view = "";
   if (loading) {
     return (
@@ -24,7 +23,7 @@ const MainDetails = (props) => {
         id={id}
         style={style}
         deliveryFees={deliveryFees}
-        branch={branch}
+        branchId={branchId}
       />
     );
   }

@@ -5,10 +5,13 @@ import QRCode from "./QRCode";
 import QRcodeTemplate from "./QRcodeTemplate";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import PDFFile from "./PDFFile";
+import { base_url, port } from "../../../Consts";
+
 const QRcodeStyle = (props) => {
   const BrancheName = props.history.location.state.BrancheName;
+  const id = props.history.location.state.id;
   let [qrCode, setQrCode] = useState({
-    data: BrancheName,
+    data: `http://${base_url}:${port}/public/${btoa(id)}`,
     type: "rounded",
     cornersSquare: "dot",
     bgColor: "#ffffff",

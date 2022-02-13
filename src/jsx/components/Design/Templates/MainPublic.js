@@ -17,8 +17,11 @@ const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const branchId = atob(props.match.params.id);
-  const deliveryFees = parseInt(props.history.location.state.deliveryFees);
-
+  let deliveryFees = parseInt(props.history.location.state?.deliveryFees);
+  if (isNaN(deliveryFees)) {
+    deliveryFees = 0;
+  }
+  // console.log(deliveryFees == NaN ? 0 : deliveryFees);
   // const [branch, setBranch] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -32,7 +35,7 @@ const MainPublic = (props) => {
       // console.log(data);
       setCustom(data);
     });
-   
+
     getCategoriesBasedProduct(branchId).then((data) => {
       setCategories(data);
       const category = data[0];

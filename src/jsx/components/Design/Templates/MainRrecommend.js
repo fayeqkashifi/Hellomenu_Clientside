@@ -6,7 +6,7 @@ const MainRrecommend = (props) => {
   const id = atob(props.match.params.id);
 
   const deliveryFees = props.history.location.state.deliveryFees;
-  const branch = props.history.location.state.branch;
+  const branchId = props.history.location.state.branchId;
   const productName = props.history.location.state.productName;
   const picture = props.history.location.state.picture;
   const stock = props.history.location.state.stock;
@@ -36,7 +36,7 @@ const MainRrecommend = (props) => {
         id={id}
         style={style}
         deliveryFees={deliveryFees}
-        branch={branch}
+        branchId={branchId}
         productName={productName}
         picture={picture}
         stock={stock}
