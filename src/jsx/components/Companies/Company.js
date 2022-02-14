@@ -7,6 +7,7 @@ import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
+import { base_url, port } from "../../../Consts";
 
 const Company = () => {
   // validation start
@@ -37,9 +38,19 @@ const Company = () => {
       message: message,
     });
   };
+  const [imageState, setImageState] = useState([]);
+  const handleImage = (e) => {
+    setImageState({ ...imageState, companyLogo: e.target.files[0] });
+  };
   const saveCompany = (data) => {
-    axios.post("/api/InsertCompanies", data).then((res) => {
+    const formData = new FormData();
+    formData.append("companyLogo", imageState.companyLogo);
+    formData.append("id", data.id);
+    formData.append("company", data.company);
+
+    axios.post("/api/InsertCompanies", formData).then((res) => {
       if (res.data.status === 200) {
+        setImageState([]);
         localStorage.setItem("auth_company_id", btoa(res.data.company_id));
         setCheck(!check);
         setAlerts(true, "success", res.data.message);
@@ -55,6 +66,7 @@ const Company = () => {
 
   const editCompany = (e, id) => {
     e.preventDefault();
+
     axios.get(`/api/EditCompanies/${id}`).then((res) => {
       if (res.data.status === 200) {
         setEditCompanystate(res.data.company);
@@ -65,8 +77,14 @@ const Company = () => {
     });
   };
   const updateCompany = (data) => {
-    axios.post("/api/UpdateCompanies", data).then((res) => {
+    const formData = new FormData();
+    formData.append("companyLogo", imageState.companyLogo);
+    formData.append("id", data.id);
+    formData.append("company", data.company);
+
+    axios.post("/api/UpdateCompanies", formData).then((res) => {
       if (res.data.status === 200) {
+        setImageState([]);
         setEditCompanystate([]);
         setCheck(!check);
         setAlerts(true, "success", res.data.message);
@@ -216,6 +234,15 @@ const Company = () => {
                     className="invalid-feedback"
                   />
                 </div>
+                <div className="form-group">
+                  <label> {t("image")}</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    name="companyLogo"
+                    onChange={handleImage}
+                  />
+                </div>
               </Modal.Body>
               <Modal.Footer>
                 <Button
@@ -271,6 +298,23 @@ const Company = () => {
                     component="div"
                     className="invalid-feedback"
                   />
+                </div>
+                <div className="form-group">
+                  <label> {t("image")}</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    placeholder={t("category_icon")}
+                    name="CategoryIcon"
+                    onChange={handleImage}
+                  />
+                  {editCompanystate.companyLogo ? (
+                    <img
+                      src={`http://${base_url}:${port}/images/company/${editCompanystate.companyLogo}`}
+                      width="70"
+                      alt=" "
+                    />
+                  ) : null}
                 </div>
               </Modal.Body>
               <Modal.Footer>

@@ -14,6 +14,8 @@ import Checkbox from "@mui/material/Checkbox";
 import "yup-phone";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import { base_url, port } from "../../../Consts";
+
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
 
@@ -44,6 +46,11 @@ const EditBranch = (props) => {
   const [editBranchstate, setEditBranchstate] = useState([]);
   const [orderMethodsEdit, setOrderMethodsEdit] = useState([]);
 
+  const [imageState, setImageState] = useState([]);
+  const handleImage = (e) => {
+    setImageState({ ...imageState, branchImage: e.target.files[0] });
+  };
+
   const updateBranch = (data) => {
     const ArrayValue = [];
     for (const [key, value] of Object.entries(orderMethodsEdit)) {
@@ -54,6 +61,8 @@ const EditBranch = (props) => {
       formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
       formData.append("BrancheName", data.BrancheName);
       formData.append("currencyID", data.currencyID);
+      formData.append("branchImage", imageState.branchImage);
+
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("otherAddressFields", JSON.stringify(form));
       formData.append("fullAddress", fullAddress);
@@ -252,6 +261,23 @@ const EditBranch = (props) => {
                     className="invalid-feedback"
                   />
                 </div>
+                <div className="form-group">
+                  <label> {t("image")}</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    placeholder={t("category_icon")}
+                    name="branchImage"
+                    onChange={handleImage}
+                  />
+                </div>
+                {editBranchstate.branchImage ? (
+                  <img
+                    src={`http://${base_url}:${port}/images/branches/${editBranchstate.branchImage}`}
+                    width="70"
+                    alt=" "
+                  />
+                ) : null}
                 <div className="form-group">
                   <label> {t("ordering_phone_number")}</label>
                   <Field

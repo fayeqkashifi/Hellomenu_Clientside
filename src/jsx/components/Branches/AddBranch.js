@@ -42,6 +42,10 @@ const AddBranch = () => {
       message: message,
     });
   };
+  const [imageState, setImageState] = useState([]);
+  const handleImage = (e) => {
+    setImageState({ ...imageState, branchImage: e.target.files[0] });
+  };
   const saveBranch = (data) => {
     if (atob(localStorage.getItem("auth_company_id")) !== "null") {
       const ArrayValue = [];
@@ -53,6 +57,8 @@ const AddBranch = () => {
         formData.append("orderMethods", JSON.stringify(orderMethods));
         formData.append("BrancheName", data.BrancheName);
         formData.append("currencyID", data.currencyID);
+        formData.append("branchImage", imageState.branchImage);
+
         formData.append("phoneNumber", data.phoneNumber);
         formData.append("otherAddressFields", JSON.stringify(form));
         formData.append("fullAddress", fullAddress);
@@ -247,6 +253,16 @@ const AddBranch = () => {
                     name="currencyID"
                     component="div"
                     className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> {t("image")}</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    placeholder={t("category_icon")}
+                    name="branchImage"
+                    onChange={handleImage}
                   />
                 </div>
                 <div className="form-group">
