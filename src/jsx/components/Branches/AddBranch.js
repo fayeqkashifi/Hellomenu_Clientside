@@ -106,10 +106,10 @@ const AddBranch = () => {
   const FullAddressHandle = (e) => {
     setFullAddress(e.target.checked ? 1 : 0);
   };
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const response = await axios.get("/api/GetCurrencies");
-      if (response.data.status === 200) {
+      if (response.data.status === 200 && !unmounted) {
         setCurrency(response.data.fetchData);
       }
       setLoading(false);
@@ -118,7 +118,11 @@ const AddBranch = () => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
   const [form, setForm] = useState([]);

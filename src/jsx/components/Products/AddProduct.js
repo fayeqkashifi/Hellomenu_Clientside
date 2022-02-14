@@ -128,23 +128,23 @@ const AddProduct = (props) => {
   const [branches, setBranches] = useState([]);
   const [check, setCheck] = useState(true);
   const [share, setShare] = useState(false);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const result = await axios.post(`/api/GetIngredient`);
-      if (result.data.status === 200) {
+      if (result.data.status === 200 && !unmounted) {
         setIntgredients(result.data.fetchData);
       }
       const cat = await axios.get(`/api/GetCategories/${branchId}`);
-      if (cat.data.status === 200) {
+      if (cat.data.status === 200 && !unmounted) {
         setCategories(cat.data.fetchData);
       }
 
       const response = await axios.get(`/api/GetProducts/${branchId}`);
-      if (response.data.status === 200) {
+      if (response.data.status === 200 && !unmounted) {
         setFetchData(response.data.fetchData);
       }
       const res = await axios.get(`/api/GetBranches`);
-      if (res.data.status === 200) {
+      if (res.data.status === 200 && !unmounted) {
         setBranches(
           res.data.branches.filter((item) => {
             return item.id != branchId;
@@ -157,7 +157,11 @@ const AddProduct = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
   const [productIngredient, setProductIngredient] = useState([]);
   const handleSelectEvent = (e) => {

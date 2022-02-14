@@ -45,9 +45,11 @@ const ProductDetails = (props) => {
   useEffect(() => {
     let unmounted = false;
 
-    const getdata = () => {
+    const getdata = (unmounted) => {
       getProduct(id).then((result) => {
+        if(!unmounted){
         setFetchData(result.data.fetchData[0]);
+        }
       });
       getvariations(id).then((res) => {
         if (res !== "") {
@@ -58,7 +60,7 @@ const ProductDetails = (props) => {
         setLoading(false);
       });
     };
-    getdata(); // axios
+    getdata(unmounted); // axios
     return () => {
       unmounted = true;
     };

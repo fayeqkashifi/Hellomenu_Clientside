@@ -183,20 +183,22 @@ const Category = (props) => {
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
   const [cats, setCates] = useState([]);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const result = await axios.get(`/api/GetBranches`);
-      setBranches(
-        result.data.branches.filter((item) => {
-          return item.id !== id;
-        })
-      );
+      if(!unmounted){
+        setBranches(
+          result.data.branches.filter((item) => {
+            return item.id !== id;
+          })
+        );
+      }
       const shared = await axios.get(`/api/sharedCates/${id}`);
-      if (shared.status === 200) {
+      if (shared.status === 200 && !unmounted) {
         setCates(shared.data);
       }
       const cat = await axios.get(`/api/GetCategories/${id}`);
-      if (cat.data.status === 200) {
+      if (cat.data.status === 200 && !unmounted) {
         setFetchData(cat.data.fetchData);
       }
       setLoading(false);
@@ -205,7 +207,11 @@ const Category = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   const [layout, setLayout] = useState(

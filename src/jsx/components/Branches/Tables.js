@@ -133,10 +133,10 @@ const Tables = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const result = await axios.get(`/api/GetTables/${id}`);
-      if (result.data.status === 200) {
+      if (result.data.status === 200 && !unmounted) {
         setFetchData(result.data.fetchData);
       }
       setLoading(false);
@@ -145,7 +145,11 @@ const Tables = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
   const downloadAll = (e) => {
     e.preventDefault();

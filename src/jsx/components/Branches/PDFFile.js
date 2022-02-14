@@ -1,15 +1,12 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import {
   Page,
   Text,
   Image,
-  Canvas,
   View,
   Document,
   StyleSheet,
 } from "@react-pdf/renderer";
-import LebronStretch from "../../../images/hellomenu/circle_menu_button.png";
-// import QRCode from "qrcode.react";
 
 const PDFFile = (props) => {
   const { inputFields, source } = props;

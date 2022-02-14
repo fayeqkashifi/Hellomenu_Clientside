@@ -51,9 +51,11 @@ const Cart = (props) => {
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
   const [branch, setBranch] = useState([]);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     await getBranch(branchId).then((data) => {
-      setBranch(data);
+      if(!unmounted){
+        setBranch(data);
+      }
       setLoading(false);
     });
     let Total = 0;
@@ -66,14 +68,15 @@ const Cart = (props) => {
     );
     setSum(Total);
     getTables(branchId).then((res) => {
+      if(!unmounted){
       setTables(res);
-    });
+      }
+      });
   };
 
   useEffect(() => {
     let unmounted = false;
-    dataLoad();
-
+    dataLoad(unmounted);
     return () => {
       unmounted = true;
     };

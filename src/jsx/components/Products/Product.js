@@ -53,10 +53,10 @@ const Product = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const result = await axios.get(`/api/GetProducts/${branchId}`);
-      if (result.data.status === 200) {
+      if (result.data.status === 200 && !unmounted) {
         setFetchData(result.data.fetchData);
       }
       setLoading(false);
@@ -65,7 +65,11 @@ const Product = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   const columns = [

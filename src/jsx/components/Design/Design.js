@@ -113,10 +113,10 @@ const Design = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState([]);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const res = await axios.get(`/api/GetThemes/${branchId}`);
-      if (res.data.status === 200) {
+      if (res.data.status === 200 && !unmounted) {
         setFetchData(res.data.fetchData);
         res.data.fetchData.map((item, i) => {
           if (item.Status === 1) {
@@ -127,7 +127,7 @@ const Design = (props) => {
         });
       }
       const result = await axios.get(`/api/GetTemplates/${branchId}`);
-      if (result.data.status === 200) {
+      if (result.data.status === 200 && !unmounted) {
         setTemplates(result.data.data);
       }
       setLoading(false);
@@ -136,7 +136,11 @@ const Design = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
   // delete start
   const deleteTheme = (e, id) => {

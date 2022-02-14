@@ -111,19 +111,24 @@ const Attributes = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const result = await axios.get(`/api/GetAttributes`);
-      if (result.data.status === 200) {
+      if (result.data.status === 200 && !unmounted) {
         setFetchData(result.data.fetchData);
+        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+  
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   var viewProducts_HTMLTABLE = "";

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState } from "react";
 import ColorSwitcher from "./ColorsSwitcher";
 
 import QRCode from "./QRCode";
@@ -278,16 +278,17 @@ const QRcodeStyle = (props) => {
                 qrCode={qrCode}
                 setQrCode={setQrCode}
                 value="cornersDotColor"
-                arrayValue={["dot", "square", "extra-rounded"]}
-                type="cornersSquare"
+                arrayValue={["dot", "square"]}
+                type="cornersDot"
               />
               <ColorSwitcher
                 title="Corners Square Color"
                 qrCode={qrCode}
                 setQrCode={setQrCode}
                 value="colorCornersSquare"
-                arrayValue={["dot", "square"]}
-                type="cornersDot"
+                arrayValue={["dot", "square", "extra-rounded"]}
+                type="cornersSquare"
+              
               />
             </div>
           </div>

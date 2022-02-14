@@ -79,10 +79,10 @@ const EditTheme = (props) => {
     });
   };
   // update End
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const result = await axios.get(`/api/EditTheme/${id}`);
-      if (result.data.status === 200) {
+      if (result.data.status === 200 && !unmounted) {
         setThemes(result.data.data);
       }
     } catch (error) {
@@ -90,7 +90,11 @@ const EditTheme = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, []);
   return (
     <>

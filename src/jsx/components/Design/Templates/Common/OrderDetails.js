@@ -45,11 +45,13 @@ const OrderDetails = (props) => {
   const [item, setItem] = useState([]);
   useEffect(() => {
     let unmounted = false;
-    const getdata = async () => {
+    const getdata = async (unmounted) => {
       var data = [];
       await getProduct(id).then((result) => {
         data = result.data.fetchData;
+        if(!unmounted){
         setItem(data);
+        }
       });
       var recData = [];
       JSON.parse(data[0].recommendations).map(async (item) => {
@@ -61,12 +63,14 @@ const OrderDetails = (props) => {
             });
           }
         });
+        if(!unmounted){
         setFetchData(recData);
+        }
       });
       setLoading(false);
     };
     // dataLoad();
-    getdata(); // axios
+    getdata(unmounted); // axios
     return () => {
       unmounted = true;
     };

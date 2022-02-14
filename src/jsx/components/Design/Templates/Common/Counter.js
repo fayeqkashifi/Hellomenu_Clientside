@@ -7,7 +7,6 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import { Link } from "react-router-dom";
 import {
   addItemWithdoutDetails,
   remCartItem,

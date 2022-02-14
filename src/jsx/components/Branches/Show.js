@@ -35,16 +35,7 @@ const Show = (props) => {
   const id = props.history.location.state.id;
   const BrancheName = props.history.location.state.BrancheName;
   const { path, url } = useRouteMatch();
-  // const [template, setTemplate] = useState("");
   const [check, setCheck] = useState(true);
-
-  // useEffect(() => {
-  //   axios.get(`/api/GetTempBasedOnBranch/${id}`).then((res) => {
-  //     if (res.data.status === 200) {
-  //       setTemplate(res.data.fetchData[0]);
-  //     }
-  //   });
-  // }, [check]);
   const tabData = [
     {
       name: t("categories"),

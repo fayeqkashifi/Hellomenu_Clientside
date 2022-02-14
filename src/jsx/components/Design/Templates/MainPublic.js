@@ -30,21 +30,24 @@ const MainPublic = (props) => {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     getThemplate(branchId).then((data) => {
       // console.log(data);
-      setCustom(data);
+      if(!unmounted){
+        setCustom(data);
+      }
     });
 
     getCategoriesBasedProduct(branchId).then((data) => {
       setCategories(data);
       const category = data[0];
-      if (category?.sub_category_id === null) {
+      if (category?.sub_category_id === null && !unmounted) {
         setActiveCategory(category?.CategoryName + "-" + category?.category_id);
         getProductBasedOnCategory(category?.category_id).then((data) => {
           setProducts(data);
         });
       } else {
+        if(!unmounted){
         setActiveCategory(
           category?.SubCategoryName + "-" + category?.sub_category_id
         );
@@ -52,13 +55,15 @@ const MainPublic = (props) => {
           setProducts(data);
         });
       }
+
+      }
       setLoading(false);
     });
   };
 
   useEffect(() => {
     let unmounted = false;
-    dataLoad();
+    dataLoad(unmounted);
     return () => {
       unmounted = true;
     };

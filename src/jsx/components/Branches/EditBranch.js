@@ -96,10 +96,10 @@ const EditBranch = (props) => {
     });
   };
   const arrayAddress = [];
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const response = await axios.get(`/api/EditBranches/${id}`);
-      if (response.data.status === 200) {
+      if (response.data.status === 200 && !unmounted) {
         setFullAddress(response.data.branch.fullAddress);
         JSON.parse(response.data.branch.otherAddressFields).map((item) => {
           arrayAddress.push({
@@ -115,7 +115,7 @@ const EditBranch = (props) => {
         setAlerts(true, "error", response.data.message);
       }
       const res = await axios.get("/api/GetCurrencies");
-      if (res.data.status === 200) {
+      if (res.data.status === 200 && !unmounted) {
         setCurrency(res.data.fetchData);
       }
       setLoading(false);
@@ -124,7 +124,11 @@ const EditBranch = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
   const [form, setForm] = useState(arrayAddress);

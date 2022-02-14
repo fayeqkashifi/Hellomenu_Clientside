@@ -55,10 +55,10 @@ const Branches = () => {
   const [branchdata, setBranchdata] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = async (unmounted) => {
     try {
       const result = await axios.get("/api/GetBranches");
-      if (result.data.status === 200) {
+      if (result.data.status === 200 && !unmounted) {
         setBranchdata(result.data.branches);
       }
       setLoading(false);
@@ -68,7 +68,11 @@ const Branches = () => {
   };
   // for mobile
   useEffect(() => {
-    dataLoad();
+    let unmounted = false;
+    dataLoad(unmounted);
+    return () => {
+      unmounted = true;
+    };
   }, [check]);
 
   const downloadQRCode = (e, id) => {
