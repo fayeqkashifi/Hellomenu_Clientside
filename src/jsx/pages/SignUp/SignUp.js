@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import "./style.css";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import Footer from "../Footer";
 const SignUp = () => {
   const history = useHistory();
 
@@ -41,9 +42,15 @@ const SignUp = () => {
           setAlert(res.data.message);
         }
       });
+      axios.post("/api/login", data).then((res) => {
+        if (res.data.status === 200) {
+          localStorage.setItem("auth_token", res.data.token);
+          localStorage.setItem("auth_id", btoa(res.data.id));
+        } 
+      });
+      
     });
   };
-
   return (
     <>
       <Header route="/login" linkName="Log In" />
@@ -116,7 +123,7 @@ const SignUp = () => {
                             type="submit"
                             className="btn-primary btn-block"
                             style={{
-                              padding: "5px 20px 5px 20px",
+                              padding: "10px 20px 10px 20px",
                               borderRadius: "10px",
                               fontSize: "16px",
                               border: "none",
@@ -142,6 +149,8 @@ const SignUp = () => {
           </div>
         </div>
       </div>
+      <Footer />
+
     </>
   );
 };

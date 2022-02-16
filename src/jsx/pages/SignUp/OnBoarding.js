@@ -27,6 +27,7 @@ const OnBoarding = (props) => {
     formData.append("name", data.name);
     formData.append("phone_number", value);
     axios.post(`/api/UpdateRegister/${userId}`, formData).then((res) => {
+      localStorage.setItem("auth_name", btoa(data.name));
       history.push({
         pathname: `/onboarding/venue`,
         state: {
@@ -34,6 +35,7 @@ const OnBoarding = (props) => {
         },
       });
     });
+    
   };
 
   return (

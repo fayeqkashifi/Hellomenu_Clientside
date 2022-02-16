@@ -168,7 +168,7 @@ const Login = () => {
                             type="submit"
                             className="btn-primary btn-block"
                             style={{
-                              padding: "5px 20px 5px 20px",
+                              padding: "10px 20px 10px 20px",
                               borderRadius: "10px",
                               fontSize: "16px",
                               border: "none",
@@ -198,9 +198,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <div className="mt-5">
         <Footer />
-      </div>
     </>
   );
 };

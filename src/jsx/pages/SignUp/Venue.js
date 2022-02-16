@@ -13,12 +13,9 @@ const Venue = () => {
   const userId = location.state.userId;
   const history = useHistory();
 
-  const [value, setValue] = useState("");
   const options = useMemo(() => countryList().getData(), []);
 
-  const changeHandler = (value) => {
-    setValue(value);
-  };
+  
   const [languages, setLanguages] = useState([]);
   useEffect(() => {
     axios.get("/api/GetLanguages").then((res) => {
@@ -40,21 +37,19 @@ const Venue = () => {
       typeOfCompany: Yup.string().required("Type of business is required"),
     });
   };
-  const [selectLang, setSelectLang] = useState([]);
-  const changeLanguage = (value) => {
-    console.log(value);
-    setSelectLang(value);
-  };
+  
   const handleSubmit = (data) => {
-    console.log(data);
     axios.post(`/api/UpdateRegister/${userId}`, data).then((res) => {
-      history.push({
-        pathname: `/onboarding/solutions`,
-        state: {
-          userId: userId,
-        },
-      });
-    });
+      if (res.data.status === 200) {
+        localStorage.setItem("auth_company_id", btoa(res.data.data.company_id));
+        history.push({
+          pathname: `/onboarding/solutions`,
+          state: {
+            userId: userId,
+          },
+        });
+        }
+     });
   };
   return (
     <>
