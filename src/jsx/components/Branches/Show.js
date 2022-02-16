@@ -41,28 +41,28 @@ const Show = (props) => {
       name: t("categories"),
       url: {
         pathname: `${url}`,
-        state: { id: id },
+        state: { id: id, BrancheName: BrancheName },
       },
     },
     {
       name: t("products"),
       url: {
         pathname: `${url}/products`,
-        state: { id: id },
+        state: { id: id, BrancheName: BrancheName },
       },
     },
     {
       name: t("design"),
       url: {
         pathname: `${url}/design`,
-        state: { id: id },
+        state: { id: id, BrancheName: BrancheName },
       },
     },
     {
       name: t("tables"),
       url: {
         pathname: `${url}/tables`,
-        state: { id: id },
+        state: { id: id, BrancheName: BrancheName },
       },
     },
 
@@ -77,7 +77,7 @@ const Show = (props) => {
       name: t("services_areas"),
       url: {
         pathname: `${url}/services-areas`,
-        state: { id: id },
+        state: { id: id, BrancheName: BrancheName },
       },
     },
     {

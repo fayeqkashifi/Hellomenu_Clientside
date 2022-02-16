@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "./Header";
 
 const ForgotPassword = () => {
   const [forgotData, setForgotData] = useState({});
@@ -13,7 +14,9 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="row justify-content-center  align-items-center h-80">
+    <div className="row justify-content-center">
+      <Header route="/login" linkName="Log In" />
+
       <div className="col-md-6">
         <div className="authincation-content">
           <div className="row no-gutters">

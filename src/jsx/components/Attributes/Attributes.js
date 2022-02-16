@@ -111,10 +111,10 @@ const Attributes = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/GetAttributes`);
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);
       }
@@ -123,11 +123,11 @@ const Attributes = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
-  
+    dataLoad();
+
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, [check]);
 

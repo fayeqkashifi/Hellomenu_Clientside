@@ -143,10 +143,10 @@ const SubCategory = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/GetSubCategories/${id}`);
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
       }
       setLoading(false);
@@ -155,10 +155,10 @@ const SubCategory = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, [check]);
   const [layout, setLayout] = useState(

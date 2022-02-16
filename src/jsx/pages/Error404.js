@@ -15,8 +15,12 @@ const Error404 = () => {
           </h4>
           <p>You may have mistyped the address or the page may have moved.</p>
           <div>
-            <Link className="btn btn-primary" to="" onClick={() => history.goBack()}>
-              Back to Home
+            <Link
+              className="btn btn-primary"
+              to=""
+              onClick={() => history.goBack()}
+            >
+              Go Back
             </Link>
           </div>
         </div>

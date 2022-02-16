@@ -13,10 +13,10 @@ const Order = () => {
   const { t } = useTranslation();
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/getOrders`);
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
       }
       setLoading(false);
@@ -25,10 +25,10 @@ const Order = () => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, []);
 

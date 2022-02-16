@@ -1,9 +1,4 @@
 import React, { useRef, useState } from "react";
-// import {
-//   Link,
-//   // , useHistory
-// } from "react-router-dom";
-/// Image
 import i18next from "i18next";
 import profile from "../../../images/hellomenu/logo.svg";
 import axios from "axios";
@@ -26,7 +21,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
         localStorage.removeItem("auth_name");
         localStorage.removeItem("auth_company_id");
         localStorage.removeItem("auth_id");
-        window.location = "/page-login";
+        window.location = "/login";
       }
     });
   };

@@ -90,10 +90,9 @@ const EditTheme = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setThemes([]);
     };
   }, []);
   return (

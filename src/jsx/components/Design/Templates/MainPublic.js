@@ -4,7 +4,6 @@ import SecondMain from "./Second/SecondMain";
 import DarkMain from "./Dark/Main";
 import {
   getThemplate,
-  getBranch,
   getCategoriesBasedProduct,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
@@ -30,24 +29,21 @@ const MainPublic = (props) => {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     getThemplate(branchId).then((data) => {
       // console.log(data);
-      if(!unmounted){
-        setCustom(data);
-      }
+      setCustom(data);
     });
 
     getCategoriesBasedProduct(branchId).then((data) => {
       setCategories(data);
       const category = data[0];
-      if (category?.sub_category_id === null && !unmounted) {
+      if (category?.sub_category_id === null) {
         setActiveCategory(category?.CategoryName + "-" + category?.category_id);
         getProductBasedOnCategory(category?.category_id).then((data) => {
           setProducts(data);
         });
       } else {
-        if(!unmounted){
         setActiveCategory(
           category?.SubCategoryName + "-" + category?.sub_category_id
         );
@@ -55,17 +51,18 @@ const MainPublic = (props) => {
           setProducts(data);
         });
       }
-
-      }
       setLoading(false);
     });
   };
 
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setCustom([]);
+      setCategories([]);
+      setActiveCategory(0);
+      setProducts([]);
+      setLoading(true);
     };
   }, []);
   const properties = {

@@ -53,10 +53,10 @@ const Product = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/GetProducts/${branchId}`);
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
       }
       setLoading(false);
@@ -65,10 +65,10 @@ const Product = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, [check]);
 
@@ -292,26 +292,24 @@ const Product = (props) => {
     <>
       <Fragment>
         <div className="d-flex justify-content-end">
-        <Tooltip title="Add New Product">
-
-          <IconButton aria-label="Example">
-            <Link
-              // className="btn btn-primary mb-2 mr-2"
-              to={{
-                pathname: `${url}/add-product`,
-                state: { id: branchId },
-              }}
-            >
-              <AddIcon />
-            </Link>
-          </IconButton>
+          <Tooltip title="Add New Product">
+            <IconButton aria-label="Example">
+              <Link
+                // className="btn btn-primary mb-2 mr-2"
+                to={{
+                  pathname: `${url}/add-product`,
+                  state: { id: branchId },
+                }}
+              >
+                <AddIcon />
+              </Link>
+            </IconButton>
           </Tooltip>
           <Tooltip title="Change Layout">
             <IconButton aria-label="Example" onClick={changeLayout}>
               {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
             </IconButton>
           </Tooltip>
-
         </div>
         {layout ? (
           <div style={{ overflow: "scroll" }}>{viewProducts_HTMLTABLE}</div>

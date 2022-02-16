@@ -43,13 +43,9 @@ const ProductDetails = (props) => {
     image: fetchData?.image,
   });
   useEffect(() => {
-    let unmounted = false;
-
-    const getdata = (unmounted) => {
+    const getdata = () => {
       getProduct(id).then((result) => {
-        if(!unmounted){
         setFetchData(result.data.fetchData[0]);
-        }
       });
       getvariations(id).then((res) => {
         if (res !== "") {
@@ -60,9 +56,12 @@ const ProductDetails = (props) => {
         setLoading(false);
       });
     };
-    getdata(unmounted); // axios
+    getdata(); // axios
     return () => {
-      unmounted = true;
+      // parseVariants([]);
+      // setVarPics([]);
+      // setFetchData([]);
+      setLoading(true);
     };
   }, [id]);
   const changePrice = (varName, variant) => {

@@ -7,6 +7,8 @@ import { base_url, port } from "../../Consts";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../components/CustomAlert";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const Login = () => {
   const cookies = new Cookies();
@@ -49,11 +51,11 @@ const Login = () => {
     // console.log(JSON.stringify(data, null, 2));
     if (data.remember_me) {
       cookies.set("myUserName", btoa(data.email), {
-        path: `http://${base_url}:${port}/page-login`,
+        path: `http://${base_url}:${port}/login`,
         expires: nextYear,
       });
       cookies.set("myPassword", btoa(data.password), {
-        path: `http://${base_url}:${port}/page-login`,
+        path: `http://${base_url}:${port}/login`,
         expires: nextYear,
       });
     }
@@ -74,72 +76,73 @@ const Login = () => {
 
   // check the auth end
   return (
-    <div className="row justify-content-center h-100 align-items-center h-80">
-      {alert.open ? (
-        <CustomAlert
-          open={alert.open}
-          severity={alert.severity}
-          message={alert.message}
-          setAlert={setAlert}
-        />
-      ) : (
-        ""
-      )}
-      <div className="col-md-4 ">
-        <div className="authincation-content">
-          <div className="row no-gutters">
-            <div className="col-xl-12">
-              <div className="auth-form">
-                <h4 className="text-center mb-4 ">
-                  {t("sign_in_your_account")}{" "}
-                </h4>
-                <Formik
-                  initialValues={initialValues}
-                  validationSchema={validationSchema}
-                  onSubmit={checkAuth}
-                >
-                  {({ errors, status, touched }) => (
-                    <Form>
-                      <div className="form-group">
-                        <label htmlFor="email"> {t("email")} </label>
-                        <Field
-                          name="email"
-                          type="text"
-                          className={
-                            "form-control" +
-                            (errors.email && touched.email ? " is-invalid" : "")
-                          }
-                          placeholder="Email/Phone"
-                        />
-                        <ErrorMessage
-                          name="email"
-                          component="div"
-                          className="invalid-feedback"
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label htmlFor="password"> {t("password")} </label>
-                        <Field
-                          name="password"
-                          type="password"
-                          className={
-                            "form-control" +
-                            (errors.password && touched.password
-                              ? " is-invalid"
-                              : "")
-                          }
-                          placeholder="*******"
-                        />
-                        <ErrorMessage
-                          name="password"
-                          component="div"
-                          className="invalid-feedback"
-                        />
-                      </div>
-                      <div className="form-row d-flex justify-content-between mt-4 mb-2">
+    <>
+      <Header route="/signup" linkName="Sign Up" />
+      <div className="row justify-content-center ">
+        {alert.open ? (
+          <CustomAlert
+            open={alert.open}
+            severity={alert.severity}
+            message={alert.message}
+            setAlert={setAlert}
+          />
+        ) : (
+          ""
+        )}
+        <div className="col-md-4">
+          <div className="authincation-content">
+            <div className="row no-gutters">
+              <div className="col-xl-12">
+                <div className="auth-form">
+                  <h4 className="text-center">{t("sign_in_your_account")} </h4>
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={checkAuth}
+                  >
+                    {({ errors, status, touched }) => (
+                      <Form>
                         <div className="form-group">
-                          <div className="custom-control custom-checkbox ml-1 ">
+                          <label htmlFor="email"> {t("email")} </label>
+                          <Field
+                            name="email"
+                            type="text"
+                            className={
+                              "form-control" +
+                              (errors.email && touched.email
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="Email/Phone"
+                          />
+                          <ErrorMessage
+                            name="email"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="password"> {t("password")} </label>
+                          <Field
+                            name="password"
+                            type="password"
+                            className={
+                              "form-control" +
+                              (errors.password && touched.password
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="*******"
+                          />
+                          <ErrorMessage
+                            name="password"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <div className="custom-control custom-checkbox ">
                             <Field
                               type="checkbox"
                               name="remember_me"
@@ -161,41 +164,44 @@ const Login = () => {
                           </div>
                         </div>
                         <div className="form-group">
-                          <Link className="" to="/forgot-password">
+                          <button
+                            type="submit"
+                            className="btn-primary btn-block"
+                            style={{
+                              padding: "5px 20px 5px 20px",
+                              borderRadius: "10px",
+                              fontSize: "16px",
+                              border: "none",
+                            }}
+                          >
                             {" "}
-                            {t("forgot_password")}{" "}
-                          </Link>
+                            {t("sign_in")}{" "}
+                          </button>
                         </div>
-                      </div>
-                      <div className="form-group">
-                        <button
-                          type="submit"
-                          className="btn btn-primary btn-block"
-                        >
-                          {" "}
-                          {t("sign_in")}{" "}
-                        </button>
-                      </div>
-                    </Form>
-                  )}
-                </Formik>
+                      </Form>
+                    )}
+                  </Formik>
 
-                <div className="new-account mt-3">
-                  <p className="">
-                    {" "}
-                    {t("have_not_account")}{" "}
-                    <Link className="text-primary" to="/user-register">
+                  <div className="d-flex justify-content-center">
+                    <Link className="mr-2" to="/forgot-password">
                       {" "}
-                      {t("sign_up")}{" "}
+                      {t("forgot_password")}{" "}
+                    </Link>
+                    <span>&#x2022;</span>
+                    <Link className="ml-2" to="/user-register">
+                      {t("have_not_account")}{" "}
                     </Link>{" "}
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <div className="mt-5">
+        <Footer />
+      </div>
+    </>
   );
 };
 

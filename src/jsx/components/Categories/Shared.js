@@ -15,12 +15,10 @@ const Shared = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let unmounted = false;
-
     (async () => {
       try {
         const result = await axios.get(`/api/GetSharedCatBranches/${sub_id}`);
-        if (result.status === 200 && !unmounted) {
+        if (result.status === 200) {
           setFetchData(result.data);
           setLoading(false);
         }
@@ -29,7 +27,8 @@ const Shared = (props) => {
       }
     })();
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, []);
 

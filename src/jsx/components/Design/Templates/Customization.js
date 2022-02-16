@@ -85,10 +85,11 @@ const Customization = (props) => {
     });
   };
   useEffect(() => {
-    let unmounted = false;
     dataLoad();
     return () => {
-      unmounted = true;
+      setSettings([]);
+      setTemplate([]);
+      setLoading(true);
     };
   }, [loading]);
 

@@ -51,11 +51,9 @@ const Cart = (props) => {
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
   const [branch, setBranch] = useState([]);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     await getBranch(branchId).then((data) => {
-      if(!unmounted){
-        setBranch(data);
-      }
+      setBranch(data);
       setLoading(false);
     });
     let Total = 0;
@@ -68,17 +66,17 @@ const Cart = (props) => {
     );
     setSum(Total);
     getTables(branchId).then((res) => {
-      if(!unmounted){
       setTables(res);
-      }
-      });
+    });
   };
 
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setSum(0);
+      setTables([]);
+      setBranch([]);
+      setLoading(true);
     };
   }, [cart]);
 
@@ -720,42 +718,6 @@ const Cart = (props) => {
                       );
                     })}
 
-                    {/* <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
-                      <div className="form-group">
-                        <input
-                          name="floor"
-                          type="text"
-                          className={"form-control"}
-                          placeholder="Floor"
-                          onChange={changeHandle}
-                          style={style?.inputfield}
-                        />
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
-                      <div className="form-group">
-                        <input
-                          name="flat"
-                          type="text"
-                          className={"form-control"}
-                          placeholder="Flat"
-                          onChange={changeHandle}
-                          style={style?.inputfield}
-                        />
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
-                      <div className="form-group">
-                        <input
-                          name="directions"
-                          type="text"
-                          className={"form-control"}
-                          placeholder="Directions"
-                          onChange={changeHandle}
-                          style={style?.inputfield}
-                        />
-                      </div>
-                    </Grid> */}
                   </Grid>
                 </CardContent>
               </Card>
@@ -790,14 +752,7 @@ const Cart = (props) => {
                               style={{ fontSize: "0.7em" }}
                               className="invalid-feedback"
                             />
-                            {/* <input
-                              name="phoneNumber"
-                              type="text"
-                              className={`form-control`}
-                              placeholder="Phone"
-                              onChange={changeHandle}
-                              style={style}
-                            /> */}
+                            
                           </div>
                         </Grid>
                         <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>

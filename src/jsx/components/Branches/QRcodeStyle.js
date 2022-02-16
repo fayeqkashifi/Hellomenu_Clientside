@@ -10,8 +10,9 @@ import { base_url, port } from "../../../Consts";
 const QRcodeStyle = (props) => {
   const BrancheName = props.history.location.state.BrancheName;
   const id = props.history.location.state.id;
+  const data = `http://${base_url}:${port}/public/${btoa(id)}`;
   let [qrCode, setQrCode] = useState({
-    data: `http://${base_url}:${port}/public/${btoa(id)}`,
+    data: data,
     type: "rounded",
     cornersSquare: "dot",
     bgColor: "#ffffff",
@@ -67,7 +68,7 @@ const QRcodeStyle = (props) => {
                   style={{ cursor: "pointer" }}
                   onClick={() =>
                     setQrCode({
-                      data: BrancheName,
+                      data: data,
                       type: "rounded",
                       cornersSquare: "dot",
                       bgColor: "#ffffff",
@@ -79,7 +80,7 @@ const QRcodeStyle = (props) => {
                 >
                   <QRcodeTemplate
                     data={{
-                      data: BrancheName,
+                      data: data,
                       type: "rounded",
                       cornersSquare: "dot",
                       bgColor: "#ffffff",
@@ -94,7 +95,7 @@ const QRcodeStyle = (props) => {
                   style={{ cursor: "pointer" }}
                   onClick={() =>
                     setQrCode({
-                      data: BrancheName,
+                      data: data,
                       type: "classy",
                       cornersSquare: "extra-rounded",
                       bgColor: "#ffffff",
@@ -106,7 +107,7 @@ const QRcodeStyle = (props) => {
                 >
                   <QRcodeTemplate
                     data={{
-                      data: BrancheName,
+                      data: data,
                       type: "classy",
                       cornersSquare: "extra-rounded",
                       bgColor: "#fffff",
@@ -121,7 +122,7 @@ const QRcodeStyle = (props) => {
                   style={{ cursor: "pointer" }}
                   onClick={() =>
                     setQrCode({
-                      data: BrancheName,
+                      data: data,
                       type: "square",
                       cornersSquare: "square",
                       bgColor: "#ffffff",
@@ -133,7 +134,7 @@ const QRcodeStyle = (props) => {
                 >
                   <QRcodeTemplate
                     data={{
-                      data: BrancheName,
+                      data: data,
                       type: "square",
                       cornersSquare: "square",
                       bgColor: "#ffffff",
@@ -150,7 +151,7 @@ const QRcodeStyle = (props) => {
                   style={{ cursor: "pointer" }}
                   onClick={() =>
                     setQrCode({
-                      data: BrancheName,
+                      data: data,
                       type: "classy-rounded",
                       cornersDot: "dot",
                       cornersSquare: "extra-rounded",
@@ -163,7 +164,7 @@ const QRcodeStyle = (props) => {
                 >
                   <QRcodeTemplate
                     data={{
-                      data: BrancheName,
+                      data: data,
                       type: "classy-rounded",
                       cornersSquare: "extra-rounded",
 
@@ -180,7 +181,7 @@ const QRcodeStyle = (props) => {
                   style={{ cursor: "pointer" }}
                   onClick={() =>
                     setQrCode({
-                      data: BrancheName,
+                      data: data,
                       type: "dots",
                       cornersSquare: "dot",
                       cornersDot: "square",
@@ -193,7 +194,7 @@ const QRcodeStyle = (props) => {
                 >
                   <QRcodeTemplate
                     data={{
-                      data: BrancheName,
+                      data: data,
                       type: "dots",
                       cornersSquare: "dot",
                       cornersDot: "square",
@@ -209,7 +210,7 @@ const QRcodeStyle = (props) => {
                   style={{ cursor: "pointer" }}
                   onClick={() =>
                     setQrCode({
-                      data: BrancheName,
+                      data: data,
                       type: "extra-rounded",
                       cornersSquare: "square",
                       cornersDot: "square",
@@ -222,7 +223,7 @@ const QRcodeStyle = (props) => {
                 >
                   <QRcodeTemplate
                     data={{
-                      data: BrancheName,
+                      data: data,
                       type: "extra-rounded",
                       cornersSquare: "square",
                       cornersDot: "square",
@@ -288,7 +289,6 @@ const QRcodeStyle = (props) => {
                 value="colorCornersSquare"
                 arrayValue={["dot", "square", "extra-rounded"]}
                 type="cornersSquare"
-              
               />
             </div>
           </div>

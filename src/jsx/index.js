@@ -51,7 +51,7 @@ const Markup = () => {
         {localStorage.getItem("auth_token") ? (
           <Nav />
         ) : (
-          <Redirect to="/page-login" />
+          <Redirect to="/login" />
         )}
         <div className="content-body">
           <div className="container-fluid">

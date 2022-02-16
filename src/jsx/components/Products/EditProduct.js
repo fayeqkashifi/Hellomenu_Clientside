@@ -135,23 +135,23 @@ const EditProduct = (props) => {
   const handleSelectEventRecom = (e) => {
     setProductRecom(e);
   };
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.post(`/api/GetIngredient`);
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setIntgredients(result.data.fetchData);
       }
       const cat = await axios.get(`/api/GetCategories/${branchId}`);
-      if (cat.data.status === 200 && !unmounted) {
+      if (cat.data.status === 200) {
         setCategories(cat.data.fetchData);
       }
 
       const response = await axios.get(`/api/GetProducts/${branchId}`);
-      if (response.data.status === 200 && !unmounted) {
+      if (response.data.status === 200) {
         setFetchData(response.data.fetchData);
       }
       const res = await axios.get(`/api/EditProducts/${productId}`);
-      if (res.data.status === 200 && !unmounted) {
+      if (res.data.status === 200) {
         setEditProduct(res.data.product);
         setProductIngredient(JSON.parse(res.data.product.ingredients));
         setProductExtra(JSON.parse(res.data.product.extras));
@@ -172,10 +172,16 @@ const EditProduct = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setIntgredients([]);
+      setCategories([]);
+      setFetchData([]);
+      setEditProduct([]);
+      setProductIngredient([]);
+      setProductExtra([]);
+      setProductRecom([]);
+      setLoading(true);
     };
   }, [check]);
   const getSubCategories = (e) => {

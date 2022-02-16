@@ -10,7 +10,7 @@ function Footer(props) {
   const { title, url, style, stock, cart, setCart, deliveryFees, branchId } =
     props;
   let [sum, setSum] = useState(0);
-  const dataLoad = (unmounted) => {
+  const dataLoad = () => {
     let count = 0;
     cart.map(
       (item) =>
@@ -19,15 +19,12 @@ function Footer(props) {
             ? item.price * item.qty
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
-    if(!unmounted){
     setSum(count);
-    }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setSum(0);
     };
   }, [cart]);
   const [modalCentered, setModalCentered] = useState(false);

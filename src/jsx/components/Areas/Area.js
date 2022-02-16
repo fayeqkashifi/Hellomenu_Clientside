@@ -75,7 +75,6 @@ const Area = (props) => {
   // fetch
   const fetch = (e, id) => {
     e.preventDefault();
-
     axios.get(`/api/EditAreas/${id}`).then((res) => {
       if (res.data.status === 200) {
         const data = res.data.item;
@@ -95,20 +94,15 @@ const Area = (props) => {
   };
   const update = (data) => {
     const formData = new FormData();
-
     formData.append("city_id", selectedValue.id);
     formData.append("areaName", data.areaName);
     formData.append("id", data.id);
-
     axios.post("/api/UpdateAreas", formData).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setSelectedValue(null);
-
         setEditModalCentered(false);
         setAlerts(true, "success", res.data.message);
-
-        //  this.props.history.push("/")
       } else if (res.data.status === 404) {
         setAlerts(true, "error", res.data.message);
       } else if (res.data.status === 304) {
@@ -148,24 +142,23 @@ const Area = (props) => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/getAreasCompany`);
-      if (result.data.status === 200  && !unmounted) {
+      if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);
-
       }
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
-  
+    dataLoad();
+
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, [check]);
 

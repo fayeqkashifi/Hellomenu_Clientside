@@ -28,10 +28,10 @@ const OrderDetails = (props) => {
   let [sum, setSum] = useState(0);
   const [check, setCheck] = useState(false);
   const [modalCentered, setModalCentered] = useState(false);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/getOrder/${id}`);
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         let items = JSON.parse(result.data.fetchData.orderingItems);
         setFetchData(items);
         setOrder(result.data.fetchData);
@@ -51,10 +51,12 @@ const OrderDetails = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setOrder([]);
+      setSum(0);
+      setLoading(true);
     };
   }, [check]);
 

@@ -21,6 +21,8 @@ import FilterSelection from "./jsx/components/Design/Templates/FilterSelection";
 import MainPublic from "./jsx/components/Design/Templates/MainPublic";
 import MainDetails from "./jsx/components/Design/Templates/MainDetails";
 import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
+import SignUp from "./jsx/pages/SignUp/SignUp";
+import Show from "./jsx/pages/SignUp/Show";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -60,21 +62,28 @@ const App = () => {
     <Router>
       <Switch>
         <Route exact path="/">
-          <Redirect to="/page-login" />
+          <Redirect to="/login" />
         </Route>
+        <PublicRoute restricted={true} component={Login} path="/login" exact />
         <PublicRoute
-          restricted={true}
-          component={Login}
-          path="/page-login"
+          restricted={false}
+          component={SignUp}
+          path="/signup"
           exact
         />
-
+        <PublicRoute
+          restricted={false}
+          component={Show}
+          path="/onboarding/:id"
+          exact
+        />
         <PublicRoute
           restricted={false}
           component={Registration}
           path="/user-register"
           exact
         />
+
         <PublicRoute
           restricted={false}
           component={ForgotPassword}

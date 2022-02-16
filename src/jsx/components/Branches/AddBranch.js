@@ -58,7 +58,6 @@ const AddBranch = () => {
         formData.append("BrancheName", data.BrancheName);
         formData.append("currencyID", data.currencyID);
         formData.append("branchImage", imageState.branchImage);
-
         formData.append("phoneNumber", data.phoneNumber);
         formData.append("otherAddressFields", JSON.stringify(form));
         formData.append("fullAddress", fullAddress);
@@ -106,10 +105,10 @@ const AddBranch = () => {
   const FullAddressHandle = (e) => {
     setFullAddress(e.target.checked ? 1 : 0);
   };
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const response = await axios.get("/api/GetCurrencies");
-      if (response.data.status === 200 && !unmounted) {
+      if (response.data.status === 200) {
         setCurrency(response.data.fetchData);
       }
       setLoading(false);
@@ -118,10 +117,10 @@ const AddBranch = () => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setCurrency([]);
+      setLoading(true);
     };
   }, []);
 

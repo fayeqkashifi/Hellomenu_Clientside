@@ -11,9 +11,7 @@ const Registration = () => {
   const validationSchema = () => {
     return Yup.object().shape({
       name: Yup.string().required("Fullname is required"),
-      phone_number: Yup.string()
-        .phone()
-        .required("Phone number is required"),
+      phone_number: Yup.string().phone().required("Phone number is required"),
       email: Yup.string()
         .required("Email is required")
         .email("Email is invalid"),
@@ -203,7 +201,7 @@ const Registration = () => {
                 <div className="new-account mt-3">
                   <p className="">
                     {t("already_have_an_account")}{" "}
-                    <Link className="text-primary" to="/page-login">
+                    <Link className="text-primary" to="/login">
                       {t("sign_in")}
                     </Link>
                   </p>

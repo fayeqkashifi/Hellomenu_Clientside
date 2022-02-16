@@ -124,10 +124,10 @@ const Company = () => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get("/api/GetCompanies");
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
       }
       setLoading(false);
@@ -136,10 +136,10 @@ const Company = () => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, [check]);
 
@@ -239,7 +239,10 @@ const Company = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label> {t("image")}</label>
+                  <label>
+                    {" "}
+                    <strong>{t("logo")}</strong>
+                  </label>
                   <input
                     type="file"
                     className="form-control"
@@ -304,7 +307,10 @@ const Company = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label> {t("image")}</label>
+                  <label>
+                    {" "}
+                    <strong>{t("logo")}</strong>
+                  </label>
                   <input
                     type="file"
                     className="form-control"

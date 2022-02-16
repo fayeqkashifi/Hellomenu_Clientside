@@ -96,10 +96,10 @@ const EditBranch = (props) => {
     });
   };
   const arrayAddress = [];
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const response = await axios.get(`/api/EditBranches/${id}`);
-      if (response.data.status === 200 && !unmounted) {
+      if (response.data.status === 200) {
         setFullAddress(response.data.branch.fullAddress);
         JSON.parse(response.data.branch.otherAddressFields).map((item) => {
           arrayAddress.push({
@@ -115,7 +115,7 @@ const EditBranch = (props) => {
         setAlerts(true, "error", response.data.message);
       }
       const res = await axios.get("/api/GetCurrencies");
-      if (res.data.status === 200 && !unmounted) {
+      if (res.data.status === 200) {
         setCurrency(res.data.fetchData);
       }
       setLoading(false);
@@ -124,10 +124,13 @@ const EditBranch = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setCurrency([]);
+      setFullAddress(1);
+      setEditBranchstate([]);
+      setOrderMethodsEdit([]);
+      setLoading(true);
     };
   }, []);
 

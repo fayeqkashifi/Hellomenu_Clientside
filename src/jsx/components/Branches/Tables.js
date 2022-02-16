@@ -133,10 +133,10 @@ const Tables = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/GetTables/${id}`);
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
       }
       setLoading(false);
@@ -145,10 +145,10 @@ const Tables = (props) => {
     }
   };
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setFetchData([]);
+      setLoading(true);
     };
   }, [check]);
   const downloadAll = (e) => {
@@ -194,6 +194,7 @@ const Tables = (props) => {
         <tr key={item.id}>
           <td> {item.tableId}</td>
           <td> {item.tableName}</td>
+          <td> {item.numberOfSeats}</td>
           <td>
             <div>
               <QRCode
@@ -475,6 +476,7 @@ const Tables = (props) => {
                         {/* <th>{t('number')}</th> */}
                         <th>{t("table_number")}</th>
                         <th>{t("table_name")}</th>
+                        <th>{t("number_of_seats")}</th>
                         <th>{t("download")}</th>
                         <th>{t("actions")}</th>
                       </tr>
@@ -510,8 +512,9 @@ const Tables = (props) => {
                         {t("download_qr_code")}
                       </div>
 
-                      <h6> {item.tableId}</h6>
                       <h4> {item.tableName}</h4>
+                      <h6> {item.tableId}</h6>
+                      <h6> {item.numberOfSeats}</h6>
                     </div>
                   </div>
                   <div className="card-footer pt-0 pb-0 text-center">

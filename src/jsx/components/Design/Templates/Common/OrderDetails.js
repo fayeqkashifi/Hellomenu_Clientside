@@ -44,14 +44,11 @@ const OrderDetails = (props) => {
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState([]);
   useEffect(() => {
-    let unmounted = false;
-    const getdata = async (unmounted) => {
+    const getdata = async () => {
       var data = [];
       await getProduct(id).then((result) => {
         data = result.data.fetchData;
-        if(!unmounted){
         setItem(data);
-        }
       });
       var recData = [];
       JSON.parse(data[0].recommendations).map(async (item) => {
@@ -63,16 +60,16 @@ const OrderDetails = (props) => {
             });
           }
         });
-        if(!unmounted){
         setFetchData(recData);
-        }
       });
       setLoading(false);
     };
     // dataLoad();
-    getdata(unmounted); // axios
+    getdata(); // axios
     return () => {
-      unmounted = true;
+      // setItem([]);
+      // setFetchData([]);
+      setLoading(true);
     };
   }, [id]);
   let [sum, setSum] = useState(0);

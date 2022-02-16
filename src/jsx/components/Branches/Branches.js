@@ -55,10 +55,10 @@ const Branches = () => {
   const [branchdata, setBranchdata] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async (unmounted) => {
+  const dataLoad = async () => {
     try {
       const result = await axios.get("/api/GetBranches");
-      if (result.data.status === 200 && !unmounted) {
+      if (result.data.status === 200) {
         setBranchdata(result.data.branches);
       }
       setLoading(false);
@@ -68,10 +68,10 @@ const Branches = () => {
   };
   // for mobile
   useEffect(() => {
-    let unmounted = false;
-    dataLoad(unmounted);
+    dataLoad();
     return () => {
-      unmounted = true;
+      setBranchdata([]);
+      setLoading(true);
     };
   }, [check]);
 

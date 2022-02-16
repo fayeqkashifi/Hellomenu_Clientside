@@ -142,8 +142,8 @@ const FilterSelection = () => {
                                   level={"H"}
                                   size={120}
                                   fgColor="#f50b65"
-                                  value={`http://${base_url}:${port}/dark-template/${btoa(
-                                    branch.BranchID
+                                  value={`http://${base_url}:${port}//public/${btoa(
+                                    branch?.BranchID
                                   )}`}
                                   className="primary"
                                 />
