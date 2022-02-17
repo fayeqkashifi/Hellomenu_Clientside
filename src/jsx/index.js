@@ -44,7 +44,6 @@ const Markup = () => {
     { url: "orders/orders-details", component: OrderDetails },
     { url: "attributes", component: Attributes },
     { url: "areas", component: Area },
-    { url: "settings", component: SettingsShow },
   ];
 
   return (
@@ -67,11 +66,10 @@ const Markup = () => {
                 />
               ))}
               <PrivateRoute path={`/branches/show`} component={BranchShow} />
+              <PrivateRoute path={`/settings`} component={SettingsShow} />
 
               <Route component={Error404} />
             </Switch>
-
-            {/* <CreateRoute /> */}
           </div>
         </div>
         {localStorage.getItem("auth_token") ? <Footer /> : <Redirect to="/" />}

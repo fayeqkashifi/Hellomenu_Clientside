@@ -131,7 +131,7 @@ class SideBar extends Component {
                 <span className="nav-text">{t("areas")}</span>
               </Link>
             </li>
-            
+
             <li
               className={`${this.state.path === "orders" ? "mm-active" : ""}`}
             >

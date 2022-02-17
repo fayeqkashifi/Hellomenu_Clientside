@@ -23,6 +23,7 @@ import MainDetails from "./jsx/components/Design/Templates/MainDetails";
 import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
 import SignUp from "./jsx/pages/SignUp/SignUp";
 import Show from "./jsx/pages/SignUp/Show";
+// import Error404 from "./jsx/pages/Error404";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -103,7 +104,9 @@ const App = () => {
           component={MainRrecommend}
           path="/public/details/recommend/:id"
         />
+
         <Markup />
+        {/* <Route component={Error404} /> */}
       </Switch>
     </Router>
   );

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
 const qrCode = new QRCodeStyling({
   width: 250,
-  height: 300,
+  height: 250,
 
   imageOptions: {
     crossOrigin: "anonymous",

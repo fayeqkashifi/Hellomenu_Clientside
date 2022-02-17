@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import {
   Link,
@@ -6,31 +6,94 @@ import {
   Switch,
   useRouteMatch,
 } from "react-router-dom";
+import PrivateRoute from "../PrivateRoute";
 
 import { useTranslation } from "react-i18next";
+import General from "./General";
+import Localization from "./Localization";
 
-const Show = (props) => {
+const Show = () => {
   const { t } = useTranslation();
- 
+  const { path, url } = useRouteMatch();
+  const geturl = document.location.href.split("/");
+  const [urlCheck, setUrlCheck] = useState(
+    geturl[4] !== undefined ? geturl[4] : "settings"
+  );
+  const active = {
+    cursor: "pointer",
+    border: "1px solid",
+    margin: "10px",
+    borderRadius: "10px",
+    borderColor: "#5373e3",
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    backgroundColor: "#5373e3",
+    color: "#fff",
+  };
+  const DeActive = {
+    height: "50px",
+    cursor: "pointer",
+    border: "1px solid",
+    borderRadius: "10px",
+    margin: "10px",
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    borderColor: "#ffffff",
+    backgroundColor: "#ffffff",
+    color: "#5373e3",
+  };
   return (
     <Fragment>
       <Router>
-        <div className="row">
-          <div className="card">
-            <div className="card-header">
-            { t('settings_ t') }
+        <div className="card">
+          <div className="card-header">
+            <label className="card-title"> {t("settings_management")}</label>
+          </div>
+          <div className="card-body" style={{ backgroundColor: "#f6fafc" }}>
+            <div className="row mb-4">
+              <Link
+                to={`${url}`}
+                className="col d-flex justify-content-center align-items-center"
+                style={urlCheck === "settings" ? active : DeActive}
+                onClick={() => setUrlCheck("settings")}
+              >
+                General Information
+              </Link>
+              <Link
+                to={`${url}/image`}
+                className="col d-flex justify-content-center align-items-center"
+                style={urlCheck === "image" ? active : DeActive}
+                onClick={() => setUrlCheck("image")}
+              >
+                Images
+              </Link>
+              <Link
+                to={`${url}/user`}
+                className="col d-flex justify-content-center align-items-center"
+                style={urlCheck === "user" ? active : DeActive}
+                onClick={() => setUrlCheck("user")}
+              >
+                User Management
+              </Link>
+
+              <Link
+                to={`${url}/localization`}
+                className="col d-flex justify-content-center align-items-center"
+                style={urlCheck === "localization" ? active : DeActive}
+                onClick={() => setUrlCheck("localization")}
+              >
+                Localization
+              </Link>
             </div>
-            <div className="card-body">
-            
-            </div>
+            <Switch>
+              <PrivateRoute exact path={`${path}`} component={General} />
+              <PrivateRoute
+                path={`${path}/localization`}
+                component={Localization}
+              />
+            </Switch>
           </div>
         </div>
-     
-        {/* <Switch>
-          <PrivateRoute exact path={`${path}`} component={Category} />
-          <PrivateRoute path={`${path}/sub-category`} component={SubCategory} />
-
-        </Switch> */}
       </Router>
     </Fragment>
   );
