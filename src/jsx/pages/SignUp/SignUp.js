@@ -7,6 +7,8 @@ import "./style.css";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Footer from "../Footer";
+import logo from "../../../images/hellomenu/logo.svg";
+
 const SignUp = () => {
   const history = useHistory();
 
@@ -55,11 +57,13 @@ const SignUp = () => {
     <>
       <Header route="/login" linkName="Log In" />
       <div className="row ">
-        <div className="col-md-6 m-2">
-          <p style={{ fontSize: "66px" }} className="text-center text-primary">
+        <div className="col-md-6 m-2 f d-flex align-items-center justify-content-center">
+          {/* <p style={{ fontSize: "66px" }} className="text-center text-primary">
             HELLO MENU
-          </p>
-          <label>Same Text</label>
+          </p> */}
+          <img src={logo} width="80%" alt="Logo" />
+
+          {/* <label>Same Text</label> */}
         </div>
         <div className="col-md-5 m-2">
           <div className="authincation-content">

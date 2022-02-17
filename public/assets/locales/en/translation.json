@@ -264,6 +264,9 @@
   "download_all":"Download All",
   "addressing_method":"Addressing Method",
   "add_more":"Add More",
-  "qrcode_style":"QRCode-Style"
+  "qrcode_style":"QRCode-Style",
   
+
+
+  "settings": "Settings"
 }

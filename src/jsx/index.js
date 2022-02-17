@@ -28,6 +28,7 @@ import Area from "./components/Areas/Area";
 import OrderDetails from "./components/Orders/OrderDetails";
 import AddBranch from "./components/Branches/AddBranch";
 import EditBranch from "./components/Branches/EditBranch";
+import SettingsShow from "./components/Settings/Show";
 
 const Markup = () => {
   const routes = [
@@ -43,6 +44,7 @@ const Markup = () => {
     { url: "orders/orders-details", component: OrderDetails },
     { url: "attributes", component: Attributes },
     { url: "areas", component: Area },
+    { url: "settings", component: SettingsShow },
   ];
 
   return (

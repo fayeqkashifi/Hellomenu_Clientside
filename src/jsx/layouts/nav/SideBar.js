@@ -131,18 +131,7 @@ class SideBar extends Component {
                 <span className="nav-text">{t("areas")}</span>
               </Link>
             </li>
-            {/* <li
-              className={`${this.state.path === "extras" ? "mm-active" : ""}`}
-            >
-              <Link
-                className="ai-icon"
-                to="/extras"
-                onClick={() => this.setState({ path: "extras" })}
-              >
-                <i className="flaticon-381-add-3"></i>
-                <span className="nav-text">{t("extras")}</span>
-              </Link>
-            </li> */}
+            
             <li
               className={`${this.state.path === "orders" ? "mm-active" : ""}`}
             >
@@ -153,6 +142,18 @@ class SideBar extends Component {
               >
                 <i className="flaticon-381-plus"></i>
                 <span className="nav-text">{t("orders")}</span>
+              </Link>
+            </li>
+            <li
+              className={`${this.state.path === "settings" ? "mm-active" : ""}`}
+            >
+              <Link
+                className="ai-icon"
+                to="/settings"
+                onClick={() => this.setState({ path: "settings" })}
+              >
+                <i className="flaticon-381-settings-2"></i>
+                <span className="nav-text">{t("settings")}</span>
               </Link>
             </li>
           </MM>
