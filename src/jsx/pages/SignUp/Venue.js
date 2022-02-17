@@ -1,43 +1,34 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderWizard from "./HeaderWizard";
 // import { Link, useRouteMatch } from "react-router-dom";
-import Select from "react-select";
-import countryList from "react-select-country-list";
 import axios from "axios";
 import { useLocation, useHistory } from "react-router-dom";
+import Select from "react-select";
 
 const Venue = () => {
   const location = useLocation();
   const userId = location.state.userId;
   const history = useHistory();
-
-  const options = useMemo(() => countryList().getData(), []);
-
-  
-  const [languages, setLanguages] = useState([]);
+  const [business, setBusiness] = useState([]);
   useEffect(() => {
-    axios.get("/api/GetLanguages").then((res) => {
-      setLanguages(res.data);
+    axios.get("/api/GetBusinessType").then((res) => {
+      setBusiness(res.data.fetchData);
     });
   }, []);
   const initialValues = {
     company: "",
-    language: "",
-    country: "",
-    typeOfCompany: "",
+    business_type_id: "",
   };
   // atob
   const validationSchema = () => {
     return Yup.object().shape({
       company: Yup.string().required("Name of the business is required"),
-      language: Yup.string().required("Language is required"),
-      country: Yup.string().required("Country is required"),
-      typeOfCompany: Yup.string().required("Type of business is required"),
+      business_type_id: Yup.string().required("Type of business is required"),
     });
   };
-  
+
   const handleSubmit = (data) => {
     axios.post(`/api/UpdateRegister/${userId}`, data).then((res) => {
       if (res.data.status === 200) {
@@ -48,8 +39,8 @@ const Venue = () => {
             userId: userId,
           },
         });
-        }
-     });
+      }
+    });
   };
   return (
     <>
@@ -102,71 +93,26 @@ const Venue = () => {
 
                         <div className="form-group">
                           <label>What is the type of the business?</label>
-                          <Field
-                            name="typeOfCompany"
-                            type="text"
-                            className={
-                              "form-control" +
-                              (errors.typeOfCompany && touched.typeOfCompany
-                                ? " is-invalid"
-                                : "")
-                            }
-                          />
-                          <ErrorMessage
-                            name="typeOfCompany"
-                            component="div"
-                            className="invalid-feedback"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>
-                            <span className="text-danger"> * </span>
-                            What is your language?
-                          </label>
-
                           <Select
-                            options={languages?.map((lang, i) => {
+                            options={business?.map((bus, i) => {
                               return {
-                                value: lang.id,
-                                label: lang.Language_name,
+                                value: bus.id,
+                                label: bus.BusinessName,
                               };
                             })}
                             onChange={(getOptionValue) => {
-                              setFieldValue("language", getOptionValue.value);
+                              setFieldValue(
+                                "business_type_id",
+                                getOptionValue.value
+                              );
                             }}
                           />
-                          {errors.language ? (
+                          {errors.business_type_id ? (
                             <small
                               className="invalid"
                               style={{ color: "#ff4b4c", marginTop: ".5rem" }}
                             >
-                              {errors.language}
-                            </small>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        <div className="form-group">
-                          <label>
-                            <span className="text-danger"> * </span>
-                            What is your country?
-                          </label>
-                          <Select
-                            className="is-invalid"
-                            options={options}
-                            onChange={(getOptionValue) => {
-                              setFieldValue("country", getOptionValue.label);
-                            }}
-                          />
-                          {errors.country ? (
-                            <small
-                              className="invalid"
-                              style={{
-                                color: "#ff4b4c",
-                                marginTop: ".5rem",
-                              }}
-                            >
-                              {errors.country}
+                              {errors.business_type_id}
                             </small>
                           ) : (
                             ""

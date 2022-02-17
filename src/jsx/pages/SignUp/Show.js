@@ -1,13 +1,5 @@
 import React, { Fragment } from "react";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  useRouteMatch,
-} from "react-router-dom";
-
-import { useTranslation } from "react-i18next";
-
 import Header from "../Header";
 import OnBoarding from "./OnBoarding";
 import Venue from "./Venue";

@@ -188,7 +188,7 @@ const Login = () => {
                       {t("forgot_password")}{" "}
                     </Link>
                     <span>&#x2022;</span>
-                    <Link className="ml-2" to="/user-register">
+                    <Link className="ml-2" to="/signup">
                       {t("have_not_account")}{" "}
                     </Link>{" "}
                   </div>
@@ -198,7 +198,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-        <Footer />
+      <Footer />
     </>
   );
 };
