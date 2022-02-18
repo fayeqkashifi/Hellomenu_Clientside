@@ -48,9 +48,8 @@ const SignUp = () => {
         if (res.data.status === 200) {
           localStorage.setItem("auth_token", res.data.token);
           localStorage.setItem("auth_id", btoa(res.data.id));
-        } 
+        }
       });
-      
     });
   };
   return (
@@ -141,7 +140,7 @@ const SignUp = () => {
                   </Formik>
                   {alert.length !== 0 && (
                     <div
-                      class="alert alert-warning "
+                      className="alert alert-warning "
                       style={{ color: "#000000" }}
                     >
                       {alert}
@@ -154,7 +153,6 @@ const SignUp = () => {
         </div>
       </div>
       <Footer />
-
     </>
   );
 };

@@ -278,6 +278,14 @@
   "whatsapp":"WhatsApp",
   "social_links":"SOCIAL LINKS",
   "contact_email":"Contact Email",
-  "business_type":"Business Type"
+  "business_type":"Business Type",
+  "submit":"Submit",
+  "change":"Change",
+  "edit_profile":"Edit Profile",
+  "confirm_new_password":"Confirm New Password",
+  "new_password":"New Password",
+  "current_password":"Current Password",
+  "close_account":"Close Account"
+  
 
 }

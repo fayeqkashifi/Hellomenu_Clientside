@@ -45,8 +45,9 @@ class SideBar extends Component {
   }
   constructor(props) {
     super(props);
+    const geturl = document.location.href.split("/");
     this.state = {
-      path: window.location.pathname.replace(/^\/([^\/]*).*$/, "$1"),
+      path: geturl[3],
     };
   }
   render() {

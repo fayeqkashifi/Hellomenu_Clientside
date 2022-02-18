@@ -23,6 +23,7 @@ import MainDetails from "./jsx/components/Design/Templates/MainDetails";
 import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
 import SignUp from "./jsx/pages/SignUp/SignUp";
 import Show from "./jsx/pages/SignUp/Show";
+import ResetPassword from "./jsx/pages/ResetPassword";
 // import Error404 from "./jsx/pages/Error404";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
@@ -89,6 +90,12 @@ const App = () => {
           restricted={false}
           component={ForgotPassword}
           path="/forgot-password"
+          exact
+        />
+        <PublicRoute
+          restricted={false}
+          component={ResetPassword}
+          path="/reset-password/:id"
           exact
         />
 

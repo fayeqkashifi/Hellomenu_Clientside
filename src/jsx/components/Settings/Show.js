@@ -10,7 +10,7 @@ import PrivateRoute from "../PrivateRoute";
 
 import { useTranslation } from "react-i18next";
 import General from "./General";
-import Localization from "./Localization";
+import User from "./User";
 
 const Show = () => {
   const { t } = useTranslation();
@@ -60,20 +60,20 @@ const Show = () => {
                 General Information
               </Link>
               <Link
-                to={`${url}/image`}
-                className="col d-flex justify-content-center align-items-center"
-                style={urlCheck === "image" ? active : DeActive}
-                onClick={() => setUrlCheck("image")}
-              >
-                Images
-              </Link>
-              <Link
                 to={`${url}/user`}
                 className="col d-flex justify-content-center align-items-center"
                 style={urlCheck === "user" ? active : DeActive}
                 onClick={() => setUrlCheck("user")}
               >
                 User Management
+              </Link>
+              <Link
+                to={`${url}/image`}
+                className="col d-flex justify-content-center align-items-center"
+                style={urlCheck === "image" ? active : DeActive}
+                onClick={() => setUrlCheck("image")}
+              >
+                Images
               </Link>
 
               <Link
@@ -87,10 +87,7 @@ const Show = () => {
             </div>
             <Switch>
               <PrivateRoute exact path={`${path}`} component={General} />
-              <PrivateRoute
-                path={`${path}/localization`}
-                component={Localization}
-              />
+              <PrivateRoute path={`${path}/user`} component={User} />
             </Switch>
           </div>
         </div>

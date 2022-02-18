@@ -56,6 +56,20 @@ const General = () => {
       setLoading(true);
     };
   }, []);
+  const initialValues = {
+    id: fetchData?.id,
+    company: fetchData?.company,
+    companyDiscription: fetchData?.companyDiscription
+      ? fetchData.companyDiscription
+      : "",
+    business_type_id: fetchData?.business_type_id,
+    facebook: fetchData?.facebook ? fetchData.facebook : "",
+    instagram: fetchData?.instagram ? fetchData.instagram : "",
+    youtube: fetchData?.youtube ? fetchData.youtube : "",
+    tiktok: fetchData?.tiktok ? fetchData.tiktok : "",
+    contactEmail: fetchData?.contactEmail ? fetchData.contactEmail : "",
+    whatsapp: fetchData?.whatsapp ? fetchData.whatsapp : "",
+  };
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
@@ -81,7 +95,8 @@ const General = () => {
         ) : (
           ""
         )}
-        <Formik onSubmit={save} initialValues={fetchData}>
+
+        <Formik onSubmit={save} initialValues={initialValues}>
           {({ setFieldValue }) => (
             <Form>
               <div className="form-group">
