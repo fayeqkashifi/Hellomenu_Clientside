@@ -68,15 +68,6 @@ const Show = () => {
                 User Management
               </Link>
               <Link
-                to={`${url}/image`}
-                className="col d-flex justify-content-center align-items-center"
-                style={urlCheck === "image" ? active : DeActive}
-                onClick={() => setUrlCheck("image")}
-              >
-                Images
-              </Link>
-
-              <Link
                 to={`${url}/localization`}
                 className="col d-flex justify-content-center align-items-center"
                 style={urlCheck === "localization" ? active : DeActive}

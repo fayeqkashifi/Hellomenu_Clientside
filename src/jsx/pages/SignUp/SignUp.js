@@ -31,6 +31,7 @@ const SignUp = () => {
   };
   const [alert, setAlert] = useState("");
   const handleSubmit = (data) => {
+    console.log(data);
     axios.get("sanctum/csrf-cookie").then((response) => {
       axios.post("/api/register", data).then((res) => {
         if (res.data.status === 200) {

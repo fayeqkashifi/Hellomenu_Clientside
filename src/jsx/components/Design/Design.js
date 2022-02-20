@@ -241,7 +241,7 @@ const Design = (props) => {
                 <div className="col-4 text-right">
                   <Switch
                     disabled={item.Status === 1 ? true : false}
-                    checked={item.Status === 1 ? true : false}
+                    defaultChecked={item.Status === 1 ? true : false}
                     color="secondary"
                     onChange={(e) => changeTheActiveTheme(e, item.id)}
                   />
@@ -341,7 +341,9 @@ const Design = (props) => {
                             <Grid item xs={4}>
                               <Switch
                                 disabled={item.Status === 1 ? true : false}
-                                checked={item.Status === 1 ? true : false}
+                                defaultChecked={
+                                  item.Status === 1 ? true : false
+                                }
                                 color="secondary"
                                 onChange={(e) =>
                                   changeTheActiveTemplate(e, item.id)

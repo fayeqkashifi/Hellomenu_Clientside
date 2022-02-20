@@ -212,7 +212,7 @@ const General = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-center">
+              <div className="text-right">
                 <Button variant="success" type="submit">
                   {t("save")}{" "}
                 </Button>
