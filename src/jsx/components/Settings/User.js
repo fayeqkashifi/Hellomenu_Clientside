@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 import "react-phone-input-2/lib/style.css";
-import CreateUser from "./CreateUser";
-import EditUser from "./EditUser";
-import Role from "./Role";
+import CreateUser from "./Users/CreateUser";
+import EditUser from "./Users/EditUser";
+import Role from "./Roles/Role";
 
 import { Link, Switch, useRouteMatch } from "react-router-dom";
 import PrivateRoute from "../PrivateRoute";

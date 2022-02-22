@@ -7,7 +7,7 @@ import axios from "axios";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import * as Yup from "yup";
-import CustomAlert from "../CustomAlert";
+import CustomAlert from "../../CustomAlert";
 const EditUser = (props) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);

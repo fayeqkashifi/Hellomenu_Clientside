@@ -7,7 +7,7 @@ import axios from "axios";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import * as Yup from "yup";
-import CustomAlert from "../CustomAlert";
+import CustomAlert from "../../CustomAlert";
 import { CSmartTable } from "@coreui/react-pro";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
@@ -15,11 +15,15 @@ import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import swal from "sweetalert";
 import Switch from "@mui/material/Switch";
+import Select from "react-select";
+import Chip from "@mui/material/Chip";
 const CreateUser = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   const [user, setUser] = useState([]);
+  const [roles, setRoles] = useState([]);
+
   const dataLoad = async () => {
     try {
       const result = await axios.get("/api/getUsers");
@@ -27,6 +31,9 @@ const CreateUser = () => {
         setUser(result.data.data);
         setLoading(false);
       }
+      axios.get("/api/getRoles").then((res) => {
+        setRoles(res.data.data);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -44,6 +51,7 @@ const CreateUser = () => {
     email: "",
     password: "",
     confirm_new_password: "",
+    role_id: "",
   });
 
   const validationSchema = () => {
@@ -58,6 +66,7 @@ const CreateUser = () => {
       confirm_new_password: Yup.string()
         .required("Confirm Password is required")
         .oneOf([Yup.ref("password")], "Passwords must and should match"),
+      role_id: Yup.string().required("Role is required"),
     });
   };
 
@@ -116,6 +125,9 @@ const CreateUser = () => {
       key: "status",
     },
     {
+      key: "roleName",
+    },
+    {
       key: "actions",
     },
   ];
@@ -131,8 +143,8 @@ const CreateUser = () => {
       if (willDelete) {
         axios.delete(`/api/deleteUser/${id}`).then((res) => {
           if (res.data.status === 200) {
+            // swal("Success", res.data.message, "success");
             setCheck(!check);
-            swal("Success", res.data.message, "success");
           } else if (res.data.status === 404) {
             swal("Error", res.data.message, "error");
           }
@@ -270,6 +282,36 @@ const CreateUser = () => {
                   </div>
                   <div className="col-6">
                     <div className="form-group">
+                      <label>
+                        <span className="text-danger"> * </span>
+                        What is your Role?
+                      </label>
+
+                      <Select
+                        options={roles?.map((lang, i) => {
+                          return {
+                            value: lang.id,
+                            label: lang.roleName,
+                          };
+                        })}
+                        onChange={(getOptionValue) => {
+                          setFieldValue("role_id", getOptionValue.value);
+                        }}
+                      />
+                      {errors.role_id ? (
+                        <small
+                          className="invalid"
+                          style={{ color: "#ff4b4c", marginTop: ".5rem" }}
+                        >
+                          {errors.role_id}
+                        </small>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="form-group">
                       <label> {t("phone_number")}</label>
                       <PhoneInput
                         country={"af"}
@@ -281,7 +323,6 @@ const CreateUser = () => {
                     </div>
                   </div>
                 </div>
-                <div className="row my-3">USER PERMISSION</div>
 
                 <div className="text-right">
                   <Button variant="success" type="submit">
@@ -304,6 +345,17 @@ const CreateUser = () => {
             pagination
             tableFilter
             scopedColumns={{
+              roleName: (item) => {
+                return (
+                  <td>
+                    <Chip
+                      label={item.roleName}
+                      // color="primary"
+                      variant="outlined"
+                    />
+                  </td>
+                );
+              },
               status: (item) => {
                 return (
                   <td>
