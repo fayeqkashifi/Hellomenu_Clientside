@@ -16,6 +16,8 @@ import Stack from "@mui/material/Stack";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
+import { checkPermission } from "../Permissions";
+
 const Product = (props) => {
   const { path, url } = useRouteMatch();
 
@@ -233,6 +235,7 @@ const Product = (props) => {
           actions: (item) => {
             return (
               <td style={{ width: "20%" }}>
+
                 <Link
                   to={{
                     pathname: `${url}/variants`,
@@ -247,6 +250,7 @@ const Product = (props) => {
                     </IconButton>
                   </Tooltip>
                 </Link>
+                {checkPermission('products-edit')&&(
                 <Link
                   to={{
                     pathname: `${url}/edit-product`,
@@ -260,6 +264,7 @@ const Product = (props) => {
                     </IconButton>
                   </Tooltip>
                 </Link>
+                )}
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={(e) => deleteProduct(e, item.id)}
@@ -274,12 +279,7 @@ const Product = (props) => {
             );
           },
         }}
-        // selectable
-        // sorterValue={{ column: 'name', state: 'asc' }}
         tableFilter
-        // tableHeadProps={{
-        //   color: "primary",
-        // }}
         tableProps={{
           striped: true,
           hover: true,
@@ -291,20 +291,25 @@ const Product = (props) => {
   return (
     <>
       <Fragment>
+
         <div className="d-flex justify-content-end">
+      {checkPermission('products-create')&&(
+  <Link
+  // className="btn btn-primary mb-2 mr-2"
+  to={{
+    pathname: `${url}/add-product`,
+    state: { id: branchId },
+  }}
+>
           <Tooltip title="Add New Product">
             <IconButton aria-label="Example">
-              <Link
-                // className="btn btn-primary mb-2 mr-2"
-                to={{
-                  pathname: `${url}/add-product`,
-                  state: { id: branchId },
-                }}
-              >
+            
                 <AddIcon />
-              </Link>
             </IconButton>
           </Tooltip>
+          </Link>
+
+          )}
           <Tooltip title="Change Layout">
             <IconButton aria-label="Example" onClick={changeLayout}>
               {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
@@ -353,6 +358,8 @@ const Product = (props) => {
                             </Tooltip>
                           </Link>
                         </div>
+                {checkPermission('products-edit')&&(
+
                         <div className="col-4 pt-3 pb-3 border-right">
                           <Link
                             to={{
@@ -367,6 +374,9 @@ const Product = (props) => {
                             </Tooltip>
                           </Link>
                         </div>
+                )}
+                {checkPermission('products-delete')&&(
+
                         <div className="col-4 pt-3 pb-3">
                           <Link
                             to=""
@@ -379,6 +389,7 @@ const Product = (props) => {
                             </Tooltip>
                           </Link>
                         </div>
+                )}
                       </div>
                     </div>
                   </div>

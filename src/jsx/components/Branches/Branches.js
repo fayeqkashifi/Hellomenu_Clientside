@@ -12,6 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CustomAlert from "../CustomAlert";
 import "yup-phone";
 import { base_url, port } from "../../../Consts";
+import { checkPermission } from "../Permissions";
 
 const Branches = () => {
   const { t } = useTranslation();
@@ -141,6 +142,7 @@ const Branches = () => {
             </div>
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
+              {checkPermission('branches-edit') && (
                 <div className="col-6 pt-3 pb-3 border-right">
                   <Link
                     to={{
@@ -152,6 +154,9 @@ const Branches = () => {
                     <span>{t("edit")}</span>
                   </Link>
                 </div>
+              )}
+              {checkPermission('branches-delete') && (
+
                 <div className="col-6 pt-3 pb-3">
                   <div
                     style={{ cursor: "pointer" }}
@@ -160,6 +165,7 @@ const Branches = () => {
                     <span>{t("delete")}</span>
                   </div>
                 </div>
+              )}
               </div>
             </div>
           </div>
@@ -191,6 +197,7 @@ const Branches = () => {
       {layout ? (
         <div className="row">
           {viewBranches_HTMLTABLE}
+          {checkPermission('branches-create') && (
           <div className="col-xl-3 col-lg-6 col-md-4 col-sm-6">
             <div className="card overflow-hidden ">
               <div
@@ -209,6 +216,7 @@ const Branches = () => {
               </div>
             </div>
           </div>
+          )}
         </div>
       ) : (
         <div className="row">
@@ -218,11 +226,14 @@ const Branches = () => {
                 <div>
                   <h4 className="card-title mb-2">{t("branches")}</h4>
                 </div>
+          {checkPermission('branches-create') && (
+
                 <div className="dropdown">
                   <Link className="btn btn-primary" to={`/branches/add-branch`}>
                     {t("add_branch")}
                   </Link>
                 </div>
+          )}
               </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
@@ -286,6 +297,8 @@ const Branches = () => {
                             </td>
 
                             <td>
+          {checkPermission('branches-edit') && (
+
                               <Link
                                 to={{
                                   pathname: `/branches/edit-branch`,
@@ -296,7 +309,10 @@ const Branches = () => {
                               >
                                 {t("edit")}
                               </Link>
+          )}
                               &nbsp;&nbsp;&nbsp;
+          {checkPermission('branches-delete') && (
+
                               <button
                                 type="button"
                                 onClick={(e) => deleteBranch(e, item.id)}
@@ -304,6 +320,7 @@ const Branches = () => {
                               >
                                 {t("delete")}
                               </button>
+          )}
                             </td>
                           </tr>
                         );

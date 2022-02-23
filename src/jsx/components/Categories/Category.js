@@ -21,6 +21,8 @@ import Backdrop from "@mui/material/Backdrop";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CustomAlert from "../CustomAlert";
 
+import { checkPermission } from "../Permissions";
+
 const Category = (props) => {
   const { url } = useRouteMatch();
   // for localization
@@ -301,6 +303,7 @@ const Category = (props) => {
 
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
+{checkPermission('categories-edit')&&(
                 <div className="col-6 pt-3 pb-3 border-right">
                   <div
                     style={{ cursor: "pointer" }}
@@ -309,6 +312,9 @@ const Category = (props) => {
                     <span>{t("edit")}</span>
                   </div>
                 </div>
+                )}
+{checkPermission('categories-delete')&&(
+
                 <div className="col-6 pt-3 pb-3">
                   <div
                     style={{ cursor: "pointer" }}
@@ -317,6 +323,7 @@ const Category = (props) => {
                     <span>{t("delete")}</span>
                   </div>
                 </div>
+)}
               </div>
             </div>
           </div>
@@ -589,6 +596,8 @@ const Category = (props) => {
       {layout ? (
         <Row>
           {viewProducts_HTMLTABLE}
+{checkPermission('categories-create')&&(
+
           <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
             <div className="card overflow-hidden ">
               <div
@@ -608,6 +617,7 @@ const Category = (props) => {
               </div>
             </div>
           </div>
+)}
         </Row>
       ) : (
         <div className="row">
@@ -617,6 +627,8 @@ const Category = (props) => {
                 <div>
                   <h4 className="card-title mb-2">{t("categories")}</h4>
                 </div>
+{checkPermission('categories-create')&&(
+
                 <div className="dropdown">
                   <Button
                     variant="primary"
@@ -627,6 +639,7 @@ const Category = (props) => {
                     {t("add_category")}
                   </Button>
                 </div>
+)}
               </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
@@ -690,6 +703,8 @@ const Category = (props) => {
                             </td>
 
                             <td>
+{checkPermission('categories-edit')&&(
+
                               <button
                                 type="button"
                                 onClick={(e) => fetchMenus(e, item.id)}
@@ -697,7 +712,10 @@ const Category = (props) => {
                               >
                                 {t("edit")}
                               </button>
+)}
                               &nbsp;&nbsp;&nbsp;
+{checkPermission('categories-delete')&&(
+
                               <button
                                 type="button"
                                 onClick={(e) => deleteMenu(e, item.id)}
@@ -705,6 +723,7 @@ const Category = (props) => {
                               >
                                 {t("delete")}
                               </button>
+)}
                             </td>
                           </tr>
                         );

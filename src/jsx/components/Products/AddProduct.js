@@ -9,6 +9,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Switch from "@mui/material/Switch";
 import CustomAlert from "../CustomAlert";
+import { checkPermission } from "../Permissions";
 
 const AddProduct = (props) => {
   const history = useHistory();
@@ -465,13 +466,16 @@ const AddProduct = (props) => {
                         <label className="mb-1 ">
                           <strong>{t("ingredients")}</strong>
                         </label>
+                      {checkPermission('ingredients-create')&&(
                         <small
                           onClick={() => setModalCentered(true)}
                           style={{ cursor: "pointer" }}
                         >
                           {t("add_ingredient")}
                         </small>
+                          )}
                       </div>
+                    
                       <Select
                         isMulti
                         options={intgredients?.map((o, i) => {

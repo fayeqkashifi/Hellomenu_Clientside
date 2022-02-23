@@ -13,11 +13,8 @@ import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
-import { Link } from "react-router-dom";
+import { checkPermission } from "../Permissions";
 
-// import ReactToPrint from "react-to-print";
-// import QRCodePrint from "./QRCodePrint";
-// import PrintIcon from "@mui/icons-material/Print";
 const Tables = (props) => {
   const id = props.history.location.state.id;
   // validation start
@@ -214,6 +211,7 @@ const Tables = (props) => {
             </div>
           </td>
           <td>
+            {checkPermission('tables-edit') &&(
             <button
               type="button"
               onClick={(e) => fetchTable(e, item.id)}
@@ -221,7 +219,10 @@ const Tables = (props) => {
             >
               {t("edit")}
             </button>
+            )}
             &nbsp;&nbsp;&nbsp;
+            {checkPermission('tables-delete') &&(
+
             <button
               type="button"
               onClick={(e) => deleteTable(e, item.id)}
@@ -229,6 +230,7 @@ const Tables = (props) => {
             >
               {t("delete")}
             </button>
+            )}
           </td>
         </tr>
       );
@@ -457,6 +459,8 @@ const Tables = (props) => {
                 <div>
                   <h4 className="card-title mb-2">{t("tables")}</h4>
                 </div>
+            {checkPermission('tables-create') &&(
+
                 <div className="dropdown">
                   <Button
                     variant="primary"
@@ -467,6 +471,7 @@ const Tables = (props) => {
                     {t("add_table")}
                   </Button>
                 </div>
+            )}
               </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
@@ -519,6 +524,8 @@ const Tables = (props) => {
                   </div>
                   <div className="card-footer pt-0 pb-0 text-center">
                     <div className="row">
+            {checkPermission('tables-edit') &&(
+
                       <div className="col-6 pt-3 pb-3 border-right">
                         <div
                           style={{ cursor: "pointer" }}
@@ -527,6 +534,9 @@ const Tables = (props) => {
                           <span>{t("edit")}</span>
                         </div>
                       </div>
+            )}
+            {checkPermission('tables-delete') &&(
+
                       <div className="col-6 pt-3 pb-3">
                         <div
                           style={{ cursor: "pointer" }}
@@ -535,12 +545,15 @@ const Tables = (props) => {
                           <span>{t("delete")}</span>
                         </div>
                       </div>
+            )}
                     </div>
                   </div>
                 </div>
               </div>
             );
           })}
+            {checkPermission('tables-create') &&(
+
           <div className="col-xl-3 col-lg-4 col-sm-6 ">
             <div className="card overflow-hidden ">
               <div
@@ -560,6 +573,7 @@ const Tables = (props) => {
               </div>
             </div>
           </div>
+            )}
         </div>
       )}
     </Fragment>

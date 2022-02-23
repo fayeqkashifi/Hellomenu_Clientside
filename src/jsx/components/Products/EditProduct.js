@@ -13,6 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import CustomAlert from "../CustomAlert";
+import { checkPermission } from "../Permissions";
 
 const EditProduct = (props) => {
   const history = useHistory();
@@ -484,16 +485,21 @@ const EditProduct = (props) => {
                   })}
                   <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                     <div className="form-group">
+
                       <div className="d-flex justify-content-between">
                         <label className="mb-1 ">
                           <strong>{t("ingredients")}</strong>
                         </label>
+                    {checkPermission('ingredients-create')&&(
+
                         <small
                           onClick={() => setModalCentered(true)}
                           style={{ cursor: "pointer" }}
                         >
                           {t("add_ingredient")}
                         </small>
+                    )}
+
                       </div>
                       <Select
                         defaultValue={productIngredient}

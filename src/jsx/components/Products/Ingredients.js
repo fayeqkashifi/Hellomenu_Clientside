@@ -9,6 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import CustomAlert from "../CustomAlert";
 import { useHistory } from "react-router-dom";
+import { checkPermission } from "../Permissions";
 
 const Ingredients = (props) => {
   // validation start
@@ -264,7 +265,7 @@ const Ingredients = (props) => {
 
           <td> {item.name}</td>
           <td>
-            {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
+            {checkPermission('ingredients-edit')&&(
             <button
               type="button"
               onClick={(e) => fetch(e, item.id)}
@@ -272,7 +273,10 @@ const Ingredients = (props) => {
             >
               {t("edit")}
             </button>
+            )}
             &nbsp;&nbsp;&nbsp;
+            {checkPermission('ingredients-delete')&&(
+            
             <button
               type="button"
               onClick={(e) => deleteIngredient(e, item.id)}
@@ -280,6 +284,7 @@ const Ingredients = (props) => {
             >
               {t("delete")}
             </button>
+            )}
           </td>
         </tr>
       );
@@ -422,6 +427,7 @@ const Ingredients = (props) => {
                 <h4 className="card-title mb-2">{t("ingredients")}</h4>
               </div>
               <div className="dropdown">
+            {checkPermission('ingredients-create')&&(
                 <Button
                   variant="primary"
                   type="button"
@@ -430,6 +436,7 @@ const Ingredients = (props) => {
                 >
                   {t("add_ingredient")}
                 </Button>
+            )}
               </div>
             </div>
             <div className="card-body p-0">

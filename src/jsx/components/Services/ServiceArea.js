@@ -307,12 +307,15 @@ const ServiceArea = (props) => {
                         values.)
                       </small>
                     </label>
+            {checkPermission("areas-create") && (
+
                     <small
                       onClick={() => setAreaModal(true)}
                       style={{ cursor: "pointer" }}
                     >
                       {t("add_area")}
                     </small>
+            )}
                   </div>
                   <Select
                     isMulti
@@ -446,7 +449,9 @@ const ServiceArea = (props) => {
       <Modal className="fade" show={editmodalCentered}>
         <form onSubmit={updateServiceArea} method="POST">
           <Modal.Header>
+            
             <Modal.Title>{t("edit_service_area")}</Modal.Title>
+
             <Button
               onClick={() => setEditModalCentered(false)}
               variant=""
