@@ -7,6 +7,8 @@ import Role from "./Roles/Role";
 
 import { Link, Switch, useRouteMatch } from "react-router-dom";
 import PrivateRoute from "../PrivateRoute";
+import { checkPermission } from "../Permissions";
+
 const User = (props) => {
   const { path, url } = useRouteMatch();
   const geturl = document.location.href.split("/");
@@ -40,30 +42,36 @@ const User = (props) => {
   return (
     <>
       <div className="row mb-4">
-        <Link
-          to={`${url}`}
-          className="col d-flex justify-content-center align-items-center"
-          style={urlCheck === "settings" ? active : DeActive}
-          onClick={() => setUrlCheck("settings")}
-        >
-          Edit Profile
-        </Link>
-        <Link
-          to={`${url}/create-user`}
-          className="col d-flex justify-content-center align-items-center"
-          style={urlCheck === "create-user" ? active : DeActive}
-          onClick={() => setUrlCheck("create-user")}
-        >
-          Users
-        </Link>
-        <Link
-          to={`${url}/role`}
-          className="col d-flex justify-content-center align-items-center"
-          style={urlCheck === "role" ? active : DeActive}
-          onClick={() => setUrlCheck("role")}
-        >
-          Role
-        </Link>
+        {checkPermission("profile-view") && (
+          <Link
+            to={`${url}`}
+            className="col d-flex justify-content-center align-items-center"
+            style={urlCheck === "settings" ? active : DeActive}
+            onClick={() => setUrlCheck("settings")}
+          >
+            Edit Profile
+          </Link>
+        )}
+        {checkPermission("users-view") && (
+          <Link
+            to={`${url}/create-user`}
+            className="col d-flex justify-content-center align-items-center"
+            style={urlCheck === "create-user" ? active : DeActive}
+            onClick={() => setUrlCheck("create-user")}
+          >
+            Users
+          </Link>
+        )}
+        {checkPermission("roles-view") && (
+          <Link
+            to={`${url}/role`}
+            className="col d-flex justify-content-center align-items-center"
+            style={urlCheck === "role" ? active : DeActive}
+            onClick={() => setUrlCheck("role")}
+          >
+            Role
+          </Link>
+        )}
       </div>
       <Switch>
         <PrivateRoute exact path={`${path}`} component={EditUser} />

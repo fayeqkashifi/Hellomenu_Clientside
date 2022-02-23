@@ -10,6 +10,9 @@ const Role = () => {
 
   return (
     <>
+      <div className="alert alert-info">
+        You must log out of the system after making changes to your role.
+      </div>
       <Switch>
         <PrivateRoute exact path={`${path}`} component={AddRole} />
         <PrivateRoute path={`${path}/edit-role`} component={EditRole} />

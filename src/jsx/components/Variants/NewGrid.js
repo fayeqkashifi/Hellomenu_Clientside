@@ -8,6 +8,7 @@ import Tooltip from "@mui/material/Tooltip";
 import swal from "sweetalert";
 import { Button } from "react-bootstrap";
 import CustomAlert from "../CustomAlert";
+import { checkPermission } from "../Permissions";
 
 const NewGrid = (props) => {
   const { t } = useTranslation();
@@ -190,12 +191,14 @@ const NewGrid = (props) => {
       } else if (key == "postion") {
         outputs.push(
           <div className={`col-xl-2 col-lg-2 col-sm-2 col-md-2`} key={i}>
-            <Tooltip title="Delete">
-              <IconButton onClick={(e) => removeVar(e, value)}>
-                {/* {value} */}
-                <DeleteIcon sx={{ color: "red" }} />
-              </IconButton>
-            </Tooltip>
+            {checkPermission("variants-delete") && (
+              <Tooltip title="Delete">
+                <IconButton onClick={(e) => removeVar(e, value)}>
+                  {/* {value} */}
+                  <DeleteIcon sx={{ color: "red" }} />
+                </IconButton>
+              </Tooltip>
+            )}
           </div>
         );
       }
@@ -220,20 +223,21 @@ const NewGrid = (props) => {
                         }}
                       />
                     </div>
-
-                    <div className="card-footer pt-0 pb-0 text-center">
-                      <div className="row">
-                        <Tooltip title="Delete">
-                          <IconButton
-                            onClick={(e) =>
-                              removeImage(e, photo, x, indexOfImage)
-                            }
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+                    {checkPermission("variants-delete") && (
+                      <div className="card-footer pt-0 pb-0 text-center">
+                        <div className="row">
+                          <Tooltip title="Delete">
+                            <IconButton
+                              onClick={(e) =>
+                                removeImage(e, photo, x, indexOfImage)
+                              }
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               );
@@ -283,16 +287,19 @@ const NewGrid = (props) => {
       <div className={`card-body ${numberOfVar.length == 0 ? "d-none" : ""}`}>
         <div className="row">{outputs}</div>
       </div>
-
-      <div className={`card-footer ${numberOfVar.length == 0 ? "d-none" : ""}`}>
-        <Button
-          onClick={saveVaraiants}
-          disabled={numberOfVar.length == 0 ? "disabled" : ""}
+      {checkPermission("variants-create") && (
+        <div
+          className={`card-footer ${numberOfVar.length == 0 ? "d-none" : ""}`}
         >
-          {" "}
-          Save Variants
-        </Button>
-      </div>
+          <Button
+            onClick={saveVaraiants}
+            disabled={numberOfVar.length == 0 ? "disabled" : ""}
+          >
+            {" "}
+            Save Variants
+          </Button>
+        </div>
+      )}
     </Fragment>
   );
 };

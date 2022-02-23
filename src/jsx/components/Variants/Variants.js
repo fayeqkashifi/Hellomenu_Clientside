@@ -12,6 +12,7 @@ import { TagsInput } from "react-tag-input-component";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
+import { checkPermission } from "../Permissions";
 
 const Variants = (props) => {
   // for localization
@@ -347,43 +348,96 @@ const Variants = (props) => {
             {t("back_to_products_list")}
           </Link>
         </CBreadcrumb>
+        {checkPermission("variants-create") && (
+          <>
+            <div className="card">
+              <div className="card-body">
+                {checkPermission("attribute_create") && (
+                  <div className="col-xl-12 col-lg-12 col-sm-12 ">
+                    {" "}
+                    <div className="d-flex justify-content-between">
+                      <label className="mb-1 "></label>
+                      <small
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setModalCentered(true)}
+                      >
+                        {t("add_attribute")}
+                      </small>
+                    </div>
+                  </div>
+                )}
+
+                <div className="col-xl-12 col-lg-12 col-sm-12 ">
+                  <Select
+                    value={variantsTags}
+                    isMulti
+                    options={attributes.map((o, i) => {
+                      return { value: o.attributeName, label: o.attributeName };
+                    })}
+                    onChange={handleSelectEvent}
+                    // name="attributeName"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={`card ${variantsTags.length == 0 ? "d-none" : ""}`}>
+              <div className="card-body">
+                <div className="col-xl-12 col-lg-12 col-sm-12 ">
+                  <div
+                    className={`col-xl-12 col-lg-12 col-sm-12 ${
+                      variantsTags.length == 0 ? "d-none" : ""
+                    }`}
+                  >
+                    {" "}
+                    <div className="d-flex justify-content-between">
+                      <label className="mb-1 "></label>
+                      <small
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => reset(e)}
+                      >
+                        {t("reset_to_default")}
+                      </small>
+                    </div>
+                  </div>
+                  {variantsTags?.map((item, i) => {
+                    return (
+                      <div className="row m-2" key={i}>
+                        <div
+                          className="col-xl-3 col-lg-3 col-sm-3 font-weight-bold d-flex align-items-center justify-content-center"
+                          style={{ backgroundColor: "#f5f5f5" }}
+                        >
+                          {item.label}
+                        </div>
+                        <div className="col-xl-9 col-lg-9 col-sm-9">
+                          <TagsInput
+                            key={change}
+                            value={
+                              tags[item.label] == undefined
+                                ? (e) => (e = [])
+                                : tags[item.label]
+                            }
+                            onChange={(e) => handleEvent(e, item.label)}
+                            placeHolder="Please Enter A Value"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="card">
           <div className="card-body">
-            <div className="col-xl-12 col-lg-12 col-sm-12 ">
-              {" "}
-              <div className="d-flex justify-content-between">
-                <label className="mb-1 "></label>
-                <small
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setModalCentered(true)}
-                >
-                  {t("add_attribute")}
-                </small>
-              </div>
-            </div>
-            <div className="col-xl-12 col-lg-12 col-sm-12 ">
-              <Select
-                value={variantsTags}
-                isMulti
-                options={attributes.map((o, i) => {
-                  return { value: o.attributeName, label: o.attributeName };
-                })}
-                onChange={handleSelectEvent}
-                // name="attributeName"
-                className="basic-multi-select"
-                classNamePrefix="select"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className={`card ${variantsTags.length == 0 ? "d-none" : ""}`}>
-          <div className="card-body">
-            <div className="col-xl-12 col-lg-12 col-sm-12 ">
+            {checkPermission("variants-delete") && (
               <div
                 className={`col-xl-12 col-lg-12 col-sm-12 ${
-                  variantsTags.length == 0 ? "d-none" : ""
+                  numberOfVar.length == 0 ? "d-none" : ""
                 }`}
               >
                 {" "}
@@ -391,57 +445,13 @@ const Variants = (props) => {
                   <label className="mb-1 "></label>
                   <small
                     style={{ cursor: "pointer" }}
-                    onClick={(e) => reset(e)}
+                    onClick={(e) => deleteAll(e)}
                   >
-                    {t("reset_to_default")}
+                    {t("remove_all")}
                   </small>
                 </div>
               </div>
-              {variantsTags?.map((item, i) => {
-                return (
-                  <div className="row m-2" key={i}>
-                    <div
-                      className="col-xl-3 col-lg-3 col-sm-3 font-weight-bold d-flex align-items-center justify-content-center"
-                      style={{ backgroundColor: "#f5f5f5" }}
-                    >
-                      {item.label}
-                    </div>
-                    <div className="col-xl-9 col-lg-9 col-sm-9">
-                      <TagsInput
-                        key={change}
-                        value={
-                          tags[item.label] == undefined
-                            ? (e) => (e = [])
-                            : tags[item.label]
-                        }
-                        onChange={(e) => handleEvent(e, item.label)}
-                        placeHolder="Please Enter A Value"
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div
-              className={`col-xl-12 col-lg-12 col-sm-12 ${
-                numberOfVar.length == 0 ? "d-none" : ""
-              }`}
-            >
-              {" "}
-              <div className="d-flex justify-content-between">
-                <label className="mb-1 "></label>
-                <small
-                  style={{ cursor: "pointer" }}
-                  onClick={(e) => deleteAll(e)}
-                >
-                  {t("remove_all")}
-                </small>
-              </div>
-            </div>
+            )}
 
             <NewGrid
               numberOfVar={numberOfVar}

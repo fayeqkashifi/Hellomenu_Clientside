@@ -11,6 +11,7 @@ import PrivateRoute from "../PrivateRoute";
 import { useTranslation } from "react-i18next";
 import General from "./General";
 import User from "./User";
+import { checkPermission } from "../Permissions";
 
 const Show = () => {
   const { t } = useTranslation();
@@ -51,30 +52,36 @@ const Show = () => {
           </div>
           <div className="card-body" style={{ backgroundColor: "#f6fafc" }}>
             <div className="row mb-4">
-              <Link
-                to={`${url}`}
-                className="col d-flex justify-content-center align-items-center"
-                style={urlCheck === "settings" ? active : DeActive}
-                onClick={() => setUrlCheck("settings")}
-              >
-                General Information
-              </Link>
-              <Link
-                to={`${url}/user`}
-                className="col d-flex justify-content-center align-items-center"
-                style={urlCheck === "user" ? active : DeActive}
-                onClick={() => setUrlCheck("user")}
-              >
-                User Management
-              </Link>
-              <Link
-                to={`${url}/localization`}
-                className="col d-flex justify-content-center align-items-center"
-                style={urlCheck === "localization" ? active : DeActive}
-                onClick={() => setUrlCheck("localization")}
-              >
-                Localization
-              </Link>
+              {checkPermission("general-info-view") && (
+                <Link
+                  to={`${url}`}
+                  className="col d-flex justify-content-center align-items-center"
+                  style={urlCheck === "settings" ? active : DeActive}
+                  onClick={() => setUrlCheck("settings")}
+                >
+                  General Information
+                </Link>
+              )}
+              {checkPermission("users-management-view") && (
+                <Link
+                  to={`${url}/user`}
+                  className="col d-flex justify-content-center align-items-center"
+                  style={urlCheck === "user" ? active : DeActive}
+                  onClick={() => setUrlCheck("user")}
+                >
+                  User Management
+                </Link>
+              )}
+              {checkPermission("localization-view") && (
+                <Link
+                  to={`${url}/localization`}
+                  className="col d-flex justify-content-center align-items-center"
+                  style={urlCheck === "localization" ? active : DeActive}
+                  onClick={() => setUrlCheck("localization")}
+                >
+                  Localization
+                </Link>
+              )}
             </div>
             <Switch>
               <PrivateRoute exact path={`${path}`} component={General} />

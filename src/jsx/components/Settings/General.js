@@ -8,6 +8,7 @@ import CustomAlert from "../CustomAlert";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
+import { checkPermission } from "../Permissions";
 
 const General = () => {
   const { t } = useTranslation();
@@ -212,11 +213,13 @@ const General = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <Button variant="success" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </div>
+              {checkPermission("general-info-edit") && (
+                <div className="text-right">
+                  <Button variant="success" type="submit">
+                    {t("save")}{" "}
+                  </Button>
+                </div>
+              )}
             </Form>
           )}
         </Formik>

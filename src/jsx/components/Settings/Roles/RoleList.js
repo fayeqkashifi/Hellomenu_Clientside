@@ -10,12 +10,13 @@ import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import swal from "sweetalert";
 import { Link, useRouteMatch } from "react-router-dom";
+import { checkPermission } from "../../Permissions";
 
 const RoleList = (props) => {
   const { check, setCheck, nodes } = props;
 
   const { t } = useTranslation();
-  const {  url } = useRouteMatch();
+  const { url } = useRouteMatch();
   const [roles, setRoles] = useState([]);
   const dataLoad = async () => {
     try {
@@ -84,26 +85,30 @@ const RoleList = (props) => {
           actions: (item) => {
             return (
               <td>
-                <Link
-                  to={{
-                    pathname: `${url}/edit-role`,
-                    state: {
-                      id: item.id,
-                      nodes: nodes,
-                    },
-                  }}
-                >
-                  <Tooltip title="Edit">
-                    <IconButton>
-                      <EditIcon fontSize="small" />
+                {checkPermission("roles-edit") && (
+                  <Link
+                    to={{
+                      pathname: `${url}/edit-role`,
+                      state: {
+                        id: item.id,
+                        nodes: nodes,
+                      },
+                    }}
+                  >
+                    <Tooltip title="Edit">
+                      <IconButton>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Link>
+                )}
+                {checkPermission("roles-delete") && (
+                  <Tooltip title="Delete">
+                    <IconButton onClick={() => deleteRole(item.id)}>
+                      <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                </Link>
-                <Tooltip title="Delete">
-                  <IconButton onClick={() => deleteRole(item.id)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                )}
               </td>
             );
           },

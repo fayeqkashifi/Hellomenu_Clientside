@@ -17,6 +17,8 @@ import swal from "sweetalert";
 import Switch from "@mui/material/Switch";
 import Select from "react-select";
 import Chip from "@mui/material/Chip";
+import { checkPermission } from "../../Permissions";
+
 const CreateUser = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -175,7 +177,7 @@ const CreateUser = () => {
     );
   } else {
     return (
-      <>
+      <div>
         {alert.open ? (
           <CustomAlert
             open={alert.open}
@@ -186,153 +188,158 @@ const CreateUser = () => {
         ) : (
           ""
         )}
+        {checkPermission("users-create") && (
+          <>
+            <div className="row my-3">ADD USER</div>
 
-        <div className="row my-3">ADD USER</div>
+            <div className="pb-4" style={{ borderBottom: "1px solid #ccc" }}>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ errors, status, setFieldValue, touched }) => (
+                  <Form>
+                    <div className="row">
+                      <div className="col-6">
+                        <div className="form-group">
+                          <label> {t("name")}</label>
+                          <Field
+                            name="name"
+                            type="text"
+                            className={
+                              "form-control" +
+                              (errors.name && touched.name ? " is-invalid" : "")
+                            }
+                            placeholder={t("name")}
+                          />
+                          <ErrorMessage
+                            name="name"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <label> {t("email")}</label>
+                          <Field
+                            name="email"
+                            type="email"
+                            className={
+                              "form-control" +
+                              (errors.email && touched.email
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder={t("email")}
+                          />
+                          <ErrorMessage
+                            name="email"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </div>
 
-        <div className="pb-4" style={{ borderBottom: "1px solid #ccc" }}>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ errors, status, setFieldValue, touched }) => (
-              <Form>
-                <div className="row">
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label> {t("name")}</label>
-                      <Field
-                        name="name"
-                        type="text"
-                        className={
-                          "form-control" +
-                          (errors.name && touched.name ? " is-invalid" : "")
-                        }
-                        placeholder={t("name")}
-                      />
-                      <ErrorMessage
-                        name="name"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label> {t("email")}</label>
-                      <Field
-                        name="email"
-                        type="email"
-                        className={
-                          "form-control" +
-                          (errors.email && touched.email ? " is-invalid" : "")
-                        }
-                        placeholder={t("email")}
-                      />
-                      <ErrorMessage
-                        name="email"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                  </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <label> {t("password")}</label>
+                          <Field
+                            name="password"
+                            type="password"
+                            className={
+                              "form-control" +
+                              (errors.password && touched.password
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder={t("password")}
+                          />
+                          <ErrorMessage
+                            name="password"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <label> {t("confirm_new_password")}</label>
+                          <Field
+                            name="confirm_new_password"
+                            type="password"
+                            className={
+                              "form-control" +
+                              (errors.confirm_new_password &&
+                              touched.confirm_new_password
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder={t("confirm_new_password")}
+                          />
+                          <ErrorMessage
+                            name="confirm_new_password"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <label>
+                            <span className="text-danger"> * </span>
+                            What is your Role?
+                          </label>
 
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label> {t("password")}</label>
-                      <Field
-                        name="password"
-                        type="password"
-                        className={
-                          "form-control" +
-                          (errors.password && touched.password
-                            ? " is-invalid"
-                            : "")
-                        }
-                        placeholder={t("password")}
-                      />
-                      <ErrorMessage
-                        name="password"
-                        component="div"
-                        className="invalid-feedback"
-                      />
+                          <Select
+                            options={roles?.map((lang, i) => {
+                              return {
+                                value: lang.id,
+                                label: lang.roleName,
+                              };
+                            })}
+                            onChange={(getOptionValue) => {
+                              setFieldValue("role_id", getOptionValue.value);
+                            }}
+                          />
+                          {errors.role_id ? (
+                            <small
+                              className="invalid"
+                              style={{ color: "#ff4b4c", marginTop: ".5rem" }}
+                            >
+                              {errors.role_id}
+                            </small>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <label> {t("phone_number")}</label>
+                          <PhoneInput
+                            country={"af"}
+                            value={initialValues?.phone_number}
+                            onChange={(getOptionValue) => {
+                              setFieldValue("phone_number", getOptionValue);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label> {t("confirm_new_password")}</label>
-                      <Field
-                        name="confirm_new_password"
-                        type="password"
-                        className={
-                          "form-control" +
-                          (errors.confirm_new_password &&
-                          touched.confirm_new_password
-                            ? " is-invalid"
-                            : "")
-                        }
-                        placeholder={t("confirm_new_password")}
-                      />
-                      <ErrorMessage
-                        name="confirm_new_password"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label>
-                        <span className="text-danger"> * </span>
-                        What is your Role?
-                      </label>
 
-                      <Select
-                        options={roles?.map((lang, i) => {
-                          return {
-                            value: lang.id,
-                            label: lang.roleName,
-                          };
-                        })}
-                        onChange={(getOptionValue) => {
-                          setFieldValue("role_id", getOptionValue.value);
-                        }}
-                      />
-                      {errors.role_id ? (
-                        <small
-                          className="invalid"
-                          style={{ color: "#ff4b4c", marginTop: ".5rem" }}
-                        >
-                          {errors.role_id}
-                        </small>
-                      ) : (
-                        ""
-                      )}
+                    <div className="text-right">
+                      <Button variant="success" type="submit">
+                        {t("save")}{" "}
+                      </Button>
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-group">
-                      <label> {t("phone_number")}</label>
-                      <PhoneInput
-                        country={"af"}
-                        value={initialValues?.phone_number}
-                        onChange={(getOptionValue) => {
-                          setFieldValue("phone_number", getOptionValue);
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <Button variant="success" type="submit">
-                    {t("save")}{" "}
-                  </Button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </>
+        )}
         <div style={{ borderBottom: "1px solid #ccc" }}>
           <CSmartTable
             activePage={1}
@@ -371,24 +378,28 @@ const CreateUser = () => {
                 return (
                   <td>
                     <div className="row ">
-                      <div className="col">
-                        <Tooltip title="Edit">
-                          <IconButton onClick={(e) => fetchUser(item.id)}>
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <div
-                        className="col"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => deleteUser(item.id)}
-                      >
-                        <Tooltip title="Delete">
-                          <IconButton>
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
+                      {checkPermission("users-edit") && (
+                        <div className="col">
+                          <Tooltip title="Edit">
+                            <IconButton onClick={(e) => fetchUser(item.id)}>
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      )}
+                      {checkPermission("users-delete") && (
+                        <div
+                          className="col"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => deleteUser(item.id)}
+                        >
+                          <Tooltip title="Delete">
+                            <IconButton>
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      )}
                     </div>
                   </td>
                 );
@@ -400,7 +411,7 @@ const CreateUser = () => {
             }}
           />
         </div>
-      </>
+      </div>
     );
   }
 };

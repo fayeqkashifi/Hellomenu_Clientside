@@ -235,46 +235,49 @@ const Product = (props) => {
           actions: (item) => {
             return (
               <td style={{ width: "20%" }}>
-
-                <Link
-                  to={{
-                    pathname: `${url}/variants`,
-                    id: item.id,
-                    ProductName: item.ProductName,
-                    state: { p_id: item.id, id: branchId },
-                  }}
-                >
-                  <Tooltip title="Variants">
-                    <IconButton>
-                      <AutoAwesomeMotionIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Link>
-                {checkPermission('products-edit')&&(
-                <Link
-                  to={{
-                    pathname: `${url}/edit-product`,
-                    state: { id: branchId, productId: item.id },
-                  }}
-                  // onClick={(e) => fetchProduct(e, item.id)}
-                >
-                  <Tooltip title="Edit">
-                    <IconButton>
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Link>
+                {checkPermission("variants-view") && (
+                  <Link
+                    to={{
+                      pathname: `${url}/variants`,
+                      id: item.id,
+                      ProductName: item.ProductName,
+                      state: { p_id: item.id, id: branchId },
+                    }}
+                  >
+                    <Tooltip title="Variants">
+                      <IconButton>
+                        <AutoAwesomeMotionIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Link>
                 )}
-                <div
-                  style={{ cursor: "pointer" }}
-                  onClick={(e) => deleteProduct(e, item.id)}
-                >
-                  <Tooltip title="Delete">
-                    <IconButton>
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </div>
+                {checkPermission("products-edit") && (
+                  <Link
+                    to={{
+                      pathname: `${url}/edit-product`,
+                      state: { id: branchId, productId: item.id },
+                    }}
+                    // onClick={(e) => fetchProduct(e, item.id)}
+                  >
+                    <Tooltip title="Edit">
+                      <IconButton>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Link>
+                )}
+                {checkPermission("products-delete") && (
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => deleteProduct(e, item.id)}
+                  >
+                    <Tooltip title="Delete">
+                      <IconButton>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                )}
               </td>
             );
           },
@@ -291,24 +294,21 @@ const Product = (props) => {
   return (
     <>
       <Fragment>
-
         <div className="d-flex justify-content-end">
-      {checkPermission('products-create')&&(
-  <Link
-  // className="btn btn-primary mb-2 mr-2"
-  to={{
-    pathname: `${url}/add-product`,
-    state: { id: branchId },
-  }}
->
-          <Tooltip title="Add New Product">
-            <IconButton aria-label="Example">
-            
-                <AddIcon />
-            </IconButton>
-          </Tooltip>
-          </Link>
-
+          {checkPermission("products-create") && (
+            <Link
+              // className="btn btn-primary mb-2 mr-2"
+              to={{
+                pathname: `${url}/add-product`,
+                state: { id: branchId },
+              }}
+            >
+              <Tooltip title="Add New Product">
+                <IconButton aria-label="Example">
+                  <AddIcon />
+                </IconButton>
+              </Tooltip>
+            </Link>
           )}
           <Tooltip title="Change Layout">
             <IconButton aria-label="Example" onClick={changeLayout}>
@@ -342,54 +342,54 @@ const Product = (props) => {
                     </div>
                     <div className="card-footer pt-0 pb-0 text-center">
                       <div className="row">
-                        <div className="col-4 pt-3 pb-3 border-right">
-                          <Link
-                            to={{
-                              pathname: `${url}/variants`,
-                              id: item.id,
-                              ProductName: item.ProductName,
-                              state: { p_id: item.id, id: branchId },
-                            }}
-                          >
-                            <Tooltip title="Variants">
-                              <IconButton>
-                                <AutoAwesomeMotionIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Link>
-                        </div>
-                {checkPermission('products-edit')&&(
-
-                        <div className="col-4 pt-3 pb-3 border-right">
-                          <Link
-                            to={{
-                              pathname: `${url}/edit-product`,
-                              state: { id: branchId, productId: item.id },
-                            }}
-                          >
-                            <Tooltip title="Edit">
-                              <IconButton>
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Link>
-                        </div>
-                )}
-                {checkPermission('products-delete')&&(
-
-                        <div className="col-4 pt-3 pb-3">
-                          <Link
-                            to=""
-                            onClick={(e) => deleteProduct(e, item.id)}
-                          >
-                            <Tooltip title="Delete">
-                              <IconButton>
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Link>
-                        </div>
-                )}
+                        {checkPermission("variants-view") && (
+                          <div className="col-4 pt-3 pb-3 border-right">
+                            <Link
+                              to={{
+                                pathname: `${url}/variants`,
+                                id: item.id,
+                                ProductName: item.ProductName,
+                                state: { p_id: item.id, id: branchId },
+                              }}
+                            >
+                              <Tooltip title="Variants">
+                                <IconButton>
+                                  <AutoAwesomeMotionIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
+                          </div>
+                        )}
+                        {checkPermission("products-edit") && (
+                          <div className="col-4 pt-3 pb-3 border-right">
+                            <Link
+                              to={{
+                                pathname: `${url}/edit-product`,
+                                state: { id: branchId, productId: item.id },
+                              }}
+                            >
+                              <Tooltip title="Edit">
+                                <IconButton>
+                                  <EditIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
+                          </div>
+                        )}
+                        {checkPermission("products-delete") && (
+                          <div className="col-4 pt-3 pb-3">
+                            <Link
+                              to=""
+                              onClick={(e) => deleteProduct(e, item.id)}
+                            >
+                              <Tooltip title="Delete">
+                                <IconButton>
+                                  <DeleteIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

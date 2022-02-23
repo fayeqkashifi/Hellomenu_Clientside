@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import CustomAlert from "../../CustomAlert";
 import RoleList from "./RoleList";
+import { checkPermission } from "../../Permissions";
 
 const initialValues = {
   roleName: "",
@@ -94,73 +95,77 @@ const AddRole = () => {
   } else {
     return (
       <>
-        <div style={{ borderBottom: "1px solid #ccc" }}>
-          {alert.open ? (
-            <CustomAlert
-              open={alert.open}
-              severity={alert.severity}
-              message={alert.message}
-              setAlert={setAlert}
-            />
-          ) : (
-            ""
-          )}
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ errors, touched }) => (
-              <Form>
-                <div className="row my-3">ADD ROLE</div>
-                {error.length !== 0 && (
-                  <div
-                    className="alert alert-warning "
-                    style={{ color: "#000000" }}
-                  >
-                    {error}
-                  </div>
-                )}
-                <div className="form-group">
-                  <Field
-                    name="roleName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.roleName && touched.roleName ? " is-invalid" : "")
-                    }
-                    placeholder="Admin, Manager, SuperVisor, Visitor..."
-                  />
-                  <ErrorMessage
-                    name="roleName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <Field
-                    name="roleDiscription"
-                    as="textarea"
-                    className={"form-control"}
-                    placeholder="Role Discription..."
-                  />
-                </div>
-                <CheckboxTree
-                  nodes={nodes}
-                  checked={state}
-                  expanded={expand}
-                  onCheck={(checked) => setState(checked)}
-                  onExpand={(expanded) => setExpand(expanded)}
-                />
-                <div className="form-group text-right">
-                  <button type="submit" className="btn btn-success">
-                    {t("save")}
-                  </button>
-                </div>
-              </Form>
+        {checkPermission("roles-create") && (
+          <div style={{ borderBottom: "1px solid #ccc" }}>
+            {alert.open ? (
+              <CustomAlert
+                open={alert.open}
+                severity={alert.severity}
+                message={alert.message}
+                setAlert={setAlert}
+              />
+            ) : (
+              ""
             )}
-          </Formik>
-        </div>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ errors, touched }) => (
+                <Form>
+                  <div className="row my-3">ADD ROLE</div>
+                  {error.length !== 0 && (
+                    <div
+                      className="alert alert-warning "
+                      style={{ color: "#000000" }}
+                    >
+                      {error}
+                    </div>
+                  )}
+                  <div className="form-group">
+                    <Field
+                      name="roleName"
+                      type="text"
+                      className={
+                        "form-control" +
+                        (errors.roleName && touched.roleName
+                          ? " is-invalid"
+                          : "")
+                      }
+                      placeholder="Admin, Manager, SuperVisor, Visitor..."
+                    />
+                    <ErrorMessage
+                      name="roleName"
+                      component="div"
+                      className="invalid-feedback"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <Field
+                      name="roleDiscription"
+                      as="textarea"
+                      className={"form-control"}
+                      placeholder="Role Discription..."
+                    />
+                  </div>
+                  <CheckboxTree
+                    nodes={nodes}
+                    checked={state}
+                    expanded={expand}
+                    onCheck={(checked) => setState(checked)}
+                    onExpand={(expanded) => setExpand(expanded)}
+                  />
+                  <div className="form-group text-right">
+                    <button type="submit" className="btn btn-success">
+                      {t("save")}
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        )}
         <RoleList check={check} setCheck={setCheck} nodes={nodes} />
       </>
     );

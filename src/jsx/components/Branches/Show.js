@@ -1,4 +1,4 @@
-import React, { Fragment, useState,useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Tab, Nav } from "react-bootstrap";
 
 import {
@@ -38,58 +38,48 @@ const Show = (props) => {
   const { path, url } = useRouteMatch();
   const [check, setCheck] = useState(true);
   const tabData = [
-    checkPermission('categories-view') && 
-   ( {
+    checkPermission("categories-view") && {
       name: t("categories"),
       url: {
         pathname: `${url}`,
         state: { id: id, BrancheName: BrancheName },
       },
-    }),
-    checkPermission('products-view') && 
-    
-    ({
+    },
+    checkPermission("products-view") && {
       name: t("products"),
       url: {
         pathname: `${url}/products`,
         state: { id: id, BrancheName: BrancheName },
       },
-    }),
-    checkPermission('design-view') && 
-(
-    {
+    },
+    checkPermission("desgin-view") && {
       name: t("design"),
       url: {
         pathname: `${url}/design`,
         state: { id: id, BrancheName: BrancheName },
       },
-    }),
-    checkPermission('tables-view') && 
-
-    ({
+    },
+    checkPermission("tables-view") && {
       name: t("tables"),
       url: {
         pathname: `${url}/tables`,
         state: { id: id, BrancheName: BrancheName },
       },
-    }),
-    checkPermission('qrcode-style-view') && 
-(
-    {
+    },
+    checkPermission("qrcode-style-view") && {
       name: t("qrcode_style"),
       url: {
         pathname: `${url}/qrcode-style`,
         state: { id: id, BrancheName: BrancheName },
       },
-    }),
-    checkPermission('service-areas-view') && 
-    ({
+    },
+    checkPermission("service-areas-view") && {
       name: t("services_areas"),
       url: {
         pathname: `${url}/services-areas`,
         state: { id: id, BrancheName: BrancheName },
       },
-    }),
+    },
     {
       name: t("preview"),
       url: {
@@ -103,7 +93,6 @@ const Show = (props) => {
     //   },
     // },
   ].filter(Boolean);
-  
 
   // to display public link inside phone
   const [visible, setVisible] = useState(false);
@@ -117,7 +106,6 @@ const Show = (props) => {
     setCheck(!check);
   };
   const geturl = document.location.href.split("/");
- 
 
   return (
     <Fragment>
@@ -258,6 +246,5 @@ const Show = (props) => {
     </Fragment>
   );
 };
-
 
 export default Show;

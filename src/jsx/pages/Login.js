@@ -62,12 +62,13 @@ const Login = () => {
     axios.get("sanctum/csrf-cookie").then((response) => {
       axios.post("/api/login", data).then((res) => {
         if (res.data.status === 200) {
-          // console.log(JSON.parse(res.data.role.permissions));
           localStorage.setItem("auth_token", res.data.token);
           localStorage.setItem("auth_name", btoa(res.data.user));
           localStorage.setItem("auth_company_id", btoa(res.data.company_id));
           localStorage.setItem("auth_id", btoa(res.data.id));
-          localStorage.setItem("role", btoa(res.data.role.permissions));
+          res.data.role === null
+            ? localStorage.setItem("role", btoa(JSON.stringify(res.data.role)))
+            : localStorage.setItem("role", btoa(res.data.role.permissions));
           history.push("/dashboard");
         } else {
           setAlerts(true, "warning", res.data.message);
