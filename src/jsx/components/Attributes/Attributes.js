@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
+import { checkPermission } from "../Permissions";
 
 const Attributes = (props) => {
   // validation start
@@ -146,22 +147,25 @@ const Attributes = (props) => {
 
           <td> {item.attributeName}</td>
           <td>
-            {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
-            <button
-              type="button"
-              onClick={(e) => fetchAttribute(e, item.id)}
-              className="btn btn-outline-danger btn-sm"
-            >
-              {t("edit")}
-            </button>
+            {checkPermission("attributes-edit") && (
+              <button
+                type="button"
+                onClick={(e) => fetchAttribute(e, item.id)}
+                className="btn btn-outline-danger btn-sm"
+              >
+                {t("edit")}
+              </button>
+            )}
             &nbsp;&nbsp;&nbsp;
-            <button
-              type="button"
-              onClick={(e) => deleteAttribute(e, item.id)}
-              className="btn btn-outline-warning btn-sm"
-            >
-              {t("delete")}
-            </button>
+            {checkPermission("attributes-delete") && (
+              <button
+                type="button"
+                onClick={(e) => deleteAttribute(e, item.id)}
+                className="btn btn-outline-warning btn-sm"
+              >
+                {t("delete")}
+              </button>
+            )}
           </td>
         </tr>
       );
@@ -297,14 +301,16 @@ const Attributes = (props) => {
                 <h4 className="card-title mb-2">{t("attributes")}</h4>
               </div>
               <div className="dropdown">
-                <Button
-                  variant="primary"
-                  type="button"
-                  className="mb-2 mr-2"
-                  onClick={() => setModalCentered(true)}
-                >
-                  {t("add_attribute")}
-                </Button>
+                {checkPermission("attributes-create") && (
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_attribute")}
+                  </Button>
+                )}
               </div>
             </div>
             <div className="card-body p-0">

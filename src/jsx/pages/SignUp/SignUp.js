@@ -48,6 +48,7 @@ const SignUp = () => {
         if (res.data.status === 200) {
           localStorage.setItem("auth_token", res.data.token);
           localStorage.setItem("auth_id", btoa(res.data.id));
+          localStorage.setItem("role", btoa(JSON.stringify(res.data.role)));
         }
       });
     });

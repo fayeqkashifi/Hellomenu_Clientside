@@ -10,7 +10,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import MetisMenu from "metismenujs";
 import { withTranslation } from "react-i18next";
 // const { t } = useTranslation();
-
+import { checkPermission } from "../../components/Permissions";
 class MM extends Component {
   componentDidMount() {
     this.$el = this.el;
@@ -51,11 +51,13 @@ class SideBar extends Component {
     };
   }
   render() {
+    // console.log();
     const { t } = this.props;
     return (
       <div className="deznav">
         <PerfectScrollbar className="deznav-scroll">
           <MM className="metismenu" id="menu">
+            {/* {checkPermission("dashboard-view") && ( */}
             <li
               className={`${
                 this.state.path === "dashboard" ? "mm-active" : ""
@@ -70,93 +72,115 @@ class SideBar extends Component {
                 <span className="nav-text">{t("dashboard")}</span>
               </Link>
             </li>
-            <li
-              className={`${this.state.path === "company" ? "mm-active" : ""}`}
-            >
-              <Link
-                className="ai-icon"
-                to="/company"
-                onClick={() => this.setState({ path: "company" })}
+            {/* )} */}
+            {checkPermission("company-view") && (
+              <li
+                className={`${
+                  this.state.path === "company" ? "mm-active" : ""
+                }`}
               >
-                <i className="flaticon-381-internet"></i>
-                <span className="nav-text">{t("company")}</span>
-              </Link>
-            </li>
-            <li
-              className={`${this.state.path === "branches" ? "mm-active" : ""}`}
-            >
-              <Link
-                className="ai-icon"
-                to="/branches"
-                onClick={() => this.setState({ path: "branches" })}
+                <Link
+                  className="ai-icon"
+                  to="/company"
+                  onClick={() => this.setState({ path: "company" })}
+                >
+                  <i className="flaticon-381-internet"></i>
+                  <span className="nav-text">{t("company")}</span>
+                </Link>
+              </li>
+            )}
+            {checkPermission("branches-view") && (
+              <li
+                className={`${
+                  this.state.path === "branches" ? "mm-active" : ""
+                }`}
               >
-                <i className="flaticon-381-television"></i>
-                <span className="nav-text">{t("branches")}</span>
-              </Link>
-            </li>
-            <li
-              className={`${
-                this.state.path === "attributes" ? "mm-active" : ""
-              }`}
-            >
-              <Link
-                className="ai-icon"
-                to="/attributes"
-                onClick={() => this.setState({ path: "attributes" })}
+                <Link
+                  className="ai-icon"
+                  to="/branches"
+                  onClick={() => this.setState({ path: "branches" })}
+                >
+                  <i className="flaticon-381-television"></i>
+                  <span className="nav-text">{t("branches")}</span>
+                </Link>
+              </li>
+            )}
+            {checkPermission("attributes-view") && (
+              <li
+                className={`${
+                  this.state.path === "attributes" ? "mm-active" : ""
+                }`}
               >
-                <i className="flaticon-381-list"></i>
-                <span className="nav-text">{t("attributes")}</span>
-              </Link>
-            </li>
-            <li
-              className={`${
-                this.state.path === "ingredients" ? "mm-active" : ""
-              }`}
-            >
-              <Link
-                className="ai-icon"
-                to="/ingredients"
-                onClick={() => this.setState({ path: "ingredients" })}
+                <Link
+                  className="ai-icon"
+                  to="/attributes"
+                  onClick={() => this.setState({ path: "attributes" })}
+                >
+                  <i className="flaticon-381-list"></i>
+                  <span className="nav-text">{t("attributes")}</span>
+                </Link>
+              </li>
+            )}
+            {checkPermission("ingredients-view") && (
+              <li
+                className={`${
+                  this.state.path === "ingredients" ? "mm-active" : ""
+                }`}
               >
-                <i className="flaticon-381-pad"></i>
-                <span className="nav-text">{t("ingredients")}</span>
-              </Link>
-            </li>
-            <li className={`${this.state.path === "areas" ? "mm-active" : ""}`}>
-              <Link
-                className="ai-icon"
-                to="/areas"
-                onClick={() => this.setState({ path: "areas" })}
+                <Link
+                  className="ai-icon"
+                  to="/ingredients"
+                  onClick={() => this.setState({ path: "ingredients" })}
+                >
+                  <i className="flaticon-381-pad"></i>
+                  <span className="nav-text">{t("ingredients")}</span>
+                </Link>
+              </li>
+            )}
+            {checkPermission("areas-view") && (
+              <li
+                className={`${this.state.path === "areas" ? "mm-active" : ""}`}
               >
-                <i className="flaticon-381-location"></i>
-                <span className="nav-text">{t("areas")}</span>
-              </Link>
-            </li>
-
-            <li
-              className={`${this.state.path === "orders" ? "mm-active" : ""}`}
-            >
-              <Link
-                className="ai-icon"
-                to="/orders"
-                onClick={() => this.setState({ path: "orders" })}
+                <Link
+                  className="ai-icon"
+                  to="/areas"
+                  onClick={() => this.setState({ path: "areas" })}
+                >
+                  <i className="flaticon-381-location"></i>
+                  <span className="nav-text">{t("areas")}</span>
+                </Link>
+              </li>
+            )}
+            {checkPermission("orders-view") && (
+              <li
+                className={`${this.state.path === "orders" ? "mm-active" : ""}`}
               >
-                <i className="flaticon-381-plus"></i>
-                <span className="nav-text">{t("orders")}</span>
-              </Link>
-            </li>
-            <li
-              className={`${this.state.path === "settings" ? "mm-active" : ""}`}
-            >
-              <Link
-                className="ai-icon"
-                to="/settings"
-                onClick={() => this.setState({ path: "settings" })}
+                <Link
+                  className="ai-icon"
+                  to="/orders"
+                  onClick={() => this.setState({ path: "orders" })}
+                >
+                  <i className="flaticon-381-plus"></i>
+                  <span className="nav-text">{t("orders")}</span>
+                </Link>
+              </li>
+            )}
+            {checkPermission("settings-view") && (
+              <li
+                className={`${
+                  this.state.path === "settings" ? "mm-active" : ""
+                }`}
               >
-                <i className="flaticon-381-settings-2"></i>
-                <span className="nav-text">{t("settings")}</span>
-              </Link>
-            </li>
+                <Link
+                  className="ai-icon"
+                  to="/settings"
+                  onClick={() => this.setState({ path: "settings" })}
+                >
+                  <i className="flaticon-381-settings-2"></i>
+                  <span className="nav-text">{t("settings")}</span>
+                </Link>
+              </li>
+            )}
           </MM>
         </PerfectScrollbar>
       </div>

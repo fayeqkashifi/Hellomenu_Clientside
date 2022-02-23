@@ -8,6 +8,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { base_url, port } from "../../../Consts";
+import { checkPermission } from "../Permissions";
 
 const Company = () => {
   // validation start
@@ -162,21 +163,25 @@ const Company = () => {
           <td>{i + 1}</td>
           <td>{item.company}</td>
           <td>
-            <button
-              type="button"
-              onClick={(e) => editCompany(e, item.id)}
-              className="btn btn-outline-danger btn-sm"
-            >
-              {t("edit")}
-            </button>
+            {checkPermission("company-edit") && (
+              <button
+                type="button"
+                onClick={(e) => editCompany(e, item.id)}
+                className="btn btn-outline-danger btn-sm"
+              >
+                {t("edit")}
+              </button>
+            )}
             &nbsp;&nbsp;&nbsp;
-            <button
-              type="button"
-              onClick={(e) => deleteCompany(e, item.id)}
-              className="btn btn-outline-warning btn-sm d-none"
-            >
-              {t("delete")}
-            </button>
+            {checkPermission("company-delete") && (
+              <button
+                type="button"
+                onClick={(e) => deleteCompany(e, item.id)}
+                className="btn btn-outline-warning btn-sm d-none"
+              >
+                {t("delete")}
+              </button>
+            )}
           </td>
         </tr>
       );
@@ -352,14 +357,16 @@ const Company = () => {
               <div
                 className={`dropdown ${fetchData.length === 1 ? "d-none" : ""}`}
               >
-                <Button
-                  variant="primary"
-                  type="button"
-                  className="mb-2 mr-2"
-                  onClick={() => setModalCentered(true)}
-                >
-                  {t("add_company")}
-                </Button>
+                {checkPermission("company-create") && (
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_company")}
+                  </Button>
+                )}
               </div>
             </div>
             <div className="card-body p-0">

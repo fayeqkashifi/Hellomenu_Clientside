@@ -21,6 +21,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
         localStorage.removeItem("auth_name");
         localStorage.removeItem("auth_company_id");
         localStorage.removeItem("auth_id");
+        localStorage.removeItem("role");
         window.location = "/login";
       }
     });

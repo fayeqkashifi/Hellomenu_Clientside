@@ -24,11 +24,17 @@ const EditRole = (props) => {
     axios.get(`/api/getRole/${id}`).then((result) => {
       if (result.data.status === 200) {
         setData(result.data.data);
+        setState(JSON.parse(result.data.data.permissions));
         setLoading(false);
       }
     });
   }, []);
 
+  const initialValues = {
+    id: data.id,
+    roleName: data.roleName,
+    roleDiscription: data?.roleDiscription ? data.roleDiscription : "",
+  };
   const validationSchema = () => {
     return Yup.object().shape({
       roleName: Yup.string().required("Role Name is required"),
@@ -46,18 +52,23 @@ const EditRole = (props) => {
       message: message,
     });
   };
+  const [error, setError] = useState("");
 
   const handleSubmit = (data) => {
-    const formData = new FormData();
-    formData.append("id", data.id);
-    formData.append("roleName", data.roleName);
-    formData.append("roleDiscription", data.roleDiscription);
-    formData.append("permissions", JSON.stringify(state));
-    axios.post(`/api/updateRole`, formData).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    if (state.length !== 0) {
+      const formData = new FormData();
+      formData.append("id", data.id);
+      formData.append("roleName", data.roleName);
+      formData.append("roleDiscription", data.roleDiscription);
+      formData.append("permissions", JSON.stringify(state));
+      axios.post(`/api/updateRole`, formData).then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+        }
+      });
+    } else {
+      setError("Please Add Permission.");
+    }
   };
   if (loading) {
     return (
@@ -86,14 +97,21 @@ const EditRole = (props) => {
         )}
 
         <Formik
-          initialValues={data}
+          initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
             <Form>
               <div className="row my-3">Edit ROLE</div>
-
+              {error.length !== 0 && (
+                <div
+                  className="alert alert-warning "
+                  style={{ color: "#000000" }}
+                >
+                  {error}
+                </div>
+              )}
               <div className="form-group">
                 <Field
                   name="roleName"
@@ -118,14 +136,13 @@ const EditRole = (props) => {
                   placeholder="Role Discription..."
                 />
               </div>
+
               <CheckboxTree
                 nodes={nodes}
                 checked={state}
                 expanded={expand}
                 onCheck={(checked) => setState(checked)}
                 onExpand={(expanded) => setExpand(expanded)}
-                //   showCheckbox={true}
-                //   disabled={true}
               />
               <div className="form-group text-right">
                 <button

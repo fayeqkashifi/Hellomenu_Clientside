@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
 import CustomAlert from "../CustomAlert";
 import { useHistory } from "react-router-dom";
+import { checkPermission } from "../Permissions";
 
 const Area = (props) => {
   const history = useHistory();
@@ -203,21 +204,25 @@ const Area = (props) => {
           <td> {item.areaName}</td>
           <td>
             {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
-            <button
-              type="button"
-              onClick={(e) => fetch(e, item.id)}
-              className="btn btn-outline-danger btn-sm"
-            >
-              {t("edit")}
-            </button>
+            {checkPermission("areas-edit") && (
+              <button
+                type="button"
+                onClick={(e) => fetch(e, item.id)}
+                className="btn btn-outline-danger btn-sm"
+              >
+                {t("edit")}
+              </button>
+            )}
             &nbsp;&nbsp;&nbsp;
-            <button
-              type="button"
-              onClick={(e) => deleteIngredient(e, item.id)}
-              className="btn btn-outline-warning btn-sm"
-            >
-              {t("delete")}
-            </button>
+            {checkPermission("areas-delete") && (
+              <button
+                type="button"
+                onClick={(e) => deleteIngredient(e, item.id)}
+                className="btn btn-outline-warning btn-sm"
+              >
+                {t("delete")}
+              </button>
+            )}
           </td>
         </tr>
       );
@@ -395,14 +400,16 @@ const Area = (props) => {
                 <h4 className="card-title mb-2">{t("areas")}</h4>
               </div>
               <div className="dropdown">
-                <Button
-                  variant="primary"
-                  type="button"
-                  className="mb-2 mr-2"
-                  onClick={() => setModalCentered(true)}
-                >
-                  {t("add")}
-                </Button>
+                {checkPermission("areas-create") && (
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add")}
+                  </Button>
+                )}
               </div>
             </div>
             <div className="card-body p-0">

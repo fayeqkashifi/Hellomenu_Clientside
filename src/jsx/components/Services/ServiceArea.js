@@ -8,6 +8,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
 import CustomAlert from "../CustomAlert";
+import { checkPermission } from "../Permissions";
 
 const ServiceArea = (props) => {
   // for localization
@@ -244,21 +245,25 @@ const ServiceArea = (props) => {
           <td> {item.areaName}</td>
           <td> {item.deliveryFees}</td>
           <td>
-            <button
-              type="button"
-              onClick={(e) => fetchServiceArea(e, item.id)}
-              className="btn btn-outline-danger btn-sm"
-            >
-              {t("edit")}
-            </button>
+            {checkPermission("service-areas-edit") && (
+              <button
+                type="button"
+                onClick={(e) => fetchServiceArea(e, item.id)}
+                className="btn btn-outline-danger btn-sm"
+              >
+                {t("edit")}
+              </button>
+            )}
             &nbsp;&nbsp;&nbsp;
-            <button
-              type="button"
-              onClick={(e) => deleteServiceArea(e, item.id)}
-              className="btn btn-outline-warning btn-sm"
-            >
-              {t("delete")}
-            </button>
+            {checkPermission("service-areas-delete") && (
+              <button
+                type="button"
+                onClick={(e) => deleteServiceArea(e, item.id)}
+                className="btn btn-outline-warning btn-sm"
+              >
+                {t("delete")}
+              </button>
+            )}
           </td>
         </tr>
       );
@@ -507,14 +512,16 @@ const ServiceArea = (props) => {
                 <h4 className="card-title mb-2">{t("service_area")}</h4>
               </div>
               <div className="dropdown">
-                <Button
-                  variant="primary"
-                  type="button"
-                  className="mb-2 mr-2"
-                  onClick={() => setModalCentered(true)}
-                >
-                  {t("add_service_area")}
-                </Button>
+                {checkPermission("service-areas-create") && (
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_service_area")}
+                  </Button>
+                )}
               </div>
             </div>
             <div className="card-body p-0">

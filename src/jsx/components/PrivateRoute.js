@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { isLogin } from "../utils";
+// import { checkPermission } from "./Permissions";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   return (
@@ -10,8 +11,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) =>
-        isLogin() ? <Component {...props} /> : <Redirect to="/login" />
+        isLogin() ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location },
+            }}
+          />
+        )
       }
+      // onEnter={checkPermission("company-view")}
     />
   );
 };

@@ -57,20 +57,26 @@ const AddRole = () => {
       message: message,
     });
   };
+  const [error, setError] = useState("");
   const handleSubmit = (data, { resetForm }) => {
-    const formData = new FormData();
-    formData.append("roleName", data.roleName);
-    formData.append("roleDiscription", data.roleDiscription);
-    formData.append("permissions", JSON.stringify(state));
-    axios.post(`/api/InsertRole`, formData).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        resetForm();
-        setExpand([]);
-        setState([]);
-        setCheck(!check);
-      }
-    });
+    if (state.length !== 0) {
+      const formData = new FormData();
+      formData.append("roleName", data.roleName);
+      formData.append("roleDiscription", data.roleDiscription);
+      formData.append("permissions", JSON.stringify(state));
+      axios.post(`/api/InsertRole`, formData).then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          resetForm();
+          setExpand([]);
+          setState([]);
+          setCheck(!check);
+          setError([]);
+        }
+      });
+    } else {
+      setError("Please Add Permission.");
+    }
   };
 
   if (loading) {
@@ -107,7 +113,14 @@ const AddRole = () => {
             {({ errors, touched }) => (
               <Form>
                 <div className="row my-3">ADD ROLE</div>
-
+                {error.length !== 0 && (
+                  <div
+                    className="alert alert-warning "
+                    style={{ color: "#000000" }}
+                  >
+                    {error}
+                  </div>
+                )}
                 <div className="form-group">
                   <Field
                     name="roleName"
@@ -138,8 +151,6 @@ const AddRole = () => {
                   expanded={expand}
                   onCheck={(checked) => setState(checked)}
                   onExpand={(expanded) => setExpand(expanded)}
-                  //   showCheckbox={true}
-                  //   disabled={true}
                 />
                 <div className="form-group text-right">
                   <button type="submit" className="btn btn-success">
