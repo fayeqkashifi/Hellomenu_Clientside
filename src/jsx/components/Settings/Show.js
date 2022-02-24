@@ -11,6 +11,7 @@ import PrivateRoute from "../PrivateRoute";
 import { useTranslation } from "react-i18next";
 import General from "./General";
 import User from "./User";
+import Locale  from "./Localization";
 import { checkPermission } from "../Permissions";
 
 const Show = () => {
@@ -86,6 +87,7 @@ const Show = () => {
             <Switch>
               <PrivateRoute exact path={`${path}`} component={General} />
               <PrivateRoute path={`${path}/user`} component={User} />
+              <PrivateRoute path={`${path}/localization`} component={Locale} />
             </Switch>
           </div>
         </div>
