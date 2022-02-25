@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import i18next from "i18next";
 import profile from "../../../images/hellomenu/logo.svg";
 import axios from "axios";
@@ -8,6 +8,8 @@ import IdleTimer from "react-idle-timer";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { base_url, port } from "../../../Consts";
+
 const Header = ({ toggle, onProfile, onNotification }) => {
   const idleTimerRef = useRef(null);
   const { t } = useTranslation();
@@ -46,6 +48,26 @@ const Header = ({ toggle, onProfile, onNotification }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const [user, setUser] = useState([]);
+  const dataLoad = async () => {
+    try {
+      const result = await axios.get(
+        `/api/getUser/${atob(localStorage.getItem("auth_id"))}`
+      );
+      if (result.data.status === 200) {
+        setUser(result.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    dataLoad();
+
+    return () => {
+      setUser([]);
+    };
+  }, []);
   return (
     <div className="header">
       <IdleTimer
@@ -127,7 +149,15 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                       <MoreVertIcon sx={{ color: "#f50b65" }} />
                     </span>
                   </div>
-                  <img src={profile} width="10" alt="" />
+                  <img
+                    src={
+                      user?.profilePic
+                        ? `http://${base_url}:${port}/images/profiles/${user?.profilePic}`
+                        : profile
+                    }
+                    width="10"
+                    alt=""
+                  />
                 </a>
                 <div
                   className={`dropdown-menu dropdown-menu-right ${

@@ -11,7 +11,7 @@ import PrivateRoute from "../PrivateRoute";
 import { useTranslation } from "react-i18next";
 import General from "./General";
 import User from "./User";
-import Locale  from "./Localization";
+import Locale from "./Localization";
 import { checkPermission } from "../Permissions";
 
 const Show = () => {

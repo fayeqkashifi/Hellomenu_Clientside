@@ -9,6 +9,8 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
 import { checkPermission } from "../Permissions";
+import { base_url, port } from "../../../Consts";
+import DefaultPic from "../../../images/hellomenu/logo.svg";
 
 const General = () => {
   const { t } = useTranslation();
@@ -24,16 +26,34 @@ const General = () => {
       message: message,
     });
   };
+  const [imageState, setImageState] = useState([]);
+  const handleImage = (e) => {
+    setImageState({ ...imageState, companyLogo: e.target.files[0] });
+  };
   const save = (data) => {
-    axios.post("/api/UpdateCompanies", data).then((res) => {
+    const formData = new FormData();
+    formData.append("companyLogo", imageState.companyLogo);
+    formData.append("id", data.id);
+    formData.append("company", data.company);
+    formData.append("companyDiscription", data.companyDiscription);
+    formData.append("business_type_id", data.business_type_id);
+    formData.append("facebook", data.facebook);
+    formData.append("instagram", data.instagram);
+    formData.append("youtube", data.youtube);
+    formData.append("tiktok", data.tiktok);
+    formData.append("contactEmail", data.contactEmail);
+    formData.append("whatsapp", data.whatsapp);
+    axios.post("/api/UpdateCompanies", formData).then((res) => {
       if (res.data.status === 200) {
         setAlerts(true, "success", res.data.message);
+        setCheck(!check);
       }
     });
   };
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [business, setBusiness] = useState([]);
+  const [check, setCheck] = useState(true);
 
   const dataLoad = async () => {
     try {
@@ -56,7 +76,7 @@ const General = () => {
       setFetchData([]);
       setLoading(true);
     };
-  }, []);
+  }, [check]);
   const initialValues = {
     id: fetchData?.id,
     company: fetchData?.company,
@@ -123,9 +143,9 @@ const General = () => {
                 <Select
                   defaultValue={[
                     {
-                      value: fetchData.business_type_id,
+                      value: fetchData?.business_type_id,
                       label: business.filter(
-                        (item) => item.id === fetchData.business_type_id
+                        (item) => item.id === fetchData?.business_type_id
                       )[0]?.BusinessName,
                     },
                   ]}
@@ -140,6 +160,30 @@ const General = () => {
                   }}
                 />
               </div>
+              <div className="form-group">
+                <label> {t("logo")}</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  name="companyLogo"
+                  onChange={handleImage}
+                />
+              </div>
+              <img
+                style={{
+                  height: "200px",
+                  width: "200px",
+                  borderRadius: "50px",
+                  objectFit: "contain",
+                }}
+                src={
+                  fetchData?.companyLogo
+                    ? `http://${base_url}:${port}/images/company/${fetchData?.companyLogo}`
+                    : DefaultPic
+                }
+                alt="Company Logo"
+              />
+
               <div className="form-group">
                 <label> {t("social_links")}</label>
               </div>

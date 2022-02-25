@@ -285,7 +285,8 @@
   "confirm_new_password":"Confirm New Password",
   "new_password":"New Password",
   "current_password":"Current Password",
-  "close_account":"Close Account"
+  "close_account":"Close Account",
+  "profile_pic":"Profile Picture"
   
 
 }

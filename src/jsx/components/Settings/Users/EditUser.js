@@ -8,9 +8,12 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import * as Yup from "yup";
 import CustomAlert from "../../CustomAlert";
+import { base_url, port } from "../../../../Consts";
+import DefaultPic from "../../../../images/hellomenu/logo.svg";
 const EditUser = (props) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(true);
   const [user, setUser] = useState([]);
   const dataLoad = async () => {
     try {
@@ -32,7 +35,7 @@ const EditUser = (props) => {
       setUser([]);
       setLoading(true);
     };
-  }, []);
+  }, [check]);
   const initialValues = {
     id: user?.id,
     name: user?.name ? user.name : "",
@@ -57,16 +60,25 @@ const EditUser = (props) => {
       message: message,
     });
   };
+  const [imageState, setImageState] = useState([]);
+  const handleImage = (e) => {
+    setImageState({ ...imageState, profilePic: e.target.files[0] });
+  };
   const handleSubmit = (data) => {
-    axios.post(`/api/UpdateRegister/${data.id}`, data).then((res) => {
+    const formData = new FormData();
+    formData.append("profilePic", imageState.profilePic);
+    formData.append("id", data.id);
+    formData.append("email", data.email);
+    formData.append("name", data.name);
+    axios.post(`/api/UpdateRegister/${data.id}`, formData).then((res) => {
       if (res.data.status === 200) {
         setAlerts(true, "success", res.data.message);
+        setCheck(!check);
       }
     });
   };
   const values = {
     id: user?.id,
-
     password: user?.password ? user.password : "",
     new_password: "",
     confirm_new_password: "",
@@ -179,6 +191,30 @@ const EditUser = (props) => {
                     }}
                   />
                 </div>
+                <div className="form-group">
+                  <label> {t("profile_pic")}</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    name="profilePic"
+                    onChange={handleImage}
+                  />
+                </div>
+                <img
+                  style={{
+                    height: "200px",
+                    width: "200px",
+                    borderRadius: "20px",
+                    objectFit: "contain",
+                  }}
+                  src={
+                    user?.profilePic
+                      ? `http://${base_url}:${port}/images/profiles/${user?.profilePic}`
+                      : DefaultPic
+                  }
+                  alt="Profile Logo"
+                />
+
                 <div className="text-right">
                   <Button variant="success" type="submit">
                     {t("save")}{" "}

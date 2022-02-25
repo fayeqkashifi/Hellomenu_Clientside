@@ -18,7 +18,8 @@ import Switch from "@mui/material/Switch";
 import Select from "react-select";
 import Chip from "@mui/material/Chip";
 import { checkPermission } from "../../Permissions";
-
+import { base_url, port } from "../../../../Consts";
+import DefaultPic from "../../../../images/hellomenu/logo.svg";
 const CreateUser = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -84,12 +85,28 @@ const CreateUser = () => {
       message: message,
     });
   };
+  const [imageState, setImageState] = useState([]);
+  const handleImage = (e) => {
+    setImageState({ ...imageState, profilePic: e.target.files[0] });
+  };
   const handleSubmit = (data, { resetForm }) => {
-    axios.post(`/api/register`, data).then((res) => {
+    const formData = new FormData();
+    // console.log(data);
+    data.id && formData.append("id", data?.id);
+    formData.append("profilePic", imageState.profilePic);
+    formData.append("confirm_new_password", data.confirm_new_password);
+    formData.append("email", data.email);
+    formData.append("name", data.name);
+    formData.append("password", data.password);
+    formData.append("phone_number", data.phone_number);
+    formData.append("role_id", data.role_id);
+
+    axios.post(`/api/register`, formData).then((res) => {
       if (res.data.status === 200) {
         setAlerts(true, "success", res.data.message);
         setCheck(!check);
         resetForm();
+        setImageState([]);
         setInitialValues({
           name: "",
           email: "",
@@ -114,6 +131,9 @@ const CreateUser = () => {
     });
   };
   const columns = [
+    {
+      key: "profilePic",
+    },
     {
       key: "name",
     },
@@ -327,6 +347,31 @@ const CreateUser = () => {
                           />
                         </div>
                       </div>
+                      <div className="col-6">
+                        <div className="form-group">
+                          <label> {t("profile_pic")}</label>
+                          <input
+                            type="file"
+                            className="form-control"
+                            name="profilePic"
+                            onChange={handleImage}
+                          />
+                        </div>
+                        <img
+                          style={{
+                            height: "200px",
+                            width: "200px",
+                            borderRadius: "20px",
+                            objectFit: "contain",
+                          }}
+                          src={
+                            initialValues?.profilePic
+                              ? `http://${base_url}:${port}/images/profiles/${initialValues?.profilePic}`
+                              : DefaultPic
+                          }
+                          alt="Profile Logo"
+                        />
+                      </div>
                     </div>
 
                     <div className="text-right">
@@ -352,6 +397,26 @@ const CreateUser = () => {
             pagination
             tableFilter
             scopedColumns={{
+              profilePic: (item) => {
+                return (
+                  <td>
+                    <img
+                      src={
+                        item?.profilePic
+                          ? `http://${base_url}:${port}/images/profiles/${item?.profilePic}`
+                          : DefaultPic
+                      }
+                      className="img-thumbnail"
+                      alt=""
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </td>
+                );
+              },
               roleName: (item) => {
                 return (
                   <td>
