@@ -117,7 +117,7 @@ const Login = () => {
                                 ? " is-invalid"
                                 : "")
                             }
-                            placeholder="Email/Phone"
+                            placeholder={t("email_phone")}
                           />
                           <ErrorMessage
                             name="email"

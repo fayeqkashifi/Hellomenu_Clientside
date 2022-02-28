@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
-// import emailjs from "@emailjs/browser";
+import Footer from "./Footer";
+
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -56,7 +57,7 @@ const ForgotPassword = () => {
             <div className="row no-gutters">
               <div className="col-xl-12">
                 <div className="auth-form">
-                  <h4 className="text-center mb-4">Forgot Password</h4>
+                  <h4 className="text-center mb-4">{t("forgot_password")}</h4>
                   {error.length !== 0 && (
                     <div
                       className="alert alert-warning m-2"
@@ -83,7 +84,7 @@ const ForgotPassword = () => {
                                 ? " is-invalid"
                                 : "")
                             }
-                            placeholder="E-Mail..."
+                            placeholder={t("email_phone")}
                           />
                           <ErrorMessage
                             name="email"
@@ -115,6 +116,7 @@ const ForgotPassword = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

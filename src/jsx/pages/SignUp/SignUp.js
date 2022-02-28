@@ -72,12 +72,9 @@ const SignUp = () => {
               <div className="col-xl-12">
                 <div className="auth-form">
                   <h4 className="text-center mb-4">
-                    Setup Your Menu in Minutes
+                    {t("setup_your_menu_in_minutes")}
                   </h4>
-                  <label>
-                    No commitments. Try for free now and pay later. No credit
-                    card required.
-                  </label>
+                  <label>{t("setup_note")}</label>
                   <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -95,7 +92,7 @@ const SignUp = () => {
                                 ? " is-invalid"
                                 : "")
                             }
-                            placeholder="E-mail"
+                            placeholder={t("email")}
                           />
                           <ErrorMessage
                             name="email"

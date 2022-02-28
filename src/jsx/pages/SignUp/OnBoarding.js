@@ -7,7 +7,11 @@ import { useLocation, useHistory } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
-const OnBoarding = (props) => {
+import { useTranslation } from "react-i18next";
+
+const OnBoarding = () => {
+  const { t } = useTranslation();
+
   const location = useLocation();
   const history = useHistory();
 
@@ -35,7 +39,6 @@ const OnBoarding = (props) => {
         },
       });
     });
-    
   };
 
   return (
@@ -47,8 +50,8 @@ const OnBoarding = (props) => {
             <div className="row no-gutters">
               <div className="col-xl-12">
                 <div className="auth-form">
-                  <h3 className="text-center">Welcome to Hello Menu!</h3>
-                  <p className="text-center"> Tell us about yourself</p>
+                  <h3 className="text-center">{t("welcome_to_hello_menu")}</h3>
+                  <p className="text-center">{t("tell_us_about_yourself")}</p>
                   <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -59,7 +62,7 @@ const OnBoarding = (props) => {
                         <div className="form-group">
                           <label htmlFor="email">
                             <span className="text-danger"> * </span>
-                            What is your name?
+                            {t("what_is_your_name")}
                           </label>
 
                           <Field
@@ -79,7 +82,7 @@ const OnBoarding = (props) => {
 
                         <div className="form-group">
                           <label htmlFor="email">
-                            What is your phone number?
+                            {t("what_is_your_phone_number")}
                           </label>
                           <PhoneInput
                             country={"af"}
@@ -98,7 +101,7 @@ const OnBoarding = (props) => {
                               border: "none",
                             }}
                           >
-                            Continue
+                            {t("continue")}
                           </button>
                         </div>
                       </Form>

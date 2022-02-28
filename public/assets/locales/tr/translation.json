@@ -11,7 +11,26 @@
   "current_password":"Mevcut Şifre",
   "change":"Değiştirmek",
   "submit":"Sunmak",
-  "sign_up": "Üye olmak"
+  "sign_up": "Üye olmak",
+  "email_phone":"E-posta/Telefon",
+  "terms_of_service":"Kullanım Şartları",
+  "privacy_policy":"Gizlilik Politikası",
+  "setup_your_menu_in_minutes":"Menünüzü Dakikalar İçinde Kurun",
+  "setup_note":"Taahhüt yok. Şimdi ücretsiz deneyin ve sonra ödeyin. Kredi kartı gerekmez.",
+  "welcome_to_hello_menu":"Merhaba Menüsüne Hoş Geldiniz!",
+  "tell_us_about_yourself":"Bize kendinden bahset",
+  "what_is_your_name":"Adın ne?",
+  "what_is_your_phone_number":"Telefon numaran nedir?",
+  "continue":"Devam et",
+  "let’s_start_talking_about_your_business":"İşiniz hakkında konuşmaya başlayalım",
+  "what_is_the_name_of_the_business":"İşletmenin adı nedir?",
+  "what_is_the_type_of_business":"İşletmenin türü nedir?",
+  "select_your_language_and_country":"Dilinizi ve Ülkenizi seçin",
+  "what_is_your_language":"Dilin nedir?",
+  "what_is_your_country":"Nerelisin?",
+  "congratulations":"Tebrikler!",
+  "menu_setup_note":"Menünüzü kuralım, istediğiniz zaman yönetebileceğinizi unutmayın.",
+  "dashboard":"Gösterge Paneli"
 
 
 

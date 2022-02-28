@@ -7,7 +7,11 @@ import axios from "axios";
 import { useLocation, useHistory } from "react-router-dom";
 import Select from "react-select";
 import { Locale } from "../../components/DefaultLanguage";
+import { useTranslation } from "react-i18next";
+
 const Venue = () => {
+  const { t } = useTranslation();
+
   const location = useLocation();
   const userId = location.state.userId;
   const history = useHistory();
@@ -58,10 +62,10 @@ const Venue = () => {
             <div className="row no-gutters">
               <div className="col-xl-12">
                 <div className="auth-form">
-                  <h3 className="text-center">Welcome to Hello Menu!</h3>
+                  <h3 className="text-center">{t("welcome_to_hello_menu")}</h3>
                   <p className="text-center">
                     {" "}
-                    Let’s start talking about your business
+                    {t("let’s_start_talking_about_your_business")}
                   </p>
                   <Formik
                     initialValues={initialValues}
@@ -73,7 +77,7 @@ const Venue = () => {
                         <div className="form-group">
                           <label>
                             <span className="text-danger"> * </span>
-                            What is the name of the business?
+                            {t("what_is_the_name_of_the_business")}
                           </label>
 
                           <Field
@@ -94,7 +98,7 @@ const Venue = () => {
                         </div>
 
                         <div className="form-group">
-                          <label>What is the type of the business?</label>
+                          <label>{t("what_is_the_type_of_business")}</label>
                           <Select
                             options={business?.map((bus, i) => {
                               return {
@@ -131,7 +135,7 @@ const Venue = () => {
                               border: "none",
                             }}
                           >
-                            Continue
+                            {t("continue")}
                           </button>
                         </div>
                       </Form>

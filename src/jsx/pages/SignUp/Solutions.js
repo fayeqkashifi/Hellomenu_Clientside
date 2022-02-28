@@ -6,7 +6,11 @@ import { useLocation, useHistory } from "react-router-dom";
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+
 const Solutions = () => {
+  const { t } = useTranslation();
+
   const location = useLocation();
   const userId = location.state.userId;
   const history = useHistory();
@@ -58,7 +62,7 @@ const Solutions = () => {
               <div className="col-xl-12">
                 <div className="auth-form">
                   <h3 className="text-center">
-                    Select your Language & Country
+                    {t("select_your_language_and_country")}
                   </h3>
                   <p className="text-center"> </p>
                   <Formik
@@ -71,7 +75,7 @@ const Solutions = () => {
                         <div className="form-group">
                           <label>
                             <span className="text-danger"> * </span>
-                            What is your language?
+                            {t("what_is_your_language")}
                           </label>
 
                           <Select
@@ -99,7 +103,7 @@ const Solutions = () => {
                         <div className="form-group">
                           <label>
                             <span className="text-danger"> * </span>
-                            What is your country?
+                            {t("what_is_your_country")}
                           </label>
                           <Select
                             className="is-invalid"
@@ -133,7 +137,7 @@ const Solutions = () => {
                               border: "none",
                             }}
                           >
-                            Continue
+                            {t("continue")}
                           </button>
                         </div>
                       </Form>

@@ -1,8 +1,11 @@
 import React from "react";
 import HeaderWizard from "./HeaderWizard";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Menu = () => {
+  const { t } = useTranslation();
+
   return (
     <>
       <HeaderWizard
@@ -17,10 +20,11 @@ const Menu = () => {
             <div className="row no-gutters">
               <div className="col-xl-12">
                 <div className="auth-form">
-                  <h3 className="text-center">Congratulations!</h3>
+                  <h3 className="text-center">{t("congratulations")}</h3>
                   <p className="text-center">
                     {" "}
-                    Let’s set up your menu, remember you can manage it anytime.
+                    {t("menu_setup_note")}
+                    
                   </p>
 
                   <div className="form-group text-right">
@@ -32,7 +36,8 @@ const Menu = () => {
                         borderRadius: "10px",
                       }}
                     >
-                      Dashboard
+                    {t("dashboard")}
+
                     </Link>
                   </div>
                 </div>
