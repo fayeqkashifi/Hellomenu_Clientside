@@ -81,7 +81,7 @@ const Login = () => {
   // check the auth end
   return (
     <>
-      <Header route="/signup" linkName="Sign Up" />
+      <Header route="/signup" linkName={t("sign_up")} />
       <div className="row justify-content-center ">
         {alert.open ? (
           <CustomAlert

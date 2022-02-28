@@ -33,7 +33,7 @@ const ResetPassword = (props) => {
 
   return (
     <div className="row justify-content-center">
-      <Header route="/login" linkName="Log In" />
+      <Header route="/login" linkName={t("sign_in")} />
       <div className="col-md-6">
         <div className="authincation-content">
           <div className="row no-gutters">

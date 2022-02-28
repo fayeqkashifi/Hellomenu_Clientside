@@ -5,7 +5,6 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import Registration from "./jsx/pages/Registration";
 /// Components
 import Markup from "./jsx";
 import Login from "./jsx/pages/Login";
@@ -77,12 +76,6 @@ const App = () => {
           restricted={false}
           component={Show}
           path="/onboarding/:id"
-          exact
-        />
-        <PublicRoute
-          restricted={false}
-          component={Registration}
-          path="/user-register"
           exact
         />
 

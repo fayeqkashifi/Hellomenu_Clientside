@@ -56,7 +56,7 @@ const SignUp = () => {
   };
   return (
     <>
-      <Header route="/login" linkName="Log In" />
+      <Header route="/login" linkName={t("sign_in")} />
       <div className="row ">
         <div className="col-md-6 m-2 f d-flex align-items-center justify-content-center">
           {/* <p style={{ fontSize: "66px" }} className="text-center text-primary">

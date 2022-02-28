@@ -53,7 +53,6 @@ const EditLocale = (props) => {
         if (res.data.data.status) {
           localStorage.setItem("locale", JSON.stringify(data));
         }
-
         setAlerts(true, "success", res.data.message);
       }
     });

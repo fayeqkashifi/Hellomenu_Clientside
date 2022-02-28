@@ -124,6 +124,7 @@ const LanguageList = () => {
     axios.get(`/api/changeLocaleStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
+        localStorage.setItem("locale", res.data.data.locale);
         setAlerts(true, "success", res.data.message);
       }
     });

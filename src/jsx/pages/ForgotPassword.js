@@ -48,7 +48,7 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <Header route="/login" linkName="Log In" />
+      <Header route="/login" linkName={t("sign_in")} />
 
       <div className="row justify-content-center">
         <div className="col-md-6">
