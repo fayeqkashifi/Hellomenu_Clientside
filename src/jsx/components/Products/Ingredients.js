@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import CustomAlert from "../CustomAlert";
 import { useHistory } from "react-router-dom";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Ingredients = (props) => {
   // validation start
@@ -23,7 +23,6 @@ const Ingredients = (props) => {
   // validation end
 
   // for localization
-  const { t } = useTranslation();
   // insert start
   const [modalCentered, setModalCentered] = useState(false);
   const [alert, setAlert] = useState({
@@ -265,25 +264,24 @@ const Ingredients = (props) => {
 
           <td> {item.name}</td>
           <td>
-            {checkPermission('ingredients-edit')&&(
-            <button
-              type="button"
-              onClick={(e) => fetch(e, item.id)}
-              className="btn btn-outline-danger btn-sm"
-            >
-              {t("edit")}
-            </button>
+            {checkPermission("ingredients-edit") && (
+              <button
+                type="button"
+                onClick={(e) => fetch(e, item.id)}
+                className="btn btn-outline-danger btn-sm"
+              >
+                {t("edit")}
+              </button>
             )}
             &nbsp;&nbsp;&nbsp;
-            {checkPermission('ingredients-delete')&&(
-            
-            <button
-              type="button"
-              onClick={(e) => deleteIngredient(e, item.id)}
-              className="btn btn-outline-warning btn-sm"
-            >
-              {t("delete")}
-            </button>
+            {checkPermission("ingredients-delete") && (
+              <button
+                type="button"
+                onClick={(e) => deleteIngredient(e, item.id)}
+                className="btn btn-outline-warning btn-sm"
+              >
+                {t("delete")}
+              </button>
             )}
           </td>
         </tr>
@@ -427,16 +425,16 @@ const Ingredients = (props) => {
                 <h4 className="card-title mb-2">{t("ingredients")}</h4>
               </div>
               <div className="dropdown">
-            {checkPermission('ingredients-create')&&(
-                <Button
-                  variant="primary"
-                  type="button"
-                  className="mb-2 mr-2"
-                  onClick={() => setModalCentered(true)}
-                >
-                  {t("add_ingredient")}
-                </Button>
-            )}
+                {checkPermission("ingredients-create") && (
+                  <Button
+                    variant="primary"
+                    type="button"
+                    className="mb-2 mr-2"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    {t("add_ingredient")}
+                  </Button>
+                )}
               </div>
             </div>
             <div className="card-body p-0">

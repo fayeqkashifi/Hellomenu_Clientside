@@ -69,6 +69,7 @@ const Login = () => {
           res.data.role === null
             ? localStorage.setItem("role", btoa(JSON.stringify(res.data.role)))
             : localStorage.setItem("role", btoa(res.data.role.permissions));
+          localStorage.setItem("locale", res.data.locale);
           history.push("/dashboard");
         } else {
           setAlerts(true, "warning", res.data.message);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { useTranslation } from "react-i18next";
 import { Formik, Field, Form } from "formik";
 import { Button } from "react-bootstrap";
 import axios from "axios";
@@ -11,9 +10,9 @@ import Select from "react-select";
 import { checkPermission } from "../Permissions";
 import { base_url, port } from "../../../Consts";
 import DefaultPic from "../../../images/hellomenu/logo.svg";
+import { localization as t } from "../Localization";
 
 const General = () => {
-  const { t } = useTranslation();
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",

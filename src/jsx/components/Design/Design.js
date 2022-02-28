@@ -13,7 +13,6 @@ import {
   CFormLabel,
   CCol,
 } from "@coreui/react";
-import { useTranslation } from "react-i18next";
 import palette from "../../../images/hellomenu/palette.svg";
 import { Link, useRouteMatch } from "react-router-dom";
 import QRCode from "qrcode.react";
@@ -36,10 +35,11 @@ import CustomAlert from "../CustomAlert";
 import EditIcon from "@mui/icons-material/Edit";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { localization as t } from "../Localization";
+
 const Design = (props) => {
   const { url } = useRouteMatch();
 
-  const { t } = useTranslation();
   // const branchId = atob(props.match.params.id);
   const branchId = props.history.location.state.id;
 

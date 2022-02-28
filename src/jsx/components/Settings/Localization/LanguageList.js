@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-import { useTranslation } from "react-i18next";
 import axios from "axios";
 import "react-phone-input-2/lib/style.css";
 import { CSmartTable } from "@coreui/react-pro";
@@ -12,6 +11,7 @@ import swal from "sweetalert";
 import { Link, useRouteMatch } from "react-router-dom";
 import { checkPermission } from "../../Permissions";
 import "flag-icon-css/css/flag-icons.min.css";
+import { Button } from "react-bootstrap";
 
 import Select from "react-select";
 import countryList from "react-select-country-list";
@@ -19,9 +19,9 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../../CustomAlert";
 import Switch from "@mui/material/Switch";
+import { localization as t } from "../../Localization";
 
 const LanguageList = () => {
-  const { t } = useTranslation();
   const { url } = useRouteMatch();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,6 +123,7 @@ const LanguageList = () => {
   const changeLocaleStatus = (id) => {
     axios.get(`/api/changeLocaleStatus/${id}`).then((res) => {
       if (res.data.status === 200) {
+        setCheck(!check);
         setAlerts(true, "success", res.data.message);
       }
     });
@@ -216,17 +217,9 @@ const LanguageList = () => {
                 </div>
 
                 <div className="form-group text-right">
-                  <button
-                    type="submit"
-                    className="btn-primary"
-                    style={{
-                      padding: "5px 20px 5px 20px",
-                      borderRadius: "10px",
-                      border: "none",
-                    }}
-                  >
-                    save
-                  </button>
+                  <Button variant="success" type="submit">
+                    {t("save")}{" "}
+                  </Button>
                 </div>
               </Form>
             )}
@@ -283,8 +276,9 @@ const LanguageList = () => {
                       </Tooltip>
                     </Link>
                   )}
-                  {checkPermission("localization-delete") &&
-                  item.default_language ? null : (
+                  {(checkPermission("localization-delete") &&
+                    item.default_language) ||
+                  item.status ? null : (
                     <Tooltip title="Delete">
                       <IconButton onClick={() => deleteLocale(item.id)}>
                         <DeleteIcon fontSize="small" />

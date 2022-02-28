@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 import swal from "sweetalert";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { base_url, port } from "../../../Consts";
 import { CSmartTable } from "@coreui/react-pro";
 import { useRouteMatch } from "react-router-dom";
@@ -17,12 +16,12 @@ import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Product = (props) => {
-  const { path, url } = useRouteMatch();
+  const { url } = useRouteMatch();
 
   // for localization
-  const { t } = useTranslation();
   // const subMenuId = atob(props.match.params.id)
   const branchId = props.history.location.state.id;
 

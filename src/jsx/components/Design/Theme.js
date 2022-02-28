@@ -7,7 +7,6 @@ import {
   CFormLabel,
   CCol,
 } from "@coreui/react";
-import { useTranslation } from "react-i18next";
 // import Switch from "react-switch";
 import circle_menu_button from "../../../images/hellomenu/circle_menu_button.png";
 import pill_menu_button from "../../../images/hellomenu/pill_menu_button.png";
@@ -30,11 +29,11 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import { useHistory } from "react-router-dom";
+import { localization as t } from "../Localization";
 
 const Theme = (props) => {
   const history = useHistory();
 
-  const { t } = useTranslation();
   const branchId = props.history.location.state.id;
 
   const [state, setState] = useState({ checked: false });

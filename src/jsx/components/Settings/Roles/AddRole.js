@@ -4,10 +4,10 @@ import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import axios from "axios";
 import { Formik, ErrorMessage, Field, Form } from "formik";
 import * as Yup from "yup";
-import { useTranslation } from "react-i18next";
 import CustomAlert from "../../CustomAlert";
 import RoleList from "./RoleList";
 import { checkPermission } from "../../Permissions";
+import { localization as t } from "../../Localization";
 
 const initialValues = {
   roleName: "",
@@ -20,7 +20,6 @@ const validationSchema = () => {
 };
 
 const AddRole = () => {
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
 
   const [check, setCheck] = useState(true);

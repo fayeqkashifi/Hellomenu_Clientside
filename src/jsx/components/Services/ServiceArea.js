@@ -2,18 +2,15 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const ServiceArea = (props) => {
-  // for localization
-  const { t } = useTranslation();
-  //ID
   const id = props.history.location.state.id;
 
   // insert Start
@@ -307,15 +304,14 @@ const ServiceArea = (props) => {
                         values.)
                       </small>
                     </label>
-            {checkPermission("areas-create") && (
-
-                    <small
-                      onClick={() => setAreaModal(true)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {t("add_area")}
-                    </small>
-            )}
+                    {checkPermission("areas-create") && (
+                      <small
+                        onClick={() => setAreaModal(true)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {t("add_area")}
+                      </small>
+                    )}
                   </div>
                   <Select
                     isMulti
@@ -449,7 +445,6 @@ const ServiceArea = (props) => {
       <Modal className="fade" show={editmodalCentered}>
         <form onSubmit={updateServiceArea} method="POST">
           <Modal.Header>
-            
             <Modal.Title>{t("edit_service_area")}</Modal.Title>
 
             <Button

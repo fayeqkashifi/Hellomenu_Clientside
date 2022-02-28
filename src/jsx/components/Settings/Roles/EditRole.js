@@ -4,12 +4,11 @@ import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import axios from "axios";
 import { Formik, ErrorMessage, Field, Form } from "formik";
 import * as Yup from "yup";
-import { useTranslation } from "react-i18next";
 import CustomAlert from "../../CustomAlert";
 import { useHistory } from "react-router-dom";
+import { localization as t } from "../../Localization";
 
 const EditRole = (props) => {
-  const { t } = useTranslation();
   const id = props.history.location.state.id;
   const nodes = props.history.location.state.nodes;
   const history = useHistory();

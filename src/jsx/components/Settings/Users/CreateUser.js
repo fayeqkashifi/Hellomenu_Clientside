@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Button } from "react-bootstrap";
 import axios from "axios";
@@ -20,8 +19,9 @@ import Chip from "@mui/material/Chip";
 import { checkPermission } from "../../Permissions";
 import { base_url, port } from "../../../../Consts";
 import DefaultPic from "../../../../images/hellomenu/logo.svg";
+import { localization as t } from "../../Localization";
+
 const CreateUser = () => {
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   const [user, setUser] = useState([]);

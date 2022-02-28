@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import QRCode from "qrcode.react";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
@@ -14,6 +13,7 @@ import CustomAlert from "../CustomAlert";
 import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Tables = (props) => {
   const id = props.history.location.state.id;
@@ -36,9 +36,6 @@ const Tables = (props) => {
   };
   // validation end
 
-  // for localization
-  const { t } = useTranslation();
-  // ID
   const [check, setCheck] = useState(true);
 
   // insert modal
@@ -211,25 +208,24 @@ const Tables = (props) => {
             </div>
           </td>
           <td>
-            {checkPermission('tables-edit') &&(
-            <button
-              type="button"
-              onClick={(e) => fetchTable(e, item.id)}
-              className="btn btn-outline-danger btn-sm"
-            >
-              {t("edit")}
-            </button>
+            {checkPermission("tables-edit") && (
+              <button
+                type="button"
+                onClick={(e) => fetchTable(e, item.id)}
+                className="btn btn-outline-danger btn-sm"
+              >
+                {t("edit")}
+              </button>
             )}
             &nbsp;&nbsp;&nbsp;
-            {checkPermission('tables-delete') &&(
-
-            <button
-              type="button"
-              onClick={(e) => deleteTable(e, item.id)}
-              className="btn btn-outline-warning btn-sm"
-            >
-              {t("delete")}
-            </button>
+            {checkPermission("tables-delete") && (
+              <button
+                type="button"
+                onClick={(e) => deleteTable(e, item.id)}
+                className="btn btn-outline-warning btn-sm"
+              >
+                {t("delete")}
+              </button>
             )}
           </td>
         </tr>
@@ -459,19 +455,18 @@ const Tables = (props) => {
                 <div>
                   <h4 className="card-title mb-2">{t("tables")}</h4>
                 </div>
-            {checkPermission('tables-create') &&(
-
-                <div className="dropdown">
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mx-1"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    {t("add_table")}
-                  </Button>
-                </div>
-            )}
+                {checkPermission("tables-create") && (
+                  <div className="dropdown">
+                    <Button
+                      variant="primary"
+                      type="button"
+                      className="mx-1"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      {t("add_table")}
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
@@ -524,56 +519,53 @@ const Tables = (props) => {
                   </div>
                   <div className="card-footer pt-0 pb-0 text-center">
                     <div className="row">
-            {checkPermission('tables-edit') &&(
-
-                      <div className="col-6 pt-3 pb-3 border-right">
-                        <div
-                          style={{ cursor: "pointer" }}
-                          onClick={(e) => fetchTable(e, item.id)}
-                        >
-                          <span>{t("edit")}</span>
+                      {checkPermission("tables-edit") && (
+                        <div className="col-6 pt-3 pb-3 border-right">
+                          <div
+                            style={{ cursor: "pointer" }}
+                            onClick={(e) => fetchTable(e, item.id)}
+                          >
+                            <span>{t("edit")}</span>
+                          </div>
                         </div>
-                      </div>
-            )}
-            {checkPermission('tables-delete') &&(
-
-                      <div className="col-6 pt-3 pb-3">
-                        <div
-                          style={{ cursor: "pointer" }}
-                          onClick={(e) => deleteTable(e, item.id)}
-                        >
-                          <span>{t("delete")}</span>
+                      )}
+                      {checkPermission("tables-delete") && (
+                        <div className="col-6 pt-3 pb-3">
+                          <div
+                            style={{ cursor: "pointer" }}
+                            onClick={(e) => deleteTable(e, item.id)}
+                          >
+                            <span>{t("delete")}</span>
+                          </div>
                         </div>
-                      </div>
-            )}
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             );
           })}
-            {checkPermission('tables-create') &&(
-
-          <div className="col-xl-3 col-lg-4 col-sm-6 ">
-            <div className="card overflow-hidden ">
-              <div
-                className="card-body d-flex justify-content-center text-center"
-                style={{ border: "2px dashed #f50b65" }}
-              >
-                <div className="align-self-center text-center">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    <AddIcon />
-                    {t("add_table")}
-                  </button>
+          {checkPermission("tables-create") && (
+            <div className="col-xl-3 col-lg-4 col-sm-6 ">
+              <div className="card overflow-hidden ">
+                <div
+                  className="card-body d-flex justify-content-center text-center"
+                  style={{ border: "2px dashed #f50b65" }}
+                >
+                  <div className="align-self-center text-center">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      <AddIcon />
+                      {t("add_table")}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-            )}
+          )}
         </div>
       )}
     </Fragment>

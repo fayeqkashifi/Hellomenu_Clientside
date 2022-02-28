@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import NewGrid from "./NewGrid";
 import { CBreadcrumb } from "@coreui/react";
 import Select from "react-select";
@@ -13,10 +12,10 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Variants = (props) => {
   // for localization
-  const { t } = useTranslation();
   const id = props.history.location.state.p_id;
   const branchId = props.history.location.state.id;
 

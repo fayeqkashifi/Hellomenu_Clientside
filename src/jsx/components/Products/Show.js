@@ -14,9 +14,6 @@ import EditProduct from "./EditProduct";
 
 const ProductShow = (props) => {
   const { path } = useRouteMatch();
-  // const { t } = useTranslation();
-  // const id = props.history.location.state.id;
-
   return (
     <Fragment>
       <Router>

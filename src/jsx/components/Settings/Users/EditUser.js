@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Button } from "react-bootstrap";
 import axios from "axios";
@@ -10,8 +9,9 @@ import * as Yup from "yup";
 import CustomAlert from "../../CustomAlert";
 import { base_url, port } from "../../../../Consts";
 import DefaultPic from "../../../../images/hellomenu/logo.svg";
+import { localization as t } from "../../Localization";
+
 const EditUser = (props) => {
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   const [user, setUser] = useState([]);

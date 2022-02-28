@@ -2,13 +2,13 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
-const Attributes = (props) => {
+const Attributes = () => {
   // validation start
   const initialValues = {
     attributeName: "",
@@ -19,9 +19,6 @@ const Attributes = (props) => {
     });
   };
   // validation end
-
-  // for localization
-  const { t } = useTranslation();
 
   // insert Attribute start
   const [modalCentered, setModalCentered] = useState(false);

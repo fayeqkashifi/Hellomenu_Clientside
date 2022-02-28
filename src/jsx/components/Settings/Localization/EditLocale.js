@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import { useTranslation } from "react-i18next";
-
 import axios from "axios";
 import CustomAlert from "../../CustomAlert";
 import { Button } from "react-bootstrap";
+import { localization as t } from "../../Localization";
 
 const EditLocale = (props) => {
-  const { t } = useTranslation();
   const id = props.history.location.state.id;
 
   const [loading, setLoading] = useState(true);

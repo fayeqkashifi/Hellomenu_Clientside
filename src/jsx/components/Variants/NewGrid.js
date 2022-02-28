@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from "react";
-import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { base_url, port } from "../../../Consts";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -9,10 +8,9 @@ import swal from "sweetalert";
 import { Button } from "react-bootstrap";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const NewGrid = (props) => {
-  const { t } = useTranslation();
-
   const { numberOfVar, productid, tags, setNumberOfVar } = props;
   // alert
   const [alert, setAlert] = useState({

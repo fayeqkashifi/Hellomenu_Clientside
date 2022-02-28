@@ -6,7 +6,6 @@ import { Row } from "react-bootstrap";
 import { Link, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import DefaultPic from "../../../images/hellomenu/category.svg";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
@@ -22,11 +21,11 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import CustomAlert from "../CustomAlert";
 
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Category = (props) => {
   const { url } = useRouteMatch();
   // for localization
-  const { t } = useTranslation();
   // ID
   const id = props.history.location.state.id;
   const [check, setCheck] = useState(true);
@@ -303,27 +302,26 @@ const Category = (props) => {
 
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
-{checkPermission('categories-edit')&&(
-                <div className="col-6 pt-3 pb-3 border-right">
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={(e) => fetchMenus(e, item.id)}
-                  >
-                    <span>{t("edit")}</span>
+                {checkPermission("categories-edit") && (
+                  <div className="col-6 pt-3 pb-3 border-right">
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={(e) => fetchMenus(e, item.id)}
+                    >
+                      <span>{t("edit")}</span>
+                    </div>
                   </div>
-                </div>
                 )}
-{checkPermission('categories-delete')&&(
-
-                <div className="col-6 pt-3 pb-3">
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={(e) => deleteMenu(e, item.id)}
-                  >
-                    <span>{t("delete")}</span>
+                {checkPermission("categories-delete") && (
+                  <div className="col-6 pt-3 pb-3">
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={(e) => deleteMenu(e, item.id)}
+                    >
+                      <span>{t("delete")}</span>
+                    </div>
                   </div>
-                </div>
-)}
+                )}
               </div>
             </div>
           </div>
@@ -596,28 +594,27 @@ const Category = (props) => {
       {layout ? (
         <Row>
           {viewProducts_HTMLTABLE}
-{checkPermission('categories-create')&&(
-
-          <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
-            <div className="card overflow-hidden ">
-              <div
-                className="card-body d-flex justify-content-center text-center"
-                style={{ border: "2px dashed #f50b65" }}
-              >
-                <div className="align-self-center text-center">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary"
-                    onClick={handleToggle}
-                  >
-                    <AddIcon />
-                    {t("add_category")}
-                  </button>
+          {checkPermission("categories-create") && (
+            <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
+              <div className="card overflow-hidden ">
+                <div
+                  className="card-body d-flex justify-content-center text-center"
+                  style={{ border: "2px dashed #f50b65" }}
+                >
+                  <div className="align-self-center text-center">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary"
+                      onClick={handleToggle}
+                    >
+                      <AddIcon />
+                      {t("add_category")}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-)}
+          )}
         </Row>
       ) : (
         <div className="row">
@@ -627,19 +624,18 @@ const Category = (props) => {
                 <div>
                   <h4 className="card-title mb-2">{t("categories")}</h4>
                 </div>
-{checkPermission('categories-create')&&(
-
-                <div className="dropdown">
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mb-2 mr-2"
-                    onClick={handleToggle}
-                  >
-                    {t("add_category")}
-                  </Button>
-                </div>
-)}
+                {checkPermission("categories-create") && (
+                  <div className="dropdown">
+                    <Button
+                      variant="primary"
+                      type="button"
+                      className="mb-2 mr-2"
+                      onClick={handleToggle}
+                    >
+                      {t("add_category")}
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
@@ -703,27 +699,25 @@ const Category = (props) => {
                             </td>
 
                             <td>
-{checkPermission('categories-edit')&&(
-
-                              <button
-                                type="button"
-                                onClick={(e) => fetchMenus(e, item.id)}
-                                className="btn btn-outline-danger btn-sm"
-                              >
-                                {t("edit")}
-                              </button>
-)}
+                              {checkPermission("categories-edit") && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => fetchMenus(e, item.id)}
+                                  className="btn btn-outline-danger btn-sm"
+                                >
+                                  {t("edit")}
+                                </button>
+                              )}
                               &nbsp;&nbsp;&nbsp;
-{checkPermission('categories-delete')&&(
-
-                              <button
-                                type="button"
-                                onClick={(e) => deleteMenu(e, item.id)}
-                                className="btn btn-outline-warning btn-sm"
-                              >
-                                {t("delete")}
-                              </button>
-)}
+                              {checkPermission("categories-delete") && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => deleteMenu(e, item.id)}
+                                  className="btn btn-outline-warning btn-sm"
+                                >
+                                  {t("delete")}
+                                </button>
+                              )}
                             </td>
                           </tr>
                         );

@@ -6,3 +6,4 @@ export const checkPermission = (crud) => {
     return result.includes(crud);
   }
 };
+

@@ -6,7 +6,7 @@ import HeaderWizard from "./HeaderWizard";
 import axios from "axios";
 import { useLocation, useHistory } from "react-router-dom";
 import Select from "react-select";
-
+import { Locale } from "../../components/DefaultLanguage";
 const Venue = () => {
   const location = useLocation();
   const userId = location.state.userId;
@@ -20,6 +20,7 @@ const Venue = () => {
   const initialValues = {
     company: "",
     business_type_id: "",
+    locale: JSON.stringify(Locale),
   };
   // atob
   const validationSchema = () => {
@@ -33,6 +34,7 @@ const Venue = () => {
     axios.post(`/api/UpdateRegister/${userId}`, data).then((res) => {
       if (res.data.status === 200) {
         localStorage.setItem("auth_company_id", btoa(res.data.data.company_id));
+        localStorage.setItem("locale", JSON.stringify(Locale));
         history.push({
           pathname: `/onboarding/solutions`,
           state: {

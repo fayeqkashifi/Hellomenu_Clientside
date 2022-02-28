@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useTranslation } from "react-i18next";
 import { base_url, port } from "../../../Consts";
 import { CBreadcrumb } from "@coreui/react";
 import Grid from "@mui/material/Grid";
@@ -15,11 +14,11 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ReactWhatsapp from "react-whatsapp";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import { localization as t } from "../Localization";
 
 const OrderDetails = (props) => {
   let message = "";
 
-  const { t } = useTranslation();
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const id = props.history.location.state.id;

@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import PageTItle from "../../../layouts/PageTitle";
+import { localization as t } from "../../Localization";
 
 const Home = () => {
-  const { t } = useTranslation();
   return (
     <Fragment>
       <PageTItle

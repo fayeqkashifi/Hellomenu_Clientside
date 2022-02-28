@@ -9,7 +9,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 const Locale = () => {
-  const { path, url } = useRouteMatch();
+  const { path } = useRouteMatch();
 
   return (
     <Router>

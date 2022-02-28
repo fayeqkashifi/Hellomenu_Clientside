@@ -1,17 +1,15 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useTranslation } from "react-i18next";
-import { base_url, port } from "../../../Consts";
 import Chip from "@mui/material/Chip";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { CBreadcrumb } from "@coreui/react";
 // import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Order = () => {
-  const { t } = useTranslation();
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const dataLoad = async () => {

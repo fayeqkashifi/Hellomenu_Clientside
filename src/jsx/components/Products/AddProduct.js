@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -10,11 +9,11 @@ import * as Yup from "yup";
 import Switch from "@mui/material/Switch";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const AddProduct = (props) => {
   const history = useHistory();
   // for localization
-  const { t } = useTranslation();
   const branchId = props.history.location.state.id;
   // validation start
   const initialValues = {
@@ -466,16 +465,16 @@ const AddProduct = (props) => {
                         <label className="mb-1 ">
                           <strong>{t("ingredients")}</strong>
                         </label>
-                      {checkPermission('ingredients-create')&&(
-                        <small
-                          onClick={() => setModalCentered(true)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {t("add_ingredient")}
-                        </small>
-                          )}
+                        {checkPermission("ingredients-create") && (
+                          <small
+                            onClick={() => setModalCentered(true)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {t("add_ingredient")}
+                          </small>
+                        )}
                       </div>
-                    
+
                       <Select
                         isMulti
                         options={intgredients?.map((o, i) => {

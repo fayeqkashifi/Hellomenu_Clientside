@@ -11,6 +11,8 @@ import MetisMenu from "metismenujs";
 import { withTranslation } from "react-i18next";
 // const { t } = useTranslation();
 import { checkPermission } from "../../components/Permissions";
+import { localization as t } from "../../components/Localization";
+
 class MM extends Component {
   componentDidMount() {
     this.$el = this.el;
@@ -52,7 +54,7 @@ class SideBar extends Component {
   }
   render() {
     // console.log();
-    const { t } = this.props;
+    // const { t } = this.props;
     return (
       <div className="deznav">
         <PerfectScrollbar className="deznav-scroll">

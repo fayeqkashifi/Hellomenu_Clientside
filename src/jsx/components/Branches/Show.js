@@ -8,7 +8,6 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 
-import { useTranslation } from "react-i18next";
 
 import {
   CCloseButton,
@@ -30,9 +29,9 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import Shared from "../Categories/Shared";
 import QRcodeStyle from "./QRcodeStyle";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Show = (props) => {
-  const { t } = useTranslation();
   const id = props.history.location.state.id;
   const BrancheName = props.history.location.state.BrancheName;
   const { path, url } = useRouteMatch();

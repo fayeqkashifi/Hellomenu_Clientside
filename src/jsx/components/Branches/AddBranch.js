@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
@@ -14,8 +13,9 @@ import Checkbox from "@mui/material/Checkbox";
 import "yup-phone";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import { localization as t } from "../Localization";
+
 const AddBranch = () => {
-  const { t } = useTranslation();
   const initialValues = {
     BrancheName: "",
     currencyID: "",

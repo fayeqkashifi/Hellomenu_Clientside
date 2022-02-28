@@ -1,12 +1,10 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useTranslation } from "react-i18next";
 import { CBreadcrumb } from "@coreui/react";
+import { localization as t } from "../Localization";
 
 const Shared = (props) => {
-  // for localization
-  const { t } = useTranslation();
   // ID
   const id = props.history.location.state.id;
   const sub_id = props.history.location.state.sub_id;

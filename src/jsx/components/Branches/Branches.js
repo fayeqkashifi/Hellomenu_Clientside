@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import axios from "axios";
 import swal from "sweetalert";
 import QRCode from "qrcode.react";
@@ -13,9 +12,9 @@ import CustomAlert from "../CustomAlert";
 import "yup-phone";
 import { base_url, port } from "../../../Consts";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Branches = () => {
-  const { t } = useTranslation();
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -142,30 +141,29 @@ const Branches = () => {
             </div>
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
-              {checkPermission('branches-edit') && (
-                <div className="col-6 pt-3 pb-3 border-right">
-                  <Link
-                    to={{
-                      pathname: `/branches/edit-branch`,
-                      state: { id: item.id },
-                    }}
-                    // onClick={(e) => editBranch(e, item.id)}
-                  >
-                    <span>{t("edit")}</span>
-                  </Link>
-                </div>
-              )}
-              {checkPermission('branches-delete') && (
-
-                <div className="col-6 pt-3 pb-3">
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={(e) => deleteBranch(e, item.id)}
-                  >
-                    <span>{t("delete")}</span>
+                {checkPermission("branches-edit") && (
+                  <div className="col-6 pt-3 pb-3 border-right">
+                    <Link
+                      to={{
+                        pathname: `/branches/edit-branch`,
+                        state: { id: item.id },
+                      }}
+                      // onClick={(e) => editBranch(e, item.id)}
+                    >
+                      <span>{t("edit")}</span>
+                    </Link>
                   </div>
-                </div>
-              )}
+                )}
+                {checkPermission("branches-delete") && (
+                  <div className="col-6 pt-3 pb-3">
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={(e) => deleteBranch(e, item.id)}
+                    >
+                      <span>{t("delete")}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -197,25 +195,25 @@ const Branches = () => {
       {layout ? (
         <div className="row">
           {viewBranches_HTMLTABLE}
-          {checkPermission('branches-create') && (
-          <div className="col-xl-3 col-lg-6 col-md-4 col-sm-6">
-            <div className="card overflow-hidden ">
-              <div
-                className="card-body d-flex justify-content-center text-center"
-                style={{ border: "2px dashed #f50b65" }}
-              >
-                <div className="align-self-center text-center">
-                  <Link
-                    to={`/branches/add-branch`}
-                    className="btn btn-outline-primary"
-                  >
-                    <AddIcon />
-                    {t("add_branch")}
-                  </Link>
+          {checkPermission("branches-create") && (
+            <div className="col-xl-3 col-lg-6 col-md-4 col-sm-6">
+              <div className="card overflow-hidden ">
+                <div
+                  className="card-body d-flex justify-content-center text-center"
+                  style={{ border: "2px dashed #f50b65" }}
+                >
+                  <div className="align-self-center text-center">
+                    <Link
+                      to={`/branches/add-branch`}
+                      className="btn btn-outline-primary"
+                    >
+                      <AddIcon />
+                      {t("add_branch")}
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           )}
         </div>
       ) : (
@@ -226,14 +224,16 @@ const Branches = () => {
                 <div>
                   <h4 className="card-title mb-2">{t("branches")}</h4>
                 </div>
-          {checkPermission('branches-create') && (
-
-                <div className="dropdown">
-                  <Link className="btn btn-primary" to={`/branches/add-branch`}>
-                    {t("add_branch")}
-                  </Link>
-                </div>
-          )}
+                {checkPermission("branches-create") && (
+                  <div className="dropdown">
+                    <Link
+                      className="btn btn-primary"
+                      to={`/branches/add-branch`}
+                    >
+                      {t("add_branch")}
+                    </Link>
+                  </div>
+                )}
               </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
@@ -297,30 +297,28 @@ const Branches = () => {
                             </td>
 
                             <td>
-          {checkPermission('branches-edit') && (
-
-                              <Link
-                                to={{
-                                  pathname: `/branches/edit-branch`,
-                                  state: { id: item.id },
-                                }}
-                                // onClick={(e) => editBranch(e, item.id)}
-                                className="btn btn-outline-danger btn-sm"
-                              >
-                                {t("edit")}
-                              </Link>
-          )}
+                              {checkPermission("branches-edit") && (
+                                <Link
+                                  to={{
+                                    pathname: `/branches/edit-branch`,
+                                    state: { id: item.id },
+                                  }}
+                                  // onClick={(e) => editBranch(e, item.id)}
+                                  className="btn btn-outline-danger btn-sm"
+                                >
+                                  {t("edit")}
+                                </Link>
+                              )}
                               &nbsp;&nbsp;&nbsp;
-          {checkPermission('branches-delete') && (
-
-                              <button
-                                type="button"
-                                onClick={(e) => deleteBranch(e, item.id)}
-                                className="btn btn-outline-warning btn-sm"
-                              >
-                                {t("delete")}
-                              </button>
-          )}
+                              {checkPermission("branches-delete") && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => deleteBranch(e, item.id)}
+                                  className="btn btn-outline-warning btn-sm"
+                                >
+                                  {t("delete")}
+                                </button>
+                              )}
                             </td>
                           </tr>
                         );

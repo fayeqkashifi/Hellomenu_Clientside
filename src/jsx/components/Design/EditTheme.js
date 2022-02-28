@@ -7,7 +7,6 @@ import {
   CFormLabel,
   CCol,
 } from "@coreui/react";
-import { useTranslation } from "react-i18next";
 import circle_menu_button from "../../../images/hellomenu/circle_menu_button.png";
 import pill_menu_button from "../../../images/hellomenu/pill_menu_button.png";
 import { Link } from "react-router-dom";
@@ -17,9 +16,9 @@ import Switch from "@mui/material/Switch";
 import { Form } from "react-bootstrap";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import { useHistory } from "react-router-dom";
+import { localization as t } from "../Localization";
 
 const EditTheme = (props) => {
-  const { t } = useTranslation();
   const history = useHistory();
   const id = props.history.location.state.id;
 

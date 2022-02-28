@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { useTranslation } from "react-i18next";
 import axios from "axios";
 import "react-phone-input-2/lib/style.css";
 import { CSmartTable } from "@coreui/react-pro";
@@ -11,11 +10,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import swal from "sweetalert";
 import { Link, useRouteMatch } from "react-router-dom";
 import { checkPermission } from "../../Permissions";
+import { localization as t } from "../../Localization";
 
 const RoleList = (props) => {
   const { check, setCheck, nodes } = props;
 
-  const { t } = useTranslation();
   const { url } = useRouteMatch();
   const [roles, setRoles] = useState([]);
   const dataLoad = async () => {

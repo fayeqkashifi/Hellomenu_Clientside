@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import { base_url, port } from "../../../Consts";
 import { useRouteMatch } from "react-router-dom";
 import Select from "react-select";
@@ -14,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const EditProduct = (props) => {
   const history = useHistory();
@@ -44,7 +44,6 @@ const EditProduct = (props) => {
   };
   // validation End
   // for localization
-  const { t } = useTranslation();
   const branchId = props.history.location.state.id;
   const productId = props.history.location.state.productId;
 
@@ -485,21 +484,18 @@ const EditProduct = (props) => {
                   })}
                   <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                     <div className="form-group">
-
                       <div className="d-flex justify-content-between">
                         <label className="mb-1 ">
                           <strong>{t("ingredients")}</strong>
                         </label>
-                    {checkPermission('ingredients-create')&&(
-
-                        <small
-                          onClick={() => setModalCentered(true)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {t("add_ingredient")}
-                        </small>
-                    )}
-
+                        {checkPermission("ingredients-create") && (
+                          <small
+                            onClick={() => setModalCentered(true)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {t("add_ingredient")}
+                          </small>
+                        )}
                       </div>
                       <Select
                         defaultValue={productIngredient}

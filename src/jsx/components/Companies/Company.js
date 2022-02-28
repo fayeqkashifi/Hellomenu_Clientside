@@ -2,13 +2,13 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { base_url, port } from "../../../Consts";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const Company = () => {
   // validation start
@@ -21,9 +21,6 @@ const Company = () => {
     });
   };
   // validation end
-
-  // for localization
-  const { t } = useTranslation();
 
   // insert start
   const [modalCentered, setModalCentered] = useState(false);

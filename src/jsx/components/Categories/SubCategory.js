@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
@@ -15,6 +14,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
+import { localization as t } from "../Localization";
 
 const SubCategory = (props) => {
   const initialValues = {
@@ -25,8 +25,6 @@ const SubCategory = (props) => {
       SubCategoryName: Yup.string().required("Sub Category Name is required"),
     });
   };
-  // for localization
-  const { t } = useTranslation();
   const id = props.history.location.state.sub_id;
   const [check, setCheck] = useState(true);
 
@@ -208,22 +206,20 @@ const SubCategory = (props) => {
 
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
-{checkPermission('subCategories-edit')&&(
-
-                <div className="col-6 pt-3 pb-3 border-right">
-                  <Link to="" onClick={(e) => fetchSubMenus(e, item.sub_id)}>
-                    <span>{t("edit")}</span>
-                  </Link>
-                </div>
-)}
-{checkPermission('subCategories-delete')&&(
-
-                <div className="col-6 pt-3 pb-3">
-                  <Link to="" onClick={(e) => deleteSubMenu(e, item.sub_id)}>
-                    <span>{t("delete")}</span>
-                  </Link>
-                </div>
-)}
+                {checkPermission("subCategories-edit") && (
+                  <div className="col-6 pt-3 pb-3 border-right">
+                    <Link to="" onClick={(e) => fetchSubMenus(e, item.sub_id)}>
+                      <span>{t("edit")}</span>
+                    </Link>
+                  </div>
+                )}
+                {checkPermission("subCategories-delete") && (
+                  <div className="col-6 pt-3 pb-3">
+                    <Link to="" onClick={(e) => deleteSubMenu(e, item.sub_id)}>
+                      <span>{t("delete")}</span>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -400,29 +396,28 @@ const SubCategory = (props) => {
       {layout ? (
         <div className="row">
           {viewProducts_HTMLTABLE}
-{checkPermission('subCategories-create')&&(
+          {checkPermission("subCategories-create") && (
+            <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
+              <div className="card overflow-hidden ">
+                <div
+                  className="card-body d-flex justify-content-center text-center"
+                  style={{ border: "2px dashed #f50b65" }}
+                >
+                  <div className="align-self-center text-center">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      <AddIcon />
 
-          <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
-            <div className="card overflow-hidden ">
-              <div
-                className="card-body d-flex justify-content-center text-center"
-                style={{ border: "2px dashed #f50b65" }}
-              >
-                <div className="align-self-center text-center">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    <AddIcon />
-
-                    {t("add_sub_Category")}
-                  </button>
+                      {t("add_sub_Category")}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-)}
+          )}
         </div>
       ) : (
         <div className="row">
@@ -432,19 +427,18 @@ const SubCategory = (props) => {
                 <div>
                   <h4 className="card-title mb-2">{t("categories")}</h4>
                 </div>
-{checkPermission('subCategories-create')&&(
-
-                <div className="dropdown">
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mb-2 mr-2"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    {t("add_category")}
-                  </Button>
-                </div>
-)}
+                {checkPermission("subCategories-create") && (
+                  <div className="dropdown">
+                    <Button
+                      variant="primary"
+                      type="button"
+                      className="mb-2 mr-2"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      {t("add_category")}
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
@@ -481,27 +475,25 @@ const SubCategory = (props) => {
                             <td>{item.SubCategoryName}</td>
 
                             <td>
-{checkPermission('subCategories-edit')&&(
-
-                              <button
-                                type="button"
-                                onClick={(e) => fetchSubMenus(e, item.sub_id)}
-                                className="btn btn-outline-danger btn-sm"
-                              >
-                                {t("edit")}
-                              </button>
-)}
+                              {checkPermission("subCategories-edit") && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => fetchSubMenus(e, item.sub_id)}
+                                  className="btn btn-outline-danger btn-sm"
+                                >
+                                  {t("edit")}
+                                </button>
+                              )}
                               &nbsp;&nbsp;&nbsp;
-{checkPermission('subCategories-delete')&&(
-
-                              <button
-                                type="button"
-                                onClick={(e) => deleteSubMenu(e, item.sub_id)}
-                                className="btn btn-outline-warning btn-sm"
-                              >
-                                {t("delete")}
-                              </button>
-)}
+                              {checkPermission("subCategories-delete") && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => deleteSubMenu(e, item.sub_id)}
+                                  className="btn btn-outline-warning btn-sm"
+                                >
+                                  {t("delete")}
+                                </button>
+                              )}
                             </td>
                           </tr>
                         );
