@@ -1,53 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-import { useTranslation } from "react-i18next";
-
-import axios from "axios";
-
+import LanguageList from "./LanguageList";
+import EditLocale from "./EditLocale";
+import PrivateRoute from "../../PrivateRoute";
+import {
+  BrowserRouter as Router,
+  Switch,
+  useRouteMatch,
+} from "react-router-dom";
 const Locale = () => {
-  const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
- 
-  const dataLoad = async () => {
-    try {
-      const result = await axios.get("/api/getLocale");
-    //   if (result.data.status === 200) {
-          console.log(result.data);
-        setLoading(false);
-    //   }
-     
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    dataLoad();
+  const { path, url } = useRouteMatch();
 
-    return () => {
-      setLoading(true);
-    };
-  }, []);
- 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <div
-          className="spinner-border "
-          role="status"
-          style={{ color: "#5373e3" }}
-        >
-          <span className="sr-only">{t("loading")}</span>
-        </div>
+  return (
+    <Router>
+      <div className="alert alert-info">
+        You must log out of the system after making changes to your
+        Localisation.
       </div>
-    );
-  } else {
-    return (
-      
-        <div>
-            test
-      </div>
-    );
-  }
+      <Switch>
+        <PrivateRoute exact path={`${path}`} component={LanguageList} />
+        <PrivateRoute path={`${path}/edit-locale`} component={EditLocale} />
+      </Switch>
+    </Router>
+  );
 };
 
 export default Locale;

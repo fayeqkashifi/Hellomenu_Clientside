@@ -13,6 +13,7 @@ import General from "./General";
 import User from "./User";
 import Locale from "./Localization";
 import { checkPermission } from "../Permissions";
+import EditLocale from "./Localization/EditLocale";
 
 const Show = () => {
   const { t } = useTranslation();
@@ -88,6 +89,7 @@ const Show = () => {
               <PrivateRoute exact path={`${path}`} component={General} />
               <PrivateRoute path={`${path}/user`} component={User} />
               <PrivateRoute path={`${path}/localization`} component={Locale} />
+             
             </Switch>
           </div>
         </div>

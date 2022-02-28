@@ -15,7 +15,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
   const { t } = useTranslation();
 
   // const history = useHistory();
-  const logoutUser = (e) => {
+  const logoutUser = () => {
     // e.preventDefault();
     axios.post("/api/logout").then((res) => {
       if (res.data.status === 200) {
@@ -28,19 +28,20 @@ const Header = ({ toggle, onProfile, onNotification }) => {
       }
     });
   };
-  const languages = [
-    {
-      code: "en",
-      name: "English",
-      country_code: "gb",
-    },
-    {
-      code: "tr",
-      name: "Turkish",
-      country_code: "tr",
-    },
-  ];
+  // const languages = [
+  //   {
+  //     code: "en",
+  //     name: "English",
+  //     country_code: "gb",
+  //   },
+  //   {
+  //     code: "tr",
+  //     name: "Turkish",
+  //     country_code: "tr",
+  //   },
+  // ];
   const [anchorEl, setAnchorEl] = useState(null);
+  const [languages, setLanguages] = useState([]);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -54,6 +55,9 @@ const Header = ({ toggle, onProfile, onNotification }) => {
       const result = await axios.get(
         `/api/getUser/${atob(localStorage.getItem("auth_id"))}`
       );
+      // axios.get("/api/getlocales").then((res) => {
+      //   setLanguages(res.data);
+      // });
       if (result.data.status === 200) {
         setUser(result.data.data);
       }
@@ -81,7 +85,7 @@ const Header = ({ toggle, onProfile, onNotification }) => {
             <div className="header-left"></div>
 
             <ul className="navbar-nav header-right">
-              <li className="nav-item dropdown notification_dropdown">
+              {/* <li className="nav-item dropdown notification_dropdown">
                 <div>
                   <Button
                     id="basic-button"
@@ -111,24 +115,24 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                     }}
                   >
                     <ul className="">
-                      {languages.map(({ name, code, country_code }) => (
-                        <li key={country_code}>
+                      {languages.map((item) => (
+                        <li key={item.country_code}>
                           <div className="success"></div>
                           <button
                             className="dropdown-item"
-                            onClick={() => i18next.changeLanguage(code)}
+                            // onClick={() => i18next.changeLanguage(code)}
                           >
                             <span
-                              className={`flag-icon flag-icon-${country_code} mx-2`}
+                              className={`flag-icon flag-icon-${item.country_code?.toLowerCase()} mx-2`}
                             ></span>
-                            {name}
+                            {item.Language_name}
                           </button>
                         </li>
                       ))}
                     </ul>
                   </Menu>
                 </div>
-              </li>
+              </li> */}
               <li
                 className={`nav-item dropdown header-profile ${
                   toggle === "profile" ? "show" : ""
