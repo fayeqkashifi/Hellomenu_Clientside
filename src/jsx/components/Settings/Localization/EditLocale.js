@@ -50,6 +50,10 @@ const EditLocale = (props) => {
     formData.append("id", id);
     axios.post(`/api/updateLocale`, formData).then((res) => {
       if (res.status === 200) {
+        if (res.data.data.status) {
+          localStorage.setItem("locale", JSON.stringify(data));
+        }
+
         setAlerts(true, "success", res.data.message);
       }
     });

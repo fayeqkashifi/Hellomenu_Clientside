@@ -13,10 +13,10 @@ const Locale = () => {
 
   return (
     <Router>
-      <div className="alert alert-info">
+      {/* <div className="alert alert-info">
         You must log out of the system after making changes to your
         Localisation.
-      </div>
+      </div> */}
       <Switch>
         <PrivateRoute exact path={`${path}`} component={LanguageList} />
         <PrivateRoute path={`${path}/edit-locale`} component={EditLocale} />
