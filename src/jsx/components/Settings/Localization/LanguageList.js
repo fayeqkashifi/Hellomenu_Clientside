@@ -276,15 +276,15 @@ const LanguageList = () => {
                       </Tooltip>
                     </Link>
                   )}
-                  {(checkPermission("localization-delete") &&
-                    item.default_language) ||
-                  item.status ? null : (
-                    <Tooltip title="Delete">
-                      <IconButton onClick={() => deleteLocale(item.id)}>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
+                  {checkPermission("localization-delete") ? (
+                    item.default_language || item.status ? null : (
+                      <Tooltip title="Delete">
+                        <IconButton onClick={() => deleteLocale(item.id)}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )
+                  ) : null}
                 </td>
               );
             },

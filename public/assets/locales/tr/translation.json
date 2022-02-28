@@ -1,13 +1,18 @@
 {
-  "sign_in_your_account": "Sign in your account",
-  "email": "E-mail",
-  "password": "Password",
-  "remember_me": "Remember my preference",
-  "sign_in": "Sign In",
-  "forgot_password": "Forgot Password ?",
-  "have_not_account": "Don't have an account?"
+  "sign_in_your_account": "hesabınıza giriş yapın",
+  "email": "E-posta",
+  "password": "şifre",
+  "remember_me": "Tercihimi hatırla",
+  "sign_in": "Kayıt olmak",
+  "forgot_password": "Parolanızı mı unuttunuz ?",
+  "have_not_account": "Hesabınız yok mu?",
+  "new_password":"Yeni Şifre",
+  "confirm_new_password":"Yeni şifreyi onayla",
+  "current_password":"Mevcut Şifre",
+  "change":"Değiştirmek",
+  "submit":"Sunmak",
+  "sign_up": "Üye olmak"
 
 
-  
 
 }
