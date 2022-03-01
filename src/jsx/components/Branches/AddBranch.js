@@ -263,6 +263,7 @@ const AddBranch = () => {
                   <input
                     type="file"
                     className="form-control"
+                    accept=".jpg, .jpeg, .png"
                     placeholder={t("category_icon")}
                     name="branchImage"
                     onChange={handleImage}
@@ -410,7 +411,7 @@ const AddBranch = () => {
 
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
         <CBreadcrumbItem active>
-          <Link to={`/branches`}>{t("Branches")}</Link>
+          <Link to={`/branches`}>{t("branches")}</Link>
         </CBreadcrumbItem>
       </CBreadcrumb>
       {viewBranches_HTMLTABLE}
