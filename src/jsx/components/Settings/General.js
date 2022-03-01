@@ -163,6 +163,7 @@ const General = () => {
                 <label> {t("logo")}</label>
                 <input
                   type="file"
+                  accept="image/*"
                   className="form-control"
                   name="companyLogo"
                   onChange={handleImage}

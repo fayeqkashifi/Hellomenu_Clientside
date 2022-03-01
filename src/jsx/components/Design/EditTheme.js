@@ -229,6 +229,7 @@ const EditTheme = (props) => {
                               <div className="custom-file">
                                 <input
                                   type="file"
+                                  accept="image/*"
                                   className="form-control"
                                   name="HomeScreenBackground"
                                   required
@@ -295,6 +296,7 @@ const EditTheme = (props) => {
                               <div className="custom-file">
                                 <input
                                   type="file"
+                                  accept="image/*"
                                   className="form-control"
                                   name="MenuScreenBackground"
                                   required

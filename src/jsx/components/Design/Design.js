@@ -386,6 +386,7 @@ const Design = (props) => {
                       <div className="p-2">
                         <input
                           type="file"
+                          accept="image/*"
                           className="form-control"
                           name="Logo"
                           onChange={handleImage}

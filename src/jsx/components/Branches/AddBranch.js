@@ -263,7 +263,7 @@ const AddBranch = () => {
                   <input
                     type="file"
                     className="form-control"
-                    accept=".jpg, .jpeg, .png"
+                    accept="image/*"
                     placeholder={t("category_icon")}
                     name="branchImage"
                     onChange={handleImage}

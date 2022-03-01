@@ -247,6 +247,7 @@ const Company = () => {
                   </label>
                   <input
                     type="file"
+                    accept="image/*"
                     className="form-control"
                     name="companyLogo"
                     onChange={handleImage}
@@ -315,6 +316,7 @@ const Company = () => {
                   </label>
                   <input
                     type="file"
+                    accept="image/*"
                     className="form-control"
                     placeholder={t("category_icon")}
                     name="CategoryIcon"

@@ -292,6 +292,7 @@ const SubCategory = (props) => {
                   <label> {t("image")}</label>
                   <input
                     type="file"
+                    accept="image/*"
                     className="form-control"
                     placeholder={t("sub_category_icon")}
                     name="SubCategoryIcon"
@@ -357,6 +358,7 @@ const SubCategory = (props) => {
                   <label> {t("image")}</label>
                   <input
                     type="file"
+                    accept="image/*"
                     className="form-control"
                     placeholder={t("sub_category_icon")}
                     name="SubCategoryIcon"

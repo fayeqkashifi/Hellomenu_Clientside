@@ -238,9 +238,10 @@ const QRcodeStyle = (props) => {
                   <input
                     type="file"
                     name="file"
+                    accept="image/*"
                     className="form-control"
                     onChange={handleImageChange}
-                    required
+                    // required
                     data-overwrite-initial="false"
                     data-min-file-count="1"
                   />

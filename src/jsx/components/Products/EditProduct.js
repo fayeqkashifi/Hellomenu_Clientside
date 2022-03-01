@@ -3,7 +3,6 @@ import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 import { base_url, port } from "../../../Consts";
-import { useRouteMatch } from "react-router-dom";
 import Select from "react-select";
 import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -14,11 +13,9 @@ import Tooltip from "@mui/material/Tooltip";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
-
+import ReactPlayer from "react-player/lazy";
 const EditProduct = (props) => {
   const history = useHistory();
-
-  // validation start
 
   const validationSchema = () => {
     return Yup.object().shape({
@@ -78,12 +75,14 @@ const EditProduct = (props) => {
     // console.log(JSON.stringify(data, null, 2));
 
     const formData = new FormData();
+    formData.append("video", data.video);
     formData.append("image", editProduct.image);
     formData.append("Description", data.Description);
     formData.append("ProductName", data.ProductName);
     formData.append("UnitName", data.UnitName);
     formData.append("price", data.price);
     formData.append("stock", data.stock);
+    formData.append("youtube_link", data.youtube_link);
     formData.append("preparationTime", data.preparationTime);
     formData.append("ingredients", JSON.stringify(productIngredient));
     formData.append("extras", JSON.stringify(productExtra));
@@ -242,362 +241,446 @@ const EditProduct = (props) => {
     );
   } else {
     viewProducts_HTMLTABLE = (
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <h4 className="card-title">{t("edit_product")}</h4>
-          </div>
-        </div>
-        <div className="card-body">
-          <Formik
-            initialValues={editProduct}
-            validationSchema={validationSchema}
-            onSubmit={updateProduct}
-          >
-            {({ errors, status, touched }) => (
-              <Form>
-                <div className="row">
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label> {t("categories")}</label>
-                      <Field
-                        as="select"
-                        name="category_id"
-                        className={
-                          "form-control" +
-                          (errors.category_id && touched.category_id
-                            ? " is-invalid"
-                            : "")
-                        }
-                        onClick={(e) => getSubCategories(e)}
-                      >
-                        <option key="empty" value="">
-                          {t("select_a_option")}
-                        </option>
-                        {categories.map((item) => (
-                          <option value={item.id} key={item.id}>
-                            {item.CategoryName}
-                          </option>
-                        ))}
-                      </Field>
-                      <ErrorMessage
-                        name="category_id"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
+      <Formik
+        initialValues={editProduct}
+        validationSchema={validationSchema}
+        onSubmit={updateProduct}
+      >
+        {({ errors, status, touched, setFieldValue }) => (
+          <Form>
+            <div className="row">
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">{t("product_information")}</h3>
                   </div>
-                  {subCategories.length !== 0 ? (
-                    <div className={`col-xl-6 col-xxl-6 col-lg-6 col-sm-12`}>
-                      <div className="form-group">
-                        <label className="mb-1 ">
-                          {" "}
-                          <strong>{t("sub_categories")}</strong>{" "}
-                        </label>
-                        <Field
-                          as="select"
-                          name="sub_category_id"
-                          className={"form-control"}
-                        >
-                          <option key="empty" value="">
-                            {t("select_a_option")}
-                          </option>
-                          {subCategories.map((item) => (
-                            <option value={item.sub_id} key={item.sub_id}>
-                              {item.SubCategoryName}
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                        <div className="form-group">
+                          <label> {t("categories")}</label>
+                          <Field
+                            as="select"
+                            name="category_id"
+                            className={
+                              "form-control" +
+                              (errors.category_id && touched.category_id
+                                ? " is-invalid"
+                                : "")
+                            }
+                            onClick={(e) => getSubCategories(e)}
+                          >
+                            <option key="empty" value="">
+                              {t("select_a_option")}
                             </option>
-                          ))}
-                        </Field>
-                      </div>
-                    </div>
-                  ) : null}
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        {" "}
-                        <strong>{t("unit")}</strong>{" "}
-                      </label>
-                      <Field
-                        name="UnitName"
-                        type="text"
-                        className={"form-control"}
-                        placeholder="KGR, Cm, Number..."
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        {" "}
-                        <strong>{t("product_name")}</strong>{" "}
-                      </label>
-                      <Field
-                        name="ProductName"
-                        type="text"
-                        className={
-                          "form-control" +
-                          (errors.ProductName && touched.ProductName
-                            ? " is-invalid"
-                            : "")
-                        }
-                        placeholder="Name..."
-                      />
-                      <ErrorMessage
-                        name="ProductName"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        {" "}
-                        <strong>{t("description")}</strong>{" "}
-                      </label>
-                      <Field
-                        as="textarea"
-                        name="Description"
-                        className={
-                          "form-control" +
-                          (errors.Description && touched.Description
-                            ? " is-invalid"
-                            : "")
-                        }
-                        placeholder="Description..."
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        {" "}
-                        <strong>{t("price")}</strong>{" "}
-                      </label>
-                      <Field
-                        name="price"
-                        type="number"
-                        className={
-                          "form-control" +
-                          (errors.price && touched.price ? " is-invalid" : "")
-                        }
-                        placeholder="price..."
-                      />
-                      <ErrorMessage
-                        name="price"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        {" "}
-                        <strong>{t("stock")}</strong>{" "}
-                      </label>
-                      <Field
-                        name="stock"
-                        type="number"
-                        className={
-                          "form-control" +
-                          (errors.stock && touched.stock ? " is-invalid" : "")
-                        }
-                        placeholder="stock..."
-                      />
-                      <ErrorMessage
-                        name="stock"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        <strong>{t("preparation_Time")}(Minutes)</strong>
-                      </label>
-                      <Field
-                        name="preparationTime"
-                        type="number"
-                        className={"form-control"}
-                        placeholder="preparation Time..."
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        {" "}
-                        <strong>{t("image")}</strong>{" "}
-                      </label>
-
-                      <div className="input-group">
-                        <div className="custom-file">
-                          <input
-                            type="file"
-                            className="form-control"
-                            placeholder={t("image")}
-                            name="photo"
-                            onChange={handleImage}
-                            multiple
-                            data-overwrite-initial="false"
-                            data-min-file-count="1"
+                            {categories.map((item) => (
+                              <option value={item.id} key={item.id}>
+                                {item.CategoryName}
+                              </option>
+                            ))}
+                          </Field>
+                          <ErrorMessage
+                            name="category_id"
+                            component="div"
+                            className="invalid-feedback"
                           />
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  {JSON.parse(editProduct.image)?.map((photo) => {
-                    return (
-                      <div className="col-xl-2 col-lg-2 col-sm-2" key={photo}>
-                        <div className="card ">
-                          <div className="text-center">
-                            <img
-                              className="w-100"
-                              src={`http://${base_url}:${port}/images/products/${photo}`}
-                              alt=""
-                              key={photo}
-                              style={{
-                                // width: "100px",
-                                height: "100px",
-                                objectFit: "contain",
-                              }}
-                            />
-                          </div>
-
-                          <div className="card-footer pt-0 pb-0 text-center">
-                            <div className="row">
-                              <Tooltip title="Delete">
-                                <IconButton
-                                  onClick={(e) => removeImage(e, photo)}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            </div>
+                      {subCategories.length !== 0 ? (
+                        <div
+                          className={`col-xl-6 col-xxl-6 col-lg-6 col-sm-12`}
+                        >
+                          <div className="form-group">
+                            <label className="mb-1 ">
+                              {" "}
+                              <strong>{t("sub_categories")}</strong>{" "}
+                            </label>
+                            <Field
+                              as="select"
+                              name="sub_category_id"
+                              className={"form-control"}
+                            >
+                              <option key="empty" value="">
+                                {t("select_a_option")}
+                              </option>
+                              {subCategories.map((item) => (
+                                <option value={item.sub_id} key={item.sub_id}>
+                                  {item.SubCategoryName}
+                                </option>
+                              ))}
+                            </Field>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                  <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                    <div className="form-group">
-                      <div className="d-flex justify-content-between">
-                        <label className="mb-1 ">
-                          <strong>{t("ingredients")}</strong>
-                        </label>
-                        {checkPermission("ingredients-create") && (
-                          <small
-                            onClick={() => setModalCentered(true)}
-                            style={{ cursor: "pointer" }}
-                          >
-                            {t("add_ingredient")}
-                          </small>
-                        )}
-                      </div>
-                      <Select
-                        defaultValue={productIngredient}
-                        isMulti
-                        options={intgredients?.map((o, i) => {
-                          return { id: i, value: o.id, label: o.name };
-                        })}
-                        onChange={handleSelectEvent}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        <strong>{t("extras")}</strong>
-                        <small>
-                          (Please first choose the fields and then set the input
-                          values.)
-                        </small>
-                      </label>
-                      <Select
-                        defaultValue={productExtra}
-                        isMulti
-                        options={intgredients?.map((o, i) => {
-                          return {
-                            id: i,
-                            value: o.id,
-                            label: o.name,
-                            price: 0,
-                          };
-                        })}
-                        onChange={handleSelectEventExtra}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                      />
-                    </div>
-                  </div>
-                  {productExtra?.map((item, i) => {
-                    return (
-                      <div
-                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3"
-                        key={i}
-                      >
+                      ) : null}
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                         <div className="form-group">
                           <label className="mb-1 ">
-                            <strong>{item.label}</strong>
-                            <small>(Charge)</small>
+                            {" "}
+                            <strong>{t("unit")}</strong>{" "}
                           </label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            onChange={(e) => extraHandle(e, item.id)}
-                            value={productExtra[i].price}
+                          <Field
+                            name="UnitName"
+                            type="text"
+                            className={"form-control"}
+                            placeholder="KGR, Cm, Number..."
                           />
                         </div>
                       </div>
-                    );
-                  })}
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                        <div className="form-group">
+                          <label className="mb-1 ">
+                            {" "}
+                            <strong>{t("product_name")}</strong>{" "}
+                          </label>
+                          <Field
+                            name="ProductName"
+                            type="text"
+                            className={
+                              "form-control" +
+                              (errors.ProductName && touched.ProductName
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="Name..."
+                          />
+                          <ErrorMessage
+                            name="ProductName"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </div>
 
-                  <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
-                    <div className="form-group">
-                      <label className="mb-1 ">
-                        <strong>{t("recommendation_products")}</strong>
-                      </label>
-                      <Select
-                        defaultValue={productRecom}
-                        isMulti
-                        options={fetchData?.map((o, i) => {
-                          return {
-                            price: o.price,
-                            value: o.id,
-                            label: o.ProductName,
-                            qty: 1,
-                          };
-                        })}
-                        onChange={handleSelectEventRecom}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                      />
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                        <div className="form-group">
+                          <label className="mb-1 ">
+                            {" "}
+                            <strong>{t("description")}</strong>{" "}
+                          </label>
+                          <Field
+                            as="textarea"
+                            name="Description"
+                            className={
+                              "form-control" +
+                              (errors.Description && touched.Description
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="Description..."
+                          />
+                        </div>
+                      </div>
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                        <div className="form-group">
+                          <label className="mb-1 ">
+                            {" "}
+                            <strong>{t("price")}</strong>{" "}
+                          </label>
+                          <Field
+                            name="price"
+                            type="number"
+                            className={
+                              "form-control" +
+                              (errors.price && touched.price
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="price..."
+                          />
+                          <ErrorMessage
+                            name="price"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                        <div className="form-group">
+                          <label className="mb-1 ">
+                            {" "}
+                            <strong>{t("stock")}</strong>{" "}
+                          </label>
+                          <Field
+                            name="stock"
+                            type="number"
+                            className={
+                              "form-control" +
+                              (errors.stock && touched.stock
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="stock..."
+                          />
+                          <ErrorMessage
+                            name="stock"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
+                        <div className="form-group">
+                          <label className="mb-1 ">
+                            <strong>{t("preparation_Time")}(Minutes)</strong>
+                          </label>
+                          <Field
+                            name="preparationTime"
+                            type="number"
+                            className={"form-control"}
+                            placeholder="preparation Time..."
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">
+                      {t("product_image_and_video")}
+                    </h3>
+                  </div>
+                  <div className="card-body">
+                    <div className="row form-group">
+                      <div
+                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: "#f5f5f5" }}
+                      >
+                        {t("images")}
+                      </div>
+                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="form-control"
+                          placeholder={t("image")}
+                          name="photo"
+                          onChange={handleImage}
+                          multiple
+                          data-overwrite-initial="false"
+                          data-min-file-count="1"
+                        />
+                      </div>
+                    </div>
 
-                <div className="card-footer text-right">
-                  <Button
-                    variant="danger light"
-                    className="m-1"
-                    onClick={() => history.goBack()}
-                  >
-                    {t("back")}
-                  </Button>
-                  <Button variant="primary" type="submit">
-                    {t("update")}{" "}
-                  </Button>
+                    <div className="row form-group">
+                      {JSON.parse(editProduct.image)?.map((photo) => {
+                        return (
+                          <div
+                            className="col-xl-2 col-lg-2 col-sm-2"
+                            key={photo}
+                          >
+                            <div className="card ">
+                              <div className="text-center">
+                                <img
+                                  className="w-100"
+                                  src={`http://${base_url}:${port}/images/products/${photo}`}
+                                  alt=""
+                                  key={photo}
+                                  style={{
+                                    // width: "100px",
+                                    height: "100px",
+                                    objectFit: "contain",
+                                  }}
+                                />
+                              </div>
+
+                              <div className="card-footer pt-0 pb-0 text-center">
+                                <div className="row">
+                                  <Tooltip title="Delete">
+                                    <IconButton
+                                      onClick={(e) => removeImage(e, photo)}
+                                    >
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="row form-group">
+                      <div
+                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: "#f5f5f5" }}
+                      >
+                        {t("video")}
+                      </div>
+                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        <input
+                          type="file"
+                          accept="video/*"
+                          className="form-control"
+                          name="video"
+                          onChange={(event) => {
+                            setFieldValue("video", event.target.files[0]);
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="row form-group">
+                      <div
+                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: "#f5f5f5" }}
+                      >
+                        {t("youtube_link")}
+                      </div>
+                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        <Field
+                          name="youtube_link"
+                          type="text"
+                          className={"form-control"}
+                          placeholder="Youtube Link..."
+                        />
+                      </div>
+                    </div>
+                    <div className="row form-group">
+                      {editProduct.video && (
+                        <ReactPlayer
+                          width={editProduct.youtube_link ? "50%" : "100%"}
+                          url={`http://${base_url}:${port}/images/products/${editProduct.video}`}
+                          controls={true}
+                        />
+                      )}
+                      {editProduct.youtube_link && (
+                        <ReactPlayer
+                          width={editProduct.video ? "50%" : "100%"}
+                          url={editProduct.youtube_link}
+                          controls={true}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
-      </div>
+              </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h4 className="card-title">{t("product_details")}</h4>
+                  </div>
+                  <div className="card-body">
+                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                      <div className="form-group">
+                        <div className="d-flex justify-content-between">
+                          <label className="mb-1 ">
+                            <strong>{t("ingredients")}</strong>
+                          </label>
+                          {checkPermission("ingredients-create") && (
+                            <small
+                              onClick={() => setModalCentered(true)}
+                              style={{ cursor: "pointer" }}
+                            >
+                              {t("add_ingredient")}
+                            </small>
+                          )}
+                        </div>
+                        <Select
+                          defaultValue={productIngredient}
+                          isMulti
+                          options={intgredients?.map((o, i) => {
+                            return { id: i, value: o.id, label: o.name };
+                          })}
+                          onChange={handleSelectEvent}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                      <div className="form-group">
+                        <label className="mb-1 ">
+                          <strong>{t("extras")}</strong>
+                          <small>
+                            (Please first choose the fields and then set the
+                            input values.)
+                          </small>
+                        </label>
+                        <Select
+                          defaultValue={productExtra}
+                          isMulti
+                          options={intgredients?.map((o, i) => {
+                            return {
+                              id: i,
+                              value: o.id,
+                              label: o.name,
+                              price: 0,
+                            };
+                          })}
+                          onChange={handleSelectEventExtra}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                        />
+                      </div>
+                    </div>
+                    {productExtra?.map((item, i) => {
+                      return (
+                        <div
+                          className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3"
+                          key={i}
+                        >
+                          <div className="form-group">
+                            <label className="mb-1 ">
+                              <strong>{item.label}</strong>
+                              <small>(Charge)</small>
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              onChange={(e) => extraHandle(e, item.id)}
+                              value={productExtra[i].price}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                      <div className="form-group">
+                        <label className="mb-1 ">
+                          <strong>{t("recommendation_products")}</strong>
+                        </label>
+                        <Select
+                          defaultValue={productRecom}
+                          isMulti
+                          options={fetchData?.map((o, i) => {
+                            return {
+                              price: o.price,
+                              value: o.id,
+                              label: o.ProductName,
+                              qty: 1,
+                            };
+                          })}
+                          onChange={handleSelectEventRecom}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-footer text-right">
+              <Button
+                variant="danger light"
+                className="m-1"
+                onClick={() => history.goBack()}
+              >
+                {t("back")}
+              </Button>
+              <Button variant="primary" type="submit">
+                {t("update")}{" "}
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     );
   }
 
@@ -614,15 +697,13 @@ const EditProduct = (props) => {
         ) : (
           ""
         )}
-        <div className="m-1">
-          <Button
-            variant="danger light"
-            className="m-1"
-            onClick={() => history.goBack()}
-          >
+        <div className="d-flex justify-content-between m-1">
+          <h4>{t("edit_product")}</h4>
+          <h6 onClick={() => history.goBack()} style={{ cursor: "pointer" }}>
             List of Products
-          </Button>
+          </h6>
         </div>
+
         {viewProducts_HTMLTABLE}
         <Modal className="fade" show={modalCentered}>
           <Modal.Header>

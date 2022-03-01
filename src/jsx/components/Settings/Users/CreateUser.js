@@ -352,6 +352,7 @@ const CreateUser = () => {
                           <label> {t("profile_pic")}</label>
                           <input
                             type="file"
+                            accept="image/*"
                             className="form-control"
                             name="profilePic"
                             onChange={handleImage}

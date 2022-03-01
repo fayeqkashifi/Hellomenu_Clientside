@@ -350,6 +350,7 @@ const Theme = (props) => {
                             <div className="custom-file">
                               <input
                                 type="file"
+                                accept=".jpg, .jpeg, .png"
                                 className="form-control"
                                 name="HomeScreenBackground"
                                 required
@@ -416,6 +417,7 @@ const Theme = (props) => {
                             <div className="custom-file">
                               <input
                                 type="file"
+                                accept="image/*"
                                 className="form-control"
                                 name="MenuScreenBackground"
                                 required

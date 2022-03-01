@@ -1,4 +1,11 @@
 export const Locale = {
+  // products
+  product_information: "Product Information",
+  product_details: "Product Details",
+  product_image_and_video: "Product Image and Video",
+  video:"Video",
+  youtube_link:"Youtube Link",
+
   dashboard: "Dashboard",
   branches: "Branches",
   branch_text:

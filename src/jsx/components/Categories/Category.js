@@ -469,6 +469,7 @@ const Category = (props) => {
                   <label> {t("image")}</label>
                   <input
                     type="file"
+                    accept="image/*"
                     className="form-control"
                     placeholder={t("category_icon")}
                     name="CategoryIcon"
@@ -534,6 +535,7 @@ const Category = (props) => {
                   <label> {t("image")}</label>
                   <input
                     type="file"
+                    accept="image/*"
                     className="form-control"
                     placeholder={t("category_icon")}
                     name="CategoryIcon"
