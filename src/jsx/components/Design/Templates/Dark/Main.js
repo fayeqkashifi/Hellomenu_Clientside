@@ -60,14 +60,11 @@ export default function Main(props) {
     deliveryFees: deliveryFees,
     setCart: setCart,
     cart: cart,
-    style:style
+    style: style,
   };
   var viewShow_HTMLTABLE = (
     <Grid container spacing={2} className="d-flex justify-content-center">
-      <ShowCards
-     {...properties}
-     products={products}
-      />
+      <ShowCards {...properties} products={products} />
     </Grid>
   );
 
@@ -75,7 +72,7 @@ export default function Main(props) {
     <div style={style?.background}>
       <Container maxWidth="lg">
         <Header
-        {...properties}
+          {...properties}
           categories={categories}
           activeCategory={activeCategory}
           setProducts={setProducts}
@@ -106,10 +103,7 @@ export default function Main(props) {
           }
         ></InfiniteScroll>
       </Container>
-      <Footer
-        title="Checkout Order"
-        {...properties}
-      />
+      <Footer title="Checkout Order" {...properties} />
     </div>
   );
 }

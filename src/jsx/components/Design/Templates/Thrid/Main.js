@@ -33,7 +33,7 @@ export default function ThridMain(props) {
     deliveryFees: deliveryFees,
     setCart: setCart,
     cart: cart,
-    style:style
+    style: style,
   };
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
@@ -65,10 +65,7 @@ export default function ThridMain(props) {
   };
   var viewShow_HTMLTABLE = (
     <Grid container spacing={2} className="d-flex justify-content-center">
-      <ShowCards
-       {...properties}
-        products={products}
-      />
+      <ShowCards {...properties} products={products} />
     </Grid>
   );
 
@@ -76,7 +73,7 @@ export default function ThridMain(props) {
     <div style={style?.background}>
       <Container maxWidth="lg">
         <Header
-         {...properties}
+          {...properties}
           categories={categories}
           activeCategory={activeCategory}
           setProducts={setProducts}
