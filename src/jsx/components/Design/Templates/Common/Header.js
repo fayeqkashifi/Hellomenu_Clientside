@@ -104,7 +104,7 @@ function Header(props) {
           &nbsp;
         </div>
       </Toolbar>
-      {style?.template === "dark" ? (
+      {style?.template === "dark" && (
         <div>
           <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
             {categories?.map((section, i) => (
@@ -118,7 +118,7 @@ function Header(props) {
                     : style?.cateDeActive
                 }
                 key={i}
-                // sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+                sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
                 onClick={() => filterProducts(section)}
               >
                 {section.SubCategoryName === null
@@ -128,8 +128,6 @@ function Header(props) {
             ))}
           </Toolbar>
         </div>
-      ) : (
-        ""
       )}
       <Drawer
         modalCentered={modalCentered}

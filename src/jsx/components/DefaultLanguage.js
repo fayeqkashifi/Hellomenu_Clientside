@@ -3,8 +3,8 @@ export const Locale = {
   product_information: "Product Information",
   product_details: "Product Details",
   product_image_and_video: "Product Image and Video",
-  video:"Video",
-  youtube_link:"Youtube Link",
+  video: "Video",
+  youtube_link: "Youtube Link",
 
   dashboard: "Dashboard",
   branches: "Branches",
@@ -109,7 +109,6 @@ export const Locale = {
   home: "Hello Menu",
   preview: "Preview",
   number_of_related_products: "Number of related products:",
-  yay_you_have_seen_it_all: "Yay! You have seen it all",
   add_variant_details: "Add Variant Details",
   public_link: "Public Link",
   details: "Details",

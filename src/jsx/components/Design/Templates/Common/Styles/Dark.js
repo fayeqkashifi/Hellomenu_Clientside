@@ -363,5 +363,25 @@ export const DarkStyle = (custom) => {
 
       objectFit: "contain",
     },
+    statusPlayer: {
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusActiveColor ? custom.menusActiveColor : "#fff",
+      margin: "3px",
+      objectFit: "contain",
+      // textAlgin: "center",
+    },
+    headerVideos: {
+      color: custom?.menusActiveColor ? custom.menusActiveColor : "#ff751d",
+      cursor: "pointer",
+    },
+    imageVideo: {
+      height: "70px",
+      width: "50px",
+      borderRadius: "5px",
+      border: "1px solid",
+      borderColor: custom?.menusActiveColor ? custom.menusActiveColor : "#aaa",
+      margin: "3px",
+    },
   };
 };

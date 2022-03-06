@@ -12,6 +12,7 @@ import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
+import Statusbar from "../Common/Statusbar";
 var hold = 1;
 export default function Main(props) {
   const { t } = useTranslation();
@@ -77,6 +78,12 @@ export default function Main(props) {
           activeCategory={activeCategory}
           setProducts={setProducts}
           setActiveCategory={setActiveCategory}
+        />
+        <Statusbar
+          style={style}
+          products={products}
+          branchId={branchId}
+          deliveryFees={deliveryFees}
         />
         <Container
           className="mt-3 d-flex justify-content-center"

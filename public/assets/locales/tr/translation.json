@@ -30,9 +30,10 @@
   "what_is_your_country":"Nerelisin?",
   "congratulations":"Tebrikler!",
   "menu_setup_note":"Menünüzü kuralım, istediğiniz zaman yönetebileceğinizi unutmayın.",
-  "dashboard":"Gösterge Paneli"
-
-
+  "dashboard":"Gösterge Paneli",
+  "yay_you_have_seen_it_all": "Yay! You have seen it all",
+  "loading": "Loading...!"
+  
 
 
 }

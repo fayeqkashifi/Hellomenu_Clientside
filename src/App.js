@@ -23,6 +23,7 @@ import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
 import SignUp from "./jsx/pages/SignUp/SignUp";
 import Show from "./jsx/pages/SignUp/Show";
 import ResetPassword from "./jsx/pages/ResetPassword";
+import VideosShow from "./jsx/components/Design/Templates/Common/VideosShow";
 // import Error404 from "./jsx/pages/Error404";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
@@ -97,6 +98,7 @@ const App = () => {
           component={FilterSelection}
           path="/filterSelection"
         />
+        <PublicRoute exact component={VideosShow} path="/public/video" />
         <PublicRoute exact component={MainPublic} path="/public/:id" />
         <PublicRoute exact component={MainDetails} path="/public/details/:id" />
         <PublicRoute

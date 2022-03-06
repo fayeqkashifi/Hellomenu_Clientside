@@ -30,5 +30,8 @@
   "what_is_your_country":"What is your country?",
   "congratulations":"Congratulations!",
   "menu_setup_note":"Let’s set up your menu, remember you can manage it anytime.",
-  "dashboard":"Dashboard"
+  "dashboard":"Dashboard",
+  "yay_you_have_seen_it_all": "Yay! You have seen it all",
+  "loading": "Loading...!"
+
 }
