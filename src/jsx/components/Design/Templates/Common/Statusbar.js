@@ -7,7 +7,9 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { Link } from "react-router-dom";
 function Statusbar(props) {
   let { style, products, branchId, deliveryFees } = props;
+  const checkProduct = products.filter((item)=>item.video!==null);
   return (
+    checkProduct.length !== 0 &&(
     <>
       <div className="d-flex justify-content-between m-1">
         <span style={style?.headerVideos}>Videos</span>
@@ -25,8 +27,8 @@ function Statusbar(props) {
         </Link> */}
       </div>
 
-      <HorizontalScroller>
-        <Toolbar>
+      <HorizontalScroller >
+        <Toolbar >
           {products.map((item) => {
             return (
               item.video && (
@@ -62,6 +64,7 @@ function Statusbar(props) {
         </Toolbar>
       </HorizontalScroller>
     </>
+    )
   );
 }
 

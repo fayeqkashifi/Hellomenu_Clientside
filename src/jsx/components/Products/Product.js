@@ -135,7 +135,7 @@ const Product = (props) => {
         columns={columns}
         // columnFilter
         columnSorter
-        footer
+        // footer
         items={fetchData}
         itemsPerPageSelect
         itemsPerPage={5}

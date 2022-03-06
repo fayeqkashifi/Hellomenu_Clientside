@@ -14,7 +14,8 @@ import "yup-phone";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { localization as t } from "../Localization";
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 const AddBranch = () => {
   const initialValues = {
     BrancheName: "",
@@ -25,7 +26,7 @@ const AddBranch = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      phoneNumber: Yup.string().phone().required("Phone Number is required"),
+      phoneNumber: Yup.number().required("Phone Number is required"),
     });
   };
   // insert start
@@ -46,6 +47,7 @@ const AddBranch = () => {
   const handleImage = (e) => {
     setImageState({ ...imageState, branchImage: e.target.files[0] });
   };
+
   const saveBranch = (data) => {
     if (atob(localStorage.getItem("auth_company_id")) !== "null") {
       const ArrayValue = [];
@@ -53,6 +55,7 @@ const AddBranch = () => {
         ArrayValue.push(value);
       }
       if (ArrayValue.includes(1)) {
+        console.log(data);
         const formData = new FormData();
         formData.append("orderMethods", JSON.stringify(orderMethods));
         formData.append("BrancheName", data.BrancheName);
@@ -211,7 +214,7 @@ const AddBranch = () => {
           validationSchema={validationSchema}
           onSubmit={saveBranch}
         >
-          {({ errors, status, touched }) => (
+          {({ errors, status, touched,setFieldValue }) => (
             <Form>
               <div className="card-body">
                 <div className="form-group">
@@ -271,7 +274,19 @@ const AddBranch = () => {
                 </div>
                 <div className="form-group">
                   <label> {t("ordering_phone_number")}</label>
-                  <Field
+                  <PhoneInput
+                            country={"af"}
+                            className={
+                              (errors.phoneNumber && touched.phoneNumber
+                                ? " is-invalid"
+                                : "")
+                            }
+                          name="phoneNumber"
+                            onChange={(getOptionValue) => {
+                              setFieldValue("phoneNumber", getOptionValue);
+                            }}
+                          />
+                  {/* <Field
                     name="phoneNumber"
                     type="text"
                     className={
@@ -281,7 +296,7 @@ const AddBranch = () => {
                         : "")
                     }
                     placeholder="+93--- ---- ---"
-                  />
+                  /> */}
                   <ErrorMessage
                     name="phoneNumber"
                     component="div"

@@ -15,7 +15,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { base_url, port } from "../../../Consts";
 import { localization as t } from "../Localization";
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
 
@@ -23,7 +24,7 @@ const EditBranch = (props) => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      phoneNumber: Yup.string().phone().required("Phone Number is required"),
+      phoneNumber: Yup.string().required("Phone Number is required"),
     });
   };
   // insert start
@@ -86,7 +87,6 @@ const EditBranch = (props) => {
   };
   const [currency, setCurrency] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const editOrderHandle = (e) => {
     setOrderMethodsEdit({
       ...orderMethodsEdit,
@@ -153,7 +153,6 @@ const EditBranch = (props) => {
 
     return !someEmpty;
   };
-
   const handleAddLink = (e) => {
     e.preventDefault();
     const inputState = {
@@ -162,7 +161,6 @@ const EditBranch = (props) => {
         name: null,
       },
     };
-
     if (prevIsValid()) {
       setForm((prev) => [...prev, inputState]);
     }
@@ -171,17 +169,14 @@ const EditBranch = (props) => {
   const onChange = (index, event) => {
     event.preventDefault();
     event.persist();
-
     setForm((prev) => {
       return prev.map((item, i) => {
         if (i !== index) {
           return item;
         }
-
         return {
           ...item,
           [event.target.name]: event.target.value,
-
           errors: {
             ...item.errors,
             [event.target.name]:
@@ -219,7 +214,7 @@ const EditBranch = (props) => {
           validationSchema={validationSchema}
           onSubmit={updateBranch}
         >
-          {({ errors, status, touched }) => (
+          {({ errors, status, touched,setFieldValue }) => (
             <Form>
               <div className="card-body">
                 <div className="form-group">
@@ -287,7 +282,20 @@ const EditBranch = (props) => {
                 ) : null}
                 <div className="form-group">
                   <label> {t("ordering_phone_number")}</label>
-                  <Field
+                  <PhoneInput
+                  country={"af"}
+                  className={
+                    (errors.phoneNumber && touched.phoneNumber
+                      ? " is-invalid"
+                      : "")
+                  }
+                  value={editBranchstate.phoneNumber}
+                name="phoneNumber"
+                  onChange={(getOptionValue) => {
+                    setFieldValue("phoneNumber", getOptionValue);
+                  }}
+                  />
+                  {/* <Field
                     name="phoneNumber"
                     type="text"
                     className={
@@ -297,7 +305,7 @@ const EditBranch = (props) => {
                         : "")
                     }
                     placeholder="+93--- ---- ---"
-                  />
+                  /> */}
                   <ErrorMessage
                     name="phoneNumber"
                     component="div"

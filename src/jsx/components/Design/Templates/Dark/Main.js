@@ -79,12 +79,14 @@ export default function Main(props) {
           setProducts={setProducts}
           setActiveCategory={setActiveCategory}
         />
+        {products.length !== 0 &&(
         <Statusbar
           style={style}
           products={products}
           branchId={branchId}
           deliveryFees={deliveryFees}
         />
+        )}
         <Container
           className="mt-3 d-flex justify-content-center"
           style={style?.varaintContainer}

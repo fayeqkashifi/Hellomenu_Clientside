@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import { base_url, port } from "../../../../../Consts";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
@@ -10,13 +10,11 @@ import "swiper/swiper.min.css";
 import { Link } from "react-router-dom";
 
 import {
-  getCategoriesBasedProduct,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
 import Stories from "react-insta-stories";
 import { useSwipeable } from "react-swipeable";
-
 function VideosShow(props) {
   const { t } = useTranslation();
   const style = props.history.location.state.style;
@@ -81,11 +79,14 @@ function VideosShow(props) {
           if (res.status === 200) {
             const cate = res.data.fetchData.data[0];
             if (data?.sub_category_id === null) {
+
               setLoading(true);
               getProductBasedOnCategory(cate?.category_id).then((res) => {
                 const result = res.filter((item) => item.video !== null);
-                setRecomandProducts(result);
-                setData(result[0]);
+                if(result.length!== 0){
+                  setRecomandProducts(result);
+                  setData(result[0]);
+                }
                 setLoading(false);
               });
             } else {
@@ -217,7 +218,10 @@ function VideosShow(props) {
             stories={stories}
             defaultInterval={1500}
             width={432}
-            height="500px"
+            style={{overflow:"auto",
+            minHeight: "500px",
+            height: "auto",
+          }}
           />
         </div>
 

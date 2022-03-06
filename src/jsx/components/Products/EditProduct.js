@@ -202,7 +202,6 @@ const EditProduct = (props) => {
       formData.append("file[]", e.target.files[i]);
     }
     const images = [];
-
     axios.post("/api/uploadProductImage", formData).then((res) => {
       if (res.data.status === 200) {
         JSON.parse(editProduct.image).map((item) => {
@@ -232,6 +231,10 @@ const EditProduct = (props) => {
       }
     });
   };
+  const initialValues = {
+    ...editProduct,
+    youtube_link: editProduct?.youtube_link ?  editProduct?.youtube_link : "",
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -242,7 +245,7 @@ const EditProduct = (props) => {
   } else {
     viewProducts_HTMLTABLE = (
       <Formik
-        initialValues={editProduct}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={updateProduct}
       >
