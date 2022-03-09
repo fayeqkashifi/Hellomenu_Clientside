@@ -7,7 +7,6 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import { Link } from "react-router-dom";
-
 import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
@@ -15,8 +14,8 @@ import {
 import Stories from "react-insta-stories";
 import { useSwipeable } from "react-swipeable";
 import ScrollContainer from "react-indiana-drag-scroll";
-
 import Toolbar from "@mui/material/Toolbar";
+import profile from "../../../../../images/hellomenu/logo.svg";
 
 function ProductsStory(props) {
   const { t } = useTranslation();
@@ -202,6 +201,7 @@ function ProductsStory(props) {
               </div>
               <ScrollContainer className="scroll-container">
                 <Toolbar>
+                  {console.log(recomandProducts)}
                   {recomandProducts?.map((item, i) => {
                     return (
                       <div style={{ cursor: "pointer" }} key={i}>
@@ -228,9 +228,12 @@ function ProductsStory(props) {
         header: {
           heading: branch.BrancheName,
           //   subheading: branch.created_at,
-          profileImage: `http://${base_url}:${port}/images/branches/${
-            JSON.parse(branch.branchImages)[0]
-          }`,
+          profileImage:
+            branch.branchImages === null
+              ? profile
+              : `http://${base_url}:${port}/images/branches/${
+                  JSON.parse(branch.branchImages)[0]
+                }`,
         },
       });
     });

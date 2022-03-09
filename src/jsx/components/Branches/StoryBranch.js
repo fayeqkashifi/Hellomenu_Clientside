@@ -40,8 +40,8 @@ const Storybranch = (props) => {
     formData.append("branch_id", id);
     axios.post("/api/InsertStories", formData).then((res) => {
       if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
         setCheck(!check);
+        setAlerts(true, "success", res.data.message);
       }
     });
   };
@@ -230,7 +230,7 @@ const Storybranch = (props) => {
                 <table className="table text-center ">
                   <thead>
                     <tr className="card-title">
-                      <th>{t("tag_products")}</th>
+                      <th>{t("tag_product")}</th>
                       <th>{t("actions")}</th>
                     </tr>
                   </thead>
@@ -239,22 +239,25 @@ const Storybranch = (props) => {
                       return (
                         <tr key={item.id}>
                           <td>
-                            {JSON.parse(item.storyTagProducts).map((item) => {
-                              return (
-                                <Stack
-                                  direction="row"
-                                  className="m-1"
-                                  spacing={1}
-                                  key={item.value}
-                                >
-                                  <Chip
-                                    label={item.label}
-                                    // color="primary"
-                                    variant="outlined"
-                                  />
-                                </Stack>
-                              );
-                            })}
+                            <div className="row">
+                              {JSON.parse(item.storyTagProducts).map((item) => {
+                                return (
+                                  <div className="col" key={item.value}>
+                                    <Stack
+                                      direction="row"
+                                      className="m-1"
+                                      spacing={1}
+                                    >
+                                      <Chip
+                                        label={item.label}
+                                        // color="primary"
+                                        variant="outlined"
+                                      />
+                                    </Stack>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </td>
                           <td>
                             {checkPermission("branches-edit") && (

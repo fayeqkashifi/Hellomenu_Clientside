@@ -38,7 +38,7 @@ const ShowStories = (props) => {
       <div className="row">
         {JSON.parse(data?.storyVideos)?.map((video) => {
           return (
-            <div className="col" key={video}>
+            <div className="col my-3" key={video}>
               <ReactPlayer
                 width="300px"
                 height="400px"

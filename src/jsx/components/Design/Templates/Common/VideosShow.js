@@ -11,9 +11,15 @@ function VideosShow(props) {
   const branchState = props.history.location.state.branchState;
   const categories = props.history.location.state.categories;
   const deliveryFees = props.history.location.state.deliveryFees;
+  const branchStory = props.history.location.state.branchStory;
 
   return branchState ? (
-    <BranchStory style={style} branch={branch} deliveryFees={deliveryFees} />
+    <BranchStory
+      style={style}
+      branchStory={branchStory}
+      branch={branch}
+      deliveryFees={deliveryFees}
+    />
   ) : (
     <ProductsStory
       style={style}

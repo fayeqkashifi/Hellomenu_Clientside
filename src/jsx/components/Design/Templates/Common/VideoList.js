@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactPlayer from "react-player/lazy";
 import { base_url, port } from "../../../../../Consts";
-import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+// import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { Link } from "react-router-dom";
 import {
   getCategoriesBasedProduct,
@@ -20,6 +20,7 @@ function VideoList(props) {
   const branch = props.history.location.state.branch;
   const deliveryFees = props.history.location.state.deliveryFees;
   const categories = props.history.location.state.categories;
+  const branchStories = props.history.location.state.branchStories;
   const [products, setProducts] = useState(
     props.history.location.state.products
   );
@@ -50,36 +51,43 @@ function VideoList(props) {
   return (
     <div style={style?.background}>
       <div className="row p-5">
-        <div className="col">
-          <Link
-            to={{
-              pathname: `/public/video`,
-              state: {
-                style: style,
-                branch: branch,
-                deliveryFees: deliveryFees,
-                branchState: true,
-                deliveryFees: deliveryFees,
-              },
-            }}
-            style={style?.headerVideos}
-          >
-            <ReactPlayer
-              width="150px"
-              height="200px"
-              style={style?.statusPlayer}
-              url={`http://${base_url}:${port}/videos/branches/${
-                JSON.parse(branch.branchVideos)[0]
-              }`}
-              //   controls={true}
-              playing={false}
-              playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-              light={`http://${base_url}:${port}/images/branches/${
-                JSON.parse(branch.branchImages)[0]
-              }`}
-            />
-          </Link>
-        </div>
+        {branchStories?.map((item) => {
+          return (
+            <div className="col" key={item.id}>
+              <Link
+                to={{
+                  pathname: `/public/video`,
+                  state: {
+                    style: style,
+                    branch: branch,
+                    deliveryFees: deliveryFees,
+                    branchState: true,
+                    branchStory: item,
+                    products: products,
+                    categories: categories,
+                  },
+                }}
+                style={style?.headerVideos}
+              >
+                <ReactPlayer
+                  width="150px"
+                  height="200px"
+                  style={{
+                    borderRadius: "10px",
+                    border: "2px solid",
+                    borderColor: "#ff751d",
+                    margin: "3px",
+                    objectFit: "contain",
+                  }}
+                  url={`http://${base_url}:${port}/videos/branches/${
+                    JSON.parse(item?.storyVideos)[0]
+                  }`}
+                  playing={false}
+                />
+              </Link>
+            </div>
+          );
+        })}
         {products.map((item) => {
           return (
             item.video && (
@@ -101,13 +109,15 @@ function VideoList(props) {
                     width="150px"
                     height="200px"
                     style={style?.statusPlayer}
-                    url={`http://${base_url}:${port}/images/products/${item.video}`}
+                    url={`http://${base_url}:${port}/videos/products/${
+                      JSON.parse(item.video)[0]
+                    }`}
                     //   controls={true}
                     playing={false}
-                    playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                    light={`http://${base_url}:${port}/images/products/${
-                      JSON.parse(item.image)[0]
-                    }`}
+                    // playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                    // light={`http://${base_url}:${port}/images/products/${
+                    //   JSON.parse(item.image)[0]
+                    // }`}
                   />
                 </Link>
               </div>

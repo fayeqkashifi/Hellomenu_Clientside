@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
+import HoverVideoPlayer from "react-hover-video-player";
 
 function Statusbar(props) {
   let { style, products, branchId, categories, deliveryFees } = props;
@@ -28,15 +29,15 @@ function Statusbar(props) {
       }
     });
   }, []);
+  // if (checkProduct.length !== 0 && branchStories.length !== 0) {
   if (loading) {
     return (
-      <div className="container ">
-        <div className="spinner-border text-primary " role="status"></div>
+      <div className="d-flex justify-content-center align-items-center">
+        <div className="spinner-border" role="status"></div>
       </div>
     );
   } else {
     return (
-      // checkProduct.length !== 0 && (
       <Container>
         <div className="d-flex justify-content-between m-1">
           <span style={style?.headerVideos}>Stories</span>
@@ -49,6 +50,7 @@ function Statusbar(props) {
                 branch: branch,
                 deliveryFees: deliveryFees,
                 categories: categories,
+                branchStories: branchStories,
               },
             }}
             style={style?.headerVideos}
@@ -59,46 +61,46 @@ function Statusbar(props) {
 
         <ScrollContainer className="scroll-container">
           <Toolbar>
-            {console.log(branchStories)}
             {branchStories?.map((item) => {
-              return(
-              <Link
-                key={item.id}
-                to={{
-                  pathname: `/public/video`,
-                  state: {
-                    style: style,
-                    branch: branch,
-                    deliveryFees: deliveryFees,
-                    branchState: true,
-                    products: products,
-                    categories: categories,
-                  },
-                }}
-                style={style?.headerVideos}
-              >
-                {JSON.parse(item?.storyVideos)?.map((video) => {
-                  return (
-                    <div className="col" key={video}>
-                      <ReactPlayer
-                        width="100px"
-                        height="150px"
-                        style={{
-                          borderRadius: "10px",
-                          border: "2px solid",
-                          borderColor: "#ff751d",
-                          margin: "3px",
-                          objectFit: "contain",
-                        }}
-                        url={`http://${base_url}:${port}/videos/branches/${video}`}
-                        playing={false}
-                      />
-                    </div>
-                  );
-                })}
-              </Link>
-              )
+              return (
+                <Link
+                  key={item.id}
+                  to={{
+                    pathname: `/public/video`,
+                    state: {
+                      style: style,
+                      branch: branch,
+                      deliveryFees: deliveryFees,
+                      branchState: true,
+                      branchStory: item,
+                      products: products,
+                      categories: categories,
+                    },
+                  }}
+                  style={style?.headerVideos}
+                >
+                  <video
+                    width="100px"
+                    height="150px"
+                    style={{
+                      borderRadius: "10px",
+                      border: "2px solid",
+                      borderColor: "#ff751d",
+                      margin: "3px",
+                      objectFit: "contain",
+                    }}
+                    onMouseOver={(event) => event.target.play()}
+                    onMouseOut={(event) => event.target.pause()}
+                    src={`http://${base_url}:${port}/videos/branches/${
+                      JSON.parse(item?.storyVideos)[0]
+                    }`}
+                    // playing={true}
+                    muted={true}
+                  />
+                </Link>
+              );
             })}
+
             {checkProduct.map((item) => {
               return (
                 item.video && (
@@ -118,21 +120,16 @@ function Statusbar(props) {
                     key={item.id}
                     style={style?.headerVideos}
                   >
-                    <ReactPlayer
+                    <video
                       width="100px"
                       height="150px"
                       style={style?.statusPlayer}
-                      url={`http://${base_url}:${port}/videos/products/${
+                      src={`http://${base_url}:${port}/videos/products/${
                         JSON.parse(item.video)[0]
                       }`}
-                      // controls={true}
-                      playing={false}
-                      playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                      // showPreview={() => console.log("tezz")}
-                      // light={true}
-                      // light={`http://${base_url}:${port}/images/products/${
-                      //   JSON.parse(item.video)[0]
-                      // }`}
+                      onMouseOver={(event) => event.target.play()}
+                      onMouseOut={(event) => event.target.pause()}
+                      muted={true}
                     />
                   </Link>
                 )
@@ -141,9 +138,11 @@ function Statusbar(props) {
           </Toolbar>
         </ScrollContainer>
       </Container>
-      // )
     );
   }
+  // } else {
+  //   return <div></div>;
+  // }
 }
 
 export default Statusbar;

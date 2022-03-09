@@ -7,37 +7,30 @@ import Stories from "react-insta-stories";
 import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import profile from "../../../../../images/hellomenu/logo.svg";
 
 function BranchStory(props) {
   const { t } = useTranslation();
-  const { style, branch, deliveryFees } = props;
-
+  const { style, branch, deliveryFees, branchStory } = props;
+  console.log();
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
   const [tagProducts, setTagProducts] = useState([]);
 
-  const loadProdcut = async () => {
-    // const recData = [];
-    const response = await axios.get(`/api/getStories/${branch.id}`);
-    if (response.data.status === 200) {
-      setData(response.data.data);
-    }
-    // await JSON.parse(branch?.storyTagProducts).map(async (item) => {
-    //   getProduct(item.value).then((res) => {
-    //     if (res.data.status === 200) {
-    //       recData.push(res.data.fetchData[0]);
-    //     }
-    //   });
-    // });
-    // setData(branch);
-    // setTagProducts(recData);
+  const loadProdcut = () => {
+    const recData = [];
+    const value = JSON.parse(branchStory?.storyTagProducts);
+    value.map(async (item) => {
+      const product = await getProduct(item.value);
+      if (product.data.status === 200) {
+        recData.push(product.data.fetchData[0]);
+      }
+    });
+    setTagProducts(recData);
     setLoading(false);
   };
   useEffect(() => {
     loadProdcut();
     return () => {
-      setData([]);
       setLoading(true);
     };
   }, []);
@@ -56,7 +49,7 @@ function BranchStory(props) {
     );
   } else {
     const urls = [];
-    JSON.parse(data.storyVideos)?.map((item) => {
+    JSON.parse(branchStory?.storyVideos)?.map((item) => {
       urls.push({
         url: `http://${base_url}:${port}/videos/branches/${item}`,
         duration: 100000, // ignored
@@ -104,9 +97,12 @@ function BranchStory(props) {
         header: {
           heading: branch.BrancheName,
           //   subheading: branch.created_at,
-          profileImage: `http://${base_url}:${port}/images/branches/${
-            JSON.parse(branch.branchImages)[0]
-          }`,
+          profileImage:
+            branch.branchImages === null
+              ? profile
+              : `http://${base_url}:${port}/images/branches/${
+                  JSON.parse(branch.branchImages)[0]
+                }`,
         },
       });
     });
