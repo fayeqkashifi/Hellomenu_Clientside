@@ -79,13 +79,13 @@ export default function Main(props) {
           setProducts={setProducts}
           setActiveCategory={setActiveCategory}
         />
-        {products.length !== 0 && (
-          <Statusbar
-            {...properties}
-            products={products}
-            categories={categories}
-          />
-        )}
+        {/* {products.length !== 0 && ( */}
+        <Statusbar
+          {...properties}
+          products={products}
+          categories={categories}
+        />
+        {/* )} */}
         <Container
           className="mt-3 d-flex justify-content-center"
           style={style?.varaintContainer}

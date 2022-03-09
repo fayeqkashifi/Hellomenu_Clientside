@@ -25,6 +25,7 @@ const AddProduct = (props) => {
     preparationTime: "",
     UnitName: "",
     Description: "",
+    videos: [],
   };
 
   const validationSchema = () => {

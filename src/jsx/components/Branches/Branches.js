@@ -142,7 +142,19 @@ const Branches = () => {
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
                 {checkPermission("branches-edit") && (
-                  <div className="col-6 pt-3 pb-3 border-right">
+                  <div className="col-4 pt-3 pb-3 border-right">
+                    <Link
+                      to={{
+                        pathname: `/branches/story-branch`,
+                        state: { id: item.id },
+                      }}
+                    >
+                      <span>{t("stories")}</span>
+                    </Link>
+                  </div>
+                )}
+                {checkPermission("branches-edit") && (
+                  <div className="col-4 pt-3 pb-3 border-right">
                     <Link
                       to={{
                         pathname: `/branches/edit-branch`,
@@ -155,7 +167,7 @@ const Branches = () => {
                   </div>
                 )}
                 {checkPermission("branches-delete") && (
-                  <div className="col-6 pt-3 pb-3">
+                  <div className="col-4 pt-3 pb-3">
                     <div
                       style={{ cursor: "pointer" }}
                       onClick={(e) => deleteBranch(e, item.id)}

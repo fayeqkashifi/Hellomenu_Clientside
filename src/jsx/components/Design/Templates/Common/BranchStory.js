@@ -7,6 +7,7 @@ import Stories from "react-insta-stories";
 import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function BranchStory(props) {
   const { t } = useTranslation();
@@ -17,16 +18,20 @@ function BranchStory(props) {
   const [tagProducts, setTagProducts] = useState([]);
 
   const loadProdcut = async () => {
-    const recData = [];
-    await JSON.parse(branch?.storyTagProducts).map(async (item) => {
-      getProduct(item.value).then((res) => {
-        if (res.data.status === 200) {
-          recData.push(res.data.fetchData[0]);
-        }
-      });
-    });
-    setData(branch);
-    setTagProducts(recData);
+    // const recData = [];
+    const response = await axios.get(`/api/getStories/${branch.id}`);
+    if (response.data.status === 200) {
+      setData(response.data.data);
+    }
+    // await JSON.parse(branch?.storyTagProducts).map(async (item) => {
+    //   getProduct(item.value).then((res) => {
+    //     if (res.data.status === 200) {
+    //       recData.push(res.data.fetchData[0]);
+    //     }
+    //   });
+    // });
+    // setData(branch);
+    // setTagProducts(recData);
     setLoading(false);
   };
   useEffect(() => {
@@ -51,7 +56,7 @@ function BranchStory(props) {
     );
   } else {
     const urls = [];
-    JSON.parse(data.branchVideos).map((item) => {
+    JSON.parse(data.storyVideos)?.map((item) => {
       urls.push({
         url: `http://${base_url}:${port}/videos/branches/${item}`,
         duration: 100000, // ignored

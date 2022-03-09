@@ -12,15 +12,31 @@ function Statusbar(props) {
   let { style, products, branchId, categories, deliveryFees } = props;
   const checkProduct = products.filter((item) => item.video !== null);
   const [branch, setBranch] = useState([]);
+  const [branchStories, setBranchStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     axios.get(`/api/EditBranches/${branchId}`).then((res) => {
       if (res.data.status === 200) {
         setBranch(res.data.branch);
       }
     });
+    axios.get(`/api/getStories/${branchId}`).then((res) => {
+      if (res.data.status === 200) {
+        setBranchStories(res.data.data);
+        setLoading(false);
+      }
+    });
   }, []);
-  return (
-    checkProduct.length !== 0 && (
+  if (loading) {
+    return (
+      <div className="container ">
+        <div className="spinner-border text-primary " role="status"></div>
+      </div>
+    );
+  } else {
+    return (
+      // checkProduct.length !== 0 && (
       <Container>
         <div className="d-flex justify-content-between m-1">
           <span style={style?.headerVideos}>Stories</span>
@@ -43,8 +59,11 @@ function Statusbar(props) {
 
         <ScrollContainer className="scroll-container">
           <Toolbar>
-            {branch.branchImages && (
+            {console.log(branchStories)}
+            {branchStories?.map((item) => {
+              return(
               <Link
+                key={item.id}
                 to={{
                   pathname: `/public/video`,
                   state: {
@@ -58,23 +77,28 @@ function Statusbar(props) {
                 }}
                 style={style?.headerVideos}
               >
-                <ReactPlayer
-                  width="100px"
-                  height="150px"
-                  style={{
-                    borderRadius: "10px",
-                    border: "2px solid",
-                    borderColor: "#ff751d",
-                    margin: "3px",
-                    objectFit: "contain",
-                  }}
-                  url={`http://${base_url}:${port}/videos/branches/${
-                    JSON.parse(branch.branchVideos)[0]
-                  }`}
-                  playing={false}
-                />
+                {JSON.parse(item?.storyVideos)?.map((video) => {
+                  return (
+                    <div className="col" key={video}>
+                      <ReactPlayer
+                        width="100px"
+                        height="150px"
+                        style={{
+                          borderRadius: "10px",
+                          border: "2px solid",
+                          borderColor: "#ff751d",
+                          margin: "3px",
+                          objectFit: "contain",
+                        }}
+                        url={`http://${base_url}:${port}/videos/branches/${video}`}
+                        playing={false}
+                      />
+                    </div>
+                  );
+                })}
               </Link>
-            )}
+              )
+            })}
             {checkProduct.map((item) => {
               return (
                 item.video && (
@@ -117,8 +141,9 @@ function Statusbar(props) {
           </Toolbar>
         </ScrollContainer>
       </Container>
-    )
-  );
+      // )
+    );
+  }
 }
 
 export default Statusbar;

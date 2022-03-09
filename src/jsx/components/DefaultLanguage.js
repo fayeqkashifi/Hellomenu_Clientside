@@ -5,6 +5,8 @@ export const Locale = {
   product_image_and_video: "Product Image and Video",
   video: "Videos",
   youtube_link: "Youtube Link",
+  stories: "Stories",
+  show: "Show",
 
   // branches
   branch_info: "Branch Info",

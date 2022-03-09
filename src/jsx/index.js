@@ -29,6 +29,8 @@ import OrderDetails from "./components/Orders/OrderDetails";
 import AddBranch from "./components/Branches/AddBranch";
 import EditBranch from "./components/Branches/EditBranch";
 import SettingsShow from "./components/Settings/Show";
+import Storybranch from "./components/Branches/StoryBranch";
+import ShowStories from "./components/Branches/ShowStories";
 
 const Markup = () => {
   const routes = [
@@ -37,6 +39,8 @@ const Markup = () => {
     { url: "branches", component: Branches },
     { url: "branches/add-branch", component: AddBranch },
     { url: "branches/edit-branch", component: EditBranch },
+    { url: "branches/story-branch", component: Storybranch },
+    { url: "branches/show-stories", component: ShowStories },
     { url: "ingredients", component: Ingredients },
     { url: "company", component: Company },
     { url: "profile", component: Profile },
