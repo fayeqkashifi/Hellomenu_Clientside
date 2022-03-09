@@ -73,7 +73,9 @@ const AddProduct = (props) => {
     productbranches.map((item) => {
       formData.append("branches[]", item.value);
     });
-    formData.append("video", data.video);
+    for (let i = 0; i < data.videos.length; i++) {
+      formData.append("videos[]", data.videos[i]);
+    }
     formData.append("Description", data.Description);
     formData.append("ProductName", data.ProductName);
     formData.append("sub_category", data.sub_category);
@@ -81,7 +83,6 @@ const AddProduct = (props) => {
     formData.append("category", data.category);
     formData.append("price", data.price);
     formData.append("stock", data.stock);
-    formData.append("youtube_link", data.youtube_link);
     formData.append("preparationTime", data.preparationTime);
     formData.append("ingredients", JSON.stringify(productIngredient));
     formData.append("extras", JSON.stringify(productExtra));
@@ -491,26 +492,13 @@ const AddProduct = (props) => {
                           type="file"
                           accept="video/*"
                           className="form-control"
-                          name="video"
+                          name="videos"
                           onChange={(event) => {
-                            setFieldValue("video", event.target.files[0]);
+                            setFieldValue("videos", event.target.files);
                           }}
-                        />
-                      </div>
-                    </div>
-                    <div className="row form-group">
-                      <div
-                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
-                        style={{ backgroundColor: "#f5f5f5" }}
-                      >
-                        {t("youtube_link")}
-                      </div>
-                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <Field
-                          name="youtube_link"
-                          type="text"
-                          className={"form-control"}
-                          placeholder="Youtube Link..."
+                          multiple
+                          data-overwrite-initial="false"
+                          data-min-file-count="1"
                         />
                       </div>
                     </div>

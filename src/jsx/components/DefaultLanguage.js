@@ -3,9 +3,13 @@ export const Locale = {
   product_information: "Product Information",
   product_details: "Product Details",
   product_image_and_video: "Product Image and Video",
-  video: "Video",
+  video: "Videos",
   youtube_link: "Youtube Link",
 
+  // branches
+  branch_info: "Branch Info",
+  images_and_videos: "Images and videos",
+  tag_product: "Tag Product",
   dashboard: "Dashboard",
   branches: "Branches",
   branch_text:

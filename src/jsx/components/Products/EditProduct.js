@@ -75,14 +75,13 @@ const EditProduct = (props) => {
     // console.log(JSON.stringify(data, null, 2));
 
     const formData = new FormData();
-    formData.append("video", data.video);
+    formData.append("video", editProduct.video);
     formData.append("image", editProduct.image);
     formData.append("Description", data.Description);
     formData.append("ProductName", data.ProductName);
     formData.append("UnitName", data.UnitName);
     formData.append("price", data.price);
     formData.append("stock", data.stock);
-    formData.append("youtube_link", data.youtube_link);
     formData.append("preparationTime", data.preparationTime);
     formData.append("ingredients", JSON.stringify(productIngredient));
     formData.append("extras", JSON.stringify(productExtra));
@@ -231,10 +230,42 @@ const EditProduct = (props) => {
       }
     });
   };
-  const initialValues = {
-    ...editProduct,
-    youtube_link: editProduct?.youtube_link ?  editProduct?.youtube_link : "",
+  const removeVideo = (e, video) => {
+    e.preventDefault();
+    axios.post(`/api/removeProductVideo/${video}`).then((res) => {
+      if (res.data.status === 200) {
+        setEditProduct({
+          ...editProduct,
+          video: JSON.stringify(
+            JSON.parse(editProduct.video).filter((item) => item !== video)
+          ),
+        });
+      }
+    });
   };
+  const handleVideo = (e) => {
+    const formData = new FormData();
+    for (let i = 0; i < e.target.files.length; i++) {
+      formData.append("file[]", e.target.files[i]);
+    }
+    const images = [];
+    axios.post("/api/uploadProductVideo", formData).then((res) => {
+      if (res.data.status === 200) {
+        JSON.parse(editProduct.video)?.map((item) => {
+          images.push(item);
+        });
+        res.data.filenames.map((item) => {
+          images.push(item);
+        });
+
+        setEditProduct({
+          ...editProduct,
+          video: JSON.stringify(images),
+        });
+      }
+    });
+  };
+
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -245,7 +276,7 @@ const EditProduct = (props) => {
   } else {
     viewProducts_HTMLTABLE = (
       <Formik
-        initialValues={initialValues}
+        initialValues={editProduct}
         validationSchema={validationSchema}
         onSubmit={updateProduct}
       >
@@ -468,7 +499,7 @@ const EditProduct = (props) => {
                       </div>
                     </div>
 
-                    <div className="row form-group">
+                    <div className="row form-group my-2">
                       {JSON.parse(editProduct.image)?.map((photo) => {
                         return (
                           <div
@@ -491,15 +522,13 @@ const EditProduct = (props) => {
                               </div>
 
                               <div className="card-footer pt-0 pb-0 text-center">
-                                <div className="row">
-                                  <Tooltip title="Delete">
-                                    <IconButton
-                                      onClick={(e) => removeImage(e, photo)}
-                                    >
-                                      <DeleteIcon fontSize="small" />
-                                    </IconButton>
-                                  </Tooltip>
-                                </div>
+                                <Tooltip title="Delete">
+                                  <IconButton
+                                    onClick={(e) => removeImage(e, photo)}
+                                  >
+                                    <DeleteIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
                               </div>
                             </div>
                           </div>
@@ -519,44 +548,44 @@ const EditProduct = (props) => {
                           accept="video/*"
                           className="form-control"
                           name="video"
-                          onChange={(event) => {
-                            setFieldValue("video", event.target.files[0]);
-                          }}
+                          onChange={handleVideo}
+                          multiple
+                          data-overwrite-initial="false"
+                          data-min-file-count="1"
                         />
                       </div>
-                    </div>
+                      <div className="row form-group my-2">
+                        {JSON.parse(editProduct.video)?.map((video) => {
+                          return (
+                            <div
+                              className="col-xl-2 col-lg-2 col-sm-2"
+                              key={video}
+                            >
+                              <div className="card ">
+                                <div className="text-center">
+                                  <ReactPlayer
+                                    width="150px"
+                                    height="200px"
+                                    url={`http://${base_url}:${port}/videos/products/${video}`}
+                                    controls={true}
+                                    playing={false}
+                                  />
+                                </div>
 
-                    <div className="row form-group">
-                      <div
-                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
-                        style={{ backgroundColor: "#f5f5f5" }}
-                      >
-                        {t("youtube_link")}
+                                <div className="card-footer pt-0 pb-0 text-center">
+                                  <Tooltip title="Delete">
+                                    <IconButton
+                                      onClick={(e) => removeVideo(e, video)}
+                                    >
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <Field
-                          name="youtube_link"
-                          type="text"
-                          className={"form-control"}
-                          placeholder="Youtube Link..."
-                        />
-                      </div>
-                    </div>
-                    <div className="row form-group">
-                      {editProduct.video && (
-                        <ReactPlayer
-                          width={editProduct.youtube_link ? "50%" : "100%"}
-                          url={`http://${base_url}:${port}/images/products/${editProduct.video}`}
-                          controls={true}
-                        />
-                      )}
-                      {editProduct.youtube_link && (
-                        <ReactPlayer
-                          width={editProduct.video ? "50%" : "100%"}
-                          url={editProduct.youtube_link}
-                          controls={true}
-                        />
-                      )}
                     </div>
                   </div>
                 </div>

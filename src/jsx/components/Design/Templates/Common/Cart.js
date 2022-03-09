@@ -244,16 +244,17 @@ const Cart = (props) => {
             ? ""
             : `\n*Item Variant*: ${item.variantSKU}`
         } ${
-          item.extras === undefined || item.extras?.length === 0
+          item.extras === undefined || JSON.parse(item.extras).length === 0
             ? ""
             : `\n*Extras*: ${item.extras.map((val) => val.value)} INCLUDED`
         } ${
-          item.ingredients === undefined || item.ingredients?.length === 0
+          item.ingredients === undefined ||
+          JSON.parse(item.ingredients).length === 0
             ? ""
             : `\n*Ingredients*: ${item.ingredients} NOT INCLUDED`
         } ${
           item.recommendations === undefined ||
-          item.recommendations?.length === 0
+          JSON.parse(item.recommendations).length === 0
             ? ""
             : `\n*Recommendations*: ${item.recommendations.map((val) =>
                 val.show
@@ -358,8 +359,8 @@ const Cart = (props) => {
                 ) : (
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Ingredients: </b>
-                    {item?.ingredients?.map((val, i) => {
-                      if (item?.ingredients.length === i + 1) {
+                    {JSON.parse(item?.ingredients)?.map((val, i) => {
+                      if (JSON.parse(item.ingredients).length === i + 1) {
                         return val + " - Not Included";
                       } else {
                         return val + ", ";
@@ -373,7 +374,7 @@ const Cart = (props) => {
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Extras: </b>
 
-                    {item?.extras?.map((val, i) => {
+                    {JSON.parse(item?.extras)?.map((val, i) => {
                       if (item?.extras.length === i + 1) {
                         return val.value + " - Included";
                       } else {
@@ -388,7 +389,7 @@ const Cart = (props) => {
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Recommendations: </b>
 
-                    {item?.recommendations?.map((val, i) => {
+                    {JSON.parse(item?.recommendations)?.map((val, i) => {
                       if (val.show) {
                         return (
                           val.label +
@@ -717,7 +718,6 @@ const Cart = (props) => {
                         </Grid>
                       );
                     })}
-
                   </Grid>
                 </CardContent>
               </Card>
@@ -752,7 +752,6 @@ const Cart = (props) => {
                               style={{ fontSize: "0.7em" }}
                               className="invalid-feedback"
                             />
-                            
                           </div>
                         </Grid>
                         <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>

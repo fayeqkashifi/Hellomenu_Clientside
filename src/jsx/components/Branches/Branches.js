@@ -185,7 +185,7 @@ const Branches = () => {
       )}
 
       <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem active>{t("Branches")}</CBreadcrumbItem>
+        <CBreadcrumbItem active>{t("branches")}</CBreadcrumbItem>
       </CBreadcrumb>
       <div className="d-flex justify-content-end">
         <IconButton aria-label="Example" onClick={changeLayout}>

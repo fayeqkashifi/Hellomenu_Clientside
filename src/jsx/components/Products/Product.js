@@ -17,6 +17,7 @@ import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 const Product = (props) => {
   const { url } = useRouteMatch();
@@ -316,7 +317,9 @@ const Product = (props) => {
           </Tooltip>
         </div>
         {layout ? (
-          <div style={{ overflow: "scroll" }}>{viewProducts_HTMLTABLE}</div>
+          <ScrollContainer className="scroll-container">
+            {viewProducts_HTMLTABLE}
+          </ScrollContainer>
         ) : (
           <div className="row">
             {fetchData.map((item, i) => {

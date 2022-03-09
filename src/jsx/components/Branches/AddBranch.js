@@ -21,6 +21,8 @@ const AddBranch = () => {
     BrancheName: "",
     currencyID: "",
     phoneNumber: "",
+    branchVideos: [],
+    branchImages: [],
   };
   const validationSchema = () => {
     return Yup.object().shape({
@@ -43,11 +45,6 @@ const AddBranch = () => {
       message: message,
     });
   };
-  const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, branchImage: e.target.files[0] });
-  };
-
   const saveBranch = (data) => {
     if (atob(localStorage.getItem("auth_company_id")) !== "null") {
       const ArrayValue = [];
@@ -55,12 +52,16 @@ const AddBranch = () => {
         ArrayValue.push(value);
       }
       if (ArrayValue.includes(1)) {
-        console.log(data);
         const formData = new FormData();
         formData.append("orderMethods", JSON.stringify(orderMethods));
         formData.append("BrancheName", data.BrancheName);
         formData.append("currencyID", data.currencyID);
-        formData.append("branchImage", imageState.branchImage);
+        for (let i = 0; i < data.branchImages.length; i++) {
+          formData.append("branchImages[]", data.branchImages[i]);
+        }
+        for (let i = 0; i < data.branchVideos.length; i++) {
+          formData.append("branchVideos[]", data.branchVideos[i]);
+        }
         formData.append("phoneNumber", data.phoneNumber);
         formData.append("otherAddressFields", JSON.stringify(form));
         formData.append("fullAddress", fullAddress);
@@ -166,13 +167,11 @@ const AddBranch = () => {
   const onChange = (index, event) => {
     event.preventDefault();
     event.persist();
-
     setForm((prev) => {
       return prev.map((item, i) => {
         if (i !== index) {
           return item;
         }
-
         return {
           ...item,
           [event.target.name]: event.target.value,
@@ -188,12 +187,12 @@ const AddBranch = () => {
       });
     });
   };
-
   const handleRemoveField = (e, index) => {
     e.preventDefault();
 
     setForm((prev) => prev.filter((item) => item !== prev[index]));
   };
+
   var viewBranches_HTMLTABLE = "";
   if (loading) {
     return (
@@ -203,195 +202,250 @@ const AddBranch = () => {
     );
   } else {
     viewBranches_HTMLTABLE = (
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <h4 className="card-title">{t("add_branch")}</h4>
-          </div>
-        </div>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={saveBranch}
-        >
-          {({ errors, status, touched,setFieldValue }) => (
-            <Form>
-              <div className="card-body">
-                <div className="form-group">
-                  <label> {t("branch_name")}</label>
-                  <Field
-                    name="BrancheName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.BrancheName && touched.BrancheName
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder="A unique name..."
-                  />
-                  <ErrorMessage
-                    name="BrancheName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("currency")}</label>
-                  <Field
-                    as="select"
-                    name="currencyID"
-                    className={
-                      "form-control" +
-                      (errors.currencyID && touched.currencyID
-                        ? " is-invalid"
-                        : "")
-                    }
-                  >
-                    <option value="">{t("select_currency")}</option> )
-                    {currency.map((item) => (
-                      <option value={item.id} key={item.id}>
-                        {item.currency_name + " / " + item.currency_code}
-                      </option>
-                    ))}
-                  </Field>
-                  <ErrorMessage
-                    name="currencyID"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("image")}</label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    accept="image/*"
-                    placeholder={t("category_icon")}
-                    name="branchImage"
-                    onChange={handleImage}
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("ordering_phone_number")}</label>
-                  <PhoneInput
-                            country={"af"}
-                            className={
-                              (errors.phoneNumber && touched.phoneNumber
-                                ? " is-invalid"
-                                : "")
-                            }
-                          name="phoneNumber"
-                            onChange={(getOptionValue) => {
-                              setFieldValue("phoneNumber", getOptionValue);
-                            }}
-                          />
-                  {/* <Field
-                    name="phoneNumber"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.phoneNumber && touched.phoneNumber
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder="+93--- ---- ---"
-                  /> */}
-                  <ErrorMessage
-                    name="phoneNumber"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("ordering_methods")}</label>
-
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="tbl_qrcode"
-                          onChange={(e) => orderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="Table Reservation"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="delivery"
-                          onChange={(e) => orderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="Home Delivery"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="whatsApp"
-                          onChange={(e) => orderHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="WhatsApp"
-                    />
-                  </FormGroup>
-                </div>
-                <div className="form-group">
-                  <label> {t("addressing_method")}</label>
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={fullAddress ? true : false}
-                          name="full_address"
-                          onChange={(e) => FullAddressHandle(e)}
-                          color="secondary"
-                        />
-                      }
-                      label="Full Address"
-                    />
-                  </FormGroup>
-                  {form.map((item, index) => (
-                    <div className="row m-1" key={`item-${index}`}>
-                      <div className="col-10">
-                        <input
-                          type="text"
-                          className={
-                            item.errors.name
-                              ? "form-control  is-invalid"
-                              : "form-control"
-                          }
-                          name="name"
-                          placeholder="Input Name..."
-                          value={item.name}
-                          onChange={(e) => onChange(index, e)}
-                        />
-
-                        {item.errors.name && (
-                          <div className="invalid-feedback">
-                            {item.errors.name}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="col-2">
-                        <IconButton
-                          onClick={(e) => handleRemoveField(e, index)}
-                        >
-                          <DeleteIcon fontSize="small" sx={{ color: "red" }} />
-                        </IconButton>
-                      </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={saveBranch}
+      >
+        {({ errors, status, touched, setFieldValue }) => (
+          <Form>
+            <div className="row">
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">{t("branch_info")}</h3>
+                  </div>
+                  <div className="card-body">
+                    <div className="form-group">
+                      <label> {t("branch_name")}</label>
+                      <Field
+                        name="BrancheName"
+                        type="text"
+                        className={
+                          "form-control" +
+                          (errors.BrancheName && touched.BrancheName
+                            ? " is-invalid"
+                            : "")
+                        }
+                        placeholder="A unique name..."
+                      />
+                      <ErrorMessage
+                        name="BrancheName"
+                        component="div"
+                        className="invalid-feedback"
+                      />
                     </div>
-                  ))}
-
-                  <button className="btn btn-primary " onClick={handleAddLink}>
-                    {t("add_more")}
-                  </button>
+                    <div className="form-group">
+                      <label> {t("currency")}</label>
+                      <Field
+                        as="select"
+                        name="currencyID"
+                        className={
+                          "form-control" +
+                          (errors.currencyID && touched.currencyID
+                            ? " is-invalid"
+                            : "")
+                        }
+                      >
+                        <option value="">{t("select_currency")}</option> )
+                        {currency.map((item) => (
+                          <option value={item.id} key={item.id}>
+                            {item.currency_name + " / " + item.currency_code}
+                          </option>
+                        ))}
+                      </Field>
+                      <ErrorMessage
+                        name="currencyID"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">{t("ordering_methods")}</h3>
+                  </div>
+                  <div className="card-body">
+                    <div className="form-group">
+                      <FormGroup row>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              name="tbl_qrcode"
+                              onChange={(e) => orderHandle(e)}
+                              color="secondary"
+                            />
+                          }
+                          label="Table Reservation"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              name="delivery"
+                              onChange={(e) => orderHandle(e)}
+                              color="secondary"
+                            />
+                          }
+                          label="Home Delivery"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              name="whatsApp"
+                              onChange={(e) => orderHandle(e)}
+                              color="secondary"
+                            />
+                          }
+                          label="WhatsApp"
+                        />
+                      </FormGroup>
+                    </div>
+                    <div className="form-group">
+                      <label> {t("ordering_phone_number")}</label>
+                      <PhoneInput
+                        country={"af"}
+                        className={
+                          errors.phoneNumber && touched.phoneNumber
+                            ? " is-invalid"
+                            : ""
+                        }
+                        name="phoneNumber"
+                        onChange={(getOptionValue) => {
+                          setFieldValue("phoneNumber", getOptionValue);
+                        }}
+                      />
+                      <ErrorMessage
+                        name="phoneNumber"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">{t("addressing_method")}</h3>
+                  </div>
+                  <div className="card-body">
+                    <div className="form-group">
+                      <FormGroup row>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={fullAddress ? true : false}
+                              name="full_address"
+                              onChange={(e) => FullAddressHandle(e)}
+                              color="secondary"
+                            />
+                          }
+                          label="Full Address"
+                        />
+                      </FormGroup>
+                      {form.map((item, index) => (
+                        <div className="row m-1" key={`item-${index}`}>
+                          <div className="col-10">
+                            <input
+                              type="text"
+                              className={
+                                item.errors.name
+                                  ? "form-control  is-invalid"
+                                  : "form-control"
+                              }
+                              name="name"
+                              placeholder="Input Name..."
+                              value={item.name}
+                              onChange={(e) => onChange(index, e)}
+                            />
+
+                            {item.errors.name && (
+                              <div className="invalid-feedback">
+                                {item.errors.name}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-2">
+                            <IconButton
+                              onClick={(e) => handleRemoveField(e, index)}
+                            >
+                              <DeleteIcon
+                                fontSize="small"
+                                sx={{ color: "red" }}
+                              />
+                            </IconButton>
+                          </div>
+                        </div>
+                      ))}
+
+                      <button
+                        className="btn btn-primary "
+                        onClick={handleAddLink}
+                      >
+                        {t("add_more")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">{t("images_and_videos")}</h3>
+                  </div>
+                  <div className="card-body">
+                    <div className="row form-group">
+                      <div
+                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: "#f5f5f5" }}
+                      >
+                        {t("images")}
+                      </div>
+                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="form-control"
+                          name="branchImages"
+                          onChange={(event) => {
+                            setFieldValue("branchImages", event.target.files);
+                          }}
+                          multiple
+                          data-overwrite-initial="false"
+                          data-min-file-count="1"
+                        />
+                      </div>
+                    </div>
+                    <div className="row form-group">
+                      <div
+                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: "#f5f5f5" }}
+                      >
+                        {t("video")}
+                      </div>
+                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        <input
+                          type="file"
+                          accept="video/*"
+                          className="form-control"
+                          name="branchVideos"
+                          onChange={(event) => {
+                            setFieldValue("branchVideos", event.target.files);
+                          }}
+                          multiple
+                          data-overwrite-initial="false"
+                          data-min-file-count="1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="card-footer text-right">
                 <Button
                   variant="danger light"
@@ -404,10 +458,10 @@ const AddBranch = () => {
                   {t("save")}{" "}
                 </Button>
               </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
+            </div>
+          </Form>
+        )}
+      </Formik>
     );
   }
 

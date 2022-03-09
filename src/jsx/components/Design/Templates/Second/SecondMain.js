@@ -1,11 +1,11 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-
-import HorizontalScroller from "react-horizontal-scroll-container";
 import ShowCards from "../Common/ShowCards";
 import SideBar from "../Common/SideBar";
 import Header from "../Common/Header";
+import ScrollContainer from "react-indiana-drag-scroll";
+import Toolbar from "@mui/material/Toolbar";
 
 export default function SecondMain(props) {
   const {
@@ -25,7 +25,7 @@ export default function SecondMain(props) {
     deliveryFees: deliveryFees,
     setCart: setCart,
     cart: cart,
-    style:style
+    style: style,
   };
   return (
     <div style={style?.background}>
@@ -35,7 +35,6 @@ export default function SecondMain(props) {
         activeCategory={activeCategory}
         setProducts={setProducts}
         setActiveCategory={setActiveCategory}
-     
       />
       <div style={style?.sidebarMainDiv}>
         <Card style={style?.sidebarCard}>
@@ -48,12 +47,11 @@ export default function SecondMain(props) {
           />
         </Card>
         <Grid container spacing={2}>
-          <HorizontalScroller>
-            <ShowCards
-              {...properties}
-              products={products}
-            />
-          </HorizontalScroller>
+          <ScrollContainer className="scroll-container">
+            <Toolbar>
+              <ShowCards {...properties} products={products} />
+            </Toolbar>
+          </ScrollContainer>
         </Grid>
       </div>
     </div>

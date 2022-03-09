@@ -14,6 +14,7 @@ import {
 } from "../Functionality";
 import Drawer from "./Drawer";
 import getSymbolFromCurrency from "currency-symbol-map";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 function Header(props) {
   const history = useHistory();
@@ -104,8 +105,9 @@ function Header(props) {
           &nbsp;
         </div>
       </Toolbar>
+
       {style?.template === "dark" && (
-        <div>
+        <ScrollContainer className="scroll-container">
           <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
             {categories?.map((section, i) => (
               <Typography
@@ -127,7 +129,7 @@ function Header(props) {
               </Typography>
             ))}
           </Toolbar>
-        </div>
+        </ScrollContainer>
       )}
       <Drawer
         modalCentered={modalCentered}

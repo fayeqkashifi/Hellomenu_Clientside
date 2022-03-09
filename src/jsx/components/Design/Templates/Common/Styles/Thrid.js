@@ -3,6 +3,7 @@ export const ThridStyle = (custom) => {
     template: "thrid",
     background: {
       backgroundColor: custom?.bgColor ? custom.bgColor : "#f8f8f8",
+      minHeight: "100vh",
     },
     // header
     title: {

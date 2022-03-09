@@ -3,6 +3,7 @@ export const SecondStyle = (custom) => {
     template: "second",
     background: {
       backgroundColor: custom?.bgColor ? custom.bgColor : "#eee",
+      minHeight: "100vh",
     },
     cardStyle: {
       width: "300px",

@@ -3,6 +3,7 @@ export const DarkStyle = (custom) => {
     template: "dark",
     background: {
       backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
+      minHeight: "100vh",
     },
     headertoolbar: {
       // justifyContent: "space-between",
@@ -378,6 +379,7 @@ export const DarkStyle = (custom) => {
     imageVideo: {
       height: "70px",
       width: "50px",
+      objectFit: "contain",
       borderRadius: "5px",
       border: "1px solid",
       borderColor: custom?.menusActiveColor ? custom.menusActiveColor : "#aaa",
