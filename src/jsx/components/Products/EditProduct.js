@@ -97,9 +97,9 @@ const EditProduct = (props) => {
               pathname: `/branches/show/products`,
               state: { id: branchId },
             });
+            setCheck(!check);
           }
         });
-        setCheck(!check);
       }
     });
   };

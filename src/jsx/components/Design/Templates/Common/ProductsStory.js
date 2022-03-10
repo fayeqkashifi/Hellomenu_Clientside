@@ -33,12 +33,12 @@ function ProductsStory(props) {
       setData(data);
       if (data?.sub_category_id === null) {
         getProductBasedOnCategory(data?.category_id).then((res) => {
-          setRecomandProducts(res.filter((item) => item.video !== null));
+          setRecomandProducts(res.data.filter((item) => item.video !== null));
         });
         setLoading(false);
       } else {
         getProductBasedOnSubCategory(data?.sub_category_id).then((value) => {
-          setRecomandProducts(value.filter((item) => item.video !== null));
+          setRecomandProducts(value.data.filter((item) => item.video !== null));
         });
         setLoading(false);
       }
@@ -201,7 +201,6 @@ function ProductsStory(props) {
               </div>
               <ScrollContainer className="scroll-container">
                 <Toolbar>
-                  {console.log(recomandProducts)}
                   {recomandProducts?.map((item, i) => {
                     return (
                       <div style={{ cursor: "pointer" }} key={i}>

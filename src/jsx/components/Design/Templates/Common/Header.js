@@ -9,6 +9,7 @@ import Badge from "@mui/material/Badge";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import {
+  getProductsBasedOnBranchId,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
@@ -29,18 +30,41 @@ function Header(props) {
     branchId,
     setCart,
     deliveryFees,
+    setLastPage,
+    setPage,
+    setChangeState,
   } = props;
 
   const filterProducts = (menu) => {
-    if (menu.sub_category_id === null) {
-      setActiveCategory(menu.CategoryName + "-" + menu.category_id);
-      getProductBasedOnCategory(menu.category_id).then((data) => {
-        setProducts(data);
-      });
+    if (menu !== "All") {
+      if (menu.sub_category_id === null) {
+        getProductBasedOnCategory(menu.category_id, 1).then((data) => {
+          setProducts(data.data);
+          setChangeState(true);
+          setLastPage(data.last_page);
+          setPage(2);
+          setActiveCategory(
+            menu.CategoryName + "~~~cate~~~" + menu.category_id
+          );
+        });
+      } else {
+        getProductBasedOnSubCategory(menu.sub_category_id, 1).then((res) => {
+          setProducts(res.data);
+          setActiveCategory(
+            menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
+          );
+          setChangeState(true);
+          setLastPage(res.last_page);
+          setPage(2);
+        });
+      }
     } else {
-      setActiveCategory(menu.SubCategoryName + "-" + menu.sub_category_id);
-      getProductBasedOnSubCategory(menu.sub_category_id).then((res) => {
-        setProducts(res);
+      getProductsBasedOnBranchId(branchId, 1).then((data) => {
+        setProducts(data.data);
+        setChangeState(true);
+        setLastPage(data.last_page);
+        setPage(2);
+        setActiveCategory("All-1");
       });
     }
   };
@@ -69,7 +93,7 @@ function Header(props) {
           <KeyboardBackspaceIcon fontSize="small" />
         </IconButton>
         <Typography align="left" style={style?.title} noWrap>
-          {activeCategory?.split("-")[0]}
+          {activeCategory?.split("~~~")[0]}
         </Typography>
         <Typography sx={{ flex: 1 }} style={style?.searchFields}>
           <input
@@ -109,13 +133,26 @@ function Header(props) {
       {style?.template === "dark" && (
         <ScrollContainer className="scroll-container">
           <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
+            <Typography
+              style={
+                activeCategory === "All-1"
+                  ? style?.cateActive
+                  : style?.cateDeActive
+              }
+              sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+              onClick={() => filterProducts("All")}
+            >
+              All
+            </Typography>
             {categories?.map((section, i) => (
               <Typography
                 style={
                   activeCategory ===
                   (section.sub_category_id === null
-                    ? section.CategoryName + "-" + section.category_id
-                    : section.SubCategoryName + "-" + section.sub_category_id)
+                    ? section.CategoryName + "~~~cate~~~" + section.category_id
+                    : section.SubCategoryName +
+                      "~~~sub~~~" +
+                      section.sub_category_id)
                     ? style?.cateActive
                     : style?.cateDeActive
                 }

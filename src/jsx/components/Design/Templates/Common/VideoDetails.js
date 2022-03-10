@@ -1,19 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player/lazy";
 import { base_url, port } from "../../../../../Consts";
-import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-import { Link } from "react-router-dom";
 import {
-  getCategoriesBasedProduct,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Grid from "@mui/material/Grid";
-
 import ShowCards from "./ShowCards";
-var hold = 1;
 
 function VideoDetails(props) {
   const { t } = useTranslation();
@@ -21,30 +16,46 @@ function VideoDetails(props) {
   const style = props.history.location.state.style;
   const branch = props.history.location.state.branch;
   const deliveryFees = props.history.location.state.deliveryFees;
-  const categories = props.history.location.state.categories;
   const product = props.history.location.state.product;
-  const [products, setProducts] = useState(
-    props.history.location.state.products
-  );
+  const [products, setProducts] = useState([]);
 
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
   const [changeState, setChangeState] = useState(true);
-  const fetchMoreData = () => {
-    if (hold < categories.length) {
-      getCategoriesBasedProduct(branch.id).then((data) => {
-        if (data[hold]?.sub_category_id === null) {
-          getProductBasedOnCategory(data[hold]?.category_id).then((res) => {
-            hold = hold + 1;
-            setProducts(products.concat(res));
-          });
-        } else {
-          getProductBasedOnSubCategory(data[hold]?.sub_category_id).then(
-            (value) => {
-              hold = hold + 1;
-              setProducts(products.concat(value));
-            }
-          );
-        }
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    if (product?.sub_category_id === null) {
+      getProductBasedOnCategory(product?.category_id, page).then((res) => {
+        setProducts(res.data);
+        setLastPage(res.last_page);
+        setValue("cate~~~" + product?.category_id);
+        setPage(page + 1);
       });
+    } else {
+      getProductBasedOnSubCategory(product?.sub_category_id, page).then(
+        (res) => {
+          setValue("sub~~~" + product?.sub_category_id);
+          setProducts(res.data);
+          setLastPage(res.last_page);
+          setPage(page + 1);
+        }
+      );
+    }
+  }, []);
+  const fetchMoreData = () => {
+    if (page <= lastPage) {
+      const data = value?.split("~~~");
+      if (data[0] === "cate") {
+        getProductBasedOnCategory(data[1], page).then((res) => {
+          setProducts(products.concat(res.data));
+          setPage(page + 1);
+        });
+      } else if (data[0] === "sub") {
+        getProductBasedOnSubCategory(data[1], page).then((res) => {
+          setProducts(products.concat(res.data));
+          setPage(page + 1);
+        });
+      }
     } else {
       setChangeState(false);
     }

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import SecondMain from "./Second/SecondMain";
 import DarkMain from "./Dark/Main";
 import {
+  getProductsBasedOnBranchId,
   getThemplate,
   getCategoriesBasedProduct,
   getProductBasedOnCategory,
@@ -15,7 +16,7 @@ import ThridMain from "./Thrid/Main";
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-  const branchId = atob(props.match.params.id);
+  const branchId = atob(atob(atob(props.match.params.id)));
   let deliveryFees = parseInt(props.history.location.state?.deliveryFees);
   if (isNaN(deliveryFees)) {
     deliveryFees = 0;
@@ -24,33 +25,26 @@ const MainPublic = (props) => {
   // const [branch, setBranch] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(0);
+  const [activeCategory, setActiveCategory] = useState("All-" + 1);
   const [custom, setCustom] = useState([]);
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(0);
+
   const dataLoad = async () => {
     getThemplate(branchId).then((data) => {
       // console.log(data);
       setCustom(data);
     });
-
     getCategoriesBasedProduct(branchId).then((data) => {
       setCategories(data);
-      const category = data[0];
-      if (category?.sub_category_id === null) {
-        setActiveCategory(category?.CategoryName + "-" + category?.category_id);
-        getProductBasedOnCategory(category?.category_id).then((data) => {
-          setProducts(data);
-        });
-      } else {
-        setActiveCategory(
-          category?.SubCategoryName + "-" + category?.sub_category_id
-        );
-        getProductBasedOnSubCategory(category?.sub_category_id).then((data) => {
-          setProducts(data);
-        });
-      }
+    });
+    getProductsBasedOnBranchId(branchId, page).then((data) => {
+      setLastPage(data.last_page);
+      setProducts(data.data);
+      setPage(page + 1);
       setLoading(false);
     });
   };
@@ -66,7 +60,12 @@ const MainPublic = (props) => {
     };
   }, []);
   const properties = {
-    // branch: branch,
+    lastPage: lastPage,
+    setLastPage: setLastPage,
+    page: page,
+    setPage: setPage,
+
+
     branchId: branchId,
     deliveryFees: deliveryFees,
     activeCategory: activeCategory,

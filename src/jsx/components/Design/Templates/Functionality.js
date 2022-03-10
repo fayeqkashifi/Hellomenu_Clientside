@@ -20,6 +20,18 @@ export const getBranch = async (branchId) => {
     console.error(err);
   }
 };
+export const getProductsBasedOnBranchId = async (branchId, page) => {
+  try {
+    const result = await axios.get(
+      `/api/getProductsBasedOnBranchId/${branchId}?page=${page}`
+    );
+    if (result.data.status === 200) {
+      return result.data.fetchData;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
 export const getCategoriesBasedProduct = async (branchId) => {
   try {
     const result = await axios.get(
@@ -32,9 +44,11 @@ export const getCategoriesBasedProduct = async (branchId) => {
     console.error(err);
   }
 };
-export const getProductBasedOnCategory = async (catId) => {
+export const getProductBasedOnCategory = async (catId, page) => {
   try {
-    const result = await axios.get(`/api/GetProductsBasedCategory/${catId}`);
+    const result = await axios.get(
+      `/api/GetProductsBasedCategory/${catId}?page=${page}`
+    );
     if (result.data.status === 200) {
       return result.data.data;
     }
@@ -42,10 +56,10 @@ export const getProductBasedOnCategory = async (catId) => {
     console.error(err);
   }
 };
-export const getProductBasedOnSubCategory = async (subCatId) => {
+export const getProductBasedOnSubCategory = async (subCatId, page) => {
   try {
     const result = await axios.get(
-      `/api/GetProductsBasedOnSubCategory/${subCatId}`
+      `/api/GetProductsBasedOnSubCategory/${subCatId}?page=${page}`
     );
     if (result.data.status === 200) {
       return result.data.data;

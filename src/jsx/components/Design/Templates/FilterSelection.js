@@ -131,7 +131,9 @@ const FilterSelection = () => {
                             <CardContent sx={{ flexGrow: 1 }}>
                               <Link
                                 to={{
-                                  pathname: `/public/${btoa(branch?.BranchID)}`,
+                                  pathname: `/public/${btoa(
+                                    btoa(btoa(branch?.BranchID))
+                                  )}`,
                                   state: {
                                     deliveryFees: branch.deliveryFees,
                                   },
@@ -143,7 +145,7 @@ const FilterSelection = () => {
                                   size={120}
                                   fgColor="#f50b65"
                                   value={`http://${base_url}:${port}//public/${btoa(
-                                    branch?.BranchID
+                                    btoa(btoa(branch?.BranchID))
                                   )}`}
                                   className="primary"
                                 />

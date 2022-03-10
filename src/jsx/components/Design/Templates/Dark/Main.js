@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Header from "../Common/Header";
 import Footer from "../Common/Footer";
@@ -8,12 +8,11 @@ import Grid from "@mui/material/Grid";
 
 import ShowCards from "../Common/ShowCards";
 import {
-  getCategoriesBasedProduct,
+  getProductsBasedOnBranchId,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
 import Statusbar from "../Common/Statusbar";
-var hold = 1;
 export default function Main(props) {
   const { t } = useTranslation();
   const {
@@ -27,31 +26,34 @@ export default function Main(props) {
     activeCategory,
     setActiveCategory,
     setProducts,
+    setPage,
+    page,
+    lastPage,
+    setLastPage,
   } = props;
+
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
-    if (hold < categories.length) {
-      getCategoriesBasedProduct(branchId).then((data) => {
-        if (data[hold]?.sub_category_id === null) {
-          setActiveCategory(
-            data[hold]?.CategoryName + "-" + data[hold]?.category_id
-          );
-          getProductBasedOnCategory(data[hold]?.category_id).then((res) => {
-            hold = hold + 1;
-            setProducts(products.concat(res));
+    if (page <= lastPage) {
+      if (activeCategory === "All-1") {
+        getProductsBasedOnBranchId(branchId, page).then((data) => {
+          setProducts(products.concat(data.data));
+          setPage(page + 1);
+        });
+      } else {
+        const data = activeCategory?.split("~~~");
+        if (data[1] === "cate") {
+          getProductBasedOnCategory(data[2], page).then((data) => {
+            setProducts(products.concat(data.data));
+            setPage(page + 1);
           });
-        } else {
-          setActiveCategory(
-            data[hold]?.SubCategoryName + "-" + data[hold]?.sub_category_id
-          );
-          getProductBasedOnSubCategory(data[hold]?.sub_category_id).then(
-            (value) => {
-              hold = hold + 1;
-              setProducts(products.concat(value));
-            }
-          );
+        } else if (data[1] === "sub") {
+          getProductBasedOnSubCategory(data[2], page).then((res) => {
+            setProducts(products.concat(res.data));
+            setPage(page + 1);
+          });
         }
-      });
+      }
     } else {
       setChangeState(false);
     }
@@ -62,6 +64,10 @@ export default function Main(props) {
     setCart: setCart,
     cart: cart,
     style: style,
+    lastPage: lastPage,
+    setLastPage: setLastPage,
+    setPage: setPage,
+    setChangeState: setChangeState,
   };
   var viewShow_HTMLTABLE = (
     <Grid container spacing={2} className="d-flex justify-content-center">
