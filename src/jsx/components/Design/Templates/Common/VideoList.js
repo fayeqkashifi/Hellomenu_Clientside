@@ -3,16 +3,9 @@ import ReactPlayer from "react-player/lazy";
 import { base_url, port } from "../../../../../Consts";
 // import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { Link } from "react-router-dom";
-import {
-  getProductsBasedOnBranchId,
-  getCategoriesBasedProduct,
-  getProductBasedOnCategory,
-  getProductBasedOnSubCategory,
-} from "../Functionality";
+import { getProductsBasedOnBranchId } from "../Functionality";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-var hold = 1;
 
 function VideoList(props) {
   const { t } = useTranslation();
@@ -103,10 +96,12 @@ function VideoList(props) {
                       playing={false}
                     />
                   ) : (
-                    <div
+                    <ReactPlayer
+                      width="150px"
+                      height="200px"
                       style={{
-                        width: "150px",
-                        height: "200px",
+                        // width: "150px",
+                        // height: "200px",
                         borderRadius: "10px",
                         border: "2px solid",
                         borderColor: "#fff",
@@ -116,9 +111,10 @@ function VideoList(props) {
                         overflow: "hidden",
                       }}
                       className="d-flex align-items-center justify-content-center"
+                      url={JSON.parse(item?.storyVideosUrl)[0]}
                     >
-                      <small>{JSON.parse(item?.storyVideosUrl)[0]}</small>
-                    </div>
+                      {/* <small>{JSON.parse(item?.storyVideosUrl)[0]}</small> */}
+                    </ReactPlayer>
                   )}
                 </Link>
               </div>
@@ -157,10 +153,12 @@ function VideoList(props) {
                         // }`}
                       />
                     ) : (
-                      <div
+                      <ReactPlayer
+                        width="150px"
+                        height="200px"
                         style={{
-                          width: "150px",
-                          height: "200px",
+                          // width: "150px",
+                          // height: "200px",
                           borderRadius: "10px",
                           border: "2px solid",
                           borderColor: "#fff",
@@ -170,9 +168,10 @@ function VideoList(props) {
                           overflow: "hidden",
                         }}
                         className="d-flex align-items-center justify-content-center"
+                        url={JSON.parse(item?.videosUrl)[0]}
                       >
-                        <small>{JSON.parse(item?.videosUrl)[0]}</small>
-                      </div>
+                        {/* <small>{JSON.parse(item?.videosUrl)[0]}</small> */}
+                      </ReactPlayer>
                     )}
                   </Link>
                 </div>

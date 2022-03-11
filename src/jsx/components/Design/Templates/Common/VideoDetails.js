@@ -87,10 +87,12 @@ function VideoDetails(props) {
               playing={false}
             />
           ) : (
-            <div
+            <ReactPlayer
+              width="200px"
+              height="300px"
               style={{
-                width: "200px",
-                height: "300px",
+                // width: "200px",
+                // height: "300px",
                 borderRadius: "10px",
                 border: "2px solid",
                 borderColor: "#fff",
@@ -100,11 +102,12 @@ function VideoDetails(props) {
                 overflow: "hidden",
               }}
               className="d-flex align-items-center justify-content-center"
+              url={JSON.parse(product?.videosUrl)[0]}
             >
-              <a href={JSON.parse(product?.videosUrl)[0]} target="_blank">
+              {/* <a href={JSON.parse(product?.videosUrl)[0]} target="_blank">
                 <small>{JSON.parse(product?.videosUrl)[0]}</small>
-              </a>
-            </div>
+              </a> */}
+            </ReactPlayer>
           )}
         </div>
       </div>

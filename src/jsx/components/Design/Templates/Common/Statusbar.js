@@ -98,10 +98,10 @@ function Statusbar(props) {
                         muted={true}
                       />
                     ) : (
-                      <div
+                      <ReactPlayer
+                        width="100px"
+                        height="150px"
                         style={{
-                          width: "100px",
-                          height: "150px",
                           borderRadius: "10px",
                           border: "2px solid",
                           borderColor: "#ff751d",
@@ -110,9 +110,10 @@ function Statusbar(props) {
                           lineBreak: "anywhere",
                           overflow: "hidden",
                         }}
+                        url={JSON.parse(item?.storyVideosUrl)[0]}
                       >
-                        <small>{JSON.parse(item?.storyVideosUrl)[0]}</small>
-                      </div>
+                        {/* <small>{JSON.parse(item?.storyVideosUrl)[0]}</small> */}
+                      </ReactPlayer>
                     )}
                   </Link>
                 ) : null;
@@ -150,10 +151,10 @@ function Statusbar(props) {
                         muted={true}
                       />
                     ) : (
-                      <div
+                      <ReactPlayer
+                        width="100px"
+                        height="150px"
                         style={{
-                          width: "100px",
-                          height: "150px",
                           borderRadius: "10px",
                           border: "2px solid",
                           borderColor: "#fff",
@@ -162,9 +163,10 @@ function Statusbar(props) {
                           lineBreak: "anywhere",
                           overflow: "hidden",
                         }}
+                        url={JSON.parse(item.videosUrl)[0]}
                       >
-                        <small>{JSON.parse(item?.videosUrl)[0]}</small>
-                      </div>
+                        {/* <small>{JSON.parse(item?.videosUrl)[0]}</small> */}
+                      </ReactPlayer>
                     )}
                   </Link>
                 ) : null;
