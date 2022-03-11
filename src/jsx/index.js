@@ -29,8 +29,8 @@ import OrderDetails from "./components/Orders/OrderDetails";
 import AddBranch from "./components/Branches/AddBranch";
 import EditBranch from "./components/Branches/EditBranch";
 import SettingsShow from "./components/Settings/Show";
-import Storybranch from "./components/Branches/StoryBranch";
-import ShowStories from "./components/Branches/ShowStories";
+import Storybranch from "./components/Branches/Stories/StoryBranch";
+import ShowStories from "./components/Branches/Stories/ShowStories";
 
 const Markup = () => {
   const routes = [

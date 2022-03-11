@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import "yup-phone";
-import { base_url, port } from "../../../Consts";
-import { localization as t } from "../Localization";
+import { base_url, port } from "../../../../Consts";
+import { localization as t } from "../../Localization";
 import ReactPlayer from "react-player/lazy";
 import axios from "axios";
 

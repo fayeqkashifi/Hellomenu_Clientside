@@ -7,6 +7,7 @@ export const Locale = {
   youtube_link: "Youtube Link",
   stories: "Stories",
   show: "Show",
+  video_url: "Video Url",
 
   // branches
   branch_info: "Branch Info",

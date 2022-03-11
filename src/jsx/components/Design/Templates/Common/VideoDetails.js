@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Grid from "@mui/material/Grid";
 import ShowCards from "./ShowCards";
+import { Link } from "react-router-dom";
 
 function VideoDetails(props) {
   const { t } = useTranslation();
@@ -74,16 +75,37 @@ function VideoDetails(props) {
     <div style={style?.background}>
       <div className="row p-3">
         <div className="d-flex align-items-center justify-content-center">
-          <ReactPlayer
-            width="200px"
-            height="300px"
-            style={style?.statusPlayer}
-            url={`http://${base_url}:${port}/videos/products/${
-              JSON.parse(product.video)[0]
-            }`}
-            controls={true}
-            playing={false}
-          />
+          {product?.video ? (
+            <ReactPlayer
+              width="200px"
+              height="300px"
+              style={style?.statusPlayer}
+              url={`http://${base_url}:${port}/videos/products/${
+                JSON.parse(product.video)[0]
+              }`}
+              controls={true}
+              playing={false}
+            />
+          ) : (
+            <div
+              style={{
+                width: "200px",
+                height: "300px",
+                borderRadius: "10px",
+                border: "2px solid",
+                borderColor: "#fff",
+                margin: "3px",
+                padding: "2px",
+                lineBreak: "anywhere",
+                overflow: "hidden",
+              }}
+              className="d-flex align-items-center justify-content-center"
+            >
+              <a href={JSON.parse(product?.videosUrl)[0]} target="_blank">
+                <small>{JSON.parse(product?.videosUrl)[0]}</small>
+              </a>
+            </div>
+          )}
         </div>
       </div>
       <div className=" p-3">

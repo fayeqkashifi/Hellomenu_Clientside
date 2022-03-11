@@ -170,69 +170,152 @@ function ProductsStory(props) {
     );
   } else {
     const urls = [];
-    JSON.parse(data.video).map((item) => {
+    data?.video &&
+      JSON.parse(data.video).map((item) => {
+        urls.push({
+          url: `http://${base_url}:${port}/videos/products/${item}`,
+          duration: 100000, // ignored
+          type: "video",
+          seeMore: () => {
+            return <div></div>;
+          },
+          seeMoreCollapsed: () => {
+            return (
+              <>
+                <div className="d-flex align-items-center justify-content-center">
+                  <Link
+                    to={{
+                      pathname: `/public/video-details`,
+                      state: {
+                        style: style,
+                        product: data,
+                        products: recomandProducts,
+                        branch: branch,
+                        deliveryFees: deliveryFees,
+                        categories: categories,
+                      },
+                    }}
+                    style={style?.headerVideos}
+                  >
+                    See More{" "}
+                  </Link>
+                </div>
+                <ScrollContainer className="scroll-container">
+                  <Toolbar>
+                    {recomandProducts?.map((item, i) => {
+                      return (
+                        <div style={{ cursor: "pointer" }} key={i}>
+                          <img
+                            src={`http://${base_url}:${port}/images/products/${
+                              JSON.parse(item.image)[0]
+                            }`}
+                            alt="Image"
+                            style={style?.imageVideo}
+                            onClick={() => changeProduct(item.id)}
+                          />
+                          <small className="ml-1" style={{ color: "#fff" }}>
+                            {item.price +
+                              getSymbolFromCurrency(item?.currency_code)}
+                          </small>
+                        </div>
+                      );
+                    })}
+                  </Toolbar>
+                </ScrollContainer>
+              </>
+            );
+          }, // when collapsed
+          header: {
+            heading: branch.BrancheName,
+            //   subheading: branch.created_at,
+            profileImage:
+              branch.branchImages === null
+                ? profile
+                : `http://${base_url}:${port}/images/branches/${
+                    JSON.parse(branch.branchImages)[0]
+                  }`,
+          },
+        });
+      });
+    JSON.parse(data?.videosUrl)?.map((item) => {
       urls.push({
-        url: `http://${base_url}:${port}/videos/products/${item}`,
-        duration: 100000, // ignored
-        type: "video",
-        seeMore: () => {
-          return <div></div>;
-        },
-        seeMoreCollapsed: () => {
+        content: () => {
           return (
-            <>
-              <div className="d-flex align-items-center justify-content-center">
-                <Link
-                  to={{
-                    pathname: `/public/video-details`,
-                    state: {
-                      style: style,
-                      product: data,
-                      products: recomandProducts,
-                      branch: branch,
-                      deliveryFees: deliveryFees,
-                      categories: categories,
-                    },
-                  }}
-                  style={style?.headerVideos}
+            <div
+              className="p-2 text-center"
+              style={{
+                width: "100%",
+                height: "100%",
+                zIndex: 100000,
+              }}
+            >
+              <div
+                style={{
+                  height: "70%",
+                  lineBreak: "anywhere",
+                  overflow: "hidden",
+                  marginTop: "10%",
+                }}
+                className="d-flex align-items-center justify-content-center"
+              >
+                <a
+                  href={item}
+                  target="_blank"
+                  style={{ backgroundColor: "#fff" }}
                 >
-                  See More{" "}
-                </Link>
+                  {item}
+                </a>
               </div>
-              <ScrollContainer className="scroll-container">
-                <Toolbar>
-                  {recomandProducts?.map((item, i) => {
-                    return (
-                      <div style={{ cursor: "pointer" }} key={i}>
-                        <img
-                          src={`http://${base_url}:${port}/images/products/${
-                            JSON.parse(item.image)[0]
-                          }`}
-                          alt="Image"
-                          style={style?.imageVideo}
-                          onClick={() => changeProduct(item.id)}
-                        />
-                        <small className="ml-1" style={{ color: "#fff" }}>
-                          {item.price +
-                            getSymbolFromCurrency(item?.currency_code)}
-                        </small>
-                      </div>
-                    );
-                  })}
-                </Toolbar>
-              </ScrollContainer>
-            </>
+              <div
+                style={{
+                  height: "15%",
+                  marginTop: "10%",
+                }}
+                className="text-center"
+              >
+                <div className="d-flex align-items-center justify-content-center">
+                  <Link
+                    to={{
+                      pathname: `/public/video-details`,
+                      state: {
+                        style: style,
+                        product: data,
+                        products: recomandProducts,
+                        branch: branch,
+                        deliveryFees: deliveryFees,
+                        categories: categories,
+                      },
+                    }}
+                    style={style?.headerVideos}
+                  >
+                    See More{" "}
+                  </Link>
+                </div>
+                <ScrollContainer className="scroll-container">
+                  <Toolbar>
+                    {recomandProducts?.map((item, i) => {
+                      return (
+                        <div style={{ cursor: "pointer" }} key={i}>
+                          <img
+                            src={`http://${base_url}:${port}/images/products/${
+                              JSON.parse(item.image)[0]
+                            }`}
+                            alt="Image"
+                            style={style?.imageVideo}
+                            onClick={() => changeProduct(item.id)}
+                          />
+                          <small className="ml-1" style={{ color: "#fff" }}>
+                            {item.price +
+                              getSymbolFromCurrency(item?.currency_code)}
+                          </small>
+                        </div>
+                      );
+                    })}
+                  </Toolbar>
+                </ScrollContainer>
+              </div>
+            </div>
           );
-        }, // when collapsed
-        header: {
-          heading: branch.BrancheName,
-          //   subheading: branch.created_at,
-          profileImage:
-            branch.branchImages === null
-              ? profile
-              : `http://${base_url}:${port}/images/branches/${
-                  JSON.parse(branch.branchImages)[0]
-                }`,
         },
       });
     });

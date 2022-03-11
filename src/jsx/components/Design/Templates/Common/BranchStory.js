@@ -49,60 +49,134 @@ function BranchStory(props) {
     );
   } else {
     const urls = [];
-    JSON.parse(branchStory?.storyVideos)?.map((item) => {
+    branchStory?.storyVideos &&
+      JSON.parse(branchStory?.storyVideos)?.map((item) => {
+        urls.push({
+          url: `http://${base_url}:${port}/videos/branches/${item}`,
+          duration: 100000, // ignored
+          type: "video",
+          seeMore: () => {
+            return <div></div>;
+          },
+          seeMoreCollapsed: () => {
+            return (
+              <>
+                <ScrollContainer className="scroll-container">
+                  <Toolbar>
+                    {tagProducts?.map((item, i) => {
+                      return (
+                        <Link
+                          to={{
+                            pathname: `/public/details/${btoa(item.id)}`,
+                            state: {
+                              style: style,
+                              deliveryFees: deliveryFees,
+                              branchId: branch.id,
+                            },
+                          }}
+                          key={i}
+                        >
+                          <img
+                            src={`http://${base_url}:${port}/images/products/${
+                              JSON.parse(item.image)[0]
+                            }`}
+                            alt="Image"
+                            style={style?.imageVideo}
+                          />
+                          <small className="ml-1" style={{ color: "#fff" }}>
+                            {item.price +
+                              getSymbolFromCurrency(item?.currency_code)}
+                          </small>
+                        </Link>
+                      );
+                    })}
+                  </Toolbar>
+                </ScrollContainer>
+              </>
+            );
+          },
+          header: {
+            heading: branch.BrancheName,
+            //   subheading: branch.created_at,
+            profileImage:
+              branch.branchImages === null
+                ? profile
+                : `http://${base_url}:${port}/images/branches/${
+                    JSON.parse(branch.branchImages)[0]
+                  }`,
+          },
+        });
+      });
+    JSON.parse(branchStory?.storyVideosUrl)?.map((item) => {
       urls.push({
-        url: `http://${base_url}:${port}/videos/branches/${item}`,
-        duration: 100000, // ignored
-        type: "video",
-        seeMore: () => {
-          return <div></div>;
-        },
-        seeMoreCollapsed: () => {
+        content: () => {
           return (
-            <>
-              <ScrollContainer className="scroll-container">
-                <Toolbar>
-                  {tagProducts?.map((item, i) => {
-                    return (
-                      <Link
-                        to={{
-                          pathname: `/public/details/${btoa(item.id)}`,
-                          state: {
-                            style: style,
-                            deliveryFees: deliveryFees,
-                            branchId: branch.id,
-                          },
-                        }}
-                        key={i}
-                      >
-                        <img
-                          src={`http://${base_url}:${port}/images/products/${
-                            JSON.parse(item.image)[0]
-                          }`}
-                          alt="Image"
-                          style={style?.imageVideo}
-                        />
-                        <small className="ml-1" style={{ color: "#fff" }}>
-                          {item.price +
-                            getSymbolFromCurrency(item?.currency_code)}
-                        </small>
-                      </Link>
-                    );
-                  })}
-                </Toolbar>
-              </ScrollContainer>
-            </>
+            <div
+              className="p-2 text-center"
+              style={{
+                width: "100%",
+                height: "100%",
+                zIndex: 100000,
+              }}
+            >
+              <div
+                style={{
+                  height: "70%",
+                  lineBreak: "anywhere",
+                  overflow: "hidden",
+                  marginTop: "10%",
+                }}
+                className="d-flex align-items-center justify-content-center"
+              >
+                <a
+                  href={item}
+                  target="_blank"
+                  style={{ backgroundColor: "#fff" }}
+                >
+                  {item}
+                </a>
+              </div>
+              <div
+                style={{
+                  height: "15%",
+                  marginTop: "10%",
+                }}
+                className="text-center"
+              >
+                <ScrollContainer className="scroll-container ">
+                  <Toolbar>
+                    {tagProducts?.map((item, i) => {
+                      return (
+                        <Link
+                          to={{
+                            pathname: `/public/details/${btoa(item.id)}`,
+                            state: {
+                              style: style,
+                              deliveryFees: deliveryFees,
+                              branchId: branch.id,
+                            },
+                          }}
+                          key={i}
+                        >
+                          <img
+                            src={`http://${base_url}:${port}/images/products/${
+                              JSON.parse(item.image)[0]
+                            }`}
+                            alt="Image"
+                            style={style?.imageVideo}
+                          />
+                          <small className="ml-1" style={{ color: "#fff" }}>
+                            {item.price +
+                              getSymbolFromCurrency(item?.currency_code)}
+                          </small>
+                        </Link>
+                      );
+                    })}
+                  </Toolbar>
+                </ScrollContainer>
+              </div>
+            </div>
           );
-        },
-        header: {
-          heading: branch.BrancheName,
-          //   subheading: branch.created_at,
-          profileImage:
-            branch.branchImages === null
-              ? profile
-              : `http://${base_url}:${port}/images/branches/${
-                  JSON.parse(branch.branchImages)[0]
-                }`,
         },
       });
     });

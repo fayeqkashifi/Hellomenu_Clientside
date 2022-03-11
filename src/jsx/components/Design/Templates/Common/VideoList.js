@@ -86,21 +86,40 @@ function VideoList(props) {
                   }}
                   style={style?.headerVideos}
                 >
-                  <ReactPlayer
-                    width="150px"
-                    height="200px"
-                    style={{
-                      borderRadius: "10px",
-                      border: "2px solid",
-                      borderColor: "#ff751d",
-                      margin: "3px",
-                      objectFit: "contain",
-                    }}
-                    url={`http://${base_url}:${port}/videos/branches/${
-                      JSON.parse(item?.storyVideos)[0]
-                    }`}
-                    playing={false}
-                  />
+                  {item?.storyVideos ? (
+                    <ReactPlayer
+                      width="150px"
+                      height="200px"
+                      style={{
+                        borderRadius: "10px",
+                        border: "2px solid",
+                        borderColor: "#ff751d",
+                        margin: "3px",
+                        objectFit: "contain",
+                      }}
+                      url={`http://${base_url}:${port}/videos/branches/${
+                        JSON.parse(item?.storyVideos)[0]
+                      }`}
+                      playing={false}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "150px",
+                        height: "200px",
+                        borderRadius: "10px",
+                        border: "2px solid",
+                        borderColor: "#fff",
+                        margin: "3px",
+                        padding: "2px",
+                        lineBreak: "anywhere",
+                        overflow: "hidden",
+                      }}
+                      className="d-flex align-items-center justify-content-center"
+                    >
+                      <small>{JSON.parse(item?.storyVideosUrl)[0]}</small>
+                    </div>
+                  )}
                 </Link>
               </div>
             );
@@ -122,20 +141,39 @@ function VideoList(props) {
                     }}
                     style={style?.headerVideos}
                   >
-                    <ReactPlayer
-                      width="150px"
-                      height="200px"
-                      style={style?.statusPlayer}
-                      url={`http://${base_url}:${port}/videos/products/${
-                        JSON.parse(item.video)[0]
-                      }`}
-                      //   controls={true}
-                      playing={false}
-                      // playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                      // light={`http://${base_url}:${port}/images/products/${
-                      //   JSON.parse(item.image)[0]
-                      // }`}
-                    />
+                    {item?.video ? (
+                      <ReactPlayer
+                        width="150px"
+                        height="200px"
+                        style={style?.statusPlayer}
+                        url={`http://${base_url}:${port}/videos/products/${
+                          JSON.parse(item.video)[0]
+                        }`}
+                        //   controls={true}
+                        playing={false}
+                        // playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                        // light={`http://${base_url}:${port}/images/products/${
+                        //   JSON.parse(item.image)[0]
+                        // }`}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "150px",
+                          height: "200px",
+                          borderRadius: "10px",
+                          border: "2px solid",
+                          borderColor: "#fff",
+                          margin: "3px",
+                          padding: "2px",
+                          lineBreak: "anywhere",
+                          overflow: "hidden",
+                        }}
+                        className="d-flex align-items-center justify-content-center"
+                      >
+                        <small>{JSON.parse(item?.videosUrl)[0]}</small>
+                      </div>
+                    )}
                   </Link>
                 </div>
               )

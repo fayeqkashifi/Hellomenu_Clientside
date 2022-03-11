@@ -10,7 +10,8 @@ import Switch from "@mui/material/Switch";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
 const AddProduct = (props) => {
   const history = useHistory();
   // for localization
@@ -90,6 +91,8 @@ const AddProduct = (props) => {
     formData.append("recommendations", JSON.stringify(productRecom));
     formData.append("UnitName", data.UnitName);
     formData.append("branchId", branchId);
+    formData.append("form", JSON.stringify(form));
+
     axios.post(`/api/InsertProducts`, formData).then((res) => {
       if (res.data.status === 200) {
         swal("Success", res.data.message, "success").then((check) => {
@@ -228,6 +231,86 @@ const AddProduct = (props) => {
       });
     }
   };
+
+  const [form, setForm] = useState([
+    {
+      name: "",
+      errors: {
+        name: null,
+      },
+    },
+  ]);
+
+  const prevIsValid = () => {
+    if (form.length === 0) {
+      return true;
+    }
+
+    const someEmpty = form.some((item) => item.name === "");
+
+    if (someEmpty) {
+      form.map((item, index) => {
+        const allPrev = [...form];
+        // console.log();
+        if (form[index].name === "") {
+          allPrev[index].errors.name = "URL is required";
+        }
+        //  if (allPrev.some((val) => val.name == form[index].name)) {
+        //   allPrev[index].errors.name = "Duplicate Entry";
+        // }
+        return setForm(allPrev);
+      });
+    }
+
+    return !someEmpty;
+  };
+
+  const handleAddLink = (e) => {
+    e.preventDefault();
+    const inputState = {
+      name: "",
+      errors: {
+        name: null,
+      },
+    };
+
+    if (prevIsValid()) {
+      setForm((prev) => [...prev, inputState]);
+    }
+  };
+
+  const onChange = (index, event) => {
+    event.preventDefault();
+    event.persist();
+
+    setForm((prev) => {
+      return prev.map((item, i) => {
+        if (i !== index) {
+          return item;
+        }
+
+        return {
+          ...item,
+          [event.target.name]: event.target.value,
+
+          errors: {
+            ...item.errors,
+            [event.target.name]:
+              event.target.value.length > 0
+                ? null
+                : [event.target.name] + " Is required",
+          },
+        };
+      });
+    });
+  };
+
+  const handleRemoveField = (e, index) => {
+    e.preventDefault();
+
+    setForm((prev) => prev.filter((item) => item !== prev[index]));
+  };
+
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -501,6 +584,58 @@ const AddProduct = (props) => {
                           data-overwrite-initial="false"
                           data-min-file-count="1"
                         />
+                      </div>
+                    </div>
+                    <div className="row form-group">
+                      <div
+                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: "#f5f5f5" }}
+                      >
+                        {t("video_url")}
+                      </div>
+                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        {form.map((item, index) => (
+                          <div className="row mt-3" key={`item-${index}`}>
+                            <div className="col-10">
+                              <input
+                                type="text"
+                                className={
+                                  item.errors.name
+                                    ? "form-control  is-invalid"
+                                    : "form-control"
+                                }
+                                name="name"
+                                placeholder="URL..."
+                                value={item.name}
+                                onChange={(e) => onChange(index, e)}
+                              />
+
+                              {item.errors.name && (
+                                <div className="invalid-feedback">
+                                  {item.errors.name}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="col-2">
+                              <IconButton
+                                onClick={(e) => handleRemoveField(e, index)}
+                              >
+                                <DeleteIcon
+                                  fontSize="small"
+                                  sx={{ color: "red" }}
+                                />
+                              </IconButton>
+                            </div>
+                          </div>
+                        ))}
+
+                        <button
+                          className="btn btn-primary mt-2"
+                          onClick={handleAddLink}
+                        >
+                          {t("add")}
+                        </button>
                       </div>
                     </div>
                   </div>
