@@ -203,7 +203,7 @@ const Storybranch = (props) => {
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                 <div className="card">
                   <div className="card-header">
-                    <h3 className="card-title">{t("video")}</h3>
+                    <h3 className="card-title">{t("add_story")}</h3>
                   </div>
                   <div className="card-body">
                     <div className="row form-group">
@@ -393,12 +393,12 @@ const Storybranch = (props) => {
                             {checkPermission("branches-edit") && (
                               <Link
                                 to={{
-                                  pathname: `/branches/show-stories`,
+                                  pathname: `/branches/edit-stories`,
                                   state: { id: item.id },
                                 }}
                                 className="btn btn-outline-info btn-sm"
                               >
-                                {t("show")}
+                                {t("edit")}
                               </Link>
                             )}
                             &nbsp;&nbsp;&nbsp;

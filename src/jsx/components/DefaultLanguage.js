@@ -8,6 +8,8 @@ export const Locale = {
   stories: "Stories",
   show: "Show",
   video_url: "Video Url",
+  add_story:"Add Story",
+  edit_story:"Edit Story",
 
   // branches
   branch_info: "Branch Info",

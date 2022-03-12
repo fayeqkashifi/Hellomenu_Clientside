@@ -30,7 +30,7 @@ import AddBranch from "./components/Branches/AddBranch";
 import EditBranch from "./components/Branches/EditBranch";
 import SettingsShow from "./components/Settings/Show";
 import Storybranch from "./components/Branches/Stories/StoryBranch";
-import ShowStories from "./components/Branches/Stories/ShowStories";
+import EditStories from "./components/Branches/Stories/EditStories";
 
 const Markup = () => {
   const routes = [
@@ -40,7 +40,7 @@ const Markup = () => {
     { url: "branches/add-branch", component: AddBranch },
     { url: "branches/edit-branch", component: EditBranch },
     { url: "branches/story-branch", component: Storybranch },
-    { url: "branches/show-stories", component: ShowStories },
+    { url: "branches/edit-stories", component: EditStories },
     { url: "ingredients", component: Ingredients },
     { url: "company", component: Company },
     { url: "profile", component: Profile },

@@ -654,8 +654,8 @@ const EditProduct = (props) => {
                               <div className="card ">
                                 <div className="text-center">
                                   <ReactPlayer
-                                    width="150px"
-                                    height="200px"
+                                    width="inherit"
+                                    height="150px"
                                     url={`http://${base_url}:${port}/videos/products/${video}`}
                                     controls={true}
                                     playing={false}
