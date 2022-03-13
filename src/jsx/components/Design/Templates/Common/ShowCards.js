@@ -17,7 +17,6 @@ export default function ShowCards(props) {
   var viewShow_HTMLTABLE = "";
   viewShow_HTMLTABLE = products?.map((item, i) => {
     return (
-      
       <Grid
         item
         style={
@@ -52,7 +51,7 @@ export default function ShowCards(props) {
           <CardContent sx={{ flexGrow: 1 }}>
             <Link
               to={{
-                pathname: `/public/details/${btoa(item.id)}`,
+                pathname: `/public/details/${btoa(btoa(btoa(item.id)))}`,
                 state: {
                   style: style,
                   deliveryFees: deliveryFees,

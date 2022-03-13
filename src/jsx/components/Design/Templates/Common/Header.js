@@ -64,7 +64,7 @@ function Header(props) {
         setChangeState(true);
         setLastPage(data.last_page);
         setPage(2);
-        setActiveCategory("All-1");
+        setActiveCategory("All~~~1");
       });
     }
   };
@@ -135,7 +135,7 @@ function Header(props) {
           <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
             <Typography
               style={
-                activeCategory === "All-1"
+                activeCategory === "All~~~1"
                   ? style?.cateActive
                   : style?.cateDeActive
               }

@@ -7,12 +7,20 @@ import { base_url, port } from "../../../../../Consts";
 import Typography from "@mui/material/Typography";
 import DefaultPic from "../../../../../images/hellomenu/category.svg";
 import {
+  getProductsBasedOnBranchId,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
+import AllOutIcon from "@mui/icons-material/AllOut";
 const SideBar = (props) => {
-  const { style, categories, activeCategory, setProducts, setActiveCategory } =
-    props;
+  const {
+    style,
+    categories,
+    activeCategory,
+    setProducts,
+    setActiveCategory,
+    branchId,
+  } = props;
   const [value, setValue] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -20,15 +28,35 @@ const SideBar = (props) => {
   };
 
   const filterProducts = (menu) => {
-    if (menu.sub_category_id === null) {
-      setActiveCategory(menu.CategoryName + "-" + menu.category_id);
-      getProductBasedOnCategory(menu.category_id).then((data) => {
-        setProducts(data);
-      });
+    if (menu !== "All") {
+      if (menu.sub_category_id === null) {
+        getProductBasedOnCategory(menu.category_id, 1).then((data) => {
+          setProducts(data.data);
+          // setChangeState(true);
+          // setLastPage(data.last_page);
+          // setPage(2);
+          setActiveCategory(
+            menu.CategoryName + "~~~cate~~~" + menu.category_id
+          );
+        });
+      } else {
+        getProductBasedOnSubCategory(menu.sub_category_id, 1).then((res) => {
+          setProducts(res.data);
+          setActiveCategory(
+            menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
+          );
+          // setChangeState(true);
+          // setLastPage(res.last_page);
+          // setPage(2);
+        });
+      }
     } else {
-      setActiveCategory(menu.SubCategoryName + "-" + menu.sub_category_id);
-      getProductBasedOnSubCategory(menu.sub_category_id).then((res) => {
-        setProducts(res);
+      getProductsBasedOnBranchId(branchId, 1).then((data) => {
+        setProducts(data.data);
+        // setChangeState(true);
+        // setLastPage(data.last_page);
+        // setPage(2);
+        setActiveCategory("All~~~1");
       });
     }
   };
@@ -54,6 +82,36 @@ const SideBar = (props) => {
           },
         }}
       >
+        <Tab
+          style={
+            activeCategory === "All~~~1"
+              ? style?.sidebarActive
+              : style?.sidebarDeActive
+          }
+          sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+          onClick={() => filterProducts("All")}
+          icon={
+            <AllOutIcon
+              style={style?.icon}
+              sx={
+                activeCategory === "All~~~1"
+                  ? style?.textActive
+                  : style?.textDeactive
+              }
+            />
+          }
+          label={
+            <Typography
+              style={
+                activeCategory === "All~~~1"
+                  ? style?.textActive
+                  : style?.textDeactive
+              }
+            >
+              All
+            </Typography>
+          }
+        ></Tab>
         {categories?.map((section, i) => (
           <Tab
             key={i}
@@ -61,8 +119,10 @@ const SideBar = (props) => {
             style={
               activeCategory ===
               (section.sub_category_id === null
-                ? section.CategoryName + "-" + section.category_id
-                : section.SubCategoryName + "-" + section.sub_category_id)
+                ? section.CategoryName + "~~~cate~~~" + section.category_id
+                : section.SubCategoryName +
+                  "~~~sub~~~" +
+                  section.sub_category_id)
                 ? style?.sidebarActive
                 : style?.sidebarDeActive
             }
@@ -83,8 +143,8 @@ const SideBar = (props) => {
                 style={
                   activeCategory ===
                   (section.sub_category_id === null
-                    ? section.CategoryName + "-" + section.category_id
-                    : section.SubCategoryName + "-" + section.sub_category_id)
+                    ? section.CategoryName + "~~~" + section.category_id
+                    : section.SubCategoryName + "~~~" + section.sub_category_id)
                     ? style?.textActive
                     : style?.textDeactive
                 }

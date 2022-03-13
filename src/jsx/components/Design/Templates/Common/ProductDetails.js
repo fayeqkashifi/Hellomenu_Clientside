@@ -515,7 +515,7 @@ const ProductDetails = (props) => {
         cart={cart}
         deliveryFees={deliveryFees}
         url={{
-          pathname: `/public/details/recommend/${btoa(id)}`,
+          pathname: `/public/details/recommend/${btoa(btoa(btoa(id)))}`,
           state: {
             productName: fetchData.ProductName,
 

@@ -35,7 +35,7 @@ export default function Main(props) {
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
     if (page <= lastPage) {
-      if (activeCategory === "All-1") {
+      if (activeCategory === "All~~~1") {
         getProductsBasedOnBranchId(branchId, page).then((data) => {
           setProducts(products.concat(data.data));
           setPage(page + 1);

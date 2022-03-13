@@ -25,7 +25,7 @@ const MainPublic = (props) => {
   // const [branch, setBranch] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [activeCategory, setActiveCategory] = useState("All-" + 1);
+  const [activeCategory, setActiveCategory] = useState("All~~~1");
   const [custom, setCustom] = useState([]);
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
@@ -64,7 +64,6 @@ const MainPublic = (props) => {
     setLastPage: setLastPage,
     page: page,
     setPage: setPage,
-
 
     branchId: branchId,
     deliveryFees: deliveryFees,

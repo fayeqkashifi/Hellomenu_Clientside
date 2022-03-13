@@ -67,7 +67,9 @@ function BranchStory(props) {
                       return (
                         <Link
                           to={{
-                            pathname: `/public/details/${btoa(item.id)}`,
+                            pathname: `/public/details/${btoa(
+                              btoa(btoa(item.id))
+                            )}`,
                             state: {
                               style: style,
                               deliveryFees: deliveryFees,
@@ -149,7 +151,9 @@ function BranchStory(props) {
                       return (
                         <Link
                           to={{
-                            pathname: `/public/details/${btoa(item.id)}`,
+                            pathname: `/public/details/${btoa(
+                              btoa(btoa(item.id))
+                            )}`,
                             state: {
                               style: style,
                               deliveryFees: deliveryFees,

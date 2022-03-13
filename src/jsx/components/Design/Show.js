@@ -23,7 +23,7 @@ const DesignShow = (props) => {
         <Switch>
           <PrivateRoute exact path={`${path}`} component={Design} />
           <PrivateRoute
-            path={`${path}/dark-template-customization`}
+            path={`${path}/customization`}
             component={Customization}
           />
           <PrivateRoute path={`${path}/add-theme`} component={Theme} />

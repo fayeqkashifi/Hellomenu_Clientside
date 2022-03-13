@@ -9,7 +9,6 @@ import {
 } from "@coreui/react";
 import { Form } from "react-bootstrap";
 
-import { useTranslation } from "react-i18next";
 // import Switch from "react-switch";
 
 import axios from "axios";
@@ -24,9 +23,10 @@ import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import Grid from "@mui/material/Grid";
+import { localization as t } from "../../Localization";
+
 // import Switch from "@mui/material/Switch";
 const Customization = (props) => {
-  const { t } = useTranslation();
   // const templateId = atob(props.match.params.id);
   const templateId = props.history.location.state.id;
   const branchId = props.history.location.state.branchId;
@@ -59,7 +59,7 @@ const Customization = (props) => {
       .then((res) => {
         if (res.data.status === 200) {
           swal("Success", res.data.message, "success");
-          setLoading(true);
+          setCheck(!check);
         }
       });
   };
@@ -68,7 +68,7 @@ const Customization = (props) => {
     axios.get(`/api/ResetCustomization/${templateId}`).then((res) => {
       if (res.data.status === 200) {
         setSettings([]);
-        setLoading(true);
+        setCheck(!check);
         swal("Success", res.data.message, "success");
       }
     });
@@ -80,10 +80,11 @@ const Customization = (props) => {
       if (res.data.status === 200) {
         setSettings(res.data.fetchData.Customization);
         setTemplate(res.data.fetchData);
+        setLoading(false);
       }
-      setLoading(false);
     });
   };
+  const [check, setCheck] = useState(false);
   useEffect(() => {
     dataLoad();
     return () => {
@@ -91,7 +92,7 @@ const Customization = (props) => {
       setTemplate([]);
       setLoading(true);
     };
-  }, [loading]);
+  }, [check]);
 
   var viewPreview_HTMLTABLE = "";
   if (loading) {

@@ -39,6 +39,7 @@ export default function SecondMain(props) {
       <div style={style?.sidebarMainDiv}>
         <Card style={style?.sidebarCard}>
           <SideBar
+            branchId={branchId}
             style={style}
             categories={categories}
             activeCategory={activeCategory}
@@ -46,12 +47,21 @@ export default function SecondMain(props) {
             setActiveCategory={setActiveCategory}
           />
         </Card>
-        <Grid container spacing={2}>
-          <ScrollContainer className="scroll-container">
-            <Toolbar>
-              <ShowCards {...properties} products={products} />
-            </Toolbar>
-          </ScrollContainer>
+        <Grid
+          container
+          spacing={2}
+          style={{
+            minHeight: "80vh",
+            marginLeft: "6%",
+          }}
+        >
+          <div className="d-flex align-items-center justify-content-center">
+            <ScrollContainer className="scroll-container ">
+              <Toolbar>
+                <ShowCards {...properties} products={products} />
+              </Toolbar>
+            </ScrollContainer>
+          </div>
         </Grid>
       </div>
     </div>
