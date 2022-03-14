@@ -3,7 +3,7 @@ import ProductDetails from "./Common/ProductDetails";
 const MainDetails = (props) => {
   const [loading, setLoading] = useState(false);
   const style = props.history.location.state.style;
-  const id = atob(props.match.params.id);
+  const id = atob(atob(atob(props.match.params.id)));
   const deliveryFees = parseInt(props.history.location.state.deliveryFees);
   const branchId = props.history.location.state.branchId;
   var view = "";
