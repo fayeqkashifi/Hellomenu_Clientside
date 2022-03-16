@@ -160,24 +160,7 @@ const Customization = (props) => {
                 </CRow>
                 <section style={{ padding: 10, border: "1px dashed grey" }}>
                   <CRow>
-                    <CCol sm={8}>
-                      <CFormLabel className="col-form-label font-weight-bold">
-                        {t("Name")}
-                      </CFormLabel>
-                    </CCol>
-                    <CCol sm={2}>
-                      <CFormLabel className="col-form-label font-weight-bold">
-                        {t("value")}
-                      </CFormLabel>
-                    </CCol>
-                    <CCol sm={2}>
-                      <CFormLabel className="col-form-label font-weight-bold">
-                        {t("default")}
-                      </CFormLabel>
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("bgColor")}
                       </CFormLabel>
@@ -190,12 +173,9 @@ const Customization = (props) => {
                         name="bgColor"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input type="color" disabled value="#22252a" />
-                    </CCol>
                   </CRow>
                   <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("cardBgColor")}
                       </CFormLabel>
@@ -208,12 +188,9 @@ const Customization = (props) => {
                         name="cardBgColor"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input type="color" disabled value="#2d3134" />
-                    </CCol>
                   </CRow>
                   <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("button_background_color")}
                       </CFormLabel>
@@ -227,14 +204,6 @@ const Customization = (props) => {
                         name="button_background_color"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input
-                        type="color"
-                        disabled
-                        // onChange={handleInput}
-                        value="#ff751d"
-                      />
-                    </CCol>
                   </CRow>
                 </section>
                 <CRow>
@@ -245,25 +214,7 @@ const Customization = (props) => {
 
                 <section style={{ padding: 10, border: "1px dashed grey" }}>
                   <CRow>
-                    <CCol sm={8}>
-                      <CFormLabel className="col-form-label font-weight-bold">
-                        {t("Name")}
-                      </CFormLabel>
-                    </CCol>
-                    <CCol sm={2}>
-                      <CFormLabel className="col-form-label font-weight-bold">
-                        {t("value")}
-                      </CFormLabel>
-                    </CCol>
-                    <CCol sm={2}>
-                      <CFormLabel className="col-form-label font-weight-bold">
-                        {t("default")}
-                      </CFormLabel>
-                    </CCol>
-                  </CRow>
-
-                  <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("menusAcriveColor")}
                       </CFormLabel>
@@ -276,12 +227,9 @@ const Customization = (props) => {
                         name="menusAcriveColor"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input type="color" disabled value="#ff751d" />
-                    </CCol>
                   </CRow>
                   <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("menusDeactiveColor")}
                       </CFormLabel>
@@ -294,12 +242,9 @@ const Customization = (props) => {
                         name="menusDeactiveColor"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input type="color" disabled value="#ffffff" />
-                    </CCol>
                   </CRow>
                   <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("product_name_color")}
                       </CFormLabel>
@@ -312,12 +257,9 @@ const Customization = (props) => {
                         name="product_name_color"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input type="color" disabled value="#ff751d" />
-                    </CCol>
                   </CRow>
                   <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("product_discription_color")}
                       </CFormLabel>
@@ -330,13 +272,10 @@ const Customization = (props) => {
                         name="product_discription_color"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input type="color" disabled value="#777" />
-                    </CCol>
                   </CRow>
 
                   <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("price_color")}
                       </CFormLabel>
@@ -349,12 +288,9 @@ const Customization = (props) => {
                         name="price_color"
                       />
                     </CCol>
-                    <CCol sm={2}>
-                      <input type="color" disabled value="#ff751d" />
-                    </CCol>
                   </CRow>
                   <CRow>
-                    <CCol sm={8}>
+                    <CCol sm={10}>
                       <CFormLabel className="col-form-label">
                         {t("button_text_color")}
                       </CFormLabel>
@@ -366,14 +302,6 @@ const Customization = (props) => {
                         value={settings?.button_text_color}
                         // value={themes.TextColor}
                         name="button_text_color"
-                      />
-                    </CCol>
-                    <CCol sm={2}>
-                      <input
-                        type="color"
-                        disabled
-                        // onChange={handleInput}
-                        value="#f1fcfe"
                       />
                     </CCol>
                   </CRow>

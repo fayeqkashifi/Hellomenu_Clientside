@@ -8,7 +8,7 @@ import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
 import { Link } from "react-router-dom";
 import profile from "../../../../../images/hellomenu/logo.svg";
-
+import ReactPlayer from "react-player/lazy";
 function BranchStory(props) {
   const { t } = useTranslation();
   const { style, branch, deliveryFees, branchStory } = props;
@@ -130,13 +130,24 @@ function BranchStory(props) {
                 }}
                 className="d-flex align-items-center justify-content-center"
               >
-                <a
-                  href={item}
-                  target="_blank"
-                  style={{ backgroundColor: "#fff" }}
-                >
-                  {item}
-                </a>
+                {item.split(".").includes("tiktok") ? (
+                  <a
+                    href={item}
+                    target="_blank"
+                    style={{ backgroundColor: "#fff" }}
+                  >
+                    {item}
+                  </a>
+                ) : (
+                  <ReactPlayer
+                    width="100%"
+                    height="100%"
+                    style={{
+                      overflow: "hidden",
+                    }}
+                    url={item}
+                  />
+                )}
               </div>
               <div
                 style={{

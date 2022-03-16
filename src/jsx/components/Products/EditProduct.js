@@ -75,7 +75,10 @@ const EditProduct = (props) => {
     // console.log(JSON.stringify(data, null, 2));
 
     const formData = new FormData();
-    if (JSON.parse(editProduct.video).length !== 0) {
+    if (
+      // JSON.parse(editProduct.video).length !== 0 ||
+      editProduct.video !== null
+    ) {
       formData.append("video", editProduct.video);
     } else {
       formData.append("video", null);
@@ -327,7 +330,6 @@ const EditProduct = (props) => {
   const onChange = (index, event) => {
     event.preventDefault();
     event.persist();
-
     setForm((prev) => {
       return prev.map((item, i) => {
         if (i !== index) {

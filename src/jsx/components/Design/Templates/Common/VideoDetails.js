@@ -77,7 +77,7 @@ function VideoDetails(props) {
         <div className="d-flex align-items-center justify-content-center">
           {product?.video ? (
             <ReactPlayer
-              width="200px"
+              width="500px"
               height="300px"
               style={style?.statusPlayer}
               url={`http://${base_url}:${port}/videos/products/${
@@ -88,7 +88,7 @@ function VideoDetails(props) {
             />
           ) : (
             <ReactPlayer
-              width="200px"
+              width="500px"
               height="300px"
               style={{
                 // width: "200px",
@@ -101,7 +101,7 @@ function VideoDetails(props) {
                 lineBreak: "anywhere",
                 overflow: "hidden",
               }}
-              className="d-flex align-items-center justify-content-center"
+              // className="d-flex align-items-center justify-content-center"
               url={JSON.parse(product?.videosUrl)[0]}
             >
               {/* <a href={JSON.parse(product?.videosUrl)[0]} target="_blank">

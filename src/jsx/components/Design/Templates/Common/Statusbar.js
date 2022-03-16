@@ -6,7 +6,8 @@ import Container from "@mui/material/Container";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
 import ReactPlayer from "react-player/lazy";
-
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 function Statusbar(props) {
   let { style, products, branchId, categories, deliveryFees } = props;
   // const checkProduct = products.filter((item) => item.video !== null);
@@ -97,7 +98,9 @@ function Statusbar(props) {
                         }`}
                         muted={true}
                       />
-                    ) : (
+                    ) : JSON.parse(item.storyVideosUrl)[0]
+                        .split(".")
+                        .includes("tiktok") ? (
                       <ReactPlayer
                         width="100px"
                         height="150px"
@@ -110,10 +113,41 @@ function Statusbar(props) {
                           lineBreak: "anywhere",
                           overflow: "hidden",
                         }}
-                        url={JSON.parse(item?.storyVideosUrl)[0]}
+                        playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                        light={
+                          item.branchImages
+                            ? `http://${base_url}:${port}/images/branches/${
+                                JSON.parse(item.branchImages)[0]
+                              }`
+                            : true
+                        }
+                        url={JSON.parse(item.storyVideosUrl)[0]}
+                      />
+                    ) : (
+                      <div
+                        className="text-center"
+                        style={{
+                          width: "100px",
+                          height: "150px",
+                          borderRadius: "10px",
+                          border: "2px solid",
+                          borderColor: "#ff751d",
+                          margin: "3px",
+                          padding: "2px",
+                        }}
                       >
-                        {/* <small>{JSON.parse(item?.storyVideosUrl)[0]}</small> */}
-                      </ReactPlayer>
+                        <ReactPlayer
+                          width="90px"
+                          height="120px"
+                          style={{
+                            overflow: "hidden",
+                          }}
+                          url={JSON.parse(item.storyVideosUrl)[0]}
+                        ></ReactPlayer>
+                        {/* <small> */}
+                        <FullscreenIcon fontSize="small" />
+                        {/* </small> */}
+                      </div>
                     )}
                   </Link>
                 ) : null;
@@ -150,7 +184,9 @@ function Statusbar(props) {
                         onMouseOut={(event) => event.target.pause()}
                         muted={true}
                       />
-                    ) : (
+                    ) : JSON.parse(item.videosUrl)[0]
+                        .split(".")
+                        .includes("tiktok") ? (
                       <ReactPlayer
                         width="100px"
                         height="150px"
@@ -163,10 +199,37 @@ function Statusbar(props) {
                           lineBreak: "anywhere",
                           overflow: "hidden",
                         }}
+                        playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                        light={`http://${base_url}:${port}/images/products/${
+                          JSON.parse(item.image)[0]
+                        }`}
                         url={JSON.parse(item.videosUrl)[0]}
+                      />
+                    ) : (
+                      <div
+                        className="text-center"
+                        style={{
+                          width: "100px",
+                          height: "150px",
+                          borderRadius: "10px",
+                          border: "2px solid",
+                          borderColor: "#fff",
+                          margin: "3px",
+                          padding: "2px",
+                        }}
                       >
-                        {/* <small>{JSON.parse(item?.videosUrl)[0]}</small> */}
-                      </ReactPlayer>
+                        <ReactPlayer
+                          width="90px"
+                          height="120px"
+                          style={{
+                            overflow: "hidden",
+                          }}
+                          url={JSON.parse(item.videosUrl)[0]}
+                        ></ReactPlayer>
+                        {/* <small> */}
+                        <FullscreenIcon fontSize="small" />
+                        {/* </small> */}
+                      </div>
                     )}
                   </Link>
                 ) : null;

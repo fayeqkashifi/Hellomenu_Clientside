@@ -9,11 +9,11 @@ import Grid from "@mui/material/Grid";
 
 import ShowCards from "../Common/ShowCards";
 import {
+  getProductsBasedOnBranchId,
   getCategoriesBasedProduct,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
-var hold = 1;
 export default function ThridMain(props) {
   const { t } = useTranslation();
   const {
@@ -27,6 +27,10 @@ export default function ThridMain(props) {
     activeCategory,
     setActiveCategory,
     setProducts,
+    setPage,
+    page,
+    lastPage,
+    setLastPage,
   } = props;
   const properties = {
     branchId: branchId,
@@ -37,28 +41,26 @@ export default function ThridMain(props) {
   };
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
-    if (hold < categories.length) {
-      getCategoriesBasedProduct(branchId).then((data) => {
-        if (data[hold]?.sub_category_id === null) {
-          setActiveCategory(
-            data[hold]?.CategoryName + "-" + data[hold]?.category_id
-          );
-          getProductBasedOnCategory(data[hold]?.category_id).then((res) => {
-            hold = hold + 1;
-            setProducts(products.concat(res));
+    if (page <= lastPage) {
+      if (activeCategory === "All~~~1") {
+        getProductsBasedOnBranchId(branchId, page).then((data) => {
+          setProducts(products.concat(data.data));
+          setPage(page + 1);
+        });
+      } else {
+        const data = activeCategory?.split("~~~");
+        if (data[1] === "cate") {
+          getProductBasedOnCategory(data[2], page).then((data) => {
+            setProducts(products.concat(data.data));
+            setPage(page + 1);
           });
-        } else {
-          setActiveCategory(
-            data[hold]?.SubCategoryName + "-" + data[hold]?.sub_category_id
-          );
-          getProductBasedOnSubCategory(data[hold]?.sub_category_id).then(
-            (value) => {
-              hold = hold + 1;
-              setProducts(products.concat(value));
-            }
-          );
+        } else if (data[1] === "sub") {
+          getProductBasedOnSubCategory(data[2], page).then((res) => {
+            setProducts(products.concat(res.data));
+            setPage(page + 1);
+          });
         }
-      });
+      }
     } else {
       setChangeState(false);
     }
@@ -81,6 +83,7 @@ export default function ThridMain(props) {
         />
         <SideBar
           style={style}
+          branchId={branchId}
           categories={categories}
           activeCategory={activeCategory}
           setProducts={setProducts}

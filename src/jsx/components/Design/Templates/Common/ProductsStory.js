@@ -16,6 +16,7 @@ import { useSwipeable } from "react-swipeable";
 import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
 import profile from "../../../../../images/hellomenu/logo.svg";
+import ReactPlayer from "react-player/lazy";
 
 function ProductsStory(props) {
   const { t } = useTranslation();
@@ -258,13 +259,24 @@ function ProductsStory(props) {
                 }}
                 className="d-flex align-items-center justify-content-center"
               >
-                <a
-                  href={item}
-                  target="_blank"
-                  style={{ backgroundColor: "#fff" }}
-                >
-                  {item}
-                </a>
+                {item.split(".").includes("tiktok") ? (
+                  <a
+                    href={item}
+                    target="_blank"
+                    style={{ backgroundColor: "#fff" }}
+                  >
+                    {item}
+                  </a>
+                ) : (
+                  <ReactPlayer
+                    width="100%"
+                    height="100%"
+                    style={{
+                      overflow: "hidden",
+                    }}
+                    url={item}
+                  />
+                )}
               </div>
               <div
                 style={{

@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 import { getProductsBasedOnBranchId } from "../Functionality";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 function VideoList(props) {
   const { t } = useTranslation();
 
@@ -95,26 +96,53 @@ function VideoList(props) {
                       }`}
                       playing={false}
                     />
-                  ) : (
+                  ) : JSON.parse(item.storyVideosUrl)[0]
+                      .split(".")
+                      .includes("tiktok") ? (
                     <ReactPlayer
                       width="150px"
                       height="200px"
                       style={{
-                        // width: "150px",
-                        // height: "200px",
                         borderRadius: "10px",
                         border: "2px solid",
-                        borderColor: "#fff",
+                        borderColor: "#ff751d",
                         margin: "3px",
                         padding: "2px",
-                        lineBreak: "anywhere",
                         overflow: "hidden",
                       }}
-                      className="d-flex align-items-center justify-content-center"
-                      url={JSON.parse(item?.storyVideosUrl)[0]}
+                      playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                      light={
+                        item.branchImages
+                          ? `http://${base_url}:${port}/images/branches/${
+                              JSON.parse(item.branchImages)[0]
+                            }`
+                          : true
+                      }
+                      url={JSON.parse(item.storyVideosUrl)[0]}
+                    />
+                  ) : (
+                    <div
+                      className="text-center"
+                      style={{
+                        width: "150px",
+                        height: "200px",
+                        borderRadius: "10px",
+                        border: "2px solid",
+                        borderColor: "#ff751d",
+                        margin: "3px",
+                        padding: "2px",
+                      }}
                     >
-                      {/* <small>{JSON.parse(item?.storyVideosUrl)[0]}</small> */}
-                    </ReactPlayer>
+                      <ReactPlayer
+                        width="140px"
+                        height="170px"
+                        style={{
+                          overflow: "hidden",
+                        }}
+                        url={JSON.parse(item.storyVideosUrl)[0]}
+                      ></ReactPlayer>
+                      <FullscreenIcon fontSize="small" />
+                    </div>
                   )}
                 </Link>
               </div>
@@ -122,43 +150,38 @@ function VideoList(props) {
           })}
           {products.map((item) => {
             return (
-              item.video && (
-                <div className="col" key={item.id}>
-                  <Link
-                    to={{
-                      pathname: `/public/video`,
-                      state: {
-                        style: style,
-                        branch: branch,
-                        product_id: item.id,
-                        deliveryFees: deliveryFees,
-                        branchState: false,
-                      },
-                    }}
-                    style={style?.headerVideos}
-                  >
-                    {item?.video ? (
-                      <ReactPlayer
-                        width="150px"
-                        height="200px"
-                        style={style?.statusPlayer}
-                        url={`http://${base_url}:${port}/videos/products/${
-                          JSON.parse(item.video)[0]
-                        }`}
-                        //   controls={true}
-                        playing={false}
-                        // playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                        // light={`http://${base_url}:${port}/images/products/${
-                        //   JSON.parse(item.image)[0]
-                        // }`}
-                      />
-                    ) : (
+              <div className="col" key={item.id}>
+                <Link
+                  to={{
+                    pathname: `/public/video`,
+                    state: {
+                      style: style,
+                      branch: branch,
+                      product_id: item.id,
+                      deliveryFees: deliveryFees,
+                      branchState: false,
+                    },
+                  }}
+                  style={style?.headerVideos}
+                >
+                  {item?.video ? (
+                    <ReactPlayer
+                      width="150px"
+                      height="200px"
+                      style={style?.statusPlayer}
+                      url={`http://${base_url}:${port}/videos/products/${
+                        JSON.parse(item.video)[0]
+                      }`}
+                      playing={false}
+                    />
+                  ) : JSON.parse(item.videosUrl).length !== 0 ? (
+                    JSON.parse(item.videosUrl)[0]
+                      .split(".")
+                      .includes("tiktok") ? (
                       <ReactPlayer
                         width="150px"
                         height="200px"
                         style={{
-                          // width: "150px",
-                          // height: "200px",
                           borderRadius: "10px",
                           border: "2px solid",
                           borderColor: "#fff",
@@ -167,15 +190,39 @@ function VideoList(props) {
                           lineBreak: "anywhere",
                           overflow: "hidden",
                         }}
-                        className="d-flex align-items-center justify-content-center"
-                        url={JSON.parse(item?.videosUrl)[0]}
+                        playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                        light={`http://${base_url}:${port}/images/products/${
+                          JSON.parse(item.image)[0]
+                        }`}
+                        url={JSON.parse(item.videosUrl)[0]}
+                      />
+                    ) : (
+                      <div
+                        className="text-center"
+                        style={{
+                          width: "150px",
+                          height: "200px",
+                          borderRadius: "10px",
+                          border: "2px solid",
+                          borderColor: "#fff",
+                          margin: "3px",
+                          padding: "2px",
+                        }}
                       >
-                        {/* <small>{JSON.parse(item?.videosUrl)[0]}</small> */}
-                      </ReactPlayer>
-                    )}
-                  </Link>
-                </div>
-              )
+                        <ReactPlayer
+                          width="140px"
+                          height="170px"
+                          style={{
+                            overflow: "hidden",
+                          }}
+                          url={JSON.parse(item.videosUrl)[0]}
+                        ></ReactPlayer>
+                        <FullscreenIcon fontSize="small" />
+                      </div>
+                    )
+                  ) : null}
+                </Link>
+              </div>
             );
           })}
         </div>

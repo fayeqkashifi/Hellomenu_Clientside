@@ -171,7 +171,9 @@ export const ThridStyle = (custom) => {
       // height: "100%",
     },
     sidebarActive: {
-      background: "#fbd460",
+      background: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
       borderRadius: "40px",
       padding: "20px",
       maring: "40px",
