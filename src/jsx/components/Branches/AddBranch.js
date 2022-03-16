@@ -16,6 +16,7 @@ import IconButton from "@mui/material/IconButton";
 import { localization as t } from "../Localization";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import ipapi from "ipapi.co";
 const AddBranch = () => {
   const initialValues = {
     BrancheName: "",
@@ -114,13 +115,21 @@ const AddBranch = () => {
       const response = await axios.get("/api/GetCurrencies");
       if (response.data.status === 200) {
         setCurrency(response.data.fetchData);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
+  const [ipApi, setIpApi] = useState([]);
+
   useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
     dataLoad();
     return () => {
       setCurrency([]);
@@ -306,7 +315,7 @@ const AddBranch = () => {
                     <div className="form-group">
                       <label> {t("ordering_phone_number")}</label>
                       <PhoneInput
-                        country={"af"}
+                        country={ipApi?.country_code?.toLowerCase()}
                         className={
                           errors.phoneNumber && touched.phoneNumber
                             ? " is-invalid"

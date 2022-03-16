@@ -75,7 +75,7 @@ class SideBar extends Component {
               </Link>
             </li>
             {/* )} */}
-            {checkPermission("company-view") && (
+            {/* {checkPermission("company-view") && (
               <li
                 className={`${
                   this.state.path === "company" ? "mm-active" : ""
@@ -90,7 +90,7 @@ class SideBar extends Component {
                   <span className="nav-text">{t("company")}</span>
                 </Link>
               </li>
-            )}
+            )} */}
             {checkPermission("branches-view") && (
               <li
                 className={`${

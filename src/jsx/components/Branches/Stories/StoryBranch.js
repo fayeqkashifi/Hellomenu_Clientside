@@ -62,8 +62,10 @@ const Storybranch = (props) => {
         if (result.data.status === 200) {
           setProducts(result.data.fetchData);
         }
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }

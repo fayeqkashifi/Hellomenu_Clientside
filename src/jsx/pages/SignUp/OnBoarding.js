@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderWizard from "./HeaderWizard";
@@ -8,6 +8,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import ipapi from "ipapi.co";
 
 const OnBoarding = () => {
   const { t } = useTranslation();
@@ -40,7 +41,14 @@ const OnBoarding = () => {
       });
     });
   };
+  const [ipApi, setIpApi] = useState([]);
 
+  useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
+  }, []);
   return (
     <>
       <HeaderWizard first="editable active" second="" thrid="" fourth="" />
@@ -85,7 +93,7 @@ const OnBoarding = () => {
                             {t("what_is_your_phone_number")}
                           </label>
                           <PhoneInput
-                            country={"af"}
+                            country={ipApi?.country_code?.toLowerCase()}
                             value={value}
                             onChange={(phone) => setValue(phone)}
                           />

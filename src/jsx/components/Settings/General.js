@@ -11,6 +11,7 @@ import { checkPermission } from "../Permissions";
 import { base_url, port } from "../../../Consts";
 import DefaultPic from "../../../images/hellomenu/logo.svg";
 import { localization as t } from "../Localization";
+import ipapi from "ipapi.co";
 
 const General = () => {
   const [alert, setAlert] = useState({
@@ -68,7 +69,13 @@ const General = () => {
       console.error(error);
     }
   };
+  const [ipApi, setIpApi] = useState([]);
+
   useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
     dataLoad();
 
     return () => {
@@ -247,7 +254,7 @@ const General = () => {
                   <div className="form-group">
                     <label> {t("whatsapp")}</label>
                     <PhoneInput
-                      country={"af"}
+                      country={ipApi?.country_code?.toLowerCase()}
                       value={fetchData?.whatsapp}
                       //   name="whatsapp"
                       onChange={(getOptionValue) => {

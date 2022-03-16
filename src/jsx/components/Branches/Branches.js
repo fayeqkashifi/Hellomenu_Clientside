@@ -60,8 +60,10 @@ const Branches = () => {
       const result = await axios.get("/api/GetBranches");
       if (result.data.status === 200) {
         setBranchdata(result.data.branches);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }

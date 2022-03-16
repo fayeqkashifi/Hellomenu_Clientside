@@ -46,6 +46,8 @@ const EditStories = (props) => {
           setProducts(res.data.fetchData);
         }
         setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
     } catch (error) {
       console.error(error);

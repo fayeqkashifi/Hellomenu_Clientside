@@ -431,7 +431,7 @@ const Variants = (props) => {
           </>
         )}
 
-        <div className="card">
+        <div className="card" style={{ minHeight: "40vh" }}>
           <div className="card-body">
             {checkPermission("variants-delete") && (
               <div

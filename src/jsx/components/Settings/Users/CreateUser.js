@@ -20,6 +20,7 @@ import { checkPermission } from "../../Permissions";
 import { base_url, port } from "../../../../Consts";
 import DefaultPic from "../../../../images/hellomenu/logo.svg";
 import { localization as t } from "../../Localization";
+import ipapi from "ipapi.co";
 
 const CreateUser = () => {
   const [loading, setLoading] = useState(true);
@@ -41,7 +42,13 @@ const CreateUser = () => {
       console.error(error);
     }
   };
+  const [ipApi, setIpApi] = useState([]);
+
   useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
     dataLoad();
 
     return () => {
@@ -339,7 +346,7 @@ const CreateUser = () => {
                         <div className="form-group">
                           <label> {t("phone_number")}</label>
                           <PhoneInput
-                            country={"af"}
+                            country={ipApi?.country_code?.toLowerCase()}
                             value={initialValues?.phone_number}
                             onChange={(getOptionValue) => {
                               setFieldValue("phone_number", getOptionValue);

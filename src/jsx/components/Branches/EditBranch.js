@@ -20,6 +20,7 @@ import "react-phone-input-2/lib/style.css";
 import Tooltip from "@mui/material/Tooltip";
 import ReactPlayer from "react-player/lazy";
 import Select from "react-select";
+import ipapi from "ipapi.co";
 
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
@@ -120,19 +121,27 @@ const EditBranch = (props) => {
         if (result.data.status === 200) {
           setProducts(result.data.fetchData);
         }
-      } else if (response.data.status === 404) {
-        setAlerts(true, "error", response.data.message);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
       const res = await axios.get("/api/GetCurrencies");
       if (res.data.status === 200) {
         setCurrency(res.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
+  const [ipApi, setIpApi] = useState([]);
+
   useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
     dataLoad();
     return () => {
       setCurrency([]);
@@ -400,7 +409,7 @@ const EditBranch = (props) => {
                     <div className="form-group">
                       <label> {t("ordering_phone_number")}</label>
                       <PhoneInput
-                        country={"af"}
+                        country={ipApi?.country_code?.toLowerCase()}
                         className={
                           errors.phoneNumber && touched.phoneNumber
                             ? " is-invalid"

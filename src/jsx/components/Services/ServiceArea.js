@@ -147,6 +147,7 @@ const ServiceArea = (props) => {
       console.error(error);
     }
   };
+
   useEffect(() => {
     dataLoad();
     return () => {
@@ -154,6 +155,21 @@ const ServiceArea = (props) => {
       setLoading(true);
     };
   }, [check]);
+  const [changeBit, setChangeBit] = useState(true);
+
+  const loadAreas = async () => {
+    try {
+      const result = await axios.get(`/api/getAreasBranch/${id}`);
+      if (result.data.status === 200) {
+        setAreaLocation(result.data.fetchData);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    loadAreas();
+  }, [changeBit]);
   const [servicesAreas, setServicesAreas] = useState([]);
   const handleSelectEvent = (e) => {
     setServicesAreas(e);
@@ -189,7 +205,7 @@ const ServiceArea = (props) => {
     formData.append("areaName", data.areaName);
     axios.post("/api/InsertAreas", formData).then((res) => {
       if (res.data.status === 200) {
-        setCheck(!check);
+        setChangeBit(!changeBit);
         setAreaModal(false);
         setAlerts(true, "success", res.data.message);
       }

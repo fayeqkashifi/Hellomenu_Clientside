@@ -10,6 +10,7 @@ import CustomAlert from "../../CustomAlert";
 import { base_url, port } from "../../../../Consts";
 import DefaultPic from "../../../../images/hellomenu/logo.svg";
 import { localization as t } from "../../Localization";
+import ipapi from "ipapi.co";
 
 const EditUser = (props) => {
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,13 @@ const EditUser = (props) => {
       console.error(error);
     }
   };
+  const [ipApi, setIpApi] = useState([]);
+
   useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
     dataLoad();
 
     return () => {
@@ -183,7 +190,7 @@ const EditUser = (props) => {
                 <div className="form-group">
                   <label> {t("phone_number")}</label>
                   <PhoneInput
-                    country={"af"}
+                    country={ipApi?.country_code?.toLowerCase()}
                     value={user?.phone_number}
                     //   name="whatsapp"
                     onChange={(getOptionValue) => {

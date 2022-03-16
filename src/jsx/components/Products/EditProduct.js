@@ -145,10 +145,6 @@ const EditProduct = (props) => {
   };
   const dataLoad = async () => {
     try {
-      const result = await axios.post(`/api/GetIngredient`);
-      if (result.data.status === 200) {
-        setIntgredients(result.data.fetchData);
-      }
       const cat = await axios.get(`/api/GetCategories/${branchId}`);
       if (cat.data.status === 200) {
         setCategories(cat.data.fetchData);
@@ -201,6 +197,22 @@ const EditProduct = (props) => {
       setProductExtra([]);
       setProductRecom([]);
       setLoading(true);
+    };
+  }, []);
+  const loadIngredients = async () => {
+    try {
+      const result = await axios.post(`/api/GetIngredient`);
+      if (result.data.status === 200) {
+        setIntgredients(result.data.fetchData);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    loadIngredients();
+    return () => {
+      setIntgredients([]);
     };
   }, [check]);
   const getSubCategories = (e) => {
