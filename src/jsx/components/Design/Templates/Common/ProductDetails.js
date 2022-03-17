@@ -19,7 +19,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import SwiperCore, { Navigation, Thumbs } from "swiper";
-import { getProduct, getvariations } from "../Functionality";
+import { getProduct, getVariations } from "../Functionality";
 SwiperCore.use([Navigation, Thumbs]);
 
 const ProductDetails = (props) => {
@@ -47,7 +47,7 @@ const ProductDetails = (props) => {
       getProduct(id).then((result) => {
         setFetchData(result.data.fetchData[0]);
       });
-      getvariations(id).then((res) => {
+      getVariations(id).then((res) => {
         if (res !== "") {
           varData = JSON.parse(res.variants);
           setVarPics(JSON.parse(res.variants));

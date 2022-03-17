@@ -30,7 +30,7 @@ const Variants = (props) => {
     const getdata = async () => {
       const jsonvar = await axios({
         method: "GET",
-        url: `/api/Getvariations/${id}`,
+        url: `/api/getVariations/${id}`,
       });
       const res = await axios({
         method: "GET",
@@ -42,13 +42,12 @@ const Variants = (props) => {
         (fetchData) => (nameAtter[fetchData.attributeName] = "")
       );
 
-      if (
-        res.data.fetchData.length !== attributes.length &&
-        jsonvar.data.fetchData === ""
-      ) {
+      if (res.data.fetchData.length !== attributes.length) {
         setAttributes(res.data.fetchData);
         // setTags(JSON.parse(jsonvar.data.fetchData.tags));
-      } else {
+      }
+
+      if (jsonvar.data.fetchData !== "") {
         const recTags = JSON.parse(jsonvar.data.fetchData.tags);
         setTags(recTags);
 
@@ -265,7 +264,7 @@ const Variants = (props) => {
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this imaginary file!",
       icon: "warning",
-      buttons: [t("Cancel"), t("Confirm")],
+      buttons: [t("cancel"), t("confirm")],
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {

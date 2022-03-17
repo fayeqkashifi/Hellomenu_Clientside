@@ -79,11 +79,11 @@ export const getProduct = async (proId) => {
     console.error(err);
   }
 };
-export const getvariations = async (proId) => {
+export const getVariations = async (proId) => {
   try {
     const result = await axios({
       method: "GET",
-      url: `/api/Getvariations/${proId}`,
+      url: `/api/getVariations/${proId}`,
     });
     return result.data.fetchData;
   } catch (err) {

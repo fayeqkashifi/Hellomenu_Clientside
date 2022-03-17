@@ -133,17 +133,20 @@ function Header(props) {
       {style?.template === "dark" && (
         <ScrollContainer className="scroll-container">
           <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
-            <Typography
-              style={
-                activeCategory === "All~~~1"
-                  ? style?.cateActive
-                  : style?.cateDeActive
-              }
-              sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
-              onClick={() => filterProducts("All")}
-            >
-              All
-            </Typography>
+            {categories && (
+              <Typography
+                style={
+                  activeCategory === "All~~~1"
+                    ? style?.cateActive
+                    : style?.cateDeActive
+                }
+                sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+                onClick={() => filterProducts("All")}
+              >
+                All
+              </Typography>
+            )}
+
             {categories?.map((section, i) => (
               <Typography
                 style={

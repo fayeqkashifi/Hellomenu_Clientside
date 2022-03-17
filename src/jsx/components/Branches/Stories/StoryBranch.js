@@ -33,7 +33,7 @@ const Storybranch = (props) => {
     });
   };
 
-  const save = (data) => {
+  const save = (data, { resetForm }) => {
     const formData = new FormData();
     for (let i = 0; i < data.storyVideos.length; i++) {
       formData.append("storyVideos[]", data.storyVideos[i]);
@@ -46,6 +46,16 @@ const Storybranch = (props) => {
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
+          resetForm();
+          setForm([
+            {
+              name: "",
+              errors: {
+                name: null,
+              },
+            },
+          ]);
+          setTagProducts([]);
           setAlerts(true, "success", res.data.message);
         }
       })
@@ -232,7 +242,7 @@ const Storybranch = (props) => {
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <Select
-                          //   defaultValue={JSON.parse(stories?.storyTagProducts)}
+                          key={tagProducts}
                           isMulti
                           options={products?.map((pro, i) => {
                             return {
@@ -255,6 +265,7 @@ const Storybranch = (props) => {
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <input
+                          key={check}
                           type="file"
                           accept="video/*"
                           className="form-control"

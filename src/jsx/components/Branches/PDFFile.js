@@ -10,6 +10,7 @@ import {
 
 const PDFFile = (props) => {
   const { inputFields, source } = props;
+
   const styles = StyleSheet.create({
     page: {
       backgroundColor: "#2d3134",
