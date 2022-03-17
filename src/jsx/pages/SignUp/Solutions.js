@@ -19,9 +19,14 @@ const Solutions = () => {
 
   const [languages, setLanguages] = useState([]);
   useEffect(() => {
-    axios.get("/api/GetLanguages").then((res) => {
-      setLanguages(res.data);
-    });
+    axios
+      .get("/api/GetLanguages")
+      .then((res) => {
+        setLanguages(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
   const initialValues = {
     language: "",
@@ -36,16 +41,21 @@ const Solutions = () => {
   };
 
   const handleSubmit = (data) => {
-    axios.post(`/api/UpdateRegister/${userId}`, data).then((res) => {
-      if (res.data.status === 200) {
-        history.push({
-          pathname: `/onboarding/menu`,
-          state: {
-            userId: userId,
-          },
-        });
-      }
-    });
+    axios
+      .post(`/api/UpdateRegister/${userId}`, data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          history.push({
+            pathname: `/onboarding/menu`,
+            state: {
+              userId: userId,
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <>

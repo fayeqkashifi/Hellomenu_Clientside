@@ -65,7 +65,7 @@ const OrderDetails = (props) => {
       setLoading(false);
     };
     // dataLoad();
-    getdata(); // axios
+    getdata();
     return () => {
       // setItem([]);
       // setFetchData([]);

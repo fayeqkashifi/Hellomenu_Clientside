@@ -43,22 +43,29 @@ const OrderDetails = (props) => {
                 : parseInt(item.totalPrice) + item.price * (item.qty - 1))
         );
         setSum(TotalSum);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setOrder([]);
       setSum(0);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
+    return () => {
+      setSum(0);
+    };
   }, [check]);
-
   const initialValues = {
     discardReason: "",
   };
@@ -80,21 +87,31 @@ const OrderDetails = (props) => {
     });
   };
   const discardOrder = (data) => {
-    axios.post(`/api/discardOrder/${id}`, data).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "error", res.data.message);
-        setCheck(!check);
-        setModalCentered(false);
-      }
-    });
+    axios
+      .post(`/api/discardOrder/${id}`, data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "error", res.data.message);
+          setCheck(!check);
+          setModalCentered(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const completedOrder = () => {
-    axios.get(`/api/completedOrder/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        setCheck(!check);
-      }
-    });
+    axios
+      .get(`/api/completedOrder/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          setCheck(!check);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   var viewOrders_HTMLTABLE = "";
   if (loading) {

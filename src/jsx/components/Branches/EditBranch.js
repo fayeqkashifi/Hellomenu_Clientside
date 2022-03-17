@@ -19,7 +19,6 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Tooltip from "@mui/material/Tooltip";
 import ReactPlayer from "react-player/lazy";
-import Select from "react-select";
 import ipapi from "ipapi.co";
 
 const EditBranch = (props) => {
@@ -72,18 +71,26 @@ const EditBranch = (props) => {
       formData.append("otherAddressFields", JSON.stringify(form));
       formData.append("fullAddress", fullAddress);
       formData.append("id", data.id);
-      formData.append("storyTagProducts", JSON.stringify(tagProducts));
-      axios.post("/api/UpdateBranches", formData).then((res) => {
-        if (res.data.status === 200) {
-          swal("Success", res.data.message, "success").then((check) => {
-            if (check) {
-              history.push(`/branches`);
-            }
-          });
-        } else if (res.data.status === 304) {
-          setAlerts(true, "warning", res.data.message);
-        }
-      });
+
+      axios
+        .post("/api/UpdateBranches", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            swal("Success", res.data.message, "success").then((check) => {
+              if (check) {
+                history.push(`/branches`);
+              }
+            });
+          } else if (res.data.status === 304) {
+            setAlerts(true, "warning", res.data.message);
+          } else {
+            setAlerts(true, "error", res.data.message);
+            throw Error("Due to an error, the data cannot be retrieved.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       setAlerts(true, "warning", "Please choose at least one way of ordering.");
     }
@@ -101,7 +108,6 @@ const EditBranch = (props) => {
     });
   };
   const arrayAddress = [];
-  const [products, setProducts] = useState([]);
   const dataLoad = async () => {
     try {
       const response = await axios.get(`/api/EditBranches/${id}`);
@@ -117,10 +123,7 @@ const EditBranch = (props) => {
         });
         setEditBranchstate(response.data.branch);
         setOrderMethodsEdit(JSON.parse(response.data.branch.orderMethods));
-        const result = await axios.get(`/api/GetProducts/${id}`);
-        if (result.data.status === 200) {
-          setProducts(result.data.fetchData);
-        }
+
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -215,18 +218,23 @@ const EditBranch = (props) => {
   };
   const removeImage = (e, image) => {
     e.preventDefault();
-    axios.post(`/api/removeBranchImage/${image}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditBranchstate({
-          ...editBranchstate,
-          branchImages: JSON.stringify(
-            JSON.parse(editBranchstate.branchImages).filter(
-              (item) => item !== image
-            )
-          ),
-        });
-      }
-    });
+    axios
+      .post(`/api/removeBranchImage/${image}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditBranchstate({
+            ...editBranchstate,
+            branchImages: JSON.stringify(
+              JSON.parse(editBranchstate.branchImages).filter(
+                (item) => item !== image
+              )
+            ),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleImage = (e) => {
     const formData = new FormData();
@@ -235,62 +243,71 @@ const EditBranch = (props) => {
     }
 
     const images = [];
-    axios.post("/api/uploadBranchImage", formData).then((res) => {
-      if (res.data.status === 200) {
-        JSON.parse(editBranchstate?.branchImages)?.map((item) => {
-          images.push(item);
-        });
-        res.data.filenames.map((item) => {
-          images.push(item);
-        });
-        setEditBranchstate({
-          ...editBranchstate,
-          branchImages: JSON.stringify(images),
-        });
-      }
-    });
+    axios
+      .post("/api/uploadBranchImage", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          JSON.parse(editBranchstate?.branchImages)?.map((item) => {
+            images.push(item);
+          });
+          res.data.filenames.map((item) => {
+            images.push(item);
+          });
+          setEditBranchstate({
+            ...editBranchstate,
+            branchImages: JSON.stringify(images),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const removeVideo = (e, video) => {
     e.preventDefault();
-    axios.post(`/api/removeBranchVideo/${video}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditBranchstate({
-          ...editBranchstate,
-          branchVideos: JSON.stringify(
-            JSON.parse(editBranchstate.branchVideos).filter(
-              (item) => item !== video
-            )
-          ),
-        });
-      }
-    });
+    axios
+      .post(`/api/removeBranchVideo/${video}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditBranchstate({
+            ...editBranchstate,
+            branchVideos: JSON.stringify(
+              JSON.parse(editBranchstate.branchVideos).filter(
+                (item) => item !== video
+              )
+            ),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleVideo = (e) => {
     const formData = new FormData();
     for (let i = 0; i < e.target.files.length; i++) {
       formData.append("file[]", e.target.files[i]);
     }
-
     const images = [];
-    axios.post("/api/uploadBranchVideo", formData).then((res) => {
-      if (res.data.status === 200) {
-        JSON.parse(editBranchstate.branchVideos).map((item) => {
-          images.push(item);
-        });
-        res.data.filenames.map((item) => {
-          images.push(item);
-        });
-        setEditBranchstate({
-          ...editBranchstate,
-          branchVideos: JSON.stringify(images),
-        });
-      }
-    });
+    axios
+      .post("/api/uploadBranchVideo", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          res.data.filenames.map((item) => {
+            images.push(item);
+          });
+
+          setEditBranchstate({
+            ...editBranchstate,
+            branchVideos: JSON.stringify(images),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-  const [tagProducts, setTagProducts] = useState([]);
-  const handleSelect = (e) => {
-    setTagProducts(e);
-  };
+
   var viewBranches_HTMLTABLE = "";
   if (loading) {
     return (
@@ -612,32 +629,6 @@ const EditBranch = (props) => {
                             );
                           }
                         )}
-                      </div>
-                    </div>
-                    <div className="row form-group">
-                      <div
-                        className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
-                        style={{ backgroundColor: "#f5f5f5" }}
-                      >
-                        {/* {t("tag_product")} */}
-                        Tag Product
-                      </div>
-                      <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <Select
-                          defaultValue={JSON.parse(
-                            editBranchstate?.storyTagProducts
-                          )}
-                          isMulti
-                          options={products?.map((pro, i) => {
-                            return {
-                              value: pro.id,
-                              label: pro.ProductName,
-                            };
-                          })}
-                          onChange={handleSelect}
-                          className="basic-multi-select"
-                          classNamePrefix="select"
-                        />
                       </div>
                     </div>
                   </div>

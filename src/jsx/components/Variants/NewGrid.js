@@ -84,27 +84,32 @@ const NewGrid = (props) => {
       formData.append("file[]", event.target.files[i]);
     }
     const images = [];
-    axios.post("/api/uploadImage", formData).then((res) => {
-      if (res.data.status === 200) {
-        val[0].image.map((item) => {
-          images.push(item);
-        });
-        res.data.filenames.map((item) => {
-          images.push(item);
-        });
-        setNumberOfVar((prev) => {
-          return prev.map((item, i) => {
-            if (i !== index) {
-              return item;
-            }
-            return {
-              ...item,
-              image: images,
-            };
+    axios
+      .post("/api/uploadImage", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          val[0].image.map((item) => {
+            images.push(item);
           });
-        });
-      }
-    });
+          res.data.filenames.map((item) => {
+            images.push(item);
+          });
+          setNumberOfVar((prev) => {
+            return prev.map((item, i) => {
+              if (i !== index) {
+                return item;
+              }
+              return {
+                ...item,
+                image: images,
+              };
+            });
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const removeImage = (e, image, index) => {
     e.preventDefault();
@@ -114,21 +119,26 @@ const NewGrid = (props) => {
           return item;
         }
       });
-      axios.post(`/api/removeImage/${image}`).then((res) => {
-        if (res.data.status === 200) {
-          setNumberOfVar((prev) => {
-            return prev.map((item, i) => {
-              if (i !== index) {
-                return item;
-              }
-              return {
-                ...item,
-                image: imagesArray[0].image.filter((item) => item !== image),
-              };
+      axios
+        .post(`/api/removeImage/${image}`)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setNumberOfVar((prev) => {
+              return prev.map((item, i) => {
+                if (i !== index) {
+                  return item;
+                }
+                return {
+                  ...item,
+                  image: imagesArray[0].image.filter((item) => item !== image),
+                };
+              });
             });
-          });
-        }
-      });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       console.log(index);
     }

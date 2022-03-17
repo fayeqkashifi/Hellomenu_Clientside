@@ -41,12 +41,17 @@ const Storybranch = (props) => {
     formData.append("storyTagProducts", JSON.stringify(tagProducts));
     formData.append("branch_id", id);
     formData.append("form", JSON.stringify(form));
-    axios.post("/api/InsertStories", formData).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .post("/api/InsertStories", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const [loading, setLoading] = useState(true);
@@ -61,6 +66,8 @@ const Storybranch = (props) => {
         const result = await axios.get(`/api/GetProducts/${id}`);
         if (result.data.status === 200) {
           setProducts(result.data.fetchData);
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
         }
         setLoading(false);
       } else {
@@ -72,10 +79,13 @@ const Storybranch = (props) => {
   };
   const [check, setCheck] = useState(false);
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
 
   const [tagProducts, setTagProducts] = useState([]);
@@ -96,14 +106,19 @@ const Storybranch = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteStory/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-          setCheck(!check);
-        });
+        axios
+          .delete(`/api/DeleteStory/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+            setCheck(!check);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }

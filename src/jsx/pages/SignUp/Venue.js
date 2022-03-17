@@ -17,9 +17,14 @@ const Venue = () => {
   const history = useHistory();
   const [business, setBusiness] = useState([]);
   useEffect(() => {
-    axios.get("/api/GetBusinessType").then((res) => {
-      setBusiness(res.data.fetchData);
-    });
+    axios
+      .get("/api/GetBusinessType")
+      .then((res) => {
+        setBusiness(res.data.fetchData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
   const initialValues = {
     company: "",
@@ -35,18 +40,26 @@ const Venue = () => {
   };
 
   const handleSubmit = (data) => {
-    axios.post(`/api/UpdateRegister/${userId}`, data).then((res) => {
-      if (res.data.status === 200) {
-        localStorage.setItem("auth_company_id", btoa(res.data.data.company_id));
-        localStorage.setItem("locale", JSON.stringify(Locale));
-        history.push({
-          pathname: `/onboarding/solutions`,
-          state: {
-            userId: userId,
-          },
-        });
-      }
-    });
+    axios
+      .post(`/api/UpdateRegister/${userId}`, data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          localStorage.setItem(
+            "auth_company_id",
+            btoa(res.data.data.company_id)
+          );
+          localStorage.setItem("locale", JSON.stringify(Locale));
+          history.push({
+            pathname: `/onboarding/solutions`,
+            state: {
+              userId: userId,
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <>

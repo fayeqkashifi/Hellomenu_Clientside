@@ -19,15 +19,24 @@ const RoleList = (props) => {
   const [roles, setRoles] = useState([]);
   const dataLoad = async () => {
     try {
-      axios.get("/api/getRoles").then((res) => {
-        setRoles(res.data.data);
-      });
+      axios
+        .get("/api/getRoles")
+        .then((res) => {
+          setRoles(res.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
     dataLoad();
+    return () => {
+      setRoles([]);
+      setCheck(!check);
+    };
   }, [check]);
 
   const columns = [
@@ -54,14 +63,19 @@ const RoleList = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/deleteRole/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setCheck(!check);
-            // swal("Success", res.data.message, "success");
-          } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
-          }
-        });
+        axios
+          .delete(`/api/deleteRole/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setCheck(!check);
+              // swal("Success", res.data.message, "success");
+            } else if (res.data.status === 404) {
+              swal("Error", res.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         swal("Your Data is safe now!");
       }

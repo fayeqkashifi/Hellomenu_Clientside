@@ -67,17 +67,25 @@ const AddBranch = () => {
         formData.append("otherAddressFields", JSON.stringify(form));
         formData.append("fullAddress", fullAddress);
 
-        axios.post("/api/InsertBranches", formData).then((res) => {
-          if (res.data.status === 200) {
-            swal("Success", res.data.message, "success").then((check) => {
-              if (check) {
-                history.push(`/branches`);
-              }
-            });
-          } else if (res.data.status === 304) {
-            setAlerts(true, "warning", res.data.message);
-          }
-        });
+        axios
+          .post("/api/InsertBranches", formData)
+          .then((res) => {
+            if (res.data.status === 200) {
+              swal("Success", res.data.message, "success").then((check) => {
+                if (check) {
+                  history.push(`/branches`);
+                }
+              });
+            } else if (res.data.status === 304) {
+              setAlerts(true, "warning", res.data.message);
+            } else {
+              setAlerts(true, "error", res.data.error);
+              throw Error("Due to an error, the data cannot be retrieved.");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(
           true,

@@ -97,26 +97,38 @@ const Ingredients = (props) => {
   // fetch
   const fetch = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/EditIngredient/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEdit(res.data.item);
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditIngredient/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEdit(res.data.item);
+          setEditModalCentered(true);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        // return Promise.reject(error);
+      });
   };
   // update
   const update = (data) => {
-    axios.post("/api/UpdateIngredient", data).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setEditModalCentered(false);
-        setAlerts(true, "success", res.data.message);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .post("/api/UpdateIngredient", data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setEditModalCentered(false);
+          setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        // return Promise.reject(error);
+      });
   };
   // edit end
 
@@ -131,15 +143,21 @@ const Ingredients = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteIngredient/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
+        axios
+          .delete(`/api/DeleteIngredient/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
 
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            // return Promise.reject(error);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -156,20 +174,24 @@ const Ingredients = (props) => {
       const result = await axios.post(`/api/GetIngredient`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-
   const [form, setForm] = useState([
     {
       name: "",

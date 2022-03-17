@@ -75,16 +75,21 @@ const Area = () => {
   // fetch
   const fetch = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/EditAreas/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        const data = res.data.item;
-        setEdit(data);
-        setSelectedValue({ id: data.city_id, cityName: data.cityName });
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditAreas/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          const data = res.data.item;
+          setEdit(data);
+          setSelectedValue({ id: data.city_id, cityName: data.cityName });
+          setEditModalCentered(true);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // update
   const initialValuesEdit = {
@@ -97,18 +102,23 @@ const Area = () => {
     formData.append("city_id", selectedValue.id);
     formData.append("areaName", data.areaName);
     formData.append("id", data.id);
-    axios.post("/api/UpdateAreas", formData).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setSelectedValue(null);
-        setEditModalCentered(false);
-        setAlerts(true, "success", res.data.message);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      } else if (res.data.status === 304) {
-        setAlerts(true, "warning", res.data.message);
-      }
-    });
+    axios
+      .post("/api/UpdateAreas", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setSelectedValue(null);
+          setEditModalCentered(false);
+          setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // edit end
 
@@ -123,15 +133,20 @@ const Area = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteAreas/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
+        axios
+          .delete(`/api/DeleteAreas/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
 
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -156,13 +171,15 @@ const Area = () => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-
   const [selectedValue, setSelectedValue] = useState(null);
 
   // handle selection

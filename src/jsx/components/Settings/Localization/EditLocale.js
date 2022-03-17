@@ -13,12 +13,17 @@ const EditLocale = (props) => {
 
   const dataLoad = async () => {
     try {
-      axios.put(`/api/editLocale/${id}`).then((res) => {
-        if (res.status === 200) {
-          setData(JSON.parse(res.data.data.locale));
-          setLoading(false);
-        }
-      });
+      axios
+        .put(`/api/editLocale/${id}`)
+        .then((res) => {
+          if (res.status === 200) {
+            setData(JSON.parse(res.data.data.locale));
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -48,14 +53,19 @@ const EditLocale = (props) => {
     const formData = new FormData();
     formData.append("locale", JSON.stringify(data));
     formData.append("id", id);
-    axios.post(`/api/updateLocale`, formData).then((res) => {
-      if (res.status === 200) {
-        if (res.data.data.status) {
-          localStorage.setItem("locale", JSON.stringify(data));
+    axios
+      .post(`/api/updateLocale`, formData)
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data.data.status) {
+            localStorage.setItem("locale", JSON.stringify(data));
+          }
+          setAlerts(true, "success", res.data.message);
         }
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   if (loading) {

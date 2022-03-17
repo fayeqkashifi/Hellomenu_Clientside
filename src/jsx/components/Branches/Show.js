@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 
 import {
@@ -7,7 +7,6 @@ import {
   Switch,
   useRouteMatch,
 } from "react-router-dom";
-
 
 import {
   CCloseButton,

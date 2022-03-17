@@ -24,11 +24,16 @@ const ResetPassword = (props) => {
     });
   };
   const submitHandler = (data) => {
-    axios.post(`/api/resetPassword/${id}`, data).then((res) => {
-      if (res.data.status === 200) {
-        props.history.push("/login");
-      }
-    });
+    axios
+      .post(`/api/resetPassword/${id}`, data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          props.history.push("/login");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

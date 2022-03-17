@@ -82,32 +82,47 @@ const Design = (props) => {
     formData.append("QRCodeColor", themes.QRCodeColor);
     formData.append("QRCodeBackgroundColor", themes.QRCodeBackgroundColor);
     // console.log(activeThemeId);
-    axios.post(`/api/UpdateTheme/${activeThemeId}`, formData).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .post(`/api/UpdateTheme/${activeThemeId}`, formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   // insert End
   // change the active theme
   const changeTheActiveTheme = (e, id) => {
-    axios.post(`/api/ThemeStatus/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "info", res.data.message);
-      }
-    });
+    axios
+      .post(`/api/ThemeStatus/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "info", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // change the active template
   const changeTheActiveTemplate = (e, id) => {
-    axios.post(`/api/TemplateStatus/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "info", res.data.message);
-      }
-    });
+    axios
+      .post(`/api/TemplateStatus/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "info", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
@@ -123,12 +138,15 @@ const Design = (props) => {
             setActiveThemeId(item.id);
             setThemes(item);
           }
-          return console.log("");
         });
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
       const result = await axios.get(`/api/GetTemplates/${branchId}`);
       if (result.data.status === 200) {
         setTemplates(result.data.data);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
       setLoading(false);
     } catch (error) {
@@ -136,7 +154,7 @@ const Design = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setTemplates([]);
@@ -144,6 +162,9 @@ const Design = (props) => {
       setThemes([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
   // delete start
   const deleteTheme = (e, id) => {
@@ -156,16 +177,21 @@ const Design = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteTheme/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setCheck(!check);
-            setAlerts(true, "success", res.data.message);
+        axios
+          .delete(`/api/DeleteTheme/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setCheck(!check);
+              setAlerts(true, "success", res.data.message);
 
-            // thisClicked.closest("tr").remove();
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+              // thisClicked.closest("tr").remove();
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -175,12 +201,17 @@ const Design = (props) => {
   //   duplicate Theme
   const duplicateTheme = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/duplicateTheme/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/duplicateTheme/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   var viewThemes_HTMLTABLE = "";
   if (loading) {

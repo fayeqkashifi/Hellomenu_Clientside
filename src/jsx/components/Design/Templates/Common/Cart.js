@@ -27,7 +27,7 @@ import {
   emptyCart,
   getBranch,
 } from "../Functionality";
-import axios from "axios";
+
 
 import Counter from "../Common/Counter";
 const Cart = (props) => {

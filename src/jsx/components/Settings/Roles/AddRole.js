@@ -28,13 +28,22 @@ const AddRole = () => {
   const [expand, setExpand] = useState([]);
   const [nodes, setNodes] = useState([]);
   useEffect(() => {
-    axios.get("/api/getRoleTreeView").then((result) => {
-      if (result.data.status === 200) {
-        removeEmptyArray(result.data.data[0]);
-        setNodes(result.data.data);
-        setLoading(false);
-      }
-    });
+    axios
+      .get("/api/getRoleTreeView")
+      .then((result) => {
+        if (result.data.status === 200) {
+          removeEmptyArray(result.data.data[0]);
+          setNodes(result.data.data);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return () => {
+      setNodes([]);
+      setLoading(true);
+    };
   }, []);
   const removeEmptyArray = (array) => {
     array.children.map((item) => {
@@ -64,16 +73,21 @@ const AddRole = () => {
       formData.append("roleName", data.roleName);
       formData.append("roleDiscription", data.roleDiscription);
       formData.append("permissions", JSON.stringify(state));
-      axios.post(`/api/InsertRole`, formData).then((res) => {
-        if (res.data.status === 200) {
-          setAlerts(true, "success", res.data.message);
-          resetForm();
-          setExpand([]);
-          setState([]);
-          setCheck(!check);
-          setError([]);
-        }
-      });
+      axios
+        .post(`/api/InsertRole`, formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setAlerts(true, "success", res.data.message);
+            resetForm();
+            setExpand([]);
+            setState([]);
+            setCheck(!check);
+            setError([]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setError("Please Add Permission.");
     }

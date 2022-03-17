@@ -59,23 +59,39 @@ const Login = () => {
         expires: nextYear,
       });
     }
-    axios.get("sanctum/csrf-cookie").then((response) => {
-      axios.post("/api/login", data).then((res) => {
-        if (res.data.status === 200) {
-          localStorage.setItem("auth_token", res.data.token);
-          localStorage.setItem("auth_name", btoa(res.data.user));
-          localStorage.setItem("auth_company_id", btoa(res.data.company_id));
-          localStorage.setItem("auth_id", btoa(res.data.id));
-          res.data.role === null
-            ? localStorage.setItem("role", btoa(JSON.stringify(res.data.role)))
-            : localStorage.setItem("role", btoa(res.data.role.permissions));
-          localStorage.setItem("locale", res.data.locale?.locale);
-          history.push("/dashboard");
-        } else {
-          setAlerts(true, "warning", res.data.message);
-        }
+    axios
+      .get("sanctum/csrf-cookie")
+      .then((response) => {
+        axios
+          .post("/api/login", data)
+          .then((res) => {
+            if (res.data.status === 200) {
+              localStorage.setItem("auth_token", res.data.token);
+              localStorage.setItem("auth_name", btoa(res.data.user));
+              localStorage.setItem(
+                "auth_company_id",
+                btoa(res.data.company_id)
+              );
+              localStorage.setItem("auth_id", btoa(res.data.id));
+              res.data.role === null
+                ? localStorage.setItem(
+                    "role",
+                    btoa(JSON.stringify(res.data.role))
+                  )
+                : localStorage.setItem("role", btoa(res.data.role.permissions));
+              localStorage.setItem("locale", res.data.locale?.locale);
+              history.push("/dashboard");
+            } else {
+              setAlerts(true, "warning", res.data.message);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    });
   };
 
   // check the auth end

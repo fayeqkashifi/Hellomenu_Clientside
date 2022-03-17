@@ -44,6 +44,8 @@ const EditStories = (props) => {
         const res = await axios.get(`/api/GetProducts/${result.branch_id}`);
         if (res.data.status === 200) {
           setProducts(res.data.fetchData);
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
         }
         setLoading(false);
       } else {
@@ -55,9 +57,6 @@ const EditStories = (props) => {
   };
   useEffect(() => {
     dataLoad();
-    return () => {
-      setLoading(true);
-    };
   }, []);
   const save = () => {
     const formData = new FormData();
@@ -65,31 +64,41 @@ const EditStories = (props) => {
     formData.append("storyTagProducts", JSON.stringify(tagProducts));
     formData.append("id", data.id);
     formData.append("form", JSON.stringify(form));
-    axios.post("/api/UpdateStory", formData).then((res) => {
-      if (res.data.status === 200) {
-        swal("Success", res.data.message, "success").then((check) => {
-          if (check) {
-            history.push({
-              pathname: `/branches/story-branch`,
-              state: { id: data.branch_id },
-            });
-          }
-        });
-      }
-    });
+    axios
+      .post("/api/UpdateStory", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          swal("Success", res.data.message, "success").then((check) => {
+            if (check) {
+              history.push({
+                pathname: `/branches/story-branch`,
+                state: { id: data.branch_id },
+              });
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const removeVideo = (e, video) => {
     e.preventDefault();
-    axios.post(`/api/removeBranchStoryVideo/${video}`).then((res) => {
-      if (res.data.status === 200) {
-        setData({
-          ...data,
-          storyVideos: JSON.stringify(
-            JSON.parse(data.storyVideos).filter((item) => item !== video)
-          ),
-        });
-      }
-    });
+    axios
+      .post(`/api/removeBranchStoryVideo/${video}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setData({
+            ...data,
+            storyVideos: JSON.stringify(
+              JSON.parse(data.storyVideos).filter((item) => item !== video)
+            ),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleVideo = (e) => {
     const formData = new FormData();
@@ -97,21 +106,26 @@ const EditStories = (props) => {
       formData.append("file[]", e.target.files[i]);
     }
     const images = [];
-    axios.post("/api/uploadBranchStoryVideo", formData).then((res) => {
-      if (res.data.status === 200) {
-        JSON.parse(data.storyVideos)?.map((item) => {
-          images.push(item);
-        });
-        res.data.filenames.map((item) => {
-          images.push(item);
-        });
+    axios
+      .post("/api/uploadBranchStoryVideo", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          JSON.parse(data.storyVideos)?.map((item) => {
+            images.push(item);
+          });
+          res.data.filenames.map((item) => {
+            images.push(item);
+          });
 
-        setData({
-          ...data,
-          storyVideos: JSON.stringify(images),
-        });
-      }
-    });
+          setData({
+            ...data,
+            storyVideos: JSON.stringify(images),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const [form, setForm] = useState([]);

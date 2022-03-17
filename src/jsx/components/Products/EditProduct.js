@@ -58,13 +58,18 @@ const EditProduct = (props) => {
     });
   };
   const save = (data) => {
-    axios.post("/api/InsertSingleIngredient", data).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setModalCentered(false);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .post("/api/InsertSingleIngredient", data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setModalCentered(false);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // insert modal
 
@@ -99,19 +104,24 @@ const EditProduct = (props) => {
     formData.append("id", productId);
     formData.append("form", JSON.stringify(form));
 
-    axios.post("/api/UpdateProduct", formData).then((res) => {
-      if (res.data.status === 200) {
-        swal("Success", res.data.message, "success").then((check) => {
-          if (check) {
-            history.push({
-              pathname: `/branches/show/products`,
-              state: { id: branchId },
-            });
-            setCheck(!check);
-          }
-        });
-      }
-    });
+    axios
+      .post("/api/UpdateProduct", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          swal("Success", res.data.message, "success").then((check) => {
+            if (check) {
+              history.push({
+                pathname: `/branches/show/products`,
+                state: { id: branchId },
+              });
+              setCheck(!check);
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // edit ENd
   //for retriving data using laravel API
@@ -148,11 +158,14 @@ const EditProduct = (props) => {
       const cat = await axios.get(`/api/GetCategories/${branchId}`);
       if (cat.data.status === 200) {
         setCategories(cat.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-
       const response = await axios.get(`/api/GetProducts/${branchId}`);
       if (response.data.status === 200) {
         setFetchData(response.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
       const res = await axios.get(`/api/EditProducts/${productId}`);
       if (res.data.status === 200) {
@@ -181,6 +194,8 @@ const EditProduct = (props) => {
         setLoading(false);
       } else if (res.data.status === 404) {
         swal("Error", res.data.message, "error");
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
     } catch (error) {
       console.error(error);
@@ -225,6 +240,9 @@ const EditProduct = (props) => {
         if (res.data.status === 200) {
           setSubCategories(res.data.fetchData);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
     setEditProduct({ ...editProduct, [e.target.name]: e.target.value });
   };
@@ -234,47 +252,62 @@ const EditProduct = (props) => {
       formData.append("file[]", e.target.files[i]);
     }
     const images = [];
-    axios.post("/api/uploadProductImage", formData).then((res) => {
-      if (res.data.status === 200) {
-        JSON.parse(editProduct.image).map((item) => {
-          images.push(item);
-        });
-        res.data.filenames.map((item) => {
-          images.push(item);
-        });
+    axios
+      .post("/api/uploadProductImage", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          JSON.parse(editProduct.image).map((item) => {
+            images.push(item);
+          });
+          res.data.filenames.map((item) => {
+            images.push(item);
+          });
 
-        setEditProduct({
-          ...editProduct,
-          image: JSON.stringify(images),
-        });
-      }
-    });
+          setEditProduct({
+            ...editProduct,
+            image: JSON.stringify(images),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const removeImage = (e, image) => {
     e.preventDefault();
-    axios.post(`/api/removeProductImage/${image}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditProduct({
-          ...editProduct,
-          image: JSON.stringify(
-            JSON.parse(editProduct.image).filter((item) => item !== image)
-          ),
-        });
-      }
-    });
+    axios
+      .post(`/api/removeProductImage/${image}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditProduct({
+            ...editProduct,
+            image: JSON.stringify(
+              JSON.parse(editProduct.image).filter((item) => item !== image)
+            ),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const removeVideo = (e, video) => {
     e.preventDefault();
-    axios.post(`/api/removeProductVideo/${video}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditProduct({
-          ...editProduct,
-          video: JSON.stringify(
-            JSON.parse(editProduct.video).filter((item) => item !== video)
-          ),
-        });
-      }
-    });
+    axios
+      .post(`/api/removeProductVideo/${video}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditProduct({
+            ...editProduct,
+            video: JSON.stringify(
+              JSON.parse(editProduct.video).filter((item) => item !== video)
+            ),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleVideo = (e) => {
     const formData = new FormData();
@@ -282,21 +315,26 @@ const EditProduct = (props) => {
       formData.append("file[]", e.target.files[i]);
     }
     const images = [];
-    axios.post("/api/uploadProductVideo", formData).then((res) => {
-      if (res.data.status === 200) {
-        JSON.parse(editProduct.video)?.map((item) => {
-          images.push(item);
-        });
-        res.data.filenames.map((item) => {
-          images.push(item);
-        });
+    axios
+      .post("/api/uploadProductVideo", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          JSON.parse(editProduct.video)?.map((item) => {
+            images.push(item);
+          });
+          res.data.filenames.map((item) => {
+            images.push(item);
+          });
 
-        setEditProduct({
-          ...editProduct,
-          video: JSON.stringify(images),
-        });
-      }
-    });
+          setEditProduct({
+            ...editProduct,
+            video: JSON.stringify(images),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const [form, setForm] = useState([]);

@@ -28,29 +28,42 @@ function ProductsStory(props) {
   const [numberOfCategories, setNumberOfCategories] = useState(0);
 
   const loadProdcut = async () => {
-    const response = await axios.get(`/api/GetProduct/${product_id}`);
-    if (response.data.status === 200) {
-      const data = response.data.fetchData[0];
-      setData(data);
-      if (data?.sub_category_id === null) {
-        getProductBasedOnCategory(data?.category_id).then((res) => {
-          setRecomandProducts(res.data.filter((item) => item.video !== null));
-        });
-        setLoading(false);
+    try {
+      const response = await axios.get(`/api/GetProduct/${product_id}`);
+      if (response.data.status === 200) {
+        const data = response.data.fetchData[0];
+        setData(data);
+        if (data?.sub_category_id === null) {
+          getProductBasedOnCategory(data?.category_id).then((res) => {
+            setRecomandProducts(res.data.filter((item) => item.video !== null));
+          });
+          setLoading(false);
+        } else {
+          getProductBasedOnSubCategory(data?.sub_category_id).then((value) => {
+            setRecomandProducts(
+              value.data.filter((item) => item.video !== null)
+            );
+          });
+          setLoading(false);
+        }
       } else {
-        getProductBasedOnSubCategory(data?.sub_category_id).then((value) => {
-          setRecomandProducts(value.data.filter((item) => item.video !== null));
-        });
-        setLoading(false);
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
+      axios
+        .get(`/api/getCategoriesWithPaging/${branch.id}`)
+        .then((data) => {
+          if (data.status === 200) {
+            setNumberOfCategories(data.data.fetchData.last_page);
+          } else {
+            console.log(data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.error(error);
     }
-    axios.get(`/api/getCategoriesWithPaging/${branch.id}`).then((data) => {
-      if (data.status === 200) {
-        setNumberOfCategories(data.data.fetchData.last_page);
-      } else {
-        console.log(data);
-      }
-    });
   };
   useEffect(() => {
     loadProdcut();
@@ -61,12 +74,18 @@ function ProductsStory(props) {
     };
   }, []);
   const changeProduct = async (id) => {
-    setLoading(true);
-    const response = await axios.get(`/api/GetProduct/${id}`);
-    if (response.data.status === 200) {
-      const data = response.data.fetchData[0];
-      setData(data);
-      setLoading(false);
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/GetProduct/${id}`);
+      if (response.data.status === 200) {
+        const data = response.data.fetchData[0];
+        setData(data);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   const [page, setPage] = useState(1);
@@ -104,6 +123,9 @@ function ProductsStory(props) {
           } else {
             console.log(data);
           }
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
   };
@@ -141,6 +163,9 @@ function ProductsStory(props) {
           } else {
             console.log(data);
           }
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
   };

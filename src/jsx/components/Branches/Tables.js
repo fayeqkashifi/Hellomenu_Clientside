@@ -54,14 +54,19 @@ const Tables = (props) => {
   };
   const saveTable = (data) => {
     // e.preventDefault();
-    axios.post("/api/InsertTable", data).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-        setModalCentered(false);
-        //  this.props.history.push("/")
-      }
-    });
+    axios
+      .post("/api/InsertTable", data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+          setModalCentered(false);
+          //  this.props.history.push("/")
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // insert end
 
@@ -76,26 +81,36 @@ const Tables = (props) => {
 
   const fetchTable = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/EditTable/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditTable(res.data.Details);
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditTable/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditTable(res.data.Details);
+          setEditModalCentered(true);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const updateTable = (data) => {
-    axios.post("/api/UpdateTable", data).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
+    axios
+      .post("/api/UpdateTable", data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
 
-        setEditModalCentered(false);
-        setCheck(!check);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+          setEditModalCentered(false);
+          setCheck(!check);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // edit end
   // delete section
@@ -109,15 +124,20 @@ const Tables = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteTable/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
+        axios
+          .delete(`/api/DeleteTable/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
 
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -141,11 +161,14 @@ const Tables = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
   const downloadAll = (e) => {
     e.preventDefault();

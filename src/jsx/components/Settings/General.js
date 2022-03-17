@@ -43,12 +43,17 @@ const General = () => {
     formData.append("tiktok", data.tiktok);
     formData.append("contactEmail", data.contactEmail);
     formData.append("whatsapp", data.whatsapp);
-    axios.post("/api/UpdateCompanies", formData).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        setCheck(!check);
-      }
-    });
+    axios
+      .post("/api/UpdateCompanies", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          setCheck(!check);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,10 +66,15 @@ const General = () => {
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData[0]);
       }
-      axios.get("/api/GetBusinessType").then((res) => {
-        setBusiness(res.data.fetchData);
-        setLoading(false);
-      });
+      axios
+        .get("/api/GetBusinessType")
+        .then((res) => {
+          setBusiness(res.data.fetchData);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -72,16 +82,23 @@ const General = () => {
   const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    var callback = function (loc) {
-      setIpApi(loc);
-    };
-    ipapi.location(callback);
-    dataLoad();
+    // var callback = function (loc) {
+    //   setIpApi(loc);
+    // };
+    // ipapi.location(callback);
+    // dataLoad();
 
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
+    dataLoad();
   }, [check]);
   const initialValues = {
     id: fetchData?.id,

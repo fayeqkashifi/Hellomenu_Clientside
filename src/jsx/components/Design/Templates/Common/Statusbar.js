@@ -16,17 +16,27 @@ function Statusbar(props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`/api/EditBranches/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setBranch(res.data.branch);
-      }
-    });
-    axios.get(`/api/getStories/${branchId}`).then((res) => {
-      if (res.data.status === 200) {
-        setBranchStories(res.data.data);
-        setLoading(false);
-      }
-    });
+    axios
+      .get(`/api/EditBranches/${branchId}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setBranch(res.data.branch);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios
+      .get(`/api/getStories/${branchId}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setBranchStories(res.data.data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   if (products.length !== 0 || branchStories.length !== 0) {

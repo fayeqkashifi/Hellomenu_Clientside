@@ -36,18 +36,6 @@ const Customization = (props) => {
   const [settings, setSettings] = useState([]);
   const handleInput = (e) => {
     setSettings({ ...settings, [e.target.name]: e.target.value });
-    // const formData = new FormData();
-    // formData.append(
-    //   "settings",
-    //   JSON.stringify({ ...settings, [e.target.name]: e.target.value })
-    // );
-    // axios
-    //   .post(`/api/InsertCustomization/${templateId}`, formData)
-    //   .then((res) => {
-    //     if (res.data.status === 200) {
-    //       setLoading(true);
-    //     }
-    //   });
   };
   const save = (e) => {
     e.preventDefault();
@@ -61,28 +49,41 @@ const Customization = (props) => {
           swal("Success", res.data.message, "success");
           setCheck(!check);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
   const reset = (e) => {
     e.preventDefault();
-    axios.get(`/api/ResetCustomization/${templateId}`).then((res) => {
-      if (res.data.status === 200) {
-        setSettings([]);
-        setCheck(!check);
-        swal("Success", res.data.message, "success");
-      }
-    });
+    axios
+      .get(`/api/ResetCustomization/${templateId}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setSettings([]);
+          setCheck(!check);
+          swal("Success", res.data.message, "success");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const [template, setTemplate] = useState([]);
   const [loading, setLoading] = useState(true);
   const dataLoad = () => {
-    axios.get(`/api/GetTemplate/${templateId}`).then((res) => {
-      if (res.data.status === 200) {
-        setSettings(res.data.fetchData.Customization);
-        setTemplate(res.data.fetchData);
-        setLoading(false);
-      }
-    });
+    axios
+      .get(`/api/GetTemplate/${templateId}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setSettings(res.data.fetchData.Customization);
+          setTemplate(res.data.fetchData);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const [check, setCheck] = useState(false);
   useEffect(() => {

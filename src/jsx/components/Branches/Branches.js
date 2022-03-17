@@ -38,14 +38,19 @@ const Branches = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteBranches/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-          setCheck(!check);
-        });
+        axios
+          .delete(`/api/DeleteBranches/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+            setCheck(!check);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -70,13 +75,15 @@ const Branches = () => {
   };
   // for mobile
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setBranchdata([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-
   const downloadQRCode = (e, id) => {
     e.preventDefault();
     const qrCodeURL = document

@@ -20,13 +20,23 @@ const EditRole = (props) => {
   const [expand, setExpand] = useState([]);
   // const [nodes, setNodes] = useState(inputNodes);
   useEffect(() => {
-    axios.get(`/api/getRole/${id}`).then((result) => {
-      if (result.data.status === 200) {
-        setData(result.data.data);
-        setState(JSON.parse(result.data.data.permissions));
-        setLoading(false);
-      }
-    });
+    axios
+      .get(`/api/getRole/${id}`)
+      .then((result) => {
+        if (result.data.status === 200) {
+          setData(result.data.data);
+          setState(JSON.parse(result.data.data.permissions));
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return () => {
+      setData([]);
+      setState([]);
+      setLoading(true);
+    };
   }, []);
 
   const initialValues = {
@@ -60,11 +70,16 @@ const EditRole = (props) => {
       formData.append("roleName", data.roleName);
       formData.append("roleDiscription", data.roleDiscription);
       formData.append("permissions", JSON.stringify(state));
-      axios.post(`/api/updateRole`, formData).then((res) => {
-        if (res.data.status === 200) {
-          setAlerts(true, "success", res.data.message);
-        }
-      });
+      axios
+        .post(`/api/updateRole`, formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setAlerts(true, "success", res.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setError("Please Add Permission.");
     }

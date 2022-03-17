@@ -89,18 +89,22 @@ const Theme = (props) => {
     formData.append("MenuScreenBackground", themes.MenuScreenBackground);
     formData.append("ShowButton", themes.ShowButton);
     formData.append("ButtonShape", themes.ButtonShape);
-    axios.post(`/api/InsertTheme/${branchId}`, formData).then((res) => {
-      if (res.data.status === 200) {
-        swal("Success", res.data.message, "success").then((check) => {
-          if (check) {
-            history.goBack();
-          }
-        });
-        // setThemes([]);
-        // setImageStateMenu([]);
-        // setImageState([]);
-      }
-    });
+    axios
+      .post(`/api/InsertTheme/${branchId}`, formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          swal("Success", res.data.message, "success").then((check) => {
+            if (check) {
+              history.goBack();
+            }
+          });
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // insert End
   const [expanded, setExpanded] = React.useState(false);

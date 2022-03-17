@@ -93,28 +93,38 @@ const AddProduct = (props) => {
     formData.append("branchId", branchId);
     formData.append("form", JSON.stringify(form));
 
-    axios.post(`/api/InsertProducts`, formData).then((res) => {
-      if (res.data.status === 200) {
-        swal("Success", res.data.message, "success").then((check) => {
-          if (check) {
-            history.push({
-              pathname: `/branches/show/products`,
-              state: { id: branchId },
-            });
-          }
-        });
-      }
-    });
+    axios
+      .post(`/api/InsertProducts`, formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          swal("Success", res.data.message, "success").then((check) => {
+            if (check) {
+              history.push({
+                pathname: `/branches/show/products`,
+                state: { id: branchId },
+              });
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const save = (data) => {
-    axios.post("/api/InsertSingleIngredient", data).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setModalCentered(false);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .post("/api/InsertSingleIngredient", data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setModalCentered(false);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
@@ -130,11 +140,14 @@ const AddProduct = (props) => {
       const cat = await axios.get(`/api/GetCategories/${branchId}`);
       if (cat.data.status === 200) {
         setCategories(cat.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-
       const response = await axios.get(`/api/GetProducts/${branchId}`);
       if (response.data.status === 200) {
         setFetchData(response.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
       const res = await axios.get(`/api/GetBranches`);
       if (res.data.status === 200) {
@@ -143,6 +156,8 @@ const AddProduct = (props) => {
             return item.id != branchId;
           })
         );
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
       setLoading(false);
     } catch (error) {
@@ -164,6 +179,8 @@ const AddProduct = (props) => {
       const result = await axios.post(`/api/GetIngredient`);
       if (result.data.status === 200) {
         setIntgredients(result.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
     } catch (error) {
       console.error(error);
@@ -217,6 +234,9 @@ const AddProduct = (props) => {
         if (res.status === 200) {
           setCategories(res.data);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
   const getSubCategories = (e) => {
@@ -230,17 +250,25 @@ const AddProduct = (props) => {
         if (res.data.status === 200) {
           setSubCategories(res.data.fetchData);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
   const filterCategories = (e) => {
     e.preventDefault();
     if (!e.target.checked) {
       setProductBranches([]);
-      axios.get(`/api/GetCategories/${branchId}`).then((res) => {
-        if (res.data.status === 200) {
-          setCategories(res.data.fetchData);
-        }
-      });
+      axios
+        .get(`/api/GetCategories/${branchId}`)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setCategories(res.data.fetchData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 

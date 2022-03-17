@@ -34,16 +34,21 @@ const ServiceArea = (props) => {
       const formData = new FormData();
       formData.append("BranchID", id);
       formData.append("AreaName", JSON.stringify(servicesAreas));
-      axios.post("/api/InsertServicAreas", formData).then((res) => {
-        if (res.data.status === 200) {
-          setServicesAreas([]);
-          setCheck(!check);
-          setAlerts(true, "success", res.data.message);
+      axios
+        .post("/api/InsertServicAreas", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setServicesAreas([]);
+            setCheck(!check);
+            setAlerts(true, "success", res.data.message);
 
-          setModalCentered(false);
-          //  this.props.history.push("/")
-        }
-      });
+            setModalCentered(false);
+            //  this.props.history.push("/")
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setAlerts(true, "warning", "Please select a location");
     }
@@ -61,14 +66,19 @@ const ServiceArea = (props) => {
   };
   const fetchServiceArea = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/EditServiceAreas/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditServiceAreas(res.data.menu);
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditServiceAreas/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditServiceAreas(res.data.menu);
+          setEditModalCentered(true);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const updateServiceArea = (e) => {
     e.preventDefault();
@@ -82,18 +92,23 @@ const ServiceArea = (props) => {
         : editServiceAreas.areaLocationId
     );
 
-    axios.post("/api/UpdateServiceAreas", formData).then((res) => {
-      if (res.data.status === 200) {
-        // setEditServiceAreas([]);
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
+    axios
+      .post("/api/UpdateServiceAreas", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          // setEditServiceAreas([]);
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
 
-        setEditModalCentered(false);
-        //  this.props.history.push("/")
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+          setEditModalCentered(false);
+          //  this.props.history.push("/")
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   // Edit End
 
@@ -107,15 +122,20 @@ const ServiceArea = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteServiceAreas/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
+        axios
+          .delete(`/api/DeleteServiceAreas/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
 
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -149,11 +169,14 @@ const ServiceArea = (props) => {
   };
 
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
   const [changeBit, setChangeBit] = useState(true);
 
@@ -203,13 +226,18 @@ const ServiceArea = (props) => {
     const formData = new FormData();
     formData.append("city_id", data.city);
     formData.append("areaName", data.areaName);
-    axios.post("/api/InsertAreas", formData).then((res) => {
-      if (res.data.status === 200) {
-        setChangeBit(!changeBit);
-        setAreaModal(false);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .post("/api/InsertAreas", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setChangeBit(!changeBit);
+          setAreaModal(false);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const [inputValue, setValue] = useState("");

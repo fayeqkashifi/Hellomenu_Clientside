@@ -35,16 +35,21 @@ const Attributes = () => {
     });
   };
   const saveAttribute = (data) => {
-    axios.post("/api/InsertAttribute", data).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-
-        setModalCentered(false);
-      } else if (res.data.status === 304) {
-        setAlerts(true, "warning", res.data.message);
-      }
-    });
+    axios
+      .post("/api/InsertAttribute", data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+          setModalCentered(false);
+        } else {
+          setAlerts(true, "error", res.data.message);
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // insert Attribute end
 
@@ -55,28 +60,39 @@ const Attributes = () => {
   // fetch the exact Attribute
   const fetchAttribute = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/EditAttribute/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditAttribute(res.data.item);
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditAttribute/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditAttribute(res.data.item);
+          setEditModalCentered(true);
+        } else {
+          setAlerts(true, "error", res.data.message);
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // update the Attribute
   const updateAttribute = (data) => {
-    axios.post("/api/UpdateAttribute", data).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setEditModalCentered(false);
-        setAlerts(true, "success", res.data.message);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      } else if (res.data.status === 304) {
-        setAlerts(true, "warning", res.data.message);
-      }
-    });
+    axios
+      .post("/api/UpdateAttribute", data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setEditModalCentered(false);
+          setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // edit Attribute end
 
@@ -91,21 +107,25 @@ const Attributes = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteAttribute/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+        axios
+          .delete(`/api/DeleteAttribute/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
   // delete Attribute End
-
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
@@ -123,14 +143,15 @@ const Attributes = () => {
     }
   };
   useEffect(() => {
-    dataLoad();
-
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (

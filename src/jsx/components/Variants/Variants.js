@@ -269,19 +269,24 @@ const Variants = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/Deletevariations/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setNumberOfVar([]);
-            setVariantsTage([]);
-            setTags([]);
-            setAlerts(true, "success", res.data.message);
-          } else if (res.data.status === 404) {
-            setNumberOfVar([]);
-            setVariantsTage([]);
-            setTags([]);
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+        axios
+          .delete(`/api/Deletevariations/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setNumberOfVar([]);
+              setVariantsTage([]);
+              setTags([]);
+              setAlerts(true, "success", res.data.message);
+            } else if (res.data.status === 404) {
+              setNumberOfVar([]);
+              setVariantsTage([]);
+              setTags([]);
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }

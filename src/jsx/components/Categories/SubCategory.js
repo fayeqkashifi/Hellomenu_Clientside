@@ -58,14 +58,19 @@ const SubCategory = (props) => {
       formData.append("SubCategoryName", data.SubCategoryName);
       formData.append("CategoryID", id);
       formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
-      axios.post("/api/InsertSubCategories", formData).then((res) => {
-        if (res.data.status === 200) {
-          setImageState([]);
-          setCheck(!check);
-          setAlerts(true, "success", res.data.message);
-          setModalCentered(false);
-        }
-      });
+      axios
+        .post("/api/InsertSubCategories", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setImageState([]);
+            setCheck(!check);
+            setAlerts(true, "success", res.data.message);
+            setModalCentered(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       setAlerts(true, "warning", "Already exists, Please Try another name!");
     }
@@ -79,14 +84,19 @@ const SubCategory = (props) => {
   const fetchSubMenus = (e, id) => {
     e.preventDefault();
 
-    axios.get(`/api/EditSubCategories/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditSubMenu(res.data.menu);
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditSubCategories/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditSubMenu(res.data.menu);
+          setEditModalCentered(true);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const updateSubMenu = (data) => {
     const formData = new FormData();
@@ -94,20 +104,25 @@ const SubCategory = (props) => {
     formData.append("SubCategoryName", data.SubCategoryName);
     formData.append("CategoryID", id);
     formData.append("id", editSubMenu.id);
-    axios.post("/api/UpdateSubCategory", formData).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        setImageState([]);
-        setEditModalCentered(false);
-        setCheck(!check);
+    axios
+      .post("/api/UpdateSubCategory", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          setImageState([]);
+          setEditModalCentered(false);
+          setCheck(!check);
 
-        //  this.props.history.push("/")
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      } else if (res.data.status === 304) {
-        setAlerts(true, "warning", res.data.message);
-      }
-    });
+          //  this.props.history.push("/")
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // edit end
   // delete start
@@ -121,17 +136,22 @@ const SubCategory = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteSubCategories/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
+        axios
+          .delete(`/api/DeleteSubCategories/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
 
-            setCheck(!check);
+              setCheck(!check);
 
-            // thisClicked.closest("tr").remove();
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+              // thisClicked.closest("tr").remove();
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -147,18 +167,23 @@ const SubCategory = (props) => {
       const result = await axios.get(`/api/GetSubCategories/${id}`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
   const [layout, setLayout] = useState(
     JSON.parse(

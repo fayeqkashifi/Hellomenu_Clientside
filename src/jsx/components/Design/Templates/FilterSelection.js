@@ -20,12 +20,17 @@ const FilterSelection = () => {
       : []
   );
   const handleSelect = (e) => {
-    axios.get(`/api/getServiceArea/${e.value}`).then((res) => {
-      if (res.data.status === 200) {
-        setBranches(res.data.fetchData);
-        localStorage.setItem("branches", JSON.stringify(res.data.fetchData));
-      }
-    });
+    axios
+      .get(`/api/getServiceArea/${e.value}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setBranches(res.data.fetchData);
+          localStorage.setItem("branches", JSON.stringify(res.data.fetchData));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     localStorage.setItem("defaultLocation", JSON.stringify(e));
   };
   const defaulValue = localStorage.getItem("defaultLocation")
@@ -46,13 +51,18 @@ const FilterSelection = () => {
   // handle selection
   const handleChange = (value) => {
     setSelectedValue(value);
-    axios.get(`/api/GetAreas/${value.id}`).then((res) => {
-      if (res.data.status === 200) {
-        setAreaLocation(res.data.fetchData);
-        // console.log(res.data.fetchData);
-        localStorage.setItem("location", JSON.stringify(res.data.fetchData));
-      }
-    });
+    axios
+      .get(`/api/GetAreas/${value.id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAreaLocation(res.data.fetchData);
+          // console.log(res.data.fetchData);
+          localStorage.setItem("location", JSON.stringify(res.data.fetchData));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     localStorage.setItem("city", JSON.stringify(value));
   };
   const loadOptions = (inputValue) => {

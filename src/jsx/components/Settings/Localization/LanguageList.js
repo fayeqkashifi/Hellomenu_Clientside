@@ -29,13 +29,23 @@ const LanguageList = () => {
 
   const dataLoad = async () => {
     try {
-      axios.get("/api/getlocales").then((res) => {
-        setData(res.data);
-        setLoading(false);
-      });
-      axios.get("/api/GetLanguages").then((res) => {
-        setLanguages(res.data);
-      });
+      axios
+        .get("/api/getlocales")
+        .then((res) => {
+          setData(res.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      axios
+        .get("/api/GetLanguages")
+        .then((res) => {
+          setLanguages(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -44,12 +54,14 @@ const LanguageList = () => {
   const options = useMemo(() => countryList().getData(), []);
 
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setLoading(true);
     };
-  }, [check]);
-
+  }, []);
+  useEffect(() => {
+    dataLoad();
+  }, []);
   const columns = [
     {
       key: "country_code",
@@ -74,14 +86,19 @@ const LanguageList = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/deleteLocale/${id}`).then((res) => {
-          if (res.status === 200) {
-            setCheck(!check);
-            // swal("Success", res.data.message, "success");
-          } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
-          }
-        });
+        axios
+          .delete(`/api/deleteLocale/${id}`)
+          .then((res) => {
+            if (res.status === 200) {
+              setCheck(!check);
+              // swal("Success", res.data.message, "success");
+            } else if (res.data.status === 404) {
+              swal("Error", res.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         swal("Your Data is safe now!");
       }
@@ -113,21 +130,31 @@ const LanguageList = () => {
   };
 
   const handleSubmit = (data) => {
-    axios.post(`/api/insertLocale`, data).then((res) => {
-      if (res.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .post(`/api/insertLocale`, data)
+      .then((res) => {
+        if (res.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const changeLocaleStatus = (id) => {
-    axios.get(`/api/changeLocaleStatus/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        localStorage.setItem("locale", res.data.data.locale);
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/changeLocaleStatus/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          localStorage.setItem("locale", res.data.data.locale);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   if (loading) {
     return (

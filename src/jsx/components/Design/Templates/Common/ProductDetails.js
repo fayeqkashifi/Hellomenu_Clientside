@@ -56,7 +56,7 @@ const ProductDetails = (props) => {
         setLoading(false);
       });
     };
-    getdata(); // axios
+    getdata(); 
     return () => {
       // parseVariants([]);
       // setVarPics([]);

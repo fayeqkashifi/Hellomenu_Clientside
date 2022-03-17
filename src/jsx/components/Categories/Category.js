@@ -72,16 +72,21 @@ const Category = (props) => {
       formData.append("CategoryIcon", imageState.CategoryIcon);
       formData.append("CategoryName", data.CategoryName);
       formData.append("branchID", id);
-      axios.post("/api/InsertCategories", formData).then((res) => {
-        if (res.data.status === 200) {
-          setImageState([]);
-          setCheck(!check);
-          setShare(false);
-          setProductBranches([]);
-          setAlerts(true, "success", res.data.message);
-          setModalCentered(false);
-        }
-      });
+      axios
+        .post("/api/InsertCategories", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setImageState([]);
+            setCheck(!check);
+            setShare(false);
+            setProductBranches([]);
+            setAlerts(true, "success", res.data.message);
+            setModalCentered(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       setAlerts(true, "warning", "Already exists, Please Try another name!");
     }
@@ -98,13 +103,18 @@ const Category = (props) => {
     const formData = new FormData();
     formData.append("CategoryName", data.categories);
     formData.append("branchID", id);
-    axios.post("/api/InsertSharedCate", formData).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-        setModal(false);
-      }
-    });
+    axios
+      .post("/api/InsertSharedCate", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+          setModal(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // insert End
   // edit start
@@ -116,14 +126,19 @@ const Category = (props) => {
   });
   const fetchMenus = (e, id) => {
     e.preventDefault();
-    axios.get(`/api/EditCategories/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditMenu(res.data.menu);
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditCategories/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditMenu(res.data.menu);
+          setEditModalCentered(true);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const updateMenu = (data) => {
     const formData = new FormData();
@@ -131,27 +146,29 @@ const Category = (props) => {
     formData.append("CategoryName", data.CategoryName);
     formData.append("branchID", id);
     formData.append("id", editMenu.id);
-    axios.post("/api/UpdateCategories", formData).then((res) => {
-      if (res.data.status === 200) {
-        // console.log(res.data.status);
-        setEditMenu({
-          id: "",
-          CategoryName: "",
-          CategoryIcon: "",
-          branchID: id,
-        });
-        setImageState([]);
-
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-
-        setEditModalCentered(false);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      } else if (res.data.status === 304) {
-        setAlerts(true, "warning", res.data.message);
-      }
-    });
+    axios
+      .post("/api/UpdateCategories", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditMenu({
+            id: "",
+            CategoryName: "",
+            CategoryIcon: "",
+            branchID: id,
+          });
+          setImageState([]);
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+          setEditModalCentered(false);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // edit end
   // delete start
@@ -165,14 +182,19 @@ const Category = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteCategories/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+        axios
+          .delete(`/api/DeleteCategories/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -187,11 +209,15 @@ const Category = (props) => {
   const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/GetBranches`);
-      setBranches(
-        result.data.branches.filter((item) => {
-          return item.id !== id;
-        })
-      );
+      if (result.data.status === 200) {
+        setBranches(
+          result.data.branches.filter((item) => {
+            return item.id !== id;
+          })
+        );
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
       const shared = await axios.get(`/api/sharedCates/${id}`);
       if (shared.status === 200) {
         setCates(shared.data);
@@ -206,15 +232,17 @@ const Category = (props) => {
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setBranches([]);
       setFetchData([]);
       setCates([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-
   const [layout, setLayout] = useState(
     JSON.parse(
       localStorage.getItem("layoutCategory")

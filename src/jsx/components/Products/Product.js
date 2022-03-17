@@ -37,14 +37,19 @@ const Product = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteProducts/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setCheck(!check);
-            swal("Success", res.data.message, "success");
-          } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
-          }
-        });
+        axios
+          .delete(`/api/DeleteProducts/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setCheck(!check);
+              swal("Success", res.data.message, "success");
+            } else if (res.data.status === 404) {
+              swal("Error", res.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         swal("Your Data is safe now!");
       }
@@ -60,20 +65,24 @@ const Product = (props) => {
       const result = await axios.get(`/api/GetProducts/${branchId}`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-
   const columns = [
     {
       key: "image",

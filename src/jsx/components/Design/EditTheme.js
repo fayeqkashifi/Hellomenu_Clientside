@@ -63,19 +63,22 @@ const EditTheme = (props) => {
     formData.append("MenuScreenBackground", themes.MenuScreenBackground);
     formData.append("ShowButton", themes.ShowButton);
     formData.append("ButtonShape", themes.ButtonShape);
-    axios.post(`/api/UpdateTheme/${id}`, formData).then((res) => {
-      if (res.data.status === 200) {
-        swal("Success", res.data.message, "success").then((check) => {
-          if (check) {
-            history.goBack();
-          }
-        });
-
-        // setThemes([]);
-        // setImageStateMenu([]);
-        // setImageState([]);
-      }
-    });
+    axios
+      .post(`/api/UpdateTheme/${id}`, formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          swal("Success", res.data.message, "success").then((check) => {
+            if (check) {
+              history.goBack();
+            }
+          });
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // update End
   const dataLoad = async (unmounted) => {
@@ -83,6 +86,8 @@ const EditTheme = (props) => {
       const result = await axios.get(`/api/EditTheme/${id}`);
       if (result.data.status === 200 && !unmounted) {
         setThemes(result.data.data);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
     } catch (error) {
       console.error(error);

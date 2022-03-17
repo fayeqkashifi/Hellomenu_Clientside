@@ -45,16 +45,23 @@ const CreateUser = () => {
   const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    var callback = function (loc) {
-      setIpApi(loc);
-    };
-    ipapi.location(callback);
-    dataLoad();
+    // var callback = function (loc) {
+    //   setIpApi(loc);
+    // };
+    // ipapi.location(callback);
+    // dataLoad();
 
     return () => {
       setUser([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
+    dataLoad();
   }, [check]);
   const [initialValues, setInitialValues] = useState({
     name: "",
@@ -108,34 +115,44 @@ const CreateUser = () => {
     formData.append("phone_number", data.phone_number);
     formData.append("role_id", data.role_id);
 
-    axios.post(`/api/register`, formData).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        setCheck(!check);
-        resetForm();
-        setImageState([]);
-        setInitialValues({
-          name: "",
-          email: "",
-          password: "",
-          confirm_new_password: "",
-        });
-      }
-    });
+    axios
+      .post(`/api/register`, formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          setCheck(!check);
+          resetForm();
+          setImageState([]);
+          setInitialValues({
+            name: "",
+            email: "",
+            password: "",
+            confirm_new_password: "",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const fetchUser = (id) => {
     var array = [];
-    axios.get(`/api/getUser/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setCheck(!check);
-        array.push({
-          confirm_new_password: "",
-          password: "",
-          ...res.data.data,
-        });
-        setInitialValues(array[0]);
-      }
-    });
+    axios
+      .get(`/api/getUser/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+          array.push({
+            confirm_new_password: "",
+            password: "",
+            ...res.data.data,
+          });
+          setInitialValues(array[0]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const columns = [
     {
@@ -170,25 +187,35 @@ const CreateUser = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/deleteUser/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            // swal("Success", res.data.message, "success");
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            swal("Error", res.data.message, "error");
-          }
-        });
+        axios
+          .delete(`/api/deleteUser/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              // swal("Success", res.data.message, "success");
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              swal("Error", res.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         swal("Your Data is safe now!");
       }
     });
   };
   const changeAccountStatus = (id) => {
-    axios.get(`/api/changeAccountStatus/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/changeAccountStatus/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   if (loading) {
     return (

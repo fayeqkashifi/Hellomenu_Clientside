@@ -32,16 +32,23 @@ const EditUser = (props) => {
   const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    var callback = function (loc) {
-      setIpApi(loc);
-    };
-    ipapi.location(callback);
-    dataLoad();
+    // var callback = function (loc) {
+    //   setIpApi(loc);
+    // };
+    // ipapi.location(callback);
+    // dataLoad();
 
     return () => {
       setUser([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
+    dataLoad();
   }, [check]);
   const initialValues = {
     id: user?.id,
@@ -77,12 +84,17 @@ const EditUser = (props) => {
     formData.append("id", data.id);
     formData.append("email", data.email);
     formData.append("name", data.name);
-    axios.post(`/api/UpdateRegister/${data.id}`, formData).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-        setCheck(!check);
-      }
-    });
+    axios
+      .post(`/api/UpdateRegister/${data.id}`, formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+          setCheck(!check);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const values = {
     id: user?.id,
@@ -105,25 +117,40 @@ const EditUser = (props) => {
   };
   const [error, setError] = useState("");
   const changePassword = (data) => {
-    axios.post(`/api/checkCurrentPassword`, data).then((res) => {
-      if (res.data.status === 200) {
-        axios.post(`/api/resetPassword/${data.id}`, data).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
-          }
-        });
-      } else {
-        setError(res.data.message);
-        // setAlerts(true, "warning", res.data.message);
-      }
-    });
+    axios
+      .post(`/api/checkCurrentPassword`, data)
+      .then((res) => {
+        if (res.data.status === 200) {
+          axios
+            .post(`/api/resetPassword/${data.id}`, data)
+            .then((res) => {
+              if (res.data.status === 200) {
+                setAlerts(true, "success", res.data.message);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          setError(res.data.message);
+          // setAlerts(true, "warning", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const changeAccountStatus = () => {
-    axios.get(`/api/changeAccountStatus/${user.id}`).then((res) => {
-      if (res.data.status === 200) {
-        setAlerts(true, "success", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/changeAccountStatus/${user.id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   if (loading) {

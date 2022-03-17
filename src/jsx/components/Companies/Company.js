@@ -46,16 +46,21 @@ const Company = () => {
     formData.append("id", data.id);
     formData.append("company", data.company);
 
-    axios.post("/api/InsertCompanies", formData).then((res) => {
-      if (res.data.status === 200) {
-        setImageState([]);
-        localStorage.setItem("auth_company_id", btoa(res.data.company_id));
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-        setModalCentered(false);
-        //  this.props.history.push("/")
-      }
-    });
+    axios
+      .post("/api/InsertCompanies", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setImageState([]);
+          localStorage.setItem("auth_company_id", btoa(res.data.company_id));
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+          setModalCentered(false);
+          //  this.props.history.push("/")
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // insert end
   // edit Start
@@ -65,14 +70,19 @@ const Company = () => {
   const editCompany = (e, id) => {
     e.preventDefault();
 
-    axios.get(`/api/EditCompanies/${id}`).then((res) => {
-      if (res.data.status === 200) {
-        setEditCompanystate(res.data.company);
-        setEditModalCentered(true);
-      } else if (res.data.status === 404) {
-        setAlerts(true, "error", res.data.message);
-      }
-    });
+    axios
+      .get(`/api/EditCompanies/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setEditCompanystate(res.data.company);
+          setEditModalCentered(true);
+        } else if (res.data.status === 404) {
+          setAlerts(true, "error", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const updateCompany = (data) => {
     const formData = new FormData();
@@ -80,15 +90,20 @@ const Company = () => {
     formData.append("id", data.id);
     formData.append("company", data.company);
 
-    axios.post("/api/UpdateCompanies", formData).then((res) => {
-      if (res.data.status === 200) {
-        setImageState([]);
-        setEditCompanystate([]);
-        setCheck(!check);
-        setAlerts(true, "success", res.data.message);
-        setEditModalCentered(false);
-      }
-    });
+    axios
+      .post("/api/UpdateCompanies", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setImageState([]);
+          setEditCompanystate([]);
+          setCheck(!check);
+          setAlerts(true, "success", res.data.message);
+          setEditModalCentered(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // edit End
   // delete section
@@ -102,15 +117,20 @@ const Company = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        axios.delete(`/api/DeleteCompanies/${id}`).then((res) => {
-          if (res.data.status === 200) {
-            setAlerts(true, "success", res.data.message);
+        axios
+          .delete(`/api/DeleteCompanies/${id}`)
+          .then((res) => {
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
 
-            setCheck(!check);
-          } else if (res.data.status === 404) {
-            setAlerts(true, "error", res.data.message);
-          }
-        });
+              setCheck(!check);
+            } else if (res.data.status === 404) {
+              setAlerts(true, "error", res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
       }
@@ -127,20 +147,24 @@ const Company = () => {
       const result = await axios.get("/api/GetCompanies");
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
+        setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    dataLoad();
+    // dataLoad();
     return () => {
       setFetchData([]);
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-
   var viewCompanies_HTMLTABLE = "";
   if (loading) {
     return (
