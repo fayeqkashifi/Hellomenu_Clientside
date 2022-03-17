@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Page,
   Text,
@@ -10,7 +10,7 @@ import {
 
 const PDFFile = (props) => {
   const { inputFields, source } = props;
-  // const [loading, setLoading] = useState(true);
+
   const styles = StyleSheet.create({
     page: {
       backgroundColor: "#2d3134",
@@ -72,20 +72,7 @@ const PDFFile = (props) => {
       width: "100%",
     },
   });
-  // useEffect(() => {
-  //   setLoading(false);
-  // }, [source]);
-  // if (loading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <div
-  //         className="spinner-border "
-  //         role="status"
-  //         style={{ color: "#5373e3" }}
-  //       ></div>
-  //     </div>
-  //   );
-  // } else {
+
   return (
     <Document key={source}>
       <Page size="A4" style={styles.page}>
@@ -110,6 +97,5 @@ const PDFFile = (props) => {
     </Document>
   );
 };
-// };
 
 export default PDFFile;

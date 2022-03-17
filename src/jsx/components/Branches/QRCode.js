@@ -16,9 +16,6 @@ export default function QRCode(props) {
 
   useEffect(() => {
     qrCode.append(ref.current);
-    return () => {
-      setFileExt([]);
-    };
   }, []);
   useEffect(() => {
     qrCode.update({
@@ -45,7 +42,6 @@ export default function QRCode(props) {
       setSource(URL.createObjectURL(dataUri));
     });
     return () => {
-      setFileExt([]);
       setSource([]);
     };
   }, [image, data]);
