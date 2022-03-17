@@ -43,7 +43,7 @@ const Customization = (props) => {
     const formData = new FormData();
     formData.append("settings", JSON.stringify(settings));
     axios
-      .post(`/api/InsertCustomization/${templateId}`, formData)
+      .post(`/api/insertCustomization/${templateId}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
           swal("Success", res.data.message, "success");
@@ -57,7 +57,7 @@ const Customization = (props) => {
   const reset = (e) => {
     e.preventDefault();
     axios
-      .get(`/api/ResetCustomization/${templateId}`)
+      .get(`/api/resetCustomization/${templateId}`)
       .then((res) => {
         if (res.data.status === 200) {
           setSettings([]);
@@ -73,7 +73,7 @@ const Customization = (props) => {
   const [loading, setLoading] = useState(true);
   const dataLoad = () => {
     axios
-      .get(`/api/GetTemplate/${templateId}`)
+      .get(`/api/getTemplate/${templateId}`)
       .then((res) => {
         if (res.data.status === 200) {
           setSettings(res.data.fetchData.Customization);

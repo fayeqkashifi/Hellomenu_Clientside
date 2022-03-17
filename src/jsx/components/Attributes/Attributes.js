@@ -36,7 +36,7 @@ const Attributes = () => {
   };
   const saveAttribute = (data) => {
     axios
-      .post("/api/InsertAttribute", data)
+      .post("/api/insertAttribute", data)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -61,7 +61,7 @@ const Attributes = () => {
   const fetchAttribute = (e, id) => {
     e.preventDefault();
     axios
-      .get(`/api/EditAttribute/${id}`)
+      .get(`/api/editAttribute/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setEditAttribute(res.data.item);
@@ -78,7 +78,7 @@ const Attributes = () => {
   // update the Attribute
   const updateAttribute = (data) => {
     axios
-      .post("/api/UpdateAttribute", data)
+      .post("/api/updateAttribute", data)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -108,7 +108,7 @@ const Attributes = () => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteAttribute/${id}`)
+          .delete(`/api/deleteAttribute/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -131,7 +131,7 @@ const Attributes = () => {
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/GetAttributes`);
+      const result = await axios.get(`/api/getAttributes`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);

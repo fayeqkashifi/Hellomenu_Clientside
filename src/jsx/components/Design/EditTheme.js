@@ -64,7 +64,7 @@ const EditTheme = (props) => {
     formData.append("ShowButton", themes.ShowButton);
     formData.append("ButtonShape", themes.ButtonShape);
     axios
-      .post(`/api/UpdateTheme/${id}`, formData)
+      .post(`/api/updateTheme/${id}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
           swal("Success", res.data.message, "success").then((check) => {
@@ -83,7 +83,7 @@ const EditTheme = (props) => {
   // update End
   const dataLoad = async (unmounted) => {
     try {
-      const result = await axios.get(`/api/EditTheme/${id}`);
+      const result = await axios.get(`/api/editTheme/${id}`);
       if (result.data.status === 200 && !unmounted) {
         setThemes(result.data.data);
       } else {

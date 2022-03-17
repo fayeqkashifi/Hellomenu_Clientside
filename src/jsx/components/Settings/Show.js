@@ -12,7 +12,6 @@ import General from "./General";
 import User from "./User";
 import Locale from "./Localization";
 import { checkPermission } from "../Permissions";
-// import EditLocale from "./Localization/EditLocale";
 import { localization as t } from "../Localization";
 
 const Show = () => {

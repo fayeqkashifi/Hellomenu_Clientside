@@ -45,7 +45,7 @@ const Ingredients = (props) => {
           const formData = new FormData();
           formData.append("form", JSON.stringify(form));
           axios
-            .post("/api/InsertIngredient", formData)
+            .post("/api/insertIngredient", formData)
             .then((res) => {
               if (res.data.status === 200) {
                 setCheck(!check);
@@ -98,7 +98,7 @@ const Ingredients = (props) => {
   const fetch = (e, id) => {
     e.preventDefault();
     axios
-      .get(`/api/EditIngredient/${id}`)
+      .get(`/api/editIngredient/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setEdit(res.data.item);
@@ -115,7 +115,7 @@ const Ingredients = (props) => {
   // update
   const update = (data) => {
     axios
-      .post("/api/UpdateIngredient", data)
+      .post("/api/updateIngredient", data)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -144,7 +144,7 @@ const Ingredients = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteIngredient/${id}`)
+          .delete(`/api/deleteIngredient/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -171,7 +171,7 @@ const Ingredients = (props) => {
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.post(`/api/GetIngredient`);
+      const result = await axios.post(`/api/getIngredient`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);

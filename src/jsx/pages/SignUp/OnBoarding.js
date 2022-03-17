@@ -32,7 +32,7 @@ const OnBoarding = () => {
     formData.append("name", data.name);
     formData.append("phone_number", value);
     axios
-      .post(`/api/UpdateRegister/${userId}`, formData)
+      .post(`/api/updateRegister/${userId}`, formData)
       .then((res) => {
         localStorage.setItem("auth_name", btoa(data.name));
         history.push({

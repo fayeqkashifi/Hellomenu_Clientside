@@ -45,7 +45,7 @@ const QRcodeStyle = (props) => {
   const [inputFields, setInputFields] = useState({
     title: "HELLO MENU",
     header: "SCAN THE QR CODE TO VIEW IT ON YOUR SMART PHONE",
-    footer: BrancheName,
+    footer: BrancheName || "Hello Menu Branch",
   });
   const handelChange = (e) => {
     setInputFields({ ...inputFields, [e.target.name]: e.target.value });

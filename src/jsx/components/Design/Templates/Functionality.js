@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getThemplate = async (branchId) => {
   try {
-    const result = await axios.get(`/api/GetTempBasedOnBranch/${branchId}`);
+    const result = await axios.get(`/api/getTempBasedOnBranch/${branchId}`);
     if (result.data.status === 200) {
       return result.data.fetchData[0];
     }
@@ -12,7 +12,7 @@ export const getThemplate = async (branchId) => {
 };
 export const getBranch = async (branchId) => {
   try {
-    const result = await axios.get(`/api/GetBranchForShow/${branchId}`);
+    const result = await axios.get(`/api/getBranchForShow/${branchId}`);
     if (result.data.status === 200) {
       return result.data.data;
     }
@@ -47,7 +47,7 @@ export const getCategoriesBasedProduct = async (branchId) => {
 export const getProductBasedOnCategory = async (catId, page) => {
   try {
     const result = await axios.get(
-      `/api/GetProductsBasedCategory/${catId}?page=${page}`
+      `/api/getProductsBasedCategory/${catId}?page=${page}`
     );
     if (result.data.status === 200) {
       return result.data.data;
@@ -59,7 +59,7 @@ export const getProductBasedOnCategory = async (catId, page) => {
 export const getProductBasedOnSubCategory = async (subCatId, page) => {
   try {
     const result = await axios.get(
-      `/api/GetProductsBasedOnSubCategory/${subCatId}?page=${page}`
+      `/api/getProductsBasedOnSubCategory/${subCatId}?page=${page}`
     );
     if (result.data.status === 200) {
       return result.data.data;
@@ -72,7 +72,7 @@ export const getProduct = async (proId) => {
   try {
     const result = await axios({
       method: "GET",
-      url: `/api/GetProduct/${proId}`,
+      url: `/api/getProduct/${proId}`,
     });
     return result;
   } catch (err) {
@@ -92,7 +92,7 @@ export const getVariations = async (proId) => {
 };
 export const getTables = async (branchId) => {
   try {
-    const result = await axios.get(`/api/GetTables/${branchId}`);
+    const result = await axios.get(`/api/getTables/${branchId}`);
     if (result.data.status === 200) {
       return result.data.fetchData;
     }
@@ -112,7 +112,7 @@ export const checkTheTbl = async (data) => {
 };
 export const insertOrder = async (data) => {
   try {
-    const result = await axios.post("/api/InsertOrder", data);
+    const result = await axios.post("/api/insertOrder", data);
     if (result.data.status === 200) {
       return result.data.message;
     }
@@ -120,16 +120,7 @@ export const insertOrder = async (data) => {
     console.error(err);
   }
 };
-// export const addExistingItem = async (data) => {
-//   try {
-//     const result = await axios.post("/api/InsertOrder", data);
-//     if (result.data.status === 200) {
-//       return result.data.message;
-//     }
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
+
 export const addItemWithdoutDetails = async (id, cart, products) => {
   try {
     const check = cart.every((item) => {

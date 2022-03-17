@@ -29,7 +29,7 @@ function ProductsStory(props) {
 
   const loadProdcut = async () => {
     try {
-      const response = await axios.get(`/api/GetProduct/${product_id}`);
+      const response = await axios.get(`/api/getProduct/${product_id}`);
       if (response.data.status === 200) {
         const data = response.data.fetchData[0];
         setData(data);
@@ -76,7 +76,7 @@ function ProductsStory(props) {
   const changeProduct = async (id) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/GetProduct/${id}`);
+      const response = await axios.get(`/api/getProduct/${id}`);
       if (response.data.status === 200) {
         const data = response.data.fetchData[0];
         setData(data);

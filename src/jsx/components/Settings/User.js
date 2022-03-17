@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 import "react-phone-input-2/lib/style.css";
-import CreateUser from "./Users/CreateUser";
+// import CreateUser from "./Users/CreateUser";
 import EditUser from "./Users/EditUser";
+import UsersShow from "./Users/UsersShow";
 import Role from "./Roles/Role";
 
 import { Link, Switch, useRouteMatch } from "react-router-dom";
@@ -75,8 +76,8 @@ const User = (props) => {
       </div>
       <Switch>
         <PrivateRoute exact path={`${path}`} component={EditUser} />
-        <PrivateRoute path={`${path}/create-user`} component={CreateUser} />
         <PrivateRoute path={`${path}/role`} component={Role} />
+        <PrivateRoute path={`${path}/create-user`} component={UsersShow} />
       </Switch>
     </>
   );

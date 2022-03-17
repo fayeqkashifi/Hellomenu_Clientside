@@ -52,7 +52,7 @@ const FilterSelection = () => {
   const handleChange = (value) => {
     setSelectedValue(value);
     axios
-      .get(`/api/GetAreas/${value.id}`)
+      .get(`/api/getAreas/${value.id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setAreaLocation(res.data.fetchData);
@@ -67,7 +67,7 @@ const FilterSelection = () => {
   };
   const loadOptions = (inputValue) => {
     return axios
-      .get(`/api/GetCities`, {
+      .get(`/api/getCities`, {
         header: {
           "Content-Type": "application/json",
           Accept: "application/json",

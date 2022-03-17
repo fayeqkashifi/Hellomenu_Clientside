@@ -68,7 +68,7 @@ const AddBranch = () => {
         formData.append("fullAddress", fullAddress);
 
         axios
-          .post("/api/InsertBranches", formData)
+          .post("/api/insertBranches", formData)
           .then((res) => {
             if (res.data.status === 200) {
               swal("Success", res.data.message, "success").then((check) => {
@@ -120,7 +120,7 @@ const AddBranch = () => {
   };
   const dataLoad = async () => {
     try {
-      const response = await axios.get("/api/GetCurrencies");
+      const response = await axios.get("/api/getCurrencies");
       if (response.data.status === 200) {
         setCurrency(response.data.fetchData);
         setLoading(false);

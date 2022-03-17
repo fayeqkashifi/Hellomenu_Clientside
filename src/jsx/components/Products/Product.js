@@ -38,7 +38,7 @@ const Product = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteProducts/${id}`)
+          .delete(`/api/deleteProducts/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setCheck(!check);
@@ -62,7 +62,7 @@ const Product = (props) => {
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/GetProducts/${branchId}`);
+      const result = await axios.get(`/api/getProducts/${branchId}`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);

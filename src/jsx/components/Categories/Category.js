@@ -73,7 +73,7 @@ const Category = (props) => {
       formData.append("CategoryName", data.CategoryName);
       formData.append("branchID", id);
       axios
-        .post("/api/InsertCategories", formData)
+        .post("/api/insertCategories", formData)
         .then((res) => {
           if (res.data.status === 200) {
             setImageState([]);
@@ -104,7 +104,7 @@ const Category = (props) => {
     formData.append("CategoryName", data.categories);
     formData.append("branchID", id);
     axios
-      .post("/api/InsertSharedCate", formData)
+      .post("/api/insertSharedCate", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -127,7 +127,7 @@ const Category = (props) => {
   const fetchMenus = (e, id) => {
     e.preventDefault();
     axios
-      .get(`/api/EditCategories/${id}`)
+      .get(`/api/editCategories/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setEditMenu(res.data.menu);
@@ -147,7 +147,7 @@ const Category = (props) => {
     formData.append("branchID", id);
     formData.append("id", editMenu.id);
     axios
-      .post("/api/UpdateCategories", formData)
+      .post("/api/updateCategories", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setEditMenu({
@@ -183,7 +183,7 @@ const Category = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteCategories/${id}`)
+          .delete(`/api/deleteCategories/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -208,7 +208,7 @@ const Category = (props) => {
   const [cats, setCates] = useState([]);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/GetBranches`);
+      const result = await axios.get(`/api/getBranches`);
       if (result.data.status === 200) {
         setBranches(
           result.data.branches.filter((item) => {
@@ -222,7 +222,7 @@ const Category = (props) => {
       if (shared.status === 200) {
         setCates(shared.data);
       }
-      const cat = await axios.get(`/api/GetCategories/${id}`);
+      const cat = await axios.get(`/api/getCategories/${id}`);
       if (cat.data.status === 200) {
         setFetchData(cat.data.fetchData);
       }

@@ -73,7 +73,7 @@ const EditBranch = (props) => {
       formData.append("id", data.id);
 
       axios
-        .post("/api/UpdateBranches", formData)
+        .post("/api/updateBranches", formData)
         .then((res) => {
           if (res.data.status === 200) {
             swal("Success", res.data.message, "success").then((check) => {
@@ -110,7 +110,7 @@ const EditBranch = (props) => {
   const arrayAddress = [];
   const dataLoad = async () => {
     try {
-      const response = await axios.get(`/api/EditBranches/${id}`);
+      const response = await axios.get(`/api/editBranches/${id}`);
       if (response.data.status === 200) {
         setFullAddress(response.data.branch.fullAddress);
         JSON.parse(response.data.branch.otherAddressFields).map((item) => {
@@ -128,7 +128,7 @@ const EditBranch = (props) => {
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      const res = await axios.get("/api/GetCurrencies");
+      const res = await axios.get("/api/getCurrencies");
       if (res.data.status === 200) {
         setCurrency(res.data.fetchData);
       } else {
@@ -426,7 +426,7 @@ const EditBranch = (props) => {
                     <div className="form-group">
                       <label> {t("ordering_phone_number")}</label>
                       <PhoneInput
-                        country={ipApi?.country_code?.toLowerCase()}
+                        // country={ipApi?.country_code?.toLowerCase()}
                         className={
                           errors.phoneNumber && touched.phoneNumber
                             ? " is-invalid"

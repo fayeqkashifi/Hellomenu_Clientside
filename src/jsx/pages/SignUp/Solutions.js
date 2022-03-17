@@ -20,7 +20,7 @@ const Solutions = () => {
   const [languages, setLanguages] = useState([]);
   useEffect(() => {
     axios
-      .get("/api/GetLanguages")
+      .get("/api/getLanguages")
       .then((res) => {
         setLanguages(res.data);
       })
@@ -42,7 +42,7 @@ const Solutions = () => {
 
   const handleSubmit = (data) => {
     axios
-      .post(`/api/UpdateRegister/${userId}`, data)
+      .post(`/api/updateRegister/${userId}`, data)
       .then((res) => {
         if (res.data.status === 200) {
           history.push({

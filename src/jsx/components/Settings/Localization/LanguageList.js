@@ -39,7 +39,7 @@ const LanguageList = () => {
           console.log(error);
         });
       axios
-        .get("/api/GetLanguages")
+        .get("/api/getLanguages")
         .then((res) => {
           setLanguages(res.data);
         })

@@ -42,7 +42,7 @@ const Storybranch = (props) => {
     formData.append("branch_id", id);
     formData.append("form", JSON.stringify(form));
     axios
-      .post("/api/InsertStories", formData)
+      .post("/api/insertStories", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -73,7 +73,7 @@ const Storybranch = (props) => {
       const response = await axios.get(`/api/getStories/${id}`);
       if (response.data.status === 200) {
         setStories(response.data.data);
-        const result = await axios.get(`/api/GetProducts/${id}`);
+        const result = await axios.get(`/api/getProducts/${id}`);
         if (result.data.status === 200) {
           setProducts(result.data.fetchData);
         } else {
@@ -117,7 +117,7 @@ const Storybranch = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteStory/${id}`)
+          .delete(`/api/deleteStory/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);

@@ -47,7 +47,7 @@ const Company = () => {
     formData.append("company", data.company);
 
     axios
-      .post("/api/InsertCompanies", formData)
+      .post("/api/insertCompanies", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setImageState([]);
@@ -71,7 +71,7 @@ const Company = () => {
     e.preventDefault();
 
     axios
-      .get(`/api/EditCompanies/${id}`)
+      .get(`/api/editCompanies/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setEditCompanystate(res.data.company);
@@ -91,7 +91,7 @@ const Company = () => {
     formData.append("company", data.company);
 
     axios
-      .post("/api/UpdateCompanies", formData)
+      .post("/api/updateCompanies", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setImageState([]);
@@ -118,7 +118,7 @@ const Company = () => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteCompanies/${id}`)
+          .delete(`/api/deleteCompanies/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -144,7 +144,7 @@ const Company = () => {
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.get("/api/GetCompanies");
+      const result = await axios.get("/api/getCompanies");
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);

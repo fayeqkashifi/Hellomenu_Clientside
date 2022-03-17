@@ -74,7 +74,7 @@ const AddRole = () => {
       formData.append("roleDiscription", data.roleDiscription);
       formData.append("permissions", JSON.stringify(state));
       axios
-        .post(`/api/InsertRole`, formData)
+        .post(`/api/insertRole`, formData)
         .then((res) => {
           if (res.data.status === 200) {
             setAlerts(true, "success", res.data.message);

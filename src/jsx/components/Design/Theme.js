@@ -90,7 +90,7 @@ const Theme = (props) => {
     formData.append("ShowButton", themes.ShowButton);
     formData.append("ButtonShape", themes.ButtonShape);
     axios
-      .post(`/api/InsertTheme/${branchId}`, formData)
+      .post(`/api/insertTheme/${branchId}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
           swal("Success", res.data.message, "success").then((check) => {

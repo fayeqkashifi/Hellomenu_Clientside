@@ -10,7 +10,7 @@ import CustomAlert from "../../CustomAlert";
 import { base_url, port } from "../../../../Consts";
 import DefaultPic from "../../../../images/hellomenu/logo.svg";
 import { localization as t } from "../../Localization";
-import ipapi from "ipapi.co";
+// import ipapi from "ipapi.co";
 
 const EditUser = (props) => {
   const [loading, setLoading] = useState(true);
@@ -29,25 +29,19 @@ const EditUser = (props) => {
       console.error(error);
     }
   };
-  const [ipApi, setIpApi] = useState([]);
+  // const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    // var callback = function (loc) {
-    //   setIpApi(loc);
-    // };
-    // ipapi.location(callback);
-    // dataLoad();
-
     return () => {
       setUser([]);
       setLoading(true);
     };
   }, []);
   useEffect(() => {
-    var callback = function (loc) {
-      setIpApi(loc);
-    };
-    ipapi.location(callback);
+    // var callback = function (loc) {
+    //   setIpApi(loc);
+    // };
+    // ipapi.location(callback);
     dataLoad();
   }, [check]);
   const initialValues = {
@@ -85,7 +79,7 @@ const EditUser = (props) => {
     formData.append("email", data.email);
     formData.append("name", data.name);
     axios
-      .post(`/api/UpdateRegister/${data.id}`, formData)
+      .post(`/api/updateRegister/${data.id}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
           setAlerts(true, "success", res.data.message);
@@ -178,6 +172,9 @@ const EditUser = (props) => {
         ) : (
           ""
         )}
+        <div className="alert alert-info">
+          You must log out of the system after making changes to your Account.
+        </div>
         <div className="row my-3">USER INFORMATION</div>
 
         <div className="pb-4" style={{ borderBottom: "1px solid #ccc" }}>
@@ -217,7 +214,7 @@ const EditUser = (props) => {
                 <div className="form-group">
                   <label> {t("phone_number")}</label>
                   <PhoneInput
-                    country={ipApi?.country_code?.toLowerCase()}
+                    // country={ipApi?.country_code?.toLowerCase()}
                     value={user?.phone_number}
                     //   name="whatsapp"
                     onChange={(getOptionValue) => {

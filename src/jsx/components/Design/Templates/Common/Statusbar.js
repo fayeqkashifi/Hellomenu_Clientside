@@ -17,7 +17,7 @@ function Statusbar(props) {
 
   useEffect(() => {
     axios
-      .get(`/api/EditBranches/${branchId}`)
+      .get(`/api/editBranches/${branchId}`)
       .then((res) => {
         if (res.data.status === 200) {
           setBranch(res.data.branch);

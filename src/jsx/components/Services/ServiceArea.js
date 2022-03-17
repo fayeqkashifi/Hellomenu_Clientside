@@ -35,7 +35,7 @@ const ServiceArea = (props) => {
       formData.append("BranchID", id);
       formData.append("AreaName", JSON.stringify(servicesAreas));
       axios
-        .post("/api/InsertServicAreas", formData)
+        .post("/api/insertServicAreas", formData)
         .then((res) => {
           if (res.data.status === 200) {
             setServicesAreas([]);
@@ -67,7 +67,7 @@ const ServiceArea = (props) => {
   const fetchServiceArea = (e, id) => {
     e.preventDefault();
     axios
-      .get(`/api/EditServiceAreas/${id}`)
+      .get(`/api/editServiceAreas/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setEditServiceAreas(res.data.menu);
@@ -93,7 +93,7 @@ const ServiceArea = (props) => {
     );
 
     axios
-      .post("/api/UpdateServiceAreas", formData)
+      .post("/api/updateServiceAreas", formData)
       .then((res) => {
         if (res.data.status === 200) {
           // setEditServiceAreas([]);
@@ -123,7 +123,7 @@ const ServiceArea = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteServiceAreas/${id}`)
+          .delete(`/api/deleteServiceAreas/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -154,7 +154,7 @@ const ServiceArea = (props) => {
       if (result.data.status === 200) {
         setAreaLocation(result.data.fetchData);
       }
-      const response = await axios.get(`/api/GetServiceAreas/${id}`);
+      const response = await axios.get(`/api/getServiceAreas/${id}`);
       if (response.data.status === 200) {
         setFetchData(response.data.fetchData);
         let arrayData = [];
@@ -227,7 +227,7 @@ const ServiceArea = (props) => {
     formData.append("city_id", data.city);
     formData.append("areaName", data.areaName);
     axios
-      .post("/api/InsertAreas", formData)
+      .post("/api/insertAreas", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setChangeBit(!changeBit);
@@ -255,7 +255,7 @@ const ServiceArea = (props) => {
   };
   const loadOptions = (inputValue) => {
     return axios
-      .get(`/api/GetCities`, {
+      .get(`/api/getCities`, {
         header: {
           "Content-Type": "application/json",
           Accept: "application/json",

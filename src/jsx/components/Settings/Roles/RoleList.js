@@ -11,6 +11,7 @@ import swal from "sweetalert";
 import { Link, useRouteMatch } from "react-router-dom";
 import { checkPermission } from "../../Permissions";
 import { localization as t } from "../../Localization";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 const RoleList = (props) => {
   const { check, setCheck, nodes } = props;
@@ -83,7 +84,7 @@ const RoleList = (props) => {
   };
 
   return (
-    <>
+    <ScrollContainer className="scroll-container">
       <CSmartTable
         activePage={1}
         cleaner
@@ -131,7 +132,7 @@ const RoleList = (props) => {
           hover: true,
         }}
       />
-    </>
+    </ScrollContainer>
   );
 };
 

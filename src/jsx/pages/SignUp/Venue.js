@@ -18,7 +18,7 @@ const Venue = () => {
   const [business, setBusiness] = useState([]);
   useEffect(() => {
     axios
-      .get("/api/GetBusinessType")
+      .get("/api/getBusinessType")
       .then((res) => {
         setBusiness(res.data.fetchData);
       })
@@ -41,7 +41,7 @@ const Venue = () => {
 
   const handleSubmit = (data) => {
     axios
-      .post(`/api/UpdateRegister/${userId}`, data)
+      .post(`/api/updateRegister/${userId}`, data)
       .then((res) => {
         if (res.data.status === 200) {
           localStorage.setItem(

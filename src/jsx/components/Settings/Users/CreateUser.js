@@ -21,8 +21,12 @@ import { base_url, port } from "../../../../Consts";
 import DefaultPic from "../../../../images/hellomenu/logo.svg";
 import { localization as t } from "../../Localization";
 import ipapi from "ipapi.co";
+import { Link, useRouteMatch } from "react-router-dom";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 const CreateUser = () => {
+  const { url } = useRouteMatch();
+
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   const [user, setUser] = useState([]);
@@ -45,12 +49,6 @@ const CreateUser = () => {
   const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    // var callback = function (loc) {
-    //   setIpApi(loc);
-    // };
-    // ipapi.location(callback);
-    // dataLoad();
-
     return () => {
       setUser([]);
       setLoading(true);
@@ -135,25 +133,7 @@ const CreateUser = () => {
         console.log(error);
       });
   };
-  const fetchUser = (id) => {
-    var array = [];
-    axios
-      .get(`/api/getUser/${id}`)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setCheck(!check);
-          array.push({
-            confirm_new_password: "",
-            password: "",
-            ...res.data.data,
-          });
-          setInitialValues(array[0]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
   const columns = [
     {
       key: "profilePic",
@@ -421,95 +401,104 @@ const CreateUser = () => {
           </>
         )}
         <div style={{ borderBottom: "1px solid #ccc" }}>
-          <CSmartTable
-            activePage={1}
-            cleaner
-            columns={columns}
-            columnSorter
-            items={user}
-            itemsPerPageSelect
-            itemsPerPage={5}
-            pagination
-            tableFilter
-            scopedColumns={{
-              profilePic: (item) => {
-                return (
-                  <td>
-                    <img
-                      src={
-                        item?.profilePic
-                          ? `http://${base_url}:${port}/images/profiles/${item?.profilePic}`
-                          : DefaultPic
-                      }
-                      className="img-thumbnail"
-                      alt=""
-                      style={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "contain",
-                      }}
-                    />
-                  </td>
-                );
-              },
-              roleName: (item) => {
-                return (
-                  <td>
-                    <Chip
-                      label={item.roleName}
-                      // color="primary"
-                      variant="outlined"
-                    />
-                  </td>
-                );
-              },
-              status: (item) => {
-                return (
-                  <td>
-                    <Switch
-                      defaultChecked={item.status === 1 ? true : false}
-                      color="secondary"
-                      onChange={() => changeAccountStatus(item.id)}
-                    />
-                  </td>
-                );
-              },
-              actions: (item) => {
-                return (
-                  <td>
-                    <div className="row ">
-                      {checkPermission("users-edit") && (
-                        <div className="col">
-                          <Tooltip title="Edit">
-                            <IconButton onClick={(e) => fetchUser(item.id)}>
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      )}
-                      {checkPermission("users-delete") && (
-                        <div
-                          className="col"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => deleteUser(item.id)}
-                        >
-                          <Tooltip title="Delete">
-                            <IconButton>
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                );
-              },
-            }}
-            tableProps={{
-              striped: true,
-              hover: true,
-            }}
-          />
+          <ScrollContainer className="scroll-container">
+            <CSmartTable
+              activePage={1}
+              cleaner
+              columns={columns}
+              columnSorter
+              items={user}
+              itemsPerPageSelect
+              itemsPerPage={5}
+              pagination
+              tableFilter
+              scopedColumns={{
+                profilePic: (item) => {
+                  return (
+                    <td>
+                      <img
+                        src={
+                          item?.profilePic
+                            ? `http://${base_url}:${port}/images/profiles/${item?.profilePic}`
+                            : DefaultPic
+                        }
+                        className="img-thumbnail"
+                        alt=""
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </td>
+                  );
+                },
+                roleName: (item) => {
+                  return (
+                    <td>
+                      <Chip
+                        label={item.roleName}
+                        // color="primary"
+                        variant="outlined"
+                      />
+                    </td>
+                  );
+                },
+                status: (item) => {
+                  return (
+                    <td>
+                      <Switch
+                        defaultChecked={item.status === 1 ? true : false}
+                        color="secondary"
+                        onChange={() => changeAccountStatus(item.id)}
+                      />
+                    </td>
+                  );
+                },
+                actions: (item) => {
+                  return (
+                    <td>
+                      <div className="row ">
+                        {checkPermission("users-edit") && (
+                          <Link
+                            to={{
+                              pathname: `${url}/edit-user`,
+                              state: {
+                                id: item.id,
+                              },
+                            }}
+                          >
+                            <Tooltip title="Edit">
+                              <IconButton>
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                        )}
+                        {checkPermission("users-delete") && (
+                          <div
+                            className="col"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => deleteUser(item.id)}
+                          >
+                            <Tooltip title="Delete">
+                              <IconButton>
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  );
+                },
+              }}
+              tableProps={{
+                striped: true,
+                hover: true,
+              }}
+            />
+          </ScrollContainer>
         </div>
       </div>
     );

@@ -83,7 +83,7 @@ const Design = (props) => {
     formData.append("QRCodeBackgroundColor", themes.QRCodeBackgroundColor);
     // console.log(activeThemeId);
     axios
-      .post(`/api/UpdateTheme/${activeThemeId}`, formData)
+      .post(`/api/updateTheme/${activeThemeId}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -99,7 +99,7 @@ const Design = (props) => {
   // change the active theme
   const changeTheActiveTheme = (e, id) => {
     axios
-      .post(`/api/ThemeStatus/${id}`)
+      .post(`/api/themeStatus/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -113,7 +113,7 @@ const Design = (props) => {
   // change the active template
   const changeTheActiveTemplate = (e, id) => {
     axios
-      .post(`/api/TemplateStatus/${id}`)
+      .post(`/api/templateStatus/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -130,7 +130,7 @@ const Design = (props) => {
   const [templates, setTemplates] = useState([]);
   const dataLoad = async () => {
     try {
-      const res = await axios.get(`/api/GetThemes/${branchId}`);
+      const res = await axios.get(`/api/getThemes/${branchId}`);
       if (res.data.status === 200) {
         setFetchData(res.data.fetchData);
         res.data.fetchData.map((item, i) => {
@@ -142,7 +142,7 @@ const Design = (props) => {
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      const result = await axios.get(`/api/GetTemplates/${branchId}`);
+      const result = await axios.get(`/api/getTemplates/${branchId}`);
       if (result.data.status === 200) {
         setTemplates(result.data.data);
       } else {
@@ -178,7 +178,7 @@ const Design = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteTheme/${id}`)
+          .delete(`/api/deleteTheme/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setCheck(!check);

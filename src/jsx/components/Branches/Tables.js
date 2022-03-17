@@ -55,7 +55,7 @@ const Tables = (props) => {
   const saveTable = (data) => {
     // e.preventDefault();
     axios
-      .post("/api/InsertTable", data)
+      .post("/api/insertTable", data)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -82,7 +82,7 @@ const Tables = (props) => {
   const fetchTable = (e, id) => {
     e.preventDefault();
     axios
-      .get(`/api/EditTable/${id}`)
+      .get(`/api/editTable/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setEditTable(res.data.Details);
@@ -97,7 +97,7 @@ const Tables = (props) => {
   };
   const updateTable = (data) => {
     axios
-      .post("/api/UpdateTable", data)
+      .post("/api/updateTable", data)
       .then((res) => {
         if (res.data.status === 200) {
           setAlerts(true, "success", res.data.message);
@@ -125,7 +125,7 @@ const Tables = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteTable/${id}`)
+          .delete(`/api/deleteTable/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -149,7 +149,7 @@ const Tables = (props) => {
   const [loading, setLoading] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/GetTables/${id}`);
+      const result = await axios.get(`/api/getTables/${id}`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);

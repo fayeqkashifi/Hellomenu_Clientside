@@ -59,7 +59,7 @@ const SubCategory = (props) => {
       formData.append("CategoryID", id);
       formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
       axios
-        .post("/api/InsertSubCategories", formData)
+        .post("/api/insertSubCategories", formData)
         .then((res) => {
           if (res.data.status === 200) {
             setImageState([]);
@@ -85,7 +85,7 @@ const SubCategory = (props) => {
     e.preventDefault();
 
     axios
-      .get(`/api/EditSubCategories/${id}`)
+      .get(`/api/editSubCategories/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           setEditSubMenu(res.data.menu);
@@ -105,7 +105,7 @@ const SubCategory = (props) => {
     formData.append("CategoryID", id);
     formData.append("id", editSubMenu.id);
     axios
-      .post("/api/UpdateSubCategory", formData)
+      .post("/api/updateSubCategory", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setAlerts(true, "success", res.data.message);
@@ -137,7 +137,7 @@ const SubCategory = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteSubCategories/${id}`)
+          .delete(`/api/deleteSubCategories/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -164,7 +164,7 @@ const SubCategory = (props) => {
   const [loading, setLoading] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/GetSubCategories/${id}`);
+      const result = await axios.get(`/api/getSubCategories/${id}`);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData);
         setLoading(false);

@@ -26,7 +26,7 @@ const EditStories = (props) => {
 
   const dataLoad = async () => {
     try {
-      const response = await axios.get(`/api/EditStory/${id}`);
+      const response = await axios.get(`/api/editStory/${id}`);
       if (response.data.status === 200) {
         const result = response.data.data;
         setData(result);
@@ -41,7 +41,7 @@ const EditStories = (props) => {
         });
         setForm(value);
         setTagProducts(JSON.parse(result?.storyTagProducts));
-        const res = await axios.get(`/api/GetProducts/${result.branch_id}`);
+        const res = await axios.get(`/api/getProducts/${result.branch_id}`);
         if (res.data.status === 200) {
           setProducts(res.data.fetchData);
         } else {
@@ -65,7 +65,7 @@ const EditStories = (props) => {
     formData.append("id", data.id);
     formData.append("form", JSON.stringify(form));
     axios
-      .post("/api/UpdateStory", formData)
+      .post("/api/updateStory", formData)
       .then((res) => {
         if (res.data.status === 200) {
           swal("Success", res.data.message, "success").then((check) => {

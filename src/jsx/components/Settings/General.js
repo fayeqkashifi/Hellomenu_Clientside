@@ -44,7 +44,7 @@ const General = () => {
     formData.append("contactEmail", data.contactEmail);
     formData.append("whatsapp", data.whatsapp);
     axios
-      .post("/api/UpdateCompanies", formData)
+      .post("/api/updateCompanies", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setAlerts(true, "success", res.data.message);
@@ -62,12 +62,12 @@ const General = () => {
 
   const dataLoad = async () => {
     try {
-      const result = await axios.get("/api/GetCompanies");
+      const result = await axios.get("/api/getCompanies");
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData[0]);
       }
       axios
-        .get("/api/GetBusinessType")
+        .get("/api/getBusinessType")
         .then((res) => {
           setBusiness(res.data.fetchData);
           setLoading(false);
@@ -82,12 +82,6 @@ const General = () => {
   const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    // var callback = function (loc) {
-    //   setIpApi(loc);
-    // };
-    // ipapi.location(callback);
-    // dataLoad();
-
     return () => {
       setFetchData([]);
       setLoading(true);

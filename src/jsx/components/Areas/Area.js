@@ -46,7 +46,7 @@ const Area = () => {
       const formData = new FormData();
       formData.append("city_id", data.city);
       formData.append("areaName", data.areaName);
-      axios.post("/api/InsertAreas", formData).then((res) => {
+      axios.post("/api/insertAreas", formData).then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
           setModalCentered(false);
@@ -76,7 +76,7 @@ const Area = () => {
   const fetch = (e, id) => {
     e.preventDefault();
     axios
-      .get(`/api/EditAreas/${id}`)
+      .get(`/api/editAreas/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
           const data = res.data.item;
@@ -103,7 +103,7 @@ const Area = () => {
     formData.append("areaName", data.areaName);
     formData.append("id", data.id);
     axios
-      .post("/api/UpdateAreas", formData)
+      .post("/api/updateAreas", formData)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -123,7 +123,7 @@ const Area = () => {
   // edit end
 
   // delete Start
-  const deleteIngredient = (e, id) => {
+  const deleteAreas = (e, id) => {
     e.preventDefault();
     swal({
       title: "Are you sure?",
@@ -134,7 +134,7 @@ const Area = () => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteAreas/${id}`)
+          .delete(`/api/deleteAreas/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -188,7 +188,7 @@ const Area = () => {
   };
   const loadOptions = (inputValue) => {
     return axios
-      .get(`/api/GetCities`, {
+      .get(`/api/getCities`, {
         header: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -234,7 +234,7 @@ const Area = () => {
             {checkPermission("areas-delete") && (
               <button
                 type="button"
-                onClick={(e) => deleteIngredient(e, item.id)}
+                onClick={(e) => deleteAreas(e, item.id)}
                 className="btn btn-outline-warning btn-sm"
               >
                 {t("delete")}

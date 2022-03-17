@@ -59,7 +59,7 @@ const EditProduct = (props) => {
   };
   const save = (data) => {
     axios
-      .post("/api/InsertSingleIngredient", data)
+      .post("/api/insertSingleIngredient", data)
       .then((res) => {
         if (res.data.status === 200) {
           setCheck(!check);
@@ -105,7 +105,7 @@ const EditProduct = (props) => {
     formData.append("form", JSON.stringify(form));
 
     axios
-      .post("/api/UpdateProduct", formData)
+      .post("/api/updateProduct", formData)
       .then((res) => {
         if (res.data.status === 200) {
           swal("Success", res.data.message, "success").then((check) => {
@@ -155,19 +155,19 @@ const EditProduct = (props) => {
   };
   const dataLoad = async () => {
     try {
-      const cat = await axios.get(`/api/GetCategories/${branchId}`);
+      const cat = await axios.get(`/api/getCategories/${branchId}`);
       if (cat.data.status === 200) {
         setCategories(cat.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      const response = await axios.get(`/api/GetProducts/${branchId}`);
+      const response = await axios.get(`/api/getProducts/${branchId}`);
       if (response.data.status === 200) {
         setFetchData(response.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      const res = await axios.get(`/api/EditProducts/${productId}`);
+      const res = await axios.get(`/api/editProducts/${productId}`);
       if (res.data.status === 200) {
         const product = res.data.product;
         setEditProduct(product);
@@ -185,7 +185,7 @@ const EditProduct = (props) => {
         });
         setForm(value);
         axios
-          .get(`/api/GetSubCategories/${res.data.product.category_id}`)
+          .get(`/api/getSubCategories/${res.data.product.category_id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setSubCategories(res.data.fetchData);
@@ -216,7 +216,7 @@ const EditProduct = (props) => {
   }, []);
   const loadIngredients = async () => {
     try {
-      const result = await axios.post(`/api/GetIngredient`);
+      const result = await axios.post(`/api/getIngredient`);
       if (result.data.status === 200) {
         setIntgredients(result.data.fetchData);
       }
@@ -234,7 +234,7 @@ const EditProduct = (props) => {
     e.preventDefault();
     axios
       .get(
-        `/api/GetSubCategories/${e.target.value == "" ? null : e.target.value}`
+        `/api/getSubCategories/${e.target.value == "" ? null : e.target.value}`
       )
       .then((res) => {
         if (res.data.status === 200) {
@@ -862,27 +862,31 @@ const EditProduct = (props) => {
                         />
                       </div>
                     </div>
-                    {productExtra?.map((item, i) => {
-                      return (
-                        <div
-                          className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3"
-                          key={i}
-                        >
-                          <div className="form-group">
-                            <label className="mb-1 ">
-                              <strong>{item.label}</strong>
-                              <small>(Charge)</small>
-                            </label>
-                            <input
-                              type="number"
-                              className="form-control"
-                              onChange={(e) => extraHandle(e, item.id)}
-                              value={productExtra[i].price}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                      <div className="row">
+                        {productExtra?.map((item, i) => {
+                          return (
+                            <div
+                              className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3"
+                              key={i}
+                            >
+                              <div className="form-group">
+                                <label className="mb-1 ">
+                                  <strong>{item.label}</strong>
+                                  <small>(Charge)</small>
+                                </label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  onChange={(e) => extraHandle(e, item.id)}
+                                  value={productExtra[i].price}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
 
                     <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                       <div className="form-group">

@@ -34,7 +34,7 @@ const Variants = (props) => {
       });
       const res = await axios({
         method: "GET",
-        url: "/api/GetAttributes",
+        url: "/api/getAttributes",
       });
 
       const nameAtter = {};
@@ -269,7 +269,7 @@ const Variants = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/Deletevariations/${id}`)
+          .delete(`/api/deletevariations/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setNumberOfVar([]);
@@ -310,7 +310,7 @@ const Variants = (props) => {
   };
   const [modalCentered, setModalCentered] = useState(false);
   const saveAttribute = (data) => {
-    axios.post("/api/InsertAttribute", data).then((res) => {
+    axios.post("/api/insertAttribute", data).then((res) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setModalCentered(false);

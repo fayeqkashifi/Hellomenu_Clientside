@@ -15,7 +15,7 @@ const Shared = (props) => {
   useEffect(() => {
     (async () => {
       try {
-        const result = await axios.get(`/api/GetSharedCatBranches/${sub_id}`);
+        const result = await axios.get(`/api/getSharedCatBranches/${sub_id}`);
         if (result.status === 200) {
           setFetchData(result.data);
           setLoading(false);

@@ -39,7 +39,7 @@ const Branches = () => {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(`/api/DeleteBranches/${id}`)
+          .delete(`/api/deleteBranches/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
@@ -62,7 +62,7 @@ const Branches = () => {
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.get("/api/GetBranches");
+      const result = await axios.get("/api/getBranches");
       if (result.data.status === 200) {
         setBranchdata(result.data.branches);
         setLoading(false);
