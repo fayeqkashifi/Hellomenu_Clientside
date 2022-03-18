@@ -36,7 +36,6 @@ const Variants = (props) => {
         method: "GET",
         url: "/api/getAttributes",
       });
-
       const nameAtter = {};
       res.data.fetchData.map(
         (fetchData) => (nameAtter[fetchData.attributeName] = "")
@@ -89,12 +88,14 @@ const Variants = (props) => {
           setVariantsTage(attrFilterName);
         });
         setNumberOfVar(varLines);
-        setAttributes(res.data.fetchData);
+        setLoading(false);
+        // setAttributes(res.data.fetchData);
+      } else {
+        setLoading(false);
       }
     };
 
     getdata();
-    setLoading(false);
   }, [check]);
   const CreateNewVar = (tag) => {
     if (variantsTags.length == 1) {
@@ -455,7 +456,6 @@ const Variants = (props) => {
                 </div>
               </div>
             )}
-
             <NewGrid
               numberOfVar={numberOfVar}
               setNumberOfVar={setNumberOfVar}
