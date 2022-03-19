@@ -55,13 +55,14 @@ export default function SecondMain(props) {
             marginLeft: "6%",
           }}
         >
-          <div className="d-flex align-items-center justify-content-center">
-            <ScrollContainer className="scroll-container ">
-              <Toolbar>
-                <ShowCards {...properties} products={products} />
-              </Toolbar>
-            </ScrollContainer>
-          </div>
+          <ScrollContainer
+            className="scroll-container d-flex align-items-center justify-content-center"
+            // style={{ marginRight: "150px" }}
+          >
+            <Toolbar style={{ marginLeft: "150px" }}>
+              <ShowCards {...properties} products={products} />
+            </Toolbar>
+          </ScrollContainer>
         </Grid>
       </div>
     </div>

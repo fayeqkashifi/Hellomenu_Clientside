@@ -154,7 +154,7 @@ const Design = (props) => {
     }
   };
   useEffect(() => {
-    // dataLoad();
+    dataLoad();
     return () => {
       setFetchData([]);
       setTemplates([]);
@@ -162,10 +162,10 @@ const Design = (props) => {
       setThemes([]);
       setLoading(true);
     };
-  }, []);
-  useEffect(() => {
-    dataLoad();
   }, [check]);
+  // useEffect(() => {
+  //   dataLoad();
+  // }, [check]);
   // delete start
   const deleteTheme = (e, id) => {
     e.preventDefault();

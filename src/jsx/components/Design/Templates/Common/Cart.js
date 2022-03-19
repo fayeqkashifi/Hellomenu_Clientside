@@ -27,8 +27,9 @@ import {
   emptyCart,
   getBranch,
 } from "../Functionality";
-
-
+import PhoneInput from "react-phone-input-2";
+// import "react-phone-input-2/lib/style.css";
+import ipapi from "ipapi.co";
 import Counter from "../Common/Counter";
 const Cart = (props) => {
   let message = "";
@@ -52,10 +53,6 @@ const Cart = (props) => {
   const [tables, setTables] = useState([]);
   const [branch, setBranch] = useState([]);
   const dataLoad = async () => {
-    await getBranch(branchId).then((data) => {
-      setBranch(data);
-      setLoading(false);
-    });
     let Total = 0;
     cart.map(
       (item) =>
@@ -68,8 +65,19 @@ const Cart = (props) => {
     getTables(branchId).then((res) => {
       setTables(res);
     });
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
   };
+  const [ipApi, setIpApi] = useState([]);
 
+  useEffect(() => {
+    getBranch(branchId).then((data) => {
+      setBranch(data);
+      setLoading(false);
+    });
+  }, []);
   useEffect(() => {
     dataLoad();
     return () => {
@@ -79,7 +87,6 @@ const Cart = (props) => {
       setLoading(true);
     };
   }, [cart]);
-
   const remItem = (id, qty, price) => {
     setSum((sum -= price * qty));
     remCartItem(id, cart).then((data) => {
@@ -244,19 +251,17 @@ const Cart = (props) => {
             ? ""
             : `\n*Item Variant*: ${item.variantSKU}`
         } ${
-          item.extras === undefined || JSON.parse(item.extras).length === 0
+          item.extras === undefined
             ? ""
-            : `\n*Extras*: ${item.extras.map((val) => val.value)} INCLUDED`
+            : `\n*Extras*: ${item.extras?.map((val) => val.value)} INCLUDED`
         } ${
-          item.ingredients === undefined ||
-          JSON.parse(item.ingredients).length === 0
+          item.ingredients === undefined
             ? ""
             : `\n*Ingredients*: ${item.ingredients} NOT INCLUDED`
         } ${
-          item.recommendations === undefined ||
-          JSON.parse(item.recommendations).length === 0
+          item.recommendations === undefined
             ? ""
-            : `\n*Recommendations*: ${item.recommendations.map((val) =>
+            : `\n*Recommendations*: ${item.recommendations?.map((val) =>
                 val.show
                   ? val.label +
                     " price: " +
@@ -280,38 +285,17 @@ const Cart = (props) => {
           </div>
 
           <CardContent sx={{ flexGrow: 1 }}>
-            <Grid
-              container
-              spacing={2}
-              // style={style?.cartMainDiv}
-            >
-              <Grid
-                item
-                // xs={12}
-                // lg={2}
-                // xl={3}
-                // sm={6}
-                // md={6}
-                style={style?.cartImageDiv}
-              >
+            <Grid container spacing={2}>
+              <Grid item style={style?.cartImageDiv}>
                 <img
                   style={style?.cartImage}
                   src={`http://${base_url}:${port}/images/products/${
                     JSON.parse(item.image)[0]
                   }`}
                   alt="Image"
-                  // className="h-100"
                 />
               </Grid>
-              <Grid
-                item
-                sx={style?.cartProductDiv}
-                // xs={12}
-                // lg={3}
-                // xl={3}
-                // sm={6}
-                // md={6}
-              >
+              <Grid item sx={style?.cartProductDiv}>
                 <Typography style={style?.cartProductName}>
                   {item.ProductName}
                 </Typography>
@@ -344,23 +328,15 @@ const Cart = (props) => {
                   {item.Description}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                // xs={12}
-                // lg={5}
-                // xl={5}
-                // sm={6}
-                // md={6}
-                style={style?.cartVariantDiv}
-              >
+              <Grid item style={style?.cartVariantDiv}>
                 {" "}
-                {item?.ingredients === undefined ? (
+                {item.ingredients === undefined ? (
                   ""
                 ) : (
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Ingredients: </b>
-                    {JSON.parse(item?.ingredients)?.map((val, i) => {
-                      if (JSON.parse(item.ingredients).length === i + 1) {
+                    {item.ingredients?.map((val, i) => {
+                      if (item.ingredients.length === i + 1) {
                         return val + " - Not Included";
                       } else {
                         return val + ", ";
@@ -368,13 +344,13 @@ const Cart = (props) => {
                     })}
                   </Typography>
                 )}
-                {item?.extras === undefined ? (
+                {item.extras === undefined ? (
                   ""
                 ) : (
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Extras: </b>
 
-                    {JSON.parse(item?.extras)?.map((val, i) => {
+                    {item.extras?.map((val, i) => {
                       if (item?.extras.length === i + 1) {
                         return val.value + " - Included";
                       } else {
@@ -383,13 +359,13 @@ const Cart = (props) => {
                     })}
                   </Typography>
                 )}
-                {item?.recommendations === undefined ? (
+                {item.recommendations === undefined ? (
                   ""
                 ) : (
                   <Typography style={style?.cartDescription} gutterBottom>
                     <b>Recommendations: </b>
 
-                    {JSON.parse(item?.recommendations)?.map((val, i) => {
+                    {item.recommendations?.map((val, i) => {
                       if (val.show) {
                         return (
                           val.label +
@@ -410,15 +386,7 @@ const Cart = (props) => {
                   </Typography>
                 )}
               </Grid>
-              <Grid
-                item
-                // xs={12}
-                // lg={2}
-                // xl={2}
-                // sm={6}
-                // md={6}
-                style={style?.cartCounterDiv}
-              >
+              <Grid item style={style?.cartCounterDiv}>
                 <Counter
                   style={style}
                   cart={cart}
@@ -426,15 +394,7 @@ const Cart = (props) => {
                   item={item}
                 />
               </Grid>
-              <Grid
-                item
-                // xs={12}
-                // lg={6}
-                // xl={6}
-                // sm={6}
-                // md={6}
-                style={style?.cartNoteDiv}
-              >
+              <Grid item style={style?.cartNoteDiv}>
                 {item?.itemNote === undefined ? (
                   ""
                 ) : (
@@ -448,20 +408,8 @@ const Cart = (props) => {
                   </Typography>
                 )}
               </Grid>
-              <Grid
-                item
-                // xs={12}
-                // lg={6}
-                // xl={6}
-                // sm={6}
-                // md={6}
-                style={style?.cartTotalDiv}
-              >
-                <Typography
-                  style={style?.cartDescription}
-                  gutterBottom
-                  // className=""
-                >
+              <Grid item style={style?.cartTotalDiv}>
+                <Typography style={style?.cartDescription} gutterBottom>
                   <b>Total Price: </b>
                   {item?.totalPrice !== undefined
                     ? (
@@ -480,7 +428,6 @@ const Cart = (props) => {
   }
   return (
     <div>
-      {/* <CssBaseline /> */}
       <Container maxWidth="lg" className="mb-2">
         {alert.open ? (
           <CustomAlert
@@ -727,14 +674,27 @@ const Cart = (props) => {
               validationSchema={validationSchema}
               onSubmit={saveOrder}
             >
-              {({ errors, status, touched, values }) => (
+              {({ errors, status, touched, values, setFieldValue }) => (
                 <Form>
                   <Card sx={style?.card} className="m-1">
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Grid container spacing={1}>
                         <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
                           <div className="form-group">
-                            <Field
+                            <PhoneInput
+                              country={ipApi?.country_code?.toLowerCase()}
+                              className={
+                                errors.phoneNumber && touched.phoneNumber
+                                  ? " is-invalid"
+                                  : ""
+                              }
+                              name="phoneNumber"
+                              // style={style?.inputfield}
+                              onChange={(getOptionValue) => {
+                                setFieldValue("phoneNumber", getOptionValue);
+                              }}
+                            />
+                            {/* <Field
                               name="phoneNumber"
                               type="text"
                               className={
@@ -745,7 +705,7 @@ const Cart = (props) => {
                               }
                               placeholder="+93--- ---- ---"
                               style={style?.inputfield}
-                            />
+                            /> */}
                             <ErrorMessage
                               name="phoneNumber"
                               component="div"

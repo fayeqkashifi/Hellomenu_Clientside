@@ -77,6 +77,7 @@ function BranchStory(props) {
                             },
                           }}
                           key={i}
+                          className="text-center"
                         >
                           <img
                             src={`http://${base_url}:${port}/images/products/${
@@ -85,7 +86,7 @@ function BranchStory(props) {
                             alt="Image"
                             style={style?.imageVideo}
                           />
-                          <small className="ml-1" style={{ color: "#fff" }}>
+                          <small style={{ color: "#fff" }}>
                             {item.price +
                               getSymbolFromCurrency(item?.currency_code)}
                           </small>

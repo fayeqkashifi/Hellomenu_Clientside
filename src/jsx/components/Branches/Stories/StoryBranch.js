@@ -242,7 +242,7 @@ const Storybranch = (props) => {
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <Select
-                          key={tagProducts}
+                          value={tagProducts}
                           isMulti
                           options={products?.map((pro, i) => {
                             return {
