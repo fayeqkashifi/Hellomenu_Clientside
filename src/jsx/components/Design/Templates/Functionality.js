@@ -127,9 +127,17 @@ export const addItemWithdoutDetails = async (id, cart, products) => {
       return item.id !== id;
     });
     if (check) {
+      const array = [];
       const data = products.filter((product) => {
         return product.id === id;
       });
+      array.push({
+        ...data,
+        ingredients: [],
+        extras: [],
+        recommendations: [],
+      });
+      console.log(data);
       localStorage.setItem("cart", JSON.stringify(cart.concat(data)));
       return cart.concat(data);
     }
