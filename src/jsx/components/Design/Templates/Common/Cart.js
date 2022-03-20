@@ -18,7 +18,7 @@ import SendIcon from "@mui/icons-material/Send";
 import CustomAlert from "../../../CustomAlert";
 import * as Yup from "yup";
 import "yup-phone";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage } from "formik";
 import {
   getTables,
   checkTheTbl,
@@ -28,7 +28,6 @@ import {
   getBranch,
 } from "../Functionality";
 import PhoneInput from "react-phone-input-2";
-// import "react-phone-input-2/lib/style.css";
 import ipapi from "ipapi.co";
 import Counter from "../Common/Counter";
 const Cart = (props) => {
@@ -40,7 +39,7 @@ const Cart = (props) => {
   };
   const validationSchema = () => {
     return Yup.object().shape({
-      phoneNumber: Yup.string().phone().required("Phone Number is required"),
+      phoneNumber: Yup.string().required("Phone Number is required"),
     });
   };
 
@@ -53,6 +52,26 @@ const Cart = (props) => {
   const [tables, setTables] = useState([]);
   const [branch, setBranch] = useState([]);
   const dataLoad = async () => {
+    getBranch(branchId).then((data) => {
+      setBranch(data);
+      setLoading(false);
+    });
+    getTables(branchId).then((res) => {
+      setTables(res);
+    });
+  };
+  const [ipApi, setIpApi] = useState([]);
+
+  useEffect(() => {
+    var callback = function (loc) {
+      setIpApi(loc);
+    };
+    ipapi.location(callback);
+  }, []);
+  useEffect(() => {
+    dataLoad();
+  }, []);
+  useEffect(() => {
     let Total = 0;
     cart.map(
       (item) =>
@@ -62,29 +81,8 @@ const Cart = (props) => {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(Total);
-    getTables(branchId).then((res) => {
-      setTables(res);
-    });
-    var callback = function (loc) {
-      setIpApi(loc);
-    };
-    ipapi.location(callback);
-  };
-  const [ipApi, setIpApi] = useState([]);
-
-  useEffect(() => {
-    getBranch(branchId).then((data) => {
-      setBranch(data);
-      setLoading(false);
-    });
-  }, []);
-  useEffect(() => {
-    dataLoad();
     return () => {
       setSum(0);
-      setTables([]);
-      setBranch([]);
-      setLoading(true);
     };
   }, [cart]);
   const remItem = (id, qty, price) => {

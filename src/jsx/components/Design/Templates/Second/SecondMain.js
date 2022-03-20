@@ -6,6 +6,7 @@ import SideBar from "../Common/SideBar";
 import Header from "../Common/Header";
 import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
+import Statusbar from "../Common/Statusbar";
 
 export default function SecondMain(props) {
   const {
@@ -36,6 +37,7 @@ export default function SecondMain(props) {
         setProducts={setProducts}
         setActiveCategory={setActiveCategory}
       />
+
       <div style={style?.sidebarMainDiv}>
         <Card style={style?.sidebarCard}>
           <SideBar
@@ -52,14 +54,21 @@ export default function SecondMain(props) {
           spacing={2}
           style={{
             minHeight: "80vh",
-            marginLeft: "6%",
+            maxWidth: "90%",
+            marginLeft: "10%",
           }}
         >
+          <Statusbar
+            {...properties}
+            products={products}
+            categories={categories}
+          />
+
           <ScrollContainer
-            className="scroll-container d-flex align-items-center justify-content-center"
+            className="scroll-container row align-items-center justify-content-center"
             // style={{ marginRight: "150px" }}
           >
-            <Toolbar style={{ marginLeft: "150px" }}>
+            <Toolbar>
               <ShowCards {...properties} products={products} />
             </Toolbar>
           </ScrollContainer>

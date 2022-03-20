@@ -411,5 +411,49 @@ export const ThridStyle = (custom) => {
       width: "100%",
       textAlign: "center",
     },
+    // story style
+    headerVideos: {
+      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
+      cursor: "pointer",
+    },
+    branchStory: {
+      width: "100px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    productStory: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : "#000",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    imageVideo: {
+      height: "70px",
+      width: "50px",
+      objectFit: "contain",
+      borderRadius: "5px",
+      border: "1px solid",
+      borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
+      margin: "3px",
+    },
   };
 };

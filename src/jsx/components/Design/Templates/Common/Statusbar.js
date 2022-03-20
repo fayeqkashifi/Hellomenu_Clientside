@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
-import ReactPlayer from "react-player";
+import ReactPlayer from "react-player/lazy";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 function Statusbar(props) {
@@ -37,13 +37,6 @@ function Statusbar(props) {
       .catch((err) => {
         console.log(err);
       });
-    // console.log(
-    //   branchStories.length !== 0 ||
-    //     products.filter(
-    //       (item) =>
-    //         item?.video !== null || JSON.parse(item.videosUrl).length !== 0
-    //     ).length !== 0
-    // );
   }, []);
 
   if (loading) {
@@ -103,17 +96,7 @@ function Statusbar(props) {
                     >
                       {item?.storyVideos ? (
                         <video
-                          width="100px"
-                          height="150px"
-                          style={{
-                            borderRadius: "10px",
-                            border: "2px solid",
-                            borderColor: "#ff751d",
-                            padding: "2px",
-                            margin: "3px",
-                            marginTop: "10px",
-                            objectFit: "contain",
-                          }}
+                          style={style?.branchStory}
                           onMouseOver={(event) => event.target.play()}
                           onMouseOut={(event) => event.target.pause()}
                           src={`http://${base_url}:${port}/videos/branches/${
@@ -125,17 +108,9 @@ function Statusbar(props) {
                           .split(".")
                           .includes("tiktok") ? (
                         <ReactPlayer
-                          width="100px"
-                          height="150px"
-                          style={{
-                            borderRadius: "10px",
-                            border: "2px solid",
-                            borderColor: "#ff751d",
-                            margin: "3px",
-                            padding: "2px",
-                            lineBreak: "anywhere",
-                            overflow: "hidden",
-                          }}
+                          width="150px"
+                          height="200px"
+                          style={style?.branchStory}
                           playIcon={<PlayCircleOutlineIcon fontSize="large" />}
                           light={
                             item.branchImages
@@ -147,21 +122,10 @@ function Statusbar(props) {
                           url={JSON.parse(item.storyVideosUrl)[0]}
                         />
                       ) : (
-                        <div
-                          className="text-center"
-                          style={{
-                            width: "100px",
-                            height: "150px",
-                            borderRadius: "10px",
-                            border: "2px solid",
-                            borderColor: "#ff751d",
-                            margin: "3px",
-                            padding: "2px",
-                          }}
-                        >
+                        <div className="text-center" style={style?.branchStory}>
                           <ReactPlayer
-                            width="90px"
-                            height="120px"
+                            width="140px"
+                            height="170px"
                             style={{
                               overflow: "hidden",
                             }}
@@ -195,17 +159,9 @@ function Statusbar(props) {
                     >
                       {item?.video ? (
                         <video
-                          width="100px"
-                          height="150px"
-                          style={{
-                            borderRadius: "10px",
-                            border: "2px solid",
-                            borderColor: "#fff",
-                            padding: "2px",
-                            margin: "3px",
-                            marginTop: "10px",
-                            objectFit: "contain",
-                          }}
+                          // width="100px"
+                          // height="150px"
+                          style={style?.productStory}
                           src={`http://${base_url}:${port}/videos/products/${
                             JSON.parse(item.video)[0]
                           }`}
@@ -217,17 +173,9 @@ function Statusbar(props) {
                           .split(".")
                           .includes("tiktok") ? (
                         <ReactPlayer
-                          width="100px"
-                          height="150px"
-                          style={{
-                            borderRadius: "10px",
-                            border: "2px solid",
-                            borderColor: "#fff",
-                            margin: "3px",
-                            padding: "2px",
-                            lineBreak: "anywhere",
-                            overflow: "hidden",
-                          }}
+                          width="150px"
+                          height="200px"
+                          style={style?.productStory}
                           playIcon={<PlayCircleOutlineIcon fontSize="large" />}
                           light={`http://${base_url}:${port}/images/products/${
                             JSON.parse(item.image)[0]
@@ -237,33 +185,16 @@ function Statusbar(props) {
                       ) : (
                         <div
                           className="text-center"
-                          style={{
-                            width: "100px",
-                            height: "150px",
-                            borderRadius: "10px",
-                            border: "2px solid",
-                            borderColor: "#fff",
-                            margin: "3px",
-                            padding: "2px",
-                          }}
+                          style={style?.productStory}
                         >
-                          <div className="App">
-                            <ReactPlayer
-                              width="90px"
-                              height="120px"
-                              style={{
-                                overflow: "hidden",
-                              }}
-                              url={JSON.parse(item.videosUrl)[0]}
-                              config={{
-                                youtube: {
-                                  playerVars: {
-                                    origin: "https://www.youtube.com",
-                                  },
-                                },
-                              }}
-                            />
-                          </div>
+                          <ReactPlayer
+                            width="140px"
+                            height="170px"
+                            style={{
+                              overflow: "hidden",
+                            }}
+                            url={JSON.parse(item.videosUrl)[0]}
+                          />
                           <FullscreenIcon fontSize="small" />
                         </div>
                       )}

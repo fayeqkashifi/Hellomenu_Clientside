@@ -364,25 +364,50 @@ export const DarkStyle = (custom) => {
 
       objectFit: "contain",
     },
-    statusPlayer: {
-      borderRadius: "10px",
-      border: "2px solid",
-      borderColor: custom?.menusActiveColor ? custom.menusActiveColor : "#fff",
-      margin: "3px",
-      objectFit: "contain",
-      // textAlgin: "center",
-    },
+
+    // story style
     headerVideos: {
-      color: custom?.menusActiveColor ? custom.menusActiveColor : "#ff751d",
+      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#ff751d",
       cursor: "pointer",
     },
+    branchStory: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#ff751d",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    productStory: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : "#fff",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+
     imageVideo: {
       height: "70px",
       width: "50px",
       objectFit: "contain",
       borderRadius: "5px",
       border: "1px solid",
-      borderColor: custom?.menusActiveColor ? custom.menusActiveColor : "#aaa",
+      borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
       margin: "3px",
     },
   };

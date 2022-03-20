@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player/lazy";
 import { base_url, port } from "../../../../../Consts";
-// import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { Link } from "react-router-dom";
 import { getProductsBasedOnBranchId } from "../Functionality";
 import { useTranslation } from "react-i18next";
@@ -60,190 +59,162 @@ function VideoList(props) {
     );
   } else {
     return (
-      <div style={style?.background}>
-        <div className="row p-5">
-          {branchStories?.map((item) => {
-            return (
-              <div className="col" key={item.id}>
-                <Link
-                  to={{
-                    pathname: `/public/video`,
-                    state: {
-                      style: style,
-                      branch: branch,
-                      deliveryFees: deliveryFees,
-                      branchState: true,
-                      branchStory: item,
-                      products: products,
-                      categories: categories,
-                    },
-                  }}
-                  style={style?.headerVideos}
-                >
-                  {item?.storyVideos ? (
-                    <ReactPlayer
-                      width="150px"
-                      height="200px"
-                      style={{
-                        borderRadius: "10px",
-                        border: "2px solid",
-                        borderColor: "#ff751d",
-                        margin: "3px",
-                        objectFit: "contain",
-                      }}
-                      url={`http://${base_url}:${port}/videos/branches/${
-                        JSON.parse(item?.storyVideos)[0]
-                      }`}
-                      playing={false}
-                    />
-                  ) : JSON.parse(item.storyVideosUrl)[0]
-                      .split(".")
-                      .includes("tiktok") ? (
-                    <ReactPlayer
-                      width="150px"
-                      height="200px"
-                      style={{
-                        borderRadius: "10px",
-                        border: "2px solid",
-                        borderColor: "#ff751d",
-                        margin: "3px",
-                        padding: "2px",
-                        overflow: "hidden",
-                      }}
-                      playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                      light={
-                        item.branchImages
-                          ? `http://${base_url}:${port}/images/branches/${
-                              JSON.parse(item.branchImages)[0]
-                            }`
-                          : true
-                      }
-                      url={JSON.parse(item.storyVideosUrl)[0]}
-                    />
-                  ) : (
-                    <div
-                      className="text-center"
-                      style={{
-                        width: "150px",
-                        height: "200px",
-                        borderRadius: "10px",
-                        border: "2px solid",
-                        borderColor: "#ff751d",
-                        margin: "3px",
-                        padding: "2px",
-                      }}
-                    >
+      <div style={style?.background} className="p-5">
+        <div className="container">
+          <div className="row justify-content-start">
+            {branchStories?.map((item) => {
+              return (
+                <div className="col-2" key={item.id}>
+                  <Link
+                    to={{
+                      pathname: `/public/video`,
+                      state: {
+                        style: style,
+                        branch: branch,
+                        deliveryFees: deliveryFees,
+                        branchState: true,
+                        branchStory: item,
+                        products: products,
+                        categories: categories,
+                      },
+                    }}
+                    style={style?.headerVideos}
+                  >
+                    {item?.storyVideos ? (
                       <ReactPlayer
-                        width="140px"
-                        height="170px"
-                        style={{
-                          overflow: "hidden",
-                        }}
+                        width="150px"
+                        height="200px"
+                        style={style?.branchStory}
+                        url={`http://${base_url}:${port}/videos/branches/${
+                          JSON.parse(item?.storyVideos)[0]
+                        }`}
+                        playing={false}
+                      />
+                    ) : JSON.parse(item.storyVideosUrl)[0]
+                        .split(".")
+                        .includes("tiktok") ? (
+                      <ReactPlayer
+                        width="150px"
+                        height="200px"
+                        style={style?.branchStory}
+                        playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                        light={
+                          item.branchImages
+                            ? `http://${base_url}:${port}/images/branches/${
+                                JSON.parse(item.branchImages)[0]
+                              }`
+                            : true
+                        }
                         url={JSON.parse(item.storyVideosUrl)[0]}
-                      ></ReactPlayer>
-                      <FullscreenIcon fontSize="small" />
-                    </div>
-                  )}
-                </Link>
-              </div>
-            );
-          })}
-          {products.map((item) => {
-            return (
-              <div className="col" key={item.id}>
-                <Link
-                  to={{
-                    pathname: `/public/video`,
-                    state: {
-                      style: style,
-                      branch: branch,
-                      product_id: item.id,
-                      deliveryFees: deliveryFees,
-                      branchState: false,
-                    },
-                  }}
-                  style={style?.headerVideos}
-                >
-                  {item?.video ? (
+                      />
+                    ) : (
+                      <div style={style?.branchStory} className="text-center">
+                        <ReactPlayer
+                          width="140px"
+                          height="170px"
+                          url={JSON.parse(item.storyVideosUrl)[0]}
+                        ></ReactPlayer>
+                        <FullscreenIcon fontSize="small" />
+                      </div>
+                    )}
+                  </Link>
+                </div>
+              );
+            })}
+            {products.map((item) => {
+              return item?.video ? (
+                <div className={`col-2`} key={item.id}>
+                  <Link
+                    to={{
+                      pathname: `/public/video`,
+                      state: {
+                        style: style,
+                        branch: branch,
+                        product_id: item.id,
+                        deliveryFees: deliveryFees,
+                        branchState: false,
+                      },
+                    }}
+                    style={style?.headerVideos}
+                  >
                     <ReactPlayer
                       width="150px"
                       height="200px"
-                      style={style?.statusPlayer}
+                      style={style?.productStory}
                       url={`http://${base_url}:${port}/videos/products/${
                         JSON.parse(item.video)[0]
                       }`}
                       playing={false}
                     />
-                  ) : JSON.parse(item.videosUrl).length !== 0 ? (
-                    JSON.parse(item.videosUrl)[0]
-                      .split(".")
-                      .includes("tiktok") ? (
-                      <ReactPlayer
-                        width="150px"
-                        height="200px"
-                        style={{
-                          borderRadius: "10px",
-                          border: "2px solid",
-                          borderColor: "#fff",
-                          margin: "3px",
-                          padding: "2px",
-                          lineBreak: "anywhere",
-                          overflow: "hidden",
-                        }}
-                        playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                        light={`http://${base_url}:${port}/images/products/${
-                          JSON.parse(item.image)[0]
-                        }`}
-                        url={JSON.parse(item.videosUrl)[0]}
-                      />
-                    ) : (
-                      <div
-                        className="text-center"
-                        style={{
-                          width: "150px",
-                          height: "200px",
-                          borderRadius: "10px",
-                          border: "2px solid",
-                          borderColor: "#fff",
-                          margin: "3px",
-                          padding: "2px",
-                        }}
-                      >
+                  </Link>
+                </div>
+              ) : (
+                JSON.parse(item.videosUrl).length !== 0 && (
+                  <div className={`col-2`} key={item.id}>
+                    <Link
+                      to={{
+                        pathname: `/public/video`,
+                        state: {
+                          style: style,
+                          branch: branch,
+                          product_id: item.id,
+                          deliveryFees: deliveryFees,
+                          branchState: false,
+                        },
+                      }}
+                      style={style?.headerVideos}
+                    >
+                      {JSON.parse(item.videosUrl)[0]
+                        .split(".")
+                        .includes("tiktok") ? (
                         <ReactPlayer
-                          width="140px"
-                          height="170px"
-                          style={{
-                            overflow: "hidden",
-                          }}
+                          width="150px"
+                          height="200px"
+                          style={style?.productStory}
+                          playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                          light={`http://${base_url}:${port}/images/products/${
+                            JSON.parse(item.image)[0]
+                          }`}
                           url={JSON.parse(item.videosUrl)[0]}
-                        ></ReactPlayer>
-                        <FullscreenIcon fontSize="small" />
-                      </div>
-                    )
-                  ) : null}
-                </Link>
-              </div>
-            );
-          })}
+                        />
+                      ) : (
+                        <div
+                          style={style?.productStory}
+                          className="text-center"
+                        >
+                          <ReactPlayer
+                            width="140px"
+                            height="170px"
+                            url={JSON.parse(item.videosUrl)[0]}
+                          ></ReactPlayer>
+                          <FullscreenIcon fontSize="small" />
+                        </div>
+                      )}
+                    </Link>
+                  </div>
+                )
+              );
+            })}
+          </div>
+          <InfiniteScroll
+            dataLength={products.length} //This is important field to render the next data
+            next={fetchMoreData}
+            hasMore={changeState}
+            loader={
+              <p className="text-center py-4" style={{ marginBottom: "100px" }}>
+                <b>{t("loading")}</b>
+              </p>
+            }
+            endMessage={
+              <p
+                style={{ textAlign: "center", marginBottom: "100px" }}
+                className="py-4"
+              >
+                <b>{t("yay_you_have_seen_it_all")}</b>
+              </p>
+            }
+          ></InfiniteScroll>
         </div>
-        <InfiniteScroll
-          dataLength={products.length} //This is important field to render the next data
-          next={fetchMoreData}
-          hasMore={changeState}
-          loader={
-            <p className="text-center py-4" style={{ marginBottom: "100px" }}>
-              <b>{t("loading")}</b>
-            </p>
-          }
-          endMessage={
-            <p
-              style={{ textAlign: "center", marginBottom: "100px" }}
-              className="py-4"
-            >
-              <b>{t("yay_you_have_seen_it_all")}</b>
-            </p>
-          }
-        ></InfiniteScroll>
       </div>
     );
   }

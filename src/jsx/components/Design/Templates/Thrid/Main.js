@@ -14,6 +14,8 @@ import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
+import Statusbar from "../Common/Statusbar";
+
 export default function ThridMain(props) {
   const { t } = useTranslation();
   const {
@@ -81,6 +83,7 @@ export default function ThridMain(props) {
           setProducts={setProducts}
           setActiveCategory={setActiveCategory}
         />
+
         <SideBar
           style={style}
           branchId={branchId}
@@ -88,6 +91,11 @@ export default function ThridMain(props) {
           activeCategory={activeCategory}
           setProducts={setProducts}
           setActiveCategory={setActiveCategory}
+        />
+        <Statusbar
+          {...properties}
+          products={products}
+          categories={categories}
         />
         <Container
           className="mt-3 d-flex justify-content-center"

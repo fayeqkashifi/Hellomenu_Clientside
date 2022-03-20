@@ -137,7 +137,6 @@ export const addItemWithdoutDetails = async (id, cart, products) => {
         extras: [],
         recommendations: [],
       });
-      console.log(data);
       localStorage.setItem("cart", JSON.stringify(cart.concat(data)));
       return cart.concat(data);
     }
