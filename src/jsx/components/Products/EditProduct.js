@@ -780,7 +780,7 @@ const EditProduct = (props) => {
                           {t("add")}
                         </button>
                       </div>
-                      <div className="row form-group my-2">
+                      {/* <div className="row form-group my-2">
                         {form?.map((item, i) => {
                           return (
                             <div className="col-xl-2 col-lg-2 col-sm-2" key={i}>
@@ -798,7 +798,7 @@ const EditProduct = (props) => {
                             </div>
                           );
                         })}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
