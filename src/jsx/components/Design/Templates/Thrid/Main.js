@@ -103,24 +103,26 @@ export default function ThridMain(props) {
         >
           {viewShow_HTMLTABLE}
         </Container>
-        <InfiniteScroll
-          dataLength={products.length} //This is important field to render the next data
-          next={fetchMoreData}
-          hasMore={changeState}
-          loader={
-            <p className="text-center py-4" style={{ marginBottom: "100px" }}>
-              <b>{t("loading")}</b>
-            </p>
-          }
-          endMessage={
-            <p
-              style={{ textAlign: "center", marginBottom: "100px" }}
-              className="py-4"
-            >
-              <b>{t("yay_you_have_seen_it_all")}</b>
-            </p>
-          }
-        ></InfiniteScroll>
+        {products.length >= 10 && (
+          <InfiniteScroll
+            dataLength={products.length} //This is important field to render the next data
+            next={fetchMoreData}
+            hasMore={changeState}
+            loader={
+              <p className="text-center py-4" style={{ marginBottom: "100px" }}>
+                <b>{t("loading")}</b>
+              </p>
+            }
+            endMessage={
+              <p
+                style={{ textAlign: "center", marginBottom: "100px" }}
+                className="py-4"
+              >
+                <b>{t("yay_you_have_seen_it_all")}</b>
+              </p>
+            }
+          ></InfiniteScroll>
+        )}
       </Container>
     </div>
   );

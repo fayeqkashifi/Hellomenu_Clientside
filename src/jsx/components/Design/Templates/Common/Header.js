@@ -16,6 +16,7 @@ import {
 import Drawer from "./Drawer";
 import getSymbolFromCurrency from "currency-symbol-map";
 import ScrollContainer from "react-indiana-drag-scroll";
+import axios from "axios";
 
 function Header(props) {
   const history = useHistory();
@@ -86,6 +87,30 @@ function Header(props) {
       setSum(0);
     };
   }, [cart]);
+  const handleChange = (e) => {
+    if (e.target.value === "") {
+      getProductsBasedOnBranchId(branchId, 1).then((data) => {
+        setProducts(data.data);
+        setChangeState(true);
+        setLastPage(data.last_page);
+        setPage(2);
+        setActiveCategory("All~~~1");
+      });
+    } else {
+      axios
+        .get(`/api/findProduct/${e.target.value}`)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setProducts(res.data.fetchData);
+          } else if (404) {
+            setProducts(res.data.fetchData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
   return (
     <React.Fragment>
       <Toolbar sx={{ position: "sticky" }} className="top-0">
@@ -95,18 +120,25 @@ function Header(props) {
         <Typography align="left" style={style?.title} noWrap>
           {activeCategory?.split("~~~")[0]}
         </Typography>
-        <Typography sx={{ flex: 1 }} style={style?.searchFields}>
-          <input
+        <Typography align="right" sx={{ flex: 1 }} style={style?.searchFields}>
+          {/* <input
             name="dateAndTime"
             type="text"
             className={`form-control`}
-            placeholder="Search By Categories"
+            placeholder="Search By Name"
             style={style?.inputfield}
-          />
+          /> */}
         </Typography>
-        <IconButton sx={style?.searchIcon}>
-          <SearchOutlinedIcon fontSize="small" />
-        </IconButton>
+        {/* <div sx={style?.searchIcon}> */}
+        <input
+          name="dateAndTime"
+          type="text"
+          className={`form-control`}
+          placeholder="Search By Name"
+          onChange={handleChange}
+          style={style?.inputfield}
+        />
+        {/* </div> */}
         <IconButton onClick={() => setModalCentered(true)}>
           <Badge
             badgeContent={cart.length}

@@ -63,7 +63,7 @@ export const SecondStyle = (custom) => {
       color: "#000",
     },
     searchIcon: {
-      color: "#000",
+      // color: "#000",
     },
     title: {
       marginLeft: 200,
@@ -79,6 +79,7 @@ export const SecondStyle = (custom) => {
     },
     searchFields: {
       visibility: "hidden",
+      // textAlign: "right",
     },
     headerTotalDiv: {
       display: "none",
@@ -134,7 +135,7 @@ export const SecondStyle = (custom) => {
 
     // },
     inputfield: {
-      width: "100%",
+      width: "50%",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
       fontSize: 12,
