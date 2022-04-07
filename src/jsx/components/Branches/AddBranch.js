@@ -1,8 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -17,19 +15,40 @@ import { localization as t } from "../Localization";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import ipapi from "ipapi.co";
+import SubmitButtons from "../Common/SubmitButtons";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import Button from "@mui/material/Button";
 const AddBranch = () => {
   const initialValues = {
     BrancheName: "",
     currencyID: "",
     phoneNumber: "",
-    branchVideos: [],
-    branchImages: [],
+    branchVideos: "",
+    branchImages: "",
   };
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/gif",
+    "image/png",
+  ];
   const validationSchema = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
       phoneNumber: Yup.number().required("Phone Number is required"),
+      branchImages: Yup.mixed()
+        .nullable()
+        .notRequired()
+        .test("FILE_SIZE", "Uploaded file is too big.", function (value) {
+          return value.map((item) => console.log(item.size));
+        })
+        .test(
+          "FILE_FORMAT",
+          "Uploaded file has unsupported format.",
+          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+        ),
     });
   };
   // insert start
@@ -46,63 +65,58 @@ const AddBranch = () => {
       message: message,
     });
   };
-  const saveBranch = (data) => {
-    if (atob(localStorage.getItem("auth_company_id")) !== "null") {
-      const ArrayValue = [];
-      for (const [key, value] of Object.entries(orderMethods)) {
-        ArrayValue.push(value);
-      }
-      if (ArrayValue.includes(1)) {
-        const formData = new FormData();
-        formData.append("orderMethods", JSON.stringify(orderMethods));
-        formData.append("BrancheName", data.BrancheName);
-        formData.append("currencyID", data.currencyID);
-        for (let i = 0; i < data.branchImages.length; i++) {
-          formData.append("branchImages[]", data.branchImages[i]);
-        }
-        for (let i = 0; i < data.branchVideos.length; i++) {
-          formData.append("branchVideos[]", data.branchVideos[i]);
-        }
-        formData.append("phoneNumber", data.phoneNumber);
-        formData.append("otherAddressFields", JSON.stringify(form));
-        formData.append("fullAddress", fullAddress);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const MySwal = withReactContent(Swal);
 
-        axios
-          .post("/api/insertBranches", formData)
-          .then((res) => {
-            if (res.data.status === 200) {
-              swal("Success", res.data.message, "success").then((check) => {
-                if (check) {
-                  history.push(`/branches`);
-                }
-              });
-            } else if (res.data.status === 304) {
-              setAlerts(true, "warning", res.data.message);
-            } else {
-              setAlerts(true, "error", res.data.error);
-              throw Error("Due to an error, the data cannot be retrieved.");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        setAlerts(
-          true,
-          "warning",
-          "Please choose at least one way of ordering."
-        );
-      }
+  const saveBranch = (data) => {
+    setIsSubmitting(true);
+    const ArrayValue = [];
+    for (const [key, value] of Object.entries(orderMethods)) {
+      ArrayValue.push(value);
+    }
+    if (ArrayValue.includes(1)) {
+      const formData = new FormData();
+      formData.append("orderMethods", JSON.stringify(orderMethods));
+      formData.append("BrancheName", data.BrancheName);
+      formData.append("currencyID", data.currencyID);
+      // for (let i = 0; i < data.branchImages.length; i++) {
+      //   formData.append("branchImages[]", data.branchImages[i]);
+      // }
+      // for (let i = 0; i < data.branchVideos.length; i++) {
+      //   formData.append("branchVideos[]", data.branchVideos[i]);
+      // }
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("otherAddressFields", JSON.stringify(form));
+      formData.append("fullAddress", fullAddress);
+      axios
+        .post("/api/insertBranches", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            MySwal.fire({
+              title: <strong>Good job!</strong>,
+              html: res.data.message,
+              icon: "success",
+              confirmButtonText: "OK",
+              confirmButtonColor: "#93de8b",
+            }).then((check) => {
+              if (check) {
+                history.push(`/branches`);
+                setIsSubmitting(false);
+              }
+            });
+          } else if (res.data.status === 304) {
+            setAlerts(true, "warning", res.data.message);
+          } else {
+            setAlerts(true, "error", res.data.error);
+            throw Error("Due to an error, the data cannot be retrieved.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
-      swal(
-        "warning",
-        "Please add the company first, then the branches.",
-        "warning"
-      ).then((value) => {
-        if (value) {
-          history.push("/company");
-        }
-      });
+      setAlerts(true, "warning", "Please choose at least one way of ordering.");
+      setIsSubmitting(false);
     }
   };
   const [currency, setCurrency] = useState([]);
@@ -118,26 +132,26 @@ const AddBranch = () => {
   const FullAddressHandle = (e) => {
     setFullAddress(e.target.checked ? 1 : 0);
   };
-  const dataLoad = async () => {
-    try {
-      const response = await axios.get("/api/getCurrencies");
-      if (response.data.status === 200) {
-        setCurrency(response.data.fetchData);
-        setLoading(false);
-      } else {
-        throw Error("Due to an error, the data cannot be retrieved.");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const [ipApi, setIpApi] = useState([]);
 
+  const [ipApi, setIpApi] = useState([]);
   useEffect(() => {
     var callback = function (loc) {
       setIpApi(loc);
     };
     ipapi.location(callback);
+    const dataLoad = async () => {
+      try {
+        const response = await axios.get("/api/getCurrencies");
+        if (response.data.status === 200) {
+          setCurrency(response.data.fetchData);
+          setLoading(false);
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
     dataLoad();
     return () => {
       setCurrency([]);
@@ -166,7 +180,6 @@ const AddBranch = () => {
 
     return !someEmpty;
   };
-
   const handleAddLink = (e) => {
     e.preventDefault();
     const inputState = {
@@ -293,7 +306,7 @@ const AddBranch = () => {
                             <Checkbox
                               name="tbl_qrcode"
                               onChange={(e) => orderHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="Table Reservation"
@@ -303,7 +316,7 @@ const AddBranch = () => {
                             <Checkbox
                               name="delivery"
                               onChange={(e) => orderHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="Home Delivery"
@@ -313,7 +326,7 @@ const AddBranch = () => {
                             <Checkbox
                               name="whatsApp"
                               onChange={(e) => orderHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="WhatsApp"
@@ -357,14 +370,14 @@ const AddBranch = () => {
                               checked={fullAddress ? true : false}
                               name="full_address"
                               onChange={(e) => FullAddressHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="Full Address"
                         />
                       </FormGroup>
                       {form.map((item, index) => (
-                        <div className="row m-1" key={`item-${index}`}>
+                        <div className="row my-1" key={`item-${index}`}>
                           <div className="col-10">
                             <input
                               type="text"
@@ -399,12 +412,13 @@ const AddBranch = () => {
                         </div>
                       ))}
 
-                      <button
-                        className="btn btn-primary "
+                      <Button
+                        variant="outlined"
+                        size="medium"
                         onClick={handleAddLink}
                       >
                         {t("add_more")}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -426,7 +440,11 @@ const AddBranch = () => {
                         <input
                           type="file"
                           accept="image/*"
-                          className="form-control"
+                          className={
+                            errors.branchImages && touched.branchImages
+                              ? "form-control is-invalid"
+                              : "form-control"
+                          }
                           name="branchImages"
                           onChange={(event) => {
                             setFieldValue("branchImages", event.target.files);
@@ -434,6 +452,11 @@ const AddBranch = () => {
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
+                        />
+                        <ErrorMessage
+                          name="branchImages"
+                          component="div"
+                          className="invalid-feedback"
                         />
                       </div>
                     </div>
@@ -448,7 +471,11 @@ const AddBranch = () => {
                         <input
                           type="file"
                           accept="video/*"
-                          className="form-control"
+                          className={
+                            errors.branchVideos && touched.branchVideos
+                              ? "form-control is-invalid"
+                              : "form-control"
+                          }
                           name="branchVideos"
                           onChange={(event) => {
                             setFieldValue("branchVideos", event.target.files);
@@ -457,6 +484,11 @@ const AddBranch = () => {
                           data-overwrite-initial="false"
                           data-min-file-count="1"
                         />
+                        <ErrorMessage
+                          name="branchVideos"
+                          component="div"
+                          className="invalid-feedback"
+                        />
                       </div>
                     </div>
                   </div>
@@ -464,16 +496,14 @@ const AddBranch = () => {
               </div>
 
               <div className="card-footer text-right">
-                <Button
-                  variant="danger light"
-                  className="m-1"
-                  onClick={() => history.goBack()}
-                >
-                  {t("back")}
-                </Button>
-                <Button variant="primary" type="submit">
+                <SubmitButtons
+                  isSubmitting={isSubmitting}
+                  left={t("back")}
+                  right={t("save")}
+                />
+                {/* <Button variant="primary" type="submit">
                   {t("save")}{" "}
-                </Button>
+                </Button> */}
               </div>
             </div>
           </Form>

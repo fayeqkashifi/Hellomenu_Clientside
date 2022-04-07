@@ -19,7 +19,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Tooltip from "@mui/material/Tooltip";
 import ReactPlayer from "react-player/lazy";
-import ipapi from "ipapi.co";
+// import ipapi from "ipapi.co";
 
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
@@ -113,14 +113,14 @@ const EditBranch = (props) => {
       const response = await axios.get(`/api/editBranches/${id}`);
       if (response.data.status === 200) {
         setFullAddress(response.data.branch.fullAddress);
-        JSON.parse(response.data.branch.otherAddressFields).map((item) => {
+        JSON.parse(response.data.branch.otherAddressFields).map((item) =>
           arrayAddress.push({
             name: item,
             errors: {
               name: null,
             },
-          });
-        });
+          })
+        );
         setEditBranchstate(response.data.branch);
         setOrderMethodsEdit(JSON.parse(response.data.branch.orderMethods));
 
@@ -138,13 +138,13 @@ const EditBranch = (props) => {
       console.error(error);
     }
   };
-  const [ipApi, setIpApi] = useState([]);
+  // const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    var callback = function (loc) {
-      setIpApi(loc);
-    };
-    ipapi.location(callback);
+    // var callback = function (loc) {
+    //   setIpApi(loc);
+    // };
+    // ipapi.location(callback);
     dataLoad();
     return () => {
       setCurrency([]);
@@ -153,7 +153,7 @@ const EditBranch = (props) => {
       setOrderMethodsEdit([]);
       setLoading(true);
     };
-  }, []);
+  }, [id]);
 
   const [form, setForm] = useState(arrayAddress);
 
@@ -247,12 +247,10 @@ const EditBranch = (props) => {
       .post("/api/uploadBranchImage", formData)
       .then((res) => {
         if (res.data.status === 200) {
-          JSON.parse(editBranchstate?.branchImages)?.map((item) => {
-            images.push(item);
-          });
-          res.data.filenames.map((item) => {
-            images.push(item);
-          });
+          JSON.parse(editBranchstate?.branchImages)?.map((item) =>
+            images.push(item)
+          );
+          res.data.filenames.map((item) => images.push(item));
           setEditBranchstate({
             ...editBranchstate,
             branchImages: JSON.stringify(images),
@@ -293,9 +291,7 @@ const EditBranch = (props) => {
       .post("/api/uploadBranchVideo", formData)
       .then((res) => {
         if (res.data.status === 200) {
-          res.data.filenames.map((item) => {
-            images.push(item);
-          });
+          res.data.filenames.map((item) => images.push(item));
 
           setEditBranchstate({
             ...editBranchstate,
@@ -504,7 +500,7 @@ const EditBranch = (props) => {
                       ))}
 
                       <button
-                        className="btn btn-primary "
+                        className="btn btn-primary my-1"
                         onClick={handleAddLink}
                       >
                         {t("add_more")}
