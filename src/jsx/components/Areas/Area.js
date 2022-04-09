@@ -194,7 +194,6 @@ const Area = () => {
         console.log(err);
       });
   };
-  const [currentPage, setCurrentPage] = useState(0);
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -206,7 +205,6 @@ const Area = () => {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       return (
         <tr key={item.id}>
-          <td> {i + 1}</td>
           <td> {item.cityName}</td>
           <td> {item.areaName}</td>
           <td>
@@ -434,7 +432,6 @@ const Area = () => {
                   <table className="table table-striped text-center">
                     <thead clasName="thead-light">
                       <tr>
-                        <th>#</th>
                         <th>{t("cityName")}</th>
                         <th>{t("areaName")}</th>
                         <th>{t("actions")}</th>
@@ -451,7 +448,7 @@ const Area = () => {
             </div>
             <div className="card-footer border-0">
               <Paginate
-                setCurrentPage={setCurrentPage}
+                fetchData={fetchData}
                 setFetchData={setFetchData}
                 url={"/api/getAreasCompany"}
               />

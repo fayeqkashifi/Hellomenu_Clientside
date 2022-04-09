@@ -4,7 +4,7 @@ import axios from "axios";
 import { localization as t } from "../Localization";
 
 function Paginate(props) {
-  const { setFetchData, url, setCurrentPage } = props;
+  const { setFetchData, url, fetchData } = props;
   const [pageCount, setpageCount] = useState(0);
   const [total, setTotal] = useState(0);
   useEffect(() => {
@@ -25,7 +25,6 @@ function Paginate(props) {
 
   const handlePageClick = async (data) => {
     let currentPage = data.selected + 1;
-    setCurrentPage(currentPage);
     const commentsFormServer = await fetchComments(currentPage);
     setFetchData(commentsFormServer);
   };
@@ -52,7 +51,7 @@ function Paginate(props) {
       />
       <label className="mb-1 ">
         <small>
-          {t("total")}({total} {t("rows")})
+          {t("total")}({fetchData.length}/{total} {t("rows")})
         </small>
       </label>
     </div>
