@@ -284,5 +284,5 @@ export const Locale = {
   total: "Total",
   rows: "Rows",
   areaName: "Area Name",
-  noItemFound: "NO Item Found",
+  noItemFound: "No Item Found",
 };

@@ -150,7 +150,6 @@ const Area = () => {
   const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/getAreasCompany`);
-      console.log(result);
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData.data);
         setLoading(false);
@@ -208,8 +207,14 @@ const Area = () => {
           <td> {item.cityName}</td>
           <td> {item.areaName}</td>
           <td>
-            {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
-            <div className="input-group">
+            <div
+              className="input-group"
+              style={{
+                display: "table" /* Instead of display:block */,
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
               {checkPermission("areas-edit") && (
                 <button
                   type="button"
@@ -427,24 +432,26 @@ const Area = () => {
               </div>
             </div>
             <div className="card-body p-0">
-              {fetchData.length !== 0 ? (
-                <div className="table-responsive ">
-                  <table className="table table-striped text-center">
-                    <thead clasName="thead-light">
+              <div className="table-responsive ">
+                <table className="table text-center">
+                  <thead className="table-light">
+                    <tr>
+                      <th>{t("cityName")}</th>
+                      <th>{t("areaName")}</th>
+                      <th>{t("actions")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fetchData.length !== 0 ? (
+                      viewProducts_HTMLTABLE
+                    ) : (
                       <tr>
-                        <th>{t("cityName")}</th>
-                        <th>{t("areaName")}</th>
-                        <th>{t("actions")}</th>
+                        <td colSpan={3}> {t("noItemFound")}</td>
                       </tr>
-                    </thead>
-                    <tbody>{viewProducts_HTMLTABLE}</tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <lable>{t("noItemFound")}</lable>
-                </div>
-              )}
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div className="card-footer border-0">
               <Paginate

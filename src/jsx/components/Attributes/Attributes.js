@@ -7,6 +7,8 @@ import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
 
 const Attributes = () => {
   // validation start
@@ -135,7 +137,7 @@ const Attributes = () => {
     try {
       const result = await axios.get(`/api/getAttributes`);
       if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -169,25 +171,34 @@ const Attributes = () => {
 
           <td> {item.attributeName}</td>
           <td>
-            {checkPermission("attributes-edit") && (
-              <button
-                type="button"
-                onClick={(e) => fetchAttribute(e, item.id)}
-                className="btn btn-outline-danger btn-sm"
-              >
-                {t("edit")}
-              </button>
-            )}
-            &nbsp;&nbsp;&nbsp;
-            {checkPermission("attributes-delete") && (
-              <button
-                type="button"
-                onClick={(e) => deleteAttribute(e, item.id)}
-                className="btn btn-outline-warning btn-sm"
-              >
-                {t("delete")}
-              </button>
-            )}
+            <div
+              className="input-group"
+              style={{
+                display: "table" /* Instead of display:block */,
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              {checkPermission("attributes-edit") && (
+                <button
+                  type="button"
+                  onClick={(e) => fetchAttribute(e, item.id)}
+                  className="btn btn-outline-info btn-sm"
+                >
+                  {t("edit")}
+                </button>
+              )}
+              &nbsp;&nbsp;&nbsp;
+              {checkPermission("attributes-delete") && (
+                <button
+                  type="button"
+                  onClick={(e) => deleteAttribute(e, item.id)}
+                  className="btn btn-outline-danger btn-sm"
+                >
+                  {t("delete")}
+                </button>
+              )}
+            </div>
           </td>
         </tr>
       );
@@ -322,32 +333,54 @@ const Attributes = () => {
               <div>
                 <h4 className="card-title mb-2">{t("attributes")}</h4>
               </div>
-              <div className="dropdown">
-                {checkPermission("attributes-create") && (
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mb-2 mr-2"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    {t("add_attribute")}
-                  </Button>
-                )}
+              <div>
+                <div className="input-group">
+                  <Search
+                    setFetchData={setFetchData}
+                    url={"/api/searchAttribute"}
+                    defaultUrl={"/api/getAttributes"}
+                  />
+                  {checkPermission("attributes-create") && (
+                    <Button
+                      variant="primary"
+                      type="button"
+                      className="mb-2 mr-2"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      {t("add")}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
             <div className="card-body p-0">
               <div className="table-responsive ">
                 <table className="table text-center">
-                  <thead>
+                  <thead className="table-light">
                     <tr>
                       <th>{t("number")}</th>
                       <th>{t("attribute_name")}</th>
                       <th>{t("actions")}</th>
                     </tr>
                   </thead>
-                  <tbody>{viewProducts_HTMLTABLE}</tbody>
+                  <tbody>
+                    {fetchData.length !== 0 ? (
+                      viewProducts_HTMLTABLE
+                    ) : (
+                      <tr>
+                        <td colSpan={3}> {t("noItemFound")}</td>
+                      </tr>
+                    )}
+                  </tbody>
                 </table>
               </div>
+            </div>
+            <div className="card-footer border-0">
+              <Paginate
+                fetchData={fetchData}
+                setFetchData={setFetchData}
+                url={"/api/getAttributes"}
+              />
             </div>
           </div>
         </div>

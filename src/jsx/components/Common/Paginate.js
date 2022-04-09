@@ -14,7 +14,7 @@ function Paginate(props) {
       setTotal(res.data.fetchData.total);
     };
     getComments();
-  }, []);
+  }, [fetchData]);
 
   const fetchComments = async (currentPage) => {
     const res = await axios.get(`${url}?page=${currentPage}`);
@@ -51,7 +51,7 @@ function Paginate(props) {
       />
       <label className="mb-1 ">
         <small>
-          {t("total")}({fetchData.length}/{total} {t("rows")})
+          {t("total")} {t("rows")}({fetchData.length}/{total})
         </small>
       </label>
     </div>
