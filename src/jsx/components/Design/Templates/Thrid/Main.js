@@ -10,7 +10,6 @@ import Grid from "@mui/material/Grid";
 import ShowCards from "../Common/ShowCards";
 import {
   getProductsBasedOnBranchId,
-  getCategoriesBasedProduct,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
@@ -34,14 +33,8 @@ export default function ThridMain(props) {
     lastPage,
     setLastPage,
   } = props;
-  const properties = {
-    branchId: branchId,
-    deliveryFees: deliveryFees,
-    setCart: setCart,
-    cart: cart,
-    style: style,
-  };
   const [changeState, setChangeState] = useState(true);
+
   const fetchMoreData = () => {
     if (page <= lastPage) {
       if (activeCategory === "All~~~1") {
@@ -67,6 +60,18 @@ export default function ThridMain(props) {
       setChangeState(false);
     }
   };
+
+  const properties = {
+    branchId: branchId,
+    deliveryFees: deliveryFees,
+    setCart: setCart,
+    cart: cart,
+    style: style,
+    setChangeState: setChangeState,
+    lastPage: lastPage,
+    setLastPage: setLastPage,
+    setPage: setPage,
+  };
   var viewShow_HTMLTABLE = (
     <Grid container spacing={2} className="d-flex justify-content-center">
       <ShowCards {...properties} products={products} />
@@ -77,6 +82,7 @@ export default function ThridMain(props) {
     <div style={style?.background}>
       <Container maxWidth="lg">
         <Header
+          search={true}
           {...properties}
           categories={categories}
           activeCategory={activeCategory}

@@ -7,11 +7,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { Link, useRouteMatch } from "react-router-dom";
 import { checkPermission } from "../../Permissions";
-import { localization as t } from "../../Localization";
+// import { localization as t } from "../../Localization";
 import ScrollContainer from "react-indiana-drag-scroll";
+import CustomAlert from "../../CustomAlert";
 
 const RoleList = (props) => {
   const { check, setCheck, nodes } = props;
@@ -39,7 +40,18 @@ const RoleList = (props) => {
       setCheck(!check);
     };
   }, [check]);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   const columns = [
     {
       key: "roleName",
@@ -56,35 +68,47 @@ const RoleList = (props) => {
   ];
   // delete section
   const deleteRole = (id) => {
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteRole/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
-              setCheck(!check);
-              // swal("Success", res.data.message, "success");
+              setAlerts(true, "success", res.data.message);
             } else if (res.data.status === 404) {
-              swal("Error", res.data.message, "error");
+              setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((err) => {
+            console.log(err);
           });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
 
   return (
     <ScrollContainer className="scroll-container">
+      {alert.open ? (
+            <CustomAlert
+              open={alert.open}
+              severity={alert.severity}
+              message={alert.message}
+              setAlert={setAlert}
+            />
+          ) : (
+            ""
+          )}
       <CSmartTable
         activePage={1}
         cleaner

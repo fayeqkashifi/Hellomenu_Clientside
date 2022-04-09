@@ -230,7 +230,7 @@ const ProductDetails = (props) => {
                           <>
                             <SwiperSlide key={image}>
                               <img
-                                src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                                src={`http://${base_url}:${port}/images/products/${image}`}
                                 alt=""
                                 style={style?.variantsImage}
                               />
@@ -256,7 +256,7 @@ const ProductDetails = (props) => {
                             key={image}
                           >
                             <img
-                              src={`http://${base_url}:${port}/images/variants_pics/${image}`}
+                              src={`http://${base_url}:${port}/images/products/${image}`}
                               alt=""
                               style={style?.variantsThumbs}
                             />
@@ -292,7 +292,7 @@ const ProductDetails = (props) => {
                                       ? productDetails?.image
                                       : image
                                   }`
-                                : `http://${base_url}:${port}/images/variants_pics/${productDetails.image}`
+                                : `http://${base_url}:${port}/images/products/${productDetails.image}`
                             }
                             alt=""
                             style={style?.variantsImage}
@@ -496,6 +496,7 @@ const ProductDetails = (props) => {
     <div style={style?.background}>
       <Container maxWidth="lg" style={style?.varaintContainer}>
         <Header
+          search={false}
           style={style}
           cart={cart}
           branchId={branchId}

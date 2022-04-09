@@ -6,7 +6,6 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Badge from "@mui/material/Badge";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import {
   getProductsBasedOnBranchId,
@@ -17,7 +16,6 @@ import Drawer from "./Drawer";
 import getSymbolFromCurrency from "currency-symbol-map";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
-
 function Header(props) {
   const history = useHistory();
   const [modalCentered, setModalCentered] = useState(false);
@@ -34,6 +32,7 @@ function Header(props) {
     setLastPage,
     setPage,
     setChangeState,
+    search,
   } = props;
 
   const filterProducts = (menu) => {
@@ -87,7 +86,8 @@ function Header(props) {
       setSum(0);
     };
   }, [cart]);
-  const handleChange = (e) => {
+  let cancelToken;
+  const searchItem = async (e) => {
     if (e.target.value === "") {
       getProductsBasedOnBranchId(branchId, 1).then((data) => {
         setProducts(data.data);
@@ -97,20 +97,26 @@ function Header(props) {
         setActiveCategory("All~~~1");
       });
     } else {
-      axios
-        .get(`/api/findProduct/${e.target.value}`)
-        .then((res) => {
-          if (res.data.status === 200) {
-            setProducts(res.data.fetchData);
-          } else if (404) {
-            setProducts(res.data.fetchData);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
+      if (cancelToken) {
+        cancelToken.cancel("Operations cancelled due to new request");
+      }
+      cancelToken = axios.CancelToken.source();
+      let results;
+      try {
+        results = await axios.get(`/api/findProduct/${e.target.value}`, {
+          cancelToken: cancelToken.token,
         });
+        if (results.data.status === 200) {
+          setProducts(results.data.fetchData);
+        } else if (results.data.status === 404) {
+          setProducts(results.data.fetchData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
+
   return (
     <React.Fragment>
       <Toolbar sx={{ position: "sticky" }} className="top-0">
@@ -130,14 +136,24 @@ function Header(props) {
           /> */}
         </Typography>
         {/* <div sx={style?.searchIcon}> */}
-        <input
-          name="dateAndTime"
-          type="text"
-          className={`form-control`}
-          placeholder="Search By Name"
-          onChange={handleChange}
-          style={style?.inputfield}
-        />
+        {search && (
+          <>
+            <input
+              // sx={{ ml: 1, flex: 1 }}
+              onChange={searchItem}
+              style={style?.inputfield}
+              className={`form-control`}
+              placeholder="Search By Name"
+            />
+          </>
+          // <input
+          //   type="text"
+          //   className={`form-control`}
+          //   placeholder="Search By Name"
+          //   onChange={handleChange}
+          //   style={style?.inputfield}
+          // />
+        )}
         {/* </div> */}
         <IconButton onClick={() => setModalCentered(true)}>
           <Badge

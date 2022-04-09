@@ -18,7 +18,7 @@ import { Link, useRouteMatch } from "react-router-dom";
 import QRCode from "qrcode.react";
 import axios from "axios";
 import { Form } from "react-bootstrap";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import { base_url, port } from "../../../Consts";
@@ -169,25 +169,25 @@ const Design = (props) => {
   // delete start
   const deleteTheme = (e, id) => {
     e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteTheme/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
-              setCheck(!check);
               setAlerts(true, "success", res.data.message);
-
-              // thisClicked.closest("tr").remove();
             } else if (res.data.status === 404) {
               setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
           .catch((err) => {
             console.log(err);

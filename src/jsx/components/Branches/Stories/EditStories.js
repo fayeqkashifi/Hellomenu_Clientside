@@ -7,17 +7,19 @@ import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Select from "react-select";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import swal from "sweetalert";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import {Option,MultiValue,animatedComponents} from "../../Common/SelectOption";
+import MySelect from "../../Common/MySelect";
 const EditStories = (props) => {
   const id = props.history.location.state.id;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const history = useHistory();
+  const MySwal = withReactContent(Swal);
 
   const [tagProducts, setTagProducts] = useState([]);
   const handleSelect = (e) => {
@@ -68,7 +70,13 @@ const EditStories = (props) => {
       .post("/api/updateStory", formData)
       .then((res) => {
         if (res.data.status === 200) {
-          swal("Success", res.data.message, "success").then((check) => {
+          MySwal.fire({
+            title: <strong>Good job!</strong>,
+            html: res.data.message,
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#93de8b",
+          }).then((check) => {
             if (check) {
               history.push({
                 pathname: `/branches/story-branch`,
@@ -224,18 +232,20 @@ const EditStories = (props) => {
                   {t("tag_product")}
                 </div>
                 <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                  <Select
-                    defaultValue={tagProducts}
-                    isMulti
+                  <MySelect
                     options={products?.map((pro, i) => {
                       return {
                         value: pro.id,
                         label: pro.ProductName,
                       };
                     })}
+                    isMulti
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
+                    components={{ Option, MultiValue, animatedComponents }}
                     onChange={handleSelect}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
+                    allowSelectAll={true}
+                    value={tagProducts}
                   />
                 </div>
               </div>

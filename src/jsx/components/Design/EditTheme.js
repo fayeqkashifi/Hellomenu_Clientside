@@ -11,17 +11,19 @@ import circle_menu_button from "../../../images/hellomenu/circle_menu_button.png
 import pill_menu_button from "../../../images/hellomenu/pill_menu_button.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
+
 import Switch from "@mui/material/Switch";
 import { Form } from "react-bootstrap";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { localization as t } from "../Localization";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 const EditTheme = (props) => {
   const history = useHistory();
   const id = props.history.location.state.id;
-
+  const MySwal = withReactContent(Swal);
   const [homeScreen, setHomeScreen] = useState(false);
   const [menuScreen, setMenuScreen] = useState(false);
   const [buttonShow, setButtonShow] = useState(1);
@@ -67,7 +69,13 @@ const EditTheme = (props) => {
       .post(`/api/updateTheme/${id}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
-          swal("Success", res.data.message, "success").then((check) => {
+          MySwal.fire({
+            title: <strong>Good job!</strong>,
+            html: res.data.message,
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#93de8b",
+          }).then((check) => {
             if (check) {
               history.goBack();
             }

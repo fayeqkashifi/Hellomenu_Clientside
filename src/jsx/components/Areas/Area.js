@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
@@ -9,6 +9,8 @@ import CustomAlert from "../CustomAlert";
 import { useHistory } from "react-router-dom";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
 
 const Area = () => {
   const history = useHistory();
@@ -42,30 +44,18 @@ const Area = () => {
     });
   };
   const save = (data) => {
-    if (atob(localStorage.getItem("auth_company_id")) !== "null") {
-      const formData = new FormData();
-      formData.append("city_id", data.city);
-      formData.append("areaName", data.areaName);
-      axios.post("/api/insertAreas", formData).then((res) => {
-        if (res.data.status === 200) {
-          setCheck(!check);
-          setModalCentered(false);
-          setAlerts(true, "success", res.data.message);
-        } else if (res.data.status === 304) {
-          setAlerts(true, "warning", res.data.message);
-        }
-      });
-    } else {
-      swal(
-        "warning",
-        "Please add the company first, then the branches.",
-        "warning"
-      ).then((value) => {
-        if (value) {
-          history.push("/company");
-        }
-      });
-    }
+    const formData = new FormData();
+    formData.append("city_id", data.city);
+    formData.append("areaName", data.areaName);
+    axios.post("/api/insertAreas", formData).then((res) => {
+      if (res.data.status === 200) {
+        setCheck(!check);
+        setModalCentered(false);
+        setAlerts(true, "success", res.data.message);
+      } else if (res.data.status === 304) {
+        setAlerts(true, "warning", res.data.message);
+      }
+    });
   };
   // insert end
   // edit Attribute start
@@ -124,25 +114,25 @@ const Area = () => {
 
   // delete Start
   const deleteAreas = (e, id) => {
-    e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteAreas/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
-
-              setCheck(!check);
             } else if (res.data.status === 404) {
               setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
           .catch((err) => {
             console.log(err);
@@ -160,8 +150,9 @@ const Area = () => {
   const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/getAreasCompany`);
+      console.log(result);
       if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -203,7 +194,7 @@ const Area = () => {
         console.log(err);
       });
   };
-
+  const [currentPage, setCurrentPage] = useState(0);
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -215,31 +206,32 @@ const Area = () => {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       return (
         <tr key={item.id}>
-          <td>{i + 1}</td>
-
+          <td> {i + 1}</td>
           <td> {item.cityName}</td>
           <td> {item.areaName}</td>
           <td>
             {/* <Link to={`add-option/${item.id}`} className="btn btn-outline-danger btn-sm">{t('options')}</Link>&nbsp;&nbsp;&nbsp; */}
-            {checkPermission("areas-edit") && (
-              <button
-                type="button"
-                onClick={(e) => fetch(e, item.id)}
-                className="btn btn-outline-danger btn-sm"
-              >
-                {t("edit")}
-              </button>
-            )}
-            &nbsp;&nbsp;&nbsp;
-            {checkPermission("areas-delete") && (
-              <button
-                type="button"
-                onClick={(e) => deleteAreas(e, item.id)}
-                className="btn btn-outline-warning btn-sm"
-              >
-                {t("delete")}
-              </button>
-            )}
+            <div className="input-group">
+              {checkPermission("areas-edit") && (
+                <button
+                  type="button"
+                  onClick={(e) => fetch(e, item.id)}
+                  className="btn btn-outline-info btn-sm"
+                >
+                  {t("edit")}
+                </button>
+              )}
+              &nbsp;&nbsp;&nbsp;
+              {checkPermission("areas-delete") && (
+                <button
+                  type="button"
+                  onClick={(e) => deleteAreas(e, item.id)}
+                  className="btn btn-outline-danger btn-sm"
+                >
+                  {t("delete")}
+                </button>
+              )}
+            </div>
           </td>
         </tr>
       );
@@ -416,33 +408,53 @@ const Area = () => {
               <div>
                 <h4 className="card-title mb-2">{t("areas")}</h4>
               </div>
-              <div className="dropdown">
-                {checkPermission("areas-create") && (
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mb-2 mr-2"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    {t("add")}
-                  </Button>
-                )}
+              <div>
+                <div className="input-group">
+                  <Search
+                    setFetchData={setFetchData}
+                    url={"/api/searchArea"}
+                    defaultUrl={"/api/getAreasCompany"}
+                  />
+                  {checkPermission("areas-create") && (
+                    <Button
+                      variant="primary"
+                      type="button"
+                      className="mb-2 mr-2"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      {t("add")}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
             <div className="card-body p-0">
-              <div className="table-responsive ">
-                <table className="table text-center">
-                  <thead>
-                    <tr>
-                      <th>{t("number")}</th>
-                      <th>{t("cityName")}</th>
-                      <th>{t("areaName")}</th>
-                      <th>{t("actions")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>{viewProducts_HTMLTABLE}</tbody>
-                </table>
-              </div>
+              {fetchData.length !== 0 ? (
+                <div className="table-responsive ">
+                  <table className="table table-striped text-center">
+                    <thead clasName="thead-light">
+                      <tr>
+                        <th>#</th>
+                        <th>{t("cityName")}</th>
+                        <th>{t("areaName")}</th>
+                        <th>{t("actions")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>{viewProducts_HTMLTABLE}</tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <lable>{t("noItemFound")}</lable>
+                </div>
+              )}
+            </div>
+            <div className="card-footer border-0">
+              <Paginate
+                setCurrentPage={setCurrentPage}
+                setFetchData={setFetchData}
+                url={"/api/getAreasCompany"}
+              />
             </div>
           </div>
         </div>

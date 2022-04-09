@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
@@ -99,23 +99,25 @@ const Attributes = () => {
   // delete Attribute Start
   const deleteAttribute = (e, id) => {
     e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteAttribute/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
-              setCheck(!check);
             } else if (res.data.status === 404) {
               setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
           .catch((err) => {
             console.log(err);

@@ -226,6 +226,7 @@ const OrderDetails = (props) => {
       )}
       <Container maxWidth="lg">
         <Header
+          search={false}
           subcategories={0}
           cart={cart}
           style={style}
@@ -258,7 +259,7 @@ const OrderDetails = (props) => {
                             src={
                               stock === "No Stock" || stock === 0
                                 ? `http://${base_url}:${port}/images/products/${image}`
-                                : `http://${base_url}:${port}/images/variants_pics/${image}`
+                                : `http://${base_url}:${port}/images/products/${image}`
                             }
                             alt=""
                             style={{

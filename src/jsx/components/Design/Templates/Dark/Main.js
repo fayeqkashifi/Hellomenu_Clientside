@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Container from "@mui/material/Container";
 import Header from "../Common/Header";
 import Footer from "../Common/Footer";
@@ -79,6 +79,7 @@ export default function Main(props) {
     <div style={style?.background}>
       <Container maxWidth="lg">
         <Header
+          search={true}
           {...properties}
           categories={categories}
           activeCategory={activeCategory}

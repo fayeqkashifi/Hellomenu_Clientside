@@ -4,14 +4,13 @@ import { base_url, port } from "../../../Consts";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import swal from "sweetalert";
 import { Button } from "react-bootstrap";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 
 const NewGrid = (props) => {
-  const { numberOfVar, productid, tags, setNumberOfVar } = props;
+  const { numberOfVar, tags, setNumberOfVar, product } = props;
   // alert
   const [alert, setAlert] = useState({
     open: false,
@@ -38,8 +37,13 @@ const NewGrid = (props) => {
       }
     });
     if (check) {
+      numberOfVar.map((item) => {
+        if (item.image.length === 0) {
+          item.image = JSON.parse(product.image);
+        }
+      });
       const formdata = new FormData();
-      formdata.append("product_id", productid);
+      formdata.append("product_id", product.id);
       formdata.append("vars", JSON.stringify(numberOfVar));
       formdata.append("tags", JSON.stringify(tags));
       const res = await axios({
@@ -50,7 +54,7 @@ const NewGrid = (props) => {
       if (res.data.status === 200) {
         setAlerts(true, "success", res.data.message);
       } else {
-        swal("error", res.data.message, "success");
+        setAlerts(true, "error", res.data.message);
       }
     } else {
       setAlerts(true, "error", "Data Not Saved Please check the inputs");
@@ -222,7 +226,7 @@ const NewGrid = (props) => {
                     <div className="text-center">
                       <img
                         className="w-100"
-                        src={`http://${base_url}:${port}/images/variants_pics/${photo}`}
+                        src={`http://${base_url}:${port}/images/products/${photo}`}
                         alt=""
                         style={{
                           // width: "100px",

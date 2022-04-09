@@ -67,7 +67,7 @@ const FilterSelection = () => {
   };
   const loadOptions = (inputValue) => {
     return axios
-      .get(`/api/getCities`, {
+      .get(`/api/getAreaCities`, {
         header: {
           "Content-Type": "application/json",
           Accept: "application/json",

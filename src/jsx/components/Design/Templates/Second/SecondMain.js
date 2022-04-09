@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import ShowCards from "../Common/ShowCards";
@@ -20,17 +20,27 @@ export default function SecondMain(props) {
     activeCategory,
     setActiveCategory,
     setProducts,
+    setPage,
+    page,
+    lastPage,
+    setLastPage,
   } = props;
+  const [changeState, setChangeState] = useState(true);
   const properties = {
     branchId: branchId,
     deliveryFees: deliveryFees,
     setCart: setCart,
     cart: cart,
     style: style,
+    setChangeState: setChangeState,
+    lastPage: lastPage,
+    setLastPage: setLastPage,
+    setPage: setPage,
   };
   return (
     <div style={style?.background}>
       <Header
+        search={true}
         {...properties}
         categories={categories}
         activeCategory={activeCategory}

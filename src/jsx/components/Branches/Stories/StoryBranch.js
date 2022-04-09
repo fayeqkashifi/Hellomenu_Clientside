@@ -2,20 +2,23 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { Formik, Form } from "formik";
 import CustomAlert from "../../CustomAlert";
 import "yup-phone";
 import { localization as t } from "../../Localization";
 import "react-phone-input-2/lib/style.css";
-import Select from "react-select";
 import { checkPermission } from "../../Permissions";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import {Option,MultiValue,animatedComponents} from "../../Common/SelectOption";
+import MySelect from "../../Common/MySelect";
 const Storybranch = (props) => {
+  
+  
   const id = props.history.location.state.id;
 
   // insert start
@@ -99,6 +102,7 @@ const Storybranch = (props) => {
   }, [check]);
 
   const [tagProducts, setTagProducts] = useState([]);
+ 
   const handleSelect = (e) => {
     setTagProducts(e);
   };
@@ -108,14 +112,16 @@ const Storybranch = (props) => {
   // delete start
   const deleteItem = (e, id) => {
     e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteStory/${id}`)
           .then((res) => {
@@ -133,6 +139,7 @@ const Storybranch = (props) => {
         setAlerts(true, "info", "Your Data is safe now!");
       }
     });
+    
   };
   // delete end
 
@@ -241,19 +248,21 @@ const Storybranch = (props) => {
                         {t("tag_product")}
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <Select
-                          value={tagProducts}
-                          isMulti
-                          options={products?.map((pro, i) => {
-                            return {
-                              value: pro.id,
-                              label: pro.ProductName,
-                            };
-                          })}
-                          onChange={handleSelect}
-                          className="basic-multi-select"
-                          classNamePrefix="select"
-                        />
+                      <MySelect
+                        options={products?.map((pro, i) => {
+                          return {
+                            value: pro.id,
+                            label: pro.ProductName,
+                          };
+                        })}
+                        isMulti
+                        closeMenuOnSelect={false}
+                        hideSelectedOptions={false}
+                        components={{ Option, MultiValue, animatedComponents }}
+                        onChange={handleSelect}
+                        allowSelectAll={true}
+                        value={tagProducts}
+                      />
                       </div>
                     </div>
                     <div className="row form-group">

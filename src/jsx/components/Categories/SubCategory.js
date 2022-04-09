@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
@@ -128,26 +128,25 @@ const SubCategory = (props) => {
   // delete start
   const deleteSubMenu = (e, id) => {
     e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteSubCategories/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
-
-              setCheck(!check);
-
-              // thisClicked.closest("tr").remove();
             } else if (res.data.status === 404) {
               setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
           .catch((err) => {
             console.log(err);

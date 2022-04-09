@@ -1,8 +1,9 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import Button from "@mui/material/Button";
+
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
+
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -20,7 +21,9 @@ import "react-phone-input-2/lib/style.css";
 import Tooltip from "@mui/material/Tooltip";
 import ReactPlayer from "react-player/lazy";
 // import ipapi from "ipapi.co";
-
+import SubmitButtons from "../Common/SubmitButtons";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
 
@@ -49,12 +52,11 @@ const EditBranch = (props) => {
   const [editBranchstate, setEditBranchstate] = useState([]);
   const [orderMethodsEdit, setOrderMethodsEdit] = useState([]);
 
-  // const [imageState, setImageState] = useState([]);
-  // const handleImage = (e) => {
-  //   setImageState({ ...imageState, branchImage: e.target.files[0] });
-  // };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const MySwal = withReactContent(Swal);
 
   const updateBranch = (data) => {
+    setIsSubmitting(true);
     const ArrayValue = [];
     for (const [key, value] of Object.entries(orderMethodsEdit)) {
       ArrayValue.push(value);
@@ -66,21 +68,27 @@ const EditBranch = (props) => {
       formData.append("currencyID", data.currencyID);
       formData.append("branchImages", editBranchstate.branchImages);
       formData.append("branchVideos", editBranchstate.branchVideos);
-
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("otherAddressFields", JSON.stringify(form));
       formData.append("fullAddress", fullAddress);
       formData.append("id", data.id);
-
       axios
         .post("/api/updateBranches", formData)
         .then((res) => {
           if (res.data.status === 200) {
-            swal("Success", res.data.message, "success").then((check) => {
+            MySwal.fire({
+              title: <strong>Good job!</strong>,
+              html: res.data.message,
+              icon: "success",
+              confirmButtonText: "OK",
+              confirmButtonColor: "#93de8b",
+            }).then((check) => {
               if (check) {
                 history.push(`/branches`);
+                setIsSubmitting(false);
               }
             });
+            setIsSubmitting(false);
           } else if (res.data.status === 304) {
             setAlerts(true, "warning", res.data.message);
           } else {
@@ -93,6 +101,7 @@ const EditBranch = (props) => {
         });
     } else {
       setAlerts(true, "warning", "Please choose at least one way of ordering.");
+      setIsSubmitting(false);
     }
   };
   const [fullAddress, setFullAddress] = useState(1);
@@ -390,7 +399,7 @@ const EditBranch = (props) => {
                               }
                               name="tbl_qrcode"
                               onChange={(e) => editOrderHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="Table Reservation"
@@ -401,7 +410,7 @@ const EditBranch = (props) => {
                               checked={orderMethodsEdit.delivery ? true : false}
                               name="delivery"
                               onChange={(e) => editOrderHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="Home Delivery"
@@ -412,7 +421,7 @@ const EditBranch = (props) => {
                               checked={orderMethodsEdit.whatsApp ? true : false}
                               name="whatsApp"
                               onChange={(e) => editOrderHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="WhatsApp"
@@ -457,7 +466,7 @@ const EditBranch = (props) => {
                               checked={fullAddress ? true : false}
                               name="full_address"
                               onChange={(e) => FullAddressHandle(e)}
-                              color="secondary"
+                              color="primary"
                             />
                           }
                           label="Full Address"
@@ -498,13 +507,13 @@ const EditBranch = (props) => {
                           </div>
                         </div>
                       ))}
-
-                      <button
-                        className="btn btn-primary my-1"
+                      <Button
+                        variant="outlined"
+                        size="medium"
                         onClick={handleAddLink}
                       >
                         {t("add_more")}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -632,16 +641,11 @@ const EditBranch = (props) => {
               </div>
 
               <div className="card-footer text-right">
-                <Button
-                  variant="danger light"
-                  className="m-1"
-                  onClick={() => history.goBack()}
-                >
-                  {t("back")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
+                <SubmitButtons
+                  isSubmitting={isSubmitting}
+                  left={t("back")}
+                  right={t("update")}
+                />
               </div>
             </div>
           </Form>

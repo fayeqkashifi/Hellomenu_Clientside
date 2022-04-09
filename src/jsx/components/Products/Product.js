@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { base_url, port } from "../../../Consts";
 import { CSmartTable } from "@coreui/react-pro";
@@ -18,6 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import ScrollContainer from "react-indiana-drag-scroll";
+import CustomAlert from "../CustomAlert";
 
 const Product = (props) => {
   const { url } = useRouteMatch();
@@ -25,33 +26,46 @@ const Product = (props) => {
   // for localization
   // const subMenuId = atob(props.match.params.id)
   const branchId = props.history.location.state.id;
-
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   // delete section
   const deleteProduct = (e, id) => {
     e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteProducts/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
-              setCheck(!check);
-              swal("Success", res.data.message, "success");
+              setAlerts(true, "success", res.data.message);
             } else if (res.data.status === 404) {
-              swal("Error", res.data.message, "error");
+              setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((err) => {
+            console.log(err);
           });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };
@@ -303,6 +317,16 @@ const Product = (props) => {
   return (
     <>
       <Fragment>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
         <div className="d-flex justify-content-end">
           {checkPermission("products-create") && (
             <Link

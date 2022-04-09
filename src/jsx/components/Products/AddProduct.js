@@ -1,8 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
-import swal from "sweetalert";
-import Select from "react-select";
 import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -12,11 +10,17 @@ import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
+import MySelect from "../Common/MySelect";
 const AddProduct = (props) => {
   const history = useHistory();
   // for localization
   const branchId = props.history.location.state.id;
   // validation start
+  const MySwal = withReactContent(Swal);
+
   const initialValues = {
     ProductName: "",
     category: "",
@@ -35,11 +39,7 @@ const AddProduct = (props) => {
       category: Yup.string().required("Category is required"),
       price: Yup.number()
         .typeError("Amount must be a number")
-        .required("Please provide plan cost.")
-        .min(1, "Too little"),
-      stock: Yup.number()
-        .typeError("Amount must be a number")
-        .required("Please provide plan cost.")
+        .required("Price is required.")
         .min(1, "Too little"),
     });
   };
@@ -97,7 +97,13 @@ const AddProduct = (props) => {
       .post(`/api/insertProducts`, formData)
       .then((res) => {
         if (res.data.status === 200) {
-          swal("Success", res.data.message, "success").then((check) => {
+          MySwal.fire({
+            title: <strong>Good job!</strong>,
+            html: res.data.message,
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#93de8b",
+          }).then((check) => {
             if (check) {
               history.push({
                 pathname: `/branches/show/products`,
@@ -119,7 +125,13 @@ const AddProduct = (props) => {
         if (res.data.status === 200) {
           setCheck(!check);
           setModalCentered(false);
+          setProductIngredient([
+            ...productIngredient,
+            { value: res.data.id, label: data.name },
+          ]);
           setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 1062) {
+          setAlerts(true, "warning", res.data.message);
         }
       })
       .catch((err) => {
@@ -383,7 +395,7 @@ const AddProduct = (props) => {
                           </label>
                           <Switch
                             checked={share}
-                            color="secondary"
+                            color="primary"
                             onChange={(e) => [
                               setShare(!share),
                               filterCategories(e),
@@ -396,17 +408,24 @@ const AddProduct = (props) => {
                           <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                             <div className="form-group">
                               <label> {t("branches")}</label>
-                              <Select
-                                isMulti
+                              <MySelect
                                 options={branches?.map((o, i) => {
                                   return {
                                     value: o.id,
                                     label: o.BrancheName,
                                   };
                                 })}
+                                isMulti
+                                closeMenuOnSelect={false}
+                                hideSelectedOptions={false}
+                                components={{
+                                  Option,
+                                  MultiValue,
+                                  animatedComponents,
+                                }}
                                 onChange={handleSelectBranches}
-                                className="basic-multi-select"
-                                classNamePrefix="select"
+                                allowSelectAll={true}
+                                value={productbranches}
                               />
                             </div>
                           </div>
@@ -543,18 +562,8 @@ const AddProduct = (props) => {
                           <Field
                             name="stock"
                             type="number"
-                            className={
-                              "form-control" +
-                              (errors.stock && touched.stock
-                                ? " is-invalid"
-                                : "")
-                            }
+                            className={"form-control"}
                             placeholder="stock..."
-                          />
-                          <ErrorMessage
-                            name="stock"
-                            component="div"
-                            className="invalid-feedback"
                           />
                         </div>
                       </div>
@@ -702,15 +711,21 @@ const AddProduct = (props) => {
                             </small>
                           )}
                         </div>
-
-                        <Select
-                          isMulti
+                        <MySelect
                           options={intgredients?.map((o, i) => {
-                            return { id: i, value: o.id, label: o.name };
+                            return { value: o.id, label: o.name };
                           })}
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          components={{
+                            Option,
+                            MultiValue,
+                            animatedComponents,
+                          }}
                           onChange={handleSelectEvent}
-                          className="basic-multi-select"
-                          classNamePrefix="select"
+                          allowSelectAll={true}
+                          value={productIngredient}
                         />
                       </div>
                     </div>
@@ -723,9 +738,7 @@ const AddProduct = (props) => {
                             input values.)
                           </small>
                         </label>
-
-                        <Select
-                          isMulti
+                        <MySelect
                           options={intgredients?.map((o, i) => {
                             return {
                               id: i,
@@ -734,9 +747,17 @@ const AddProduct = (props) => {
                               price: 0,
                             };
                           })}
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          components={{
+                            Option,
+                            MultiValue,
+                            animatedComponents,
+                          }}
                           onChange={handleSelectEventExtra}
-                          className="basic-multi-select"
-                          classNamePrefix="select"
+                          allowSelectAll={true}
+                          value={productExtra}
                         />
                       </div>
                     </div>
@@ -772,8 +793,7 @@ const AddProduct = (props) => {
                         <label className="mb-1 ">
                           <strong>{t("recommendation_products")}</strong>
                         </label>
-                        <Select
-                          isMulti
+                        <MySelect
                           options={fetchData?.map((o, i) => {
                             return {
                               price: o.price,
@@ -782,9 +802,17 @@ const AddProduct = (props) => {
                               qty: 1,
                             };
                           })}
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          components={{
+                            Option,
+                            MultiValue,
+                            animatedComponents,
+                          }}
                           onChange={handleSelectEventRecom}
-                          className="basic-multi-select"
-                          classNamePrefix="select"
+                          allowSelectAll={true}
+                          value={productRecom}
                         />
                       </div>
                     </div>

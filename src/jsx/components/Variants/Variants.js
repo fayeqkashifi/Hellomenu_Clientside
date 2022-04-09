@@ -1,10 +1,9 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import NewGrid from "./NewGrid";
 import { CBreadcrumb } from "@coreui/react";
-import Select from "react-select";
 import { Link } from "react-router-dom";
 import "@pathofdev/react-tag-input/build/index.css";
 import { TagsInput } from "react-tag-input-component";
@@ -13,7 +12,8 @@ import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
-
+import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
+import MySelect from "../Common/MySelect";
 const Variants = (props) => {
   // for localization
   const id = props.history.location.state.p_id;
@@ -25,9 +25,15 @@ const Variants = (props) => {
   const [check, setCheck] = useState(true);
   const [variantsTags, setVariantsTage] = useState([]);
   const [tags, setTags] = useState([]);
+  const [product, setProduct] = useState(0);
 
   useEffect(() => {
     const getdata = async () => {
+      const proRes = await axios.get(`/api/editProducts/${id}`);
+      if (proRes.data.status === 200) {
+        const product = proRes.data.product;
+        setProduct(product);
+      }
       const jsonvar = await axios({
         method: "GET",
         url: `/api/getVariations/${id}`,
@@ -127,8 +133,8 @@ const Variants = (props) => {
                   {
                     postion: numberOfVar.length,
                     sku: sku + item,
-                    price: "",
-                    stock: "",
+                    price: product.price,
+                    stock: 1,
                     image: [],
                     [attr]: item,
                   },
@@ -160,8 +166,8 @@ const Variants = (props) => {
               {
                 postion: numberOfVar.length,
                 sku: sku,
-                price: "",
-                stock: "",
+                price: product.price,
+                stock: 1,
                 image: [],
                 ...tag,
               },
@@ -175,8 +181,8 @@ const Variants = (props) => {
             {
               postion: numberOfVar.length,
               sku: sku,
-              price: "",
-              stock: "",
+              price: product.price,
+              stock: 1,
               image: [],
               ...tag,
             },
@@ -261,14 +267,16 @@ const Variants = (props) => {
   // delete
   const deleteAll = (e) => {
     e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deletevariations/${id}`)
           .then((res) => {
@@ -283,9 +291,10 @@ const Variants = (props) => {
               setTags([]);
               setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((err) => {
+            console.log(err);
           });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
@@ -315,6 +324,10 @@ const Variants = (props) => {
       if (res.data.status === 200) {
         setCheck(!check);
         setModalCentered(false);
+        setVariantsTage([
+          ...variantsTags,
+          { value: data.attributeName, label: data.attributeName },
+        ]);
         setAlerts(true, "success", res.data.message);
       } else if (res.data.status === 304) {
         setAlerts(true, "warning", res.data.message);
@@ -372,16 +385,17 @@ const Variants = (props) => {
                 )}
 
                 <div className="col-xl-12 col-lg-12 col-sm-12 ">
-                  <Select
-                    value={variantsTags}
-                    isMulti
+                  <MySelect
                     options={attributes.map((o, i) => {
                       return { value: o.attributeName, label: o.attributeName };
                     })}
+                    isMulti
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
+                    components={{ Option, MultiValue, animatedComponents }}
                     onChange={handleSelectEvent}
-                    // name="attributeName"
-                    className="basic-multi-select"
-                    classNamePrefix="select"
+                    allowSelectAll={true}
+                    value={variantsTags}
                   />
                 </div>
               </div>
@@ -460,7 +474,8 @@ const Variants = (props) => {
               numberOfVar={numberOfVar}
               setNumberOfVar={setNumberOfVar}
               tags={tags}
-              productid={id}
+              // productid={id}
+              product={product}
             ></NewGrid>
           </div>
         </div>

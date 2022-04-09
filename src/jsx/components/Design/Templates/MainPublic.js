@@ -6,8 +6,6 @@ import {
   getProductsBasedOnBranchId,
   getThemplate,
   getCategoriesBasedProduct,
-  getProductBasedOnCategory,
-  getProductBasedOnSubCategory,
 } from "./Functionality";
 import { SecondStyle } from "./Common/Styles/Second";
 import { DarkStyle } from "./Common/Styles/Dark";
@@ -21,8 +19,6 @@ const MainPublic = (props) => {
   if (isNaN(deliveryFees)) {
     deliveryFees = 0;
   }
-  // console.log(deliveryFees == NaN ? 0 : deliveryFees);
-  // const [branch, setBranch] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All~~~1");
@@ -35,7 +31,6 @@ const MainPublic = (props) => {
 
   const dataLoad = async () => {
     getThemplate(branchId).then((data) => {
-      // console.log(data);
       setCustom(data);
     });
     getCategoriesBasedProduct(branchId).then((data) => {

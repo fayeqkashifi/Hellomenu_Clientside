@@ -24,31 +24,14 @@ const AddBranch = () => {
     BrancheName: "",
     currencyID: "",
     phoneNumber: "",
-    branchVideos: "",
-    branchImages: "",
+    branchVideos: [],
+    branchImages: [],
   };
-  const SUPPORTED_FORMATS = [
-    "image/jpg",
-    "image/jpeg",
-    "image/gif",
-    "image/png",
-  ];
   const validationSchema = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
       phoneNumber: Yup.number().required("Phone Number is required"),
-      branchImages: Yup.mixed()
-        .nullable()
-        .notRequired()
-        .test("FILE_SIZE", "Uploaded file is too big.", function (value) {
-          return value.map((item) => console.log(item.size));
-        })
-        .test(
-          "FILE_FORMAT",
-          "Uploaded file has unsupported format.",
-          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
-        ),
     });
   };
   // insert start
@@ -79,12 +62,12 @@ const AddBranch = () => {
       formData.append("orderMethods", JSON.stringify(orderMethods));
       formData.append("BrancheName", data.BrancheName);
       formData.append("currencyID", data.currencyID);
-      // for (let i = 0; i < data.branchImages.length; i++) {
-      //   formData.append("branchImages[]", data.branchImages[i]);
-      // }
-      // for (let i = 0; i < data.branchVideos.length; i++) {
-      //   formData.append("branchVideos[]", data.branchVideos[i]);
-      // }
+      for (let i = 0; i < data.branchImages.length; i++) {
+        formData.append("branchImages[]", data.branchImages[i]);
+      }
+      for (let i = 0; i < data.branchVideos.length; i++) {
+        formData.append("branchVideos[]", data.branchVideos[i]);
+      }
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("otherAddressFields", JSON.stringify(form));
       formData.append("fullAddress", fullAddress);
@@ -440,11 +423,7 @@ const AddBranch = () => {
                         <input
                           type="file"
                           accept="image/*"
-                          className={
-                            errors.branchImages && touched.branchImages
-                              ? "form-control is-invalid"
-                              : "form-control"
-                          }
+                          className="form-control"
                           name="branchImages"
                           onChange={(event) => {
                             setFieldValue("branchImages", event.target.files);
@@ -452,11 +431,6 @@ const AddBranch = () => {
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
-                        />
-                        <ErrorMessage
-                          name="branchImages"
-                          component="div"
-                          className="invalid-feedback"
                         />
                       </div>
                     </div>
@@ -471,11 +445,7 @@ const AddBranch = () => {
                         <input
                           type="file"
                           accept="video/*"
-                          className={
-                            errors.branchVideos && touched.branchVideos
-                              ? "form-control is-invalid"
-                              : "form-control"
-                          }
+                          className="form-control"
                           name="branchVideos"
                           onChange={(event) => {
                             setFieldValue("branchVideos", event.target.files);
@@ -483,11 +453,6 @@ const AddBranch = () => {
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
-                        />
-                        <ErrorMessage
-                          name="branchVideos"
-                          component="div"
-                          className="invalid-feedback"
                         />
                       </div>
                     </div>
@@ -501,9 +466,6 @@ const AddBranch = () => {
                   left={t("back")}
                   right={t("save")}
                 />
-                {/* <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button> */}
               </div>
             </div>
           </Form>

@@ -9,7 +9,6 @@ import {
 import PrivateRoute from "./components/PrivateRoute";
 /// Css
 import "./index.css";
-import "./chart.css";
 /// Layout
 import Nav from "./layouts/nav";
 import Footer from "./layouts/Footer";
@@ -58,7 +57,8 @@ const Markup = () => {
         ) : (
           <Redirect to="/login" />
         )}
-        <div className="content-body">
+
+        <div className="content-body" style={{ marginBottom: "50px" }}>
           <div className="container-fluid">
             <Switch>
               {routes.map((data, i) => (

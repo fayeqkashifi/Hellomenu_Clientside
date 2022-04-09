@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import Select from "react-select";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -9,7 +9,8 @@ import AsyncSelect from "react-select/async";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
-
+import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
+import MySelect from "../Common/MySelect";
 const ServiceArea = (props) => {
   const id = props.history.location.state.id;
 
@@ -114,27 +115,28 @@ const ServiceArea = (props) => {
 
   // delete Start
   const deleteServiceArea = (e, id) => {
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteServiceAreas/${id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setAlerts(true, "success", res.data.message);
-
-              setCheck(!check);
             } else if (res.data.status === 404) {
               setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((err) => {
+            console.log(err);
           });
       } else {
         setAlerts(true, "info", "Your Data is safe now!");
@@ -357,15 +359,19 @@ const ServiceArea = (props) => {
                       </small>
                     )}
                   </div>
-                  <Select
-                    isMulti
-                    options={areaLocation.map((o, i) => {
+                   <MySelect
+                                    options={areaLocation.map((o, i) => {
                       return { value: o.id, label: o.areaName };
                     })}
-                    onChange={handleSelectEvent}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                  />
+                                isMulti
+                                closeMenuOnSelect={false}
+                                hideSelectedOptions={false}
+                                components={{ Option, MultiValue, animatedComponents }}
+                                onChange={handleSelectEvent}
+                                allowSelectAll={true}
+                                value={servicesAreas}
+                              />
+                
                 </div>
               </div>
             </div>

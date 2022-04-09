@@ -7,7 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { Link, useRouteMatch } from "react-router-dom";
 import { checkPermission } from "../../Permissions";
 import "flag-icon-css/css/flag-icons.min.css";
@@ -78,29 +78,31 @@ const LanguageList = () => {
   ];
   // delete section
   const deleteLocale = (id) => {
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteLocale/${id}`)
           .then((res) => {
-            if (res.status === 200) {
-              setCheck(!check);
-              // swal("Success", res.data.message, "success");
+            if (res.data.status === 200) {
+              setAlerts(true, "success", res.data.message);
             } else if (res.data.status === 404) {
-              swal("Error", res.data.message, "error");
+              setAlerts(true, "error", res.data.message);
             }
+            setCheck(!check);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((err) => {
+            console.log(err);
           });
       } else {
-        swal("Your Data is safe now!");
+        setAlerts(true, "info", "Your Data is safe now!");
       }
     });
   };

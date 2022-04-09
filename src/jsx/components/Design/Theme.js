@@ -20,7 +20,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import axios from "axios";
-import swal from "sweetalert";
 import Switch from "@mui/material/Switch";
 import { Form } from "react-bootstrap";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
@@ -30,9 +29,11 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import { useHistory } from "react-router-dom";
 import { localization as t } from "../Localization";
-
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 const Theme = (props) => {
   const history = useHistory();
+  const MySwal = withReactContent(Swal);
 
   const branchId = props.history.location.state.id;
 
@@ -93,7 +94,13 @@ const Theme = (props) => {
       .post(`/api/insertTheme/${branchId}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
-          swal("Success", res.data.message, "success").then((check) => {
+          MySwal.fire({
+            title: <strong>Good job!</strong>,
+            html: res.data.message,
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#93de8b",
+          }).then((check) => {
             if (check) {
               history.goBack();
             }

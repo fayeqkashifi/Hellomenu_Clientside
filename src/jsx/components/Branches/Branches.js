@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
 import QRCode from "qrcode.react";
 import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
@@ -13,7 +12,7 @@ import "yup-phone";
 import { base_url, port } from "../../../Consts";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
-
+import Swal from "sweetalert2";
 const Branches = () => {
   const [alert, setAlert] = useState({
     open: false,
@@ -30,14 +29,16 @@ const Branches = () => {
   // delete start
   const deleteBranch = (e, id) => {
     e.preventDefault();
-    swal({
+    Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this imaginary file!",
+      text: "You won't be able to revert this!",
       icon: "warning",
-      buttons: [t("cancel"), t("confirm")],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`/api/deleteBranches/${id}`)
           .then((res) => {

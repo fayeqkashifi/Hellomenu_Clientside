@@ -8,8 +8,8 @@ export const Locale = {
   stories: "Stories",
   show: "Show",
   video_url: "Video Url",
-  add_story:"Add Story",
-  edit_story:"Edit Story",
+  add_story: "Add Story",
+  edit_story: "Edit Story",
 
   // branches
   branch_info: "Branch Info",
@@ -135,7 +135,7 @@ export const Locale = {
   areas: "Areas",
   add_area: "Add Area",
   name_area: "Area Name",
-  add: "Add",
+  add: "Add New",
   order_now_by_whatsapp: "Order Now By WhatsApp",
   delivery_fees: "Delivery Fees",
   grand_total: "Grand Total",
@@ -281,4 +281,8 @@ export const Locale = {
   new_password: "New Password",
   current_password: "Current Password",
   close_account: "Close Account",
+  total: "Total",
+  rows: "Rows",
+  areaName: "Area Name",
+  noItemFound: "NO Item Found",
 };
