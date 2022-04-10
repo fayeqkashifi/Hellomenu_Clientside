@@ -19,7 +19,8 @@ import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import ScrollContainer from "react-indiana-drag-scroll";
 import CustomAlert from "../CustomAlert";
-
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
 const Product = (props) => {
   const { url } = useRouteMatch();
 
@@ -78,7 +79,7 @@ const Product = (props) => {
     try {
       const result = await axios.get(`/api/getProducts/${branchId}`);
       if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -105,23 +106,20 @@ const Product = (props) => {
       key: "ProductName",
     },
     {
-      key: "Description",
-    },
-    {
       key: "price",
     },
     {
       key: "stock",
     },
-    {
-      key: "ingredients",
-    },
-    {
-      key: "extras",
-    },
-    {
-      key: "recommendations",
-    },
+    // {
+    //   key: "ingredients",
+    // },
+    // {
+    //   key: "extras",
+    // },
+    // {
+    //   key: "recommendations",
+    // },
     {
       key: "CategoryName",
     },
@@ -153,7 +151,7 @@ const Product = (props) => {
   } else {
     viewProducts_HTMLTABLE = (
       <CSmartTable
-        activePage={1}
+        activePage={3}
         cleaner
         // clickableRows
         columns={columns}
@@ -161,82 +159,83 @@ const Product = (props) => {
         columnSorter
         // footer
         items={fetchData}
-        itemsPerPageSelect
-        itemsPerPage={5}
         pagination
+        itemsPerPage={5}
+        itemsPerPageSelect={true}
+        itemsPerPageOptions={[5, 10, 20, 50]}
         scopedColumns={{
-          ingredients: (item) => {
-            return (
-              <td>
-                <div className="row m-3">
-                  {JSON.parse(item.ingredients)?.map((item, i) => {
-                    return (
-                      <Stack
-                        direction="row"
-                        className="m-1"
-                        spacing={1}
-                        key={i}
-                      >
-                        <Chip
-                          label={item.label}
-                          // color="primary"
-                          variant="outlined"
-                        />
-                      </Stack>
-                    );
-                  })}
-                </div>
-              </td>
-            );
-          },
-          extras: (item) => {
-            return (
-              <td>
-                <div className="row m-3">
-                  {JSON.parse(item.extras)?.map((item, i) => {
-                    return (
-                      <Stack
-                        direction="row"
-                        className="m-1"
-                        spacing={1}
-                        key={i}
-                      >
-                        <Chip
-                          label={item.label + "( +" + item.price + ".00" + " )"}
-                          // color="primary"
-                          variant="outlined"
-                        />
-                      </Stack>
-                    );
-                  })}
-                </div>
-              </td>
-            );
-          },
-          recommendations: (item) => {
-            return (
-              <td>
-                <div className="row m-3">
-                  {JSON.parse(item.recommendations)?.map((item, i) => {
-                    return (
-                      <Stack
-                        direction="row"
-                        className="m-1"
-                        spacing={1}
-                        key={i}
-                      >
-                        <Chip
-                          label={item.label}
-                          // color="primary"
-                          variant="outlined"
-                        />
-                      </Stack>
-                    );
-                  })}
-                </div>
-              </td>
-            );
-          },
+          // ingredients: (item) => {
+          //   return (
+          //     <td>
+          //       <div className="row m-3">
+          //         {JSON.parse(item.ingredients)?.map((item, i) => {
+          //           return (
+          //             <Stack
+          //               direction="row"
+          //               className="m-1"
+          //               spacing={1}
+          //               key={i}
+          //             >
+          //               <Chip
+          //                 label={item.label}
+          //                 // color="primary"
+          //                 variant="outlined"
+          //               />
+          //             </Stack>
+          //           );
+          //         })}
+          //       </div>
+          //     </td>
+          //   );
+          // },
+          // extras: (item) => {
+          //   return (
+          //     <td>
+          //       <div className="row m-3">
+          //         {JSON.parse(item.extras)?.map((item, i) => {
+          //           return (
+          //             <Stack
+          //               direction="row"
+          //               className="m-1"
+          //               spacing={1}
+          //               key={i}
+          //             >
+          //               <Chip
+          //                 label={item.label + "( +" + item.price + ".00" + " )"}
+          //                 // color="primary"
+          //                 variant="outlined"
+          //               />
+          //             </Stack>
+          //           );
+          //         })}
+          //       </div>
+          //     </td>
+          //   );
+          // },
+          // recommendations: (item) => {
+          //   return (
+          //     <td>
+          //       <div className="row m-3">
+          //         {JSON.parse(item.recommendations)?.map((item, i) => {
+          //           return (
+          //             <Stack
+          //               direction="row"
+          //               className="m-1"
+          //               spacing={1}
+          //               key={i}
+          //             >
+          //               <Chip
+          //                 label={item.label}
+          //                 // color="primary"
+          //                 variant="outlined"
+          //               />
+          //             </Stack>
+          //           );
+          //         })}
+          //       </div>
+          //     </td>
+          //   );
+          // },
           image: (item) => {
             return (
               <td>
@@ -316,7 +315,6 @@ const Product = (props) => {
 
   return (
     <>
-      <Fragment>
       {alert.open ? (
         <CustomAlert
           open={alert.open}
@@ -327,113 +325,149 @@ const Product = (props) => {
       ) : (
         ""
       )}
-        <div className="d-flex justify-content-end">
-          {checkPermission("products-create") && (
-            <Link
-              // className="btn btn-primary mb-2 mr-2"
-              to={{
-                pathname: `${url}/add-product`,
-                state: { id: branchId },
-              }}
-            >
-              <Tooltip title="Add New Product">
-                <IconButton aria-label="Example">
-                  <AddIcon />
+      <div
+        className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
+        style={{ backgroundColor: "#f5f5f5" }}
+      >
+        <div className="d-flex justify-content-between">
+          <div
+            className="d-flex align-items-center justify-content-center "
+            style={{
+              backgroundColor: "#f5f5f5",
+              fontSize: "16px",
+              color: "#000",
+              fontWeight: "bold",
+            }}
+          >
+            {t("products")}
+          </div>
+          <div>
+            <div className="input-group">
+              <Search
+                setFetchData={setFetchData}
+                url={"/api/searchProduct"}
+                id={branchId}
+                defaultUrl={`/api/getProducts/${branchId}`}
+              />
+              {checkPermission("products-create") && (
+                <Link
+                  // className="btn btn-primary mb-2 mr-2"
+                  to={{
+                    pathname: `${url}/add-product`,
+                    state: { id: branchId },
+                  }}
+                >
+                  <Tooltip title="Add New Product">
+                    <IconButton aria-label="Example">
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Link>
+              )}
+              <Tooltip title="Change Layout">
+                <IconButton aria-label="Example" onClick={changeLayout}>
+                  {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
                 </IconButton>
               </Tooltip>
-            </Link>
-          )}
-          <Tooltip title="Change Layout">
-            <IconButton aria-label="Example" onClick={changeLayout}>
-              {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-            </IconButton>
-          </Tooltip>
+            </div>
+          </div>
         </div>
-        {layout ? (
-          <ScrollContainer className="scroll-container">
-            {viewProducts_HTMLTABLE}
-          </ScrollContainer>
-        ) : (
-          <div className="row">
-            {fetchData.map((item, i) => {
-              return (
-                <div className="col-xl-3 col-lg- col-sm-6" key={item.id}>
-                  <div className="card overflow-hidden">
-                    <div className="card-body">
-                      <div className="text-center">
-                        <img
-                          src={`http://${base_url}:${port}/images/products/${
-                            JSON.parse(item.image)[0]
-                          }`}
-                          alt=""
-                          style={{
-                            width: "120px",
-                            height: "100px",
-                            objectFit: "contain",
-                          }}
-                        />
-                        <h4 className="mt-2"> {item.ProductName}</h4>
-                      </div>
+      </div>
+      {layout ? (
+        <>
+          {fetchData.length !== 0 ? (
+            viewProducts_HTMLTABLE
+          ) : (
+            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+              {t("noItemFound")}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="row">
+          {fetchData.map((item, i) => {
+            return (
+              <div className="col-xl-3 col-lg- col-sm-6" key={item.id}>
+                <div className="card overflow-hidden">
+                  <div className="card-body">
+                    <div className="text-center">
+                      <img
+                        src={`http://${base_url}:${port}/images/products/${
+                          JSON.parse(item.image)[0]
+                        }`}
+                        alt=""
+                        style={{
+                          width: "120px",
+                          height: "100px",
+                          objectFit: "contain",
+                        }}
+                      />
+                      <h4 className="mt-2"> {item.ProductName}</h4>
                     </div>
-                    <div className="card-footer pt-0 pb-0 text-center">
-                      <div className="row">
-                        {checkPermission("variants-view") && (
-                          <div className="col-4 pt-3 pb-3 border-right">
-                            <Link
-                              to={{
-                                pathname: `${url}/variants`,
-                                id: item.id,
-                                ProductName: item.ProductName,
-                                state: { p_id: item.id, id: branchId },
-                              }}
-                            >
-                              <Tooltip title="Variants">
-                                <IconButton>
-                                  <AutoAwesomeMotionIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            </Link>
-                          </div>
-                        )}
-                        {checkPermission("products-edit") && (
-                          <div className="col-4 pt-3 pb-3 border-right">
-                            <Link
-                              to={{
-                                pathname: `${url}/edit-product`,
-                                state: { id: branchId, productId: item.id },
-                              }}
-                            >
-                              <Tooltip title="Edit">
-                                <IconButton>
-                                  <EditIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            </Link>
-                          </div>
-                        )}
-                        {checkPermission("products-delete") && (
-                          <div className="col-4 pt-3 pb-3">
-                            <Link
-                              to=""
-                              onClick={(e) => deleteProduct(e, item.id)}
-                            >
-                              <Tooltip title="Delete">
-                                <IconButton>
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            </Link>
-                          </div>
-                        )}
-                      </div>
+                  </div>
+                  <div className="card-footer pt-0 pb-0 text-center">
+                    <div className="row">
+                      {checkPermission("variants-view") && (
+                        <div className="col-4 pt-3 pb-3 border-right">
+                          <Link
+                            to={{
+                              pathname: `${url}/variants`,
+                              id: item.id,
+                              ProductName: item.ProductName,
+                              state: { p_id: item.id, id: branchId },
+                            }}
+                          >
+                            <Tooltip title="Variants">
+                              <IconButton>
+                                <AutoAwesomeMotionIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                        </div>
+                      )}
+                      {checkPermission("products-edit") && (
+                        <div className="col-4 pt-3 pb-3 border-right">
+                          <Link
+                            to={{
+                              pathname: `${url}/edit-product`,
+                              state: { id: branchId, productId: item.id },
+                            }}
+                          >
+                            <Tooltip title="Edit">
+                              <IconButton>
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                        </div>
+                      )}
+                      {checkPermission("products-delete") && (
+                        <div className="col-4 pt-3 pb-3">
+                          <Link
+                            to=""
+                            onClick={(e) => deleteProduct(e, item.id)}
+                          >
+                            <Tooltip title="Delete">
+                              <IconButton>
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </Fragment>
+              </div>
+            );
+          })}{" "}
+          <Paginate
+            fetchData={fetchData}
+            setFetchData={setFetchData}
+            url={`/api/getProducts/${branchId}`}
+          />
+        </div>
+      )}
     </>
   );
 };

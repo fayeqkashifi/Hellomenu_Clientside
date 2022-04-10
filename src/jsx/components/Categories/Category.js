@@ -14,16 +14,18 @@ import AddIcon from "@mui/icons-material/Add";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Switch from "@mui/material/Switch";
-import {Option,MultiValue,animatedComponents} from "../Common/SelectOption";
+import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
-import Select from "react-select"
+import Select from "react-select";
 import Chip from "@mui/material/Chip";
 import Backdrop from "@mui/material/Backdrop";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CustomAlert from "../CustomAlert";
-
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import Tooltip from "@mui/material/Tooltip";
 
 const Category = (props) => {
   const { url } = useRouteMatch();
@@ -212,10 +214,10 @@ const Category = (props) => {
   const [cats, setCates] = useState([]);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/getBranches`);
+      const result = await axios.get(`/api/getBranchesAll`);
       if (result.data.status === 200) {
         setBranches(
-          result.data.branches.filter((item) => {
+          result.data.fetchData.filter((item) => {
             return item.id !== id;
           })
         );
@@ -228,7 +230,7 @@ const Category = (props) => {
       }
       const cat = await axios.get(`/api/getCategories/${id}`);
       if (cat.data.status === 200) {
-        setFetchData(cat.data.fetchData);
+        setFetchData(cat.data.fetchData.data);
       }
       setLoading(false);
     } catch (error) {
@@ -320,7 +322,6 @@ const Category = (props) => {
                     Shared
                   </Link>
                 ) : (
-                 
                   ""
                 )}
               </div>
@@ -455,7 +456,7 @@ const Category = (props) => {
                     <div className="form-group">
                       <label> {t("branches")}</label>
                       <MySelect
-                         options={branches?.map((o, i) => {
+                        options={branches?.map((o, i) => {
                           return {
                             value: o.id,
                             label: o.BrancheName,
@@ -469,7 +470,6 @@ const Category = (props) => {
                         allowSelectAll={true}
                         value={productbranches}
                         name="branches"
-
                       />
                     </div>
                   </>
@@ -597,10 +597,45 @@ const Category = (props) => {
           )}
         </Formik>
       </Modal>
-      <div className="d-flex justify-content-end">
-        <IconButton aria-label="Example" onClick={changeLayout}>
-          {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-        </IconButton>
+      <div
+        className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
+        style={{ backgroundColor: "#f5f5f5" }}
+      >
+        <div className="d-flex justify-content-between">
+          <div
+            className="d-flex align-items-center justify-content-center "
+            style={{
+              backgroundColor: "#f5f5f5",
+              fontSize: "16px",
+              color: "#000",
+              fontWeight: "bold",
+            }}
+          >
+            {t("categories")}
+          </div>
+          <div>
+            <div className="input-group">
+              <Search
+                setFetchData={setFetchData}
+                url={"/api/searchCategory"}
+                id={id}
+                defaultUrl={`/api/getCategories/${id}`}
+              />
+              {checkPermission("categories-create") && (
+                <Tooltip title="Add New">
+                  <IconButton aria-label="Example" onClick={handleToggle}>
+                    <AddIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Tooltip title="Change Layout">
+                <IconButton aria-label="Example" onClick={changeLayout}>
+                  {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
       </div>
       <div>
         <Backdrop
@@ -625,7 +660,13 @@ const Category = (props) => {
       </div>
       {layout ? (
         <Row>
-          {viewProducts_HTMLTABLE}
+          {fetchData.length !== 0 ? (
+            viewProducts_HTMLTABLE
+          ) : (
+            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+              {t("noItemFound")}
+            </div>
+          )}
           {checkPermission("categories-create") && (
             <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
               <div className="card overflow-hidden ">
@@ -647,32 +688,20 @@ const Category = (props) => {
               </div>
             </div>
           )}
+          <Paginate
+            fetchData={fetchData}
+            setFetchData={setFetchData}
+            url={`/api/getCategories/${id}`}
+          />
         </Row>
       ) : (
         <div className="row">
           <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
             <div className="card">
-              <div className="card-header border-0">
-                <div>
-                  <h4 className="card-title mb-2">{t("categories")}</h4>
-                </div>
-                {checkPermission("categories-create") && (
-                  <div className="dropdown">
-                    <Button
-                      variant="primary"
-                      type="button"
-                      className="mb-2 mr-2"
-                      onClick={handleToggle}
-                    >
-                      {t("add_category")}
-                    </Button>
-                  </div>
-                )}
-              </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
                   <table className="table text-center ">
-                    <thead>
+                    <thead className="table-light">
                       <tr className="card-title">
                         <th>{t("image")}</th>
                         <th>{t("category_name")}</th>
@@ -680,83 +709,106 @@ const Category = (props) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {fetchData.map((item, i) => {
-                        return (
-                          <tr key={item.id}>
-                            <td>
-                              <Link
-                                to={{
-                                  pathname: `${url}/sub-category`,
-                                  state: {
-                                    id: id,
-                                    sub_id: item.id,
-                                  },
-                                }}
-                              >
-                                <div>
-                                  <img
-                                    style={{
-                                      height: "50px",
-                                      width: "100%",
-                                      borderRadius: "10%",
-                                      objectFit: "contain",
-                                    }}
-                                    src={
-                                      item.CategoryIcon
-                                        ? `http://${base_url}:${port}/images/catagories/${item.CategoryIcon}`
-                                        : DefaultPic
-                                    }
-                                    alt="category"
-                                  />
-                                </div>
-                              </Link>
-                            </td>
-                            <td>
-                              <Link
-                                to={{
-                                  pathname: `${url}/sub-category`,
-                                  state: {
-                                    id: id,
-                                    sub_id: item.id,
-                                  },
-                                }}
-                              >
-                                {item.CategoryName}
-                              </Link>
-                              {item.isShared ? (
-                                <Chip label="Shared" size="small" />
-                              ) : (
-                                ""
-                              )}
-                            </td>
+                      {fetchData.length !== 0 ? (
+                        fetchData.map((item, i) => {
+                          return (
+                            <tr key={item.id}>
+                              <td>
+                                <Link
+                                  to={{
+                                    pathname: `${url}/sub-category`,
+                                    state: {
+                                      id: id,
+                                      sub_id: item.id,
+                                    },
+                                  }}
+                                >
+                                  <div>
+                                    <img
+                                      style={{
+                                        height: "50px",
+                                        width: "100%",
+                                        borderRadius: "10%",
+                                        objectFit: "contain",
+                                      }}
+                                      src={
+                                        item.CategoryIcon
+                                          ? `http://${base_url}:${port}/images/catagories/${item.CategoryIcon}`
+                                          : DefaultPic
+                                      }
+                                      alt="category"
+                                    />
+                                  </div>
+                                </Link>
+                              </td>
+                              <td>
+                                <Link
+                                  to={{
+                                    pathname: `${url}/sub-category`,
+                                    state: {
+                                      id: id,
+                                      sub_id: item.id,
+                                    },
+                                  }}
+                                >
+                                  {item.CategoryName}
+                                </Link>
+                                {item.isShared ? (
+                                  <Chip label="Shared" size="small" />
+                                ) : (
+                                  ""
+                                )}
+                              </td>
 
-                            <td>
-                              {checkPermission("categories-edit") && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => fetchMenus(e, item.id)}
-                                  className="btn btn-outline-danger btn-sm"
+                              <td>
+                                <div
+                                  className="input-group"
+                                  style={{
+                                    display:
+                                      "table" /* Instead of display:block */,
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                  }}
                                 >
-                                  {t("edit")}
-                                </button>
-                              )}
-                              &nbsp;&nbsp;&nbsp;
-                              {checkPermission("categories-delete") && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => deleteMenu(e, item.id)}
-                                  className="btn btn-outline-warning btn-sm"
-                                >
-                                  {t("delete")}
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
+                                  {checkPermission("categories-edit") && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => fetchMenus(e, item.id)}
+                                      className="btn btn-outline-info btn-sm"
+                                    >
+                                      {t("edit")}
+                                    </button>
+                                  )}
+                                  &nbsp;
+                                  {checkPermission("categories-delete") && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => deleteMenu(e, item.id)}
+                                      className="btn btn-outline-danger btn-sm"
+                                    >
+                                      {t("delete")}
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={3}> {t("noItemFound")}</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
+              </div>
+              <div className="card-footer border-0">
+                <Paginate
+                  fetchData={fetchData}
+                  setFetchData={setFetchData}
+                  url={`/api/getCategories/${id}`}
+                />
               </div>
             </div>
           </div>

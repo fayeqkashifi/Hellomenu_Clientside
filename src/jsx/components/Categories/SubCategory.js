@@ -15,6 +15,9 @@ import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import Tooltip from "@mui/material/Tooltip";
+import Search from "../Common/Search";
+import Paginate from "../Common/Paginate";
 
 const SubCategory = (props) => {
   const initialValues = {
@@ -165,7 +168,7 @@ const SubCategory = (props) => {
     try {
       const result = await axios.get(`/api/getSubCategories/${id}`);
       if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -264,15 +267,50 @@ const SubCategory = (props) => {
       ) : (
         ""
       )}
-      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem
-          className="font-weight-bold"
-          // onClick={() => history.goBack()}
-        >
-          {t("categories")}
-        </CBreadcrumbItem>
-        <CBreadcrumbItem active>{t("sub_category")}</CBreadcrumbItem>
-      </CBreadcrumb>
+      <div
+        className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
+        style={{ backgroundColor: "#f5f5f5" }}
+      >
+        <div className="d-flex justify-content-between">
+          <div
+            className="d-flex align-items-center justify-content-center "
+            style={{
+              backgroundColor: "#f5f5f5",
+              fontSize: "16px",
+              color: "#000",
+              fontWeight: "bold",
+            }}
+          >
+            {t("sub_category")}
+          </div>
+          <div>
+            <div className="input-group">
+              <Search
+                setFetchData={setFetchData}
+                url={"/api/searchSubCategory"}
+                id={id}
+                defaultUrl={`/api/getSubCategories/${id}`}
+              />
+              {checkPermission("subCategories-create") && (
+                <Tooltip title="Add New">
+                  <IconButton
+                    aria-label="Example"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Tooltip title="Change Layout">
+                <IconButton aria-label="Example" onClick={changeLayout}>
+                  {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* <!-- Insert  Modal --> */}
       <Modal className="fade" show={modalCentered}>
         <Modal.Header>
@@ -414,14 +452,16 @@ const SubCategory = (props) => {
           )}
         </Formik>
       </Modal>
-      <div className="d-flex justify-content-end">
-        <IconButton aria-label="Example" onClick={changeLayout}>
-          {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-        </IconButton>
-      </div>
       {layout ? (
         <div className="row">
-          {viewProducts_HTMLTABLE}
+          {fetchData.length !== 0 ? (
+            viewProducts_HTMLTABLE
+          ) : (
+            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+              {t("noItemFound")}
+            </div>
+          )}
+
           {checkPermission("subCategories-create") && (
             <div className="col-xl-3 col-lg-3 col-sm-6 col-md-3">
               <div className="card overflow-hidden ">
@@ -444,32 +484,20 @@ const SubCategory = (props) => {
               </div>
             </div>
           )}
+          <Paginate
+            fetchData={fetchData}
+            setFetchData={setFetchData}
+            url={`/api/getSubCategories/${id}`}
+          />
         </div>
       ) : (
         <div className="row">
           <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
             <div className="card">
-              <div className="card-header border-0">
-                <div>
-                  <h4 className="card-title mb-2">{t("categories")}</h4>
-                </div>
-                {checkPermission("subCategories-create") && (
-                  <div className="dropdown">
-                    <Button
-                      variant="primary"
-                      type="button"
-                      className="mb-2 mr-2"
-                      onClick={() => setModalCentered(true)}
-                    >
-                      {t("add_category")}
-                    </Button>
-                  </div>
-                )}
-              </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
                   <table className="table text-center ">
-                    <thead>
+                    <thead className="table-light">
                       <tr className="card-title">
                         <th>{t("image")}</th>
                         <th>{t("sub_category_name")}</th>
@@ -477,56 +505,83 @@ const SubCategory = (props) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {fetchData.map((item, i) => {
-                        return (
-                          <tr key={item.id}>
-                            <td>
-                              <div>
-                                <img
-                                  style={{
-                                    height: "50px",
-                                    width: "100%",
-                                    borderRadius: "10%",
-                                    objectFit: "contain",
-                                  }}
-                                  src={
-                                    item.SubCategoryIcon
-                                      ? `http://${base_url}:${port}/images/sub_catagories/${item.SubCategoryIcon}`
-                                      : DefaultPic
-                                  }
-                                  alt="category"
-                                />
-                              </div>
-                            </td>
-                            <td>{item.SubCategoryName}</td>
+                      {fetchData.length !== 0 ? (
+                        fetchData.map((item, i) => {
+                          return (
+                            <tr key={item.id}>
+                              <td>
+                                <div>
+                                  <img
+                                    style={{
+                                      height: "50px",
+                                      width: "100%",
+                                      borderRadius: "10%",
+                                      objectFit: "contain",
+                                    }}
+                                    src={
+                                      item.SubCategoryIcon
+                                        ? `http://${base_url}:${port}/images/sub_catagories/${item.SubCategoryIcon}`
+                                        : DefaultPic
+                                    }
+                                    alt="category"
+                                  />
+                                </div>
+                              </td>
+                              <td>{item.SubCategoryName}</td>
 
-                            <td>
-                              {checkPermission("subCategories-edit") && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => fetchSubMenus(e, item.sub_id)}
-                                  className="btn btn-outline-danger btn-sm"
+                              <td>
+                                <div
+                                  className="input-group"
+                                  style={{
+                                    display:
+                                      "table" /* Instead of display:block */,
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                  }}
                                 >
-                                  {t("edit")}
-                                </button>
-                              )}
-                              &nbsp;&nbsp;&nbsp;
-                              {checkPermission("subCategories-delete") && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => deleteSubMenu(e, item.sub_id)}
-                                  className="btn btn-outline-warning btn-sm"
-                                >
-                                  {t("delete")}
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
+                                  {checkPermission("subCategories-edit") && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) =>
+                                        fetchSubMenus(e, item.sub_id)
+                                      }
+                                      className="btn btn-outline-info btn-sm"
+                                    >
+                                      {t("edit")}
+                                    </button>
+                                  )}
+                                  &nbsp;
+                                  {checkPermission("subCategories-delete") && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) =>
+                                        deleteSubMenu(e, item.sub_id)
+                                      }
+                                      className="btn btn-outline-danger btn-sm"
+                                    >
+                                      {t("delete")}
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={3}> {t("noItemFound")}</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
+              </div>
+              <div className="card-footer border-0">
+                <Paginate
+                  fetchData={fetchData}
+                  setFetchData={setFetchData}
+                  url={`/api/getSubCategories/${id}`}
+                />
               </div>
             </div>
           </div>

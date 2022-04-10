@@ -15,7 +15,6 @@ import {
   COffcanvasHeader,
   COffcanvasTitle,
 } from "@coreui/react";
-import Customization from "../Design/Templates/Customization";
 import SubCategory from "../Categories/SubCategory";
 import Category from "../Categories/Category";
 import PrivateRoute from "../PrivateRoute";
@@ -221,24 +220,40 @@ const Show = (props) => {
         </COffcanvas>
 
         <Switch>
-          <PrivateRoute exact path={`${path}`} component={Category} />
-          <PrivateRoute path={`${path}/sub-category`} component={SubCategory} />
-          <PrivateRoute path={`${path}/cat-shared`} component={Shared} />
+          {checkPermission("categories-view") && (
+            <PrivateRoute exact path={`${path}`} component={Category} />
+          )}
+          {checkPermission("categories-view") && (
+            <PrivateRoute path={`${path}/cat-shared`} component={Shared} />
+          )}
+          {checkPermission("subCategories-view") && (
+            <PrivateRoute
+              path={`${path}/sub-category`}
+              component={SubCategory}
+            />
+          )}
+          {checkPermission("desgin-view") && (
+            <PrivateRoute path={`${path}/design`} component={DesignShow} />
+          )}
+          {checkPermission("products-view") && (
+            <PrivateRoute path={`${path}/products`} component={ProductShow} />
+          )}
+          {checkPermission("service-areas-view") && (
+            <PrivateRoute
+              path={`${path}/services-areas`}
+              component={ServiceArea}
+            />
+          )}
+          {checkPermission("tables-view") && (
+            <PrivateRoute path={`${path}/tables`} component={Tables} />
+          )}
 
-          {/* <PrivateRoute path={`${path}/category`} component={Category} /> */}
-          <PrivateRoute path={`${path}/design`} component={DesignShow} />
-          <PrivateRoute path={`${path}/products`} component={ProductShow} />
-
-          <PrivateRoute
-            path={`${path}/services-areas`}
-            component={ServiceArea}
-          />
-          <PrivateRoute path={`${path}/tables`} component={Tables} />
-          <PrivateRoute path={`${path}/qrcode-style`} component={QRcodeStyle} />
-          <PrivateRoute
-            path={`/dark-template-customization`}
-            component={Customization}
-          />
+          {checkPermission("qrcode-style-view") && (
+            <PrivateRoute
+              path={`${path}/qrcode-style`}
+              component={QRcodeStyle}
+            />
+          )}
         </Switch>
       </Router>
     </Fragment>

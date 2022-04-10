@@ -11,26 +11,26 @@ import PrivateRoute from "../PrivateRoute";
 import Customization from "./Templates/Customization";
 import Theme from "./Theme";
 import EditTheme from "./EditTheme";
+import { checkPermission } from "../Permissions";
 
 const DesignShow = (props) => {
   const { path } = useRouteMatch();
-  // const { t } = useTranslation();
-  // const id = props.history.location.state.id;
 
   return (
     <Fragment>
-      <Router>
-        <Switch>
-          <PrivateRoute exact path={`${path}`} component={Design} />
-          <PrivateRoute
-            path={`${path}/customization`}
-            component={Customization}
-          />
-          <PrivateRoute path={`${path}/add-theme`} component={Theme} />
-          <PrivateRoute path={`${path}/edit-theme`} component={EditTheme} />
-          {/* <PrivateRoute path={`${path}/edit-product`} component={EditProduct} /> */}
-        </Switch>
-      </Router>
+      {checkPermission("desgin-view") && (
+        <Router>
+          <Switch>
+            <PrivateRoute exact path={`${path}`} component={Design} />
+            <PrivateRoute
+              path={`${path}/customization`}
+              component={Customization}
+            />
+            <PrivateRoute path={`${path}/add-theme`} component={Theme} />
+            <PrivateRoute path={`${path}/edit-theme`} component={EditTheme} />
+          </Switch>
+        </Router>
+      )}
     </Fragment>
   );
 };

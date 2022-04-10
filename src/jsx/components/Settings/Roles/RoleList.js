@@ -98,17 +98,17 @@ const RoleList = (props) => {
   };
 
   return (
-    <ScrollContainer className="scroll-container">
+    <>
       {alert.open ? (
-            <CustomAlert
-              open={alert.open}
-              severity={alert.severity}
-              message={alert.message}
-              setAlert={setAlert}
-            />
-          ) : (
-            ""
-          )}
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
       <CSmartTable
         activePage={1}
         cleaner
@@ -156,7 +156,7 @@ const RoleList = (props) => {
           hover: true,
         }}
       />
-    </ScrollContainer>
+    </>
   );
 };
 

@@ -14,6 +14,9 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
+import SubmitButtons from "../Common/SubmitButtons";
+import MButton from "@mui/material/Button";
+
 const AddProduct = (props) => {
   const history = useHistory();
   // for localization
@@ -29,7 +32,6 @@ const AddProduct = (props) => {
     stock: "",
     preparationTime: "",
     UnitName: "",
-    Description: "",
     videos: [],
   };
 
@@ -66,8 +68,11 @@ const AddProduct = (props) => {
       message: message,
     });
   };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const saveProduct = (data) => {
-    // console.log(JSON.stringify(data, null, 2));
+    setIsSubmitting(true);
+
     const formData = new FormData();
     for (let i = 0; i < data.photo.length; i++) {
       formData.append("image[]", data.photo[i]);
@@ -78,10 +83,8 @@ const AddProduct = (props) => {
     for (let i = 0; i < data.videos.length; i++) {
       formData.append("videos[]", data.videos[i]);
     }
-    formData.append("Description", data.Description);
     formData.append("ProductName", data.ProductName);
     formData.append("sub_category", data.sub_category);
-
     formData.append("category", data.category);
     formData.append("price", data.price);
     formData.append("stock", data.stock);
@@ -92,7 +95,6 @@ const AddProduct = (props) => {
     formData.append("UnitName", data.UnitName);
     formData.append("branchId", branchId);
     formData.append("form", JSON.stringify(form));
-
     axios
       .post(`/api/insertProducts`, formData)
       .then((res) => {
@@ -105,6 +107,7 @@ const AddProduct = (props) => {
             confirmButtonColor: "#93de8b",
           }).then((check) => {
             if (check) {
+              setIsSubmitting(false);
               history.push({
                 pathname: `/branches/show/products`,
                 state: { id: branchId },
@@ -149,22 +152,22 @@ const AddProduct = (props) => {
   const [share, setShare] = useState(false);
   const dataLoad = async () => {
     try {
-      const cat = await axios.get(`/api/getCategories/${branchId}`);
+      const cat = await axios.get(`/api/getCategoriesAll/${branchId}`);
       if (cat.data.status === 200) {
         setCategories(cat.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      const response = await axios.get(`/api/getProducts/${branchId}`);
+      const response = await axios.get(`/api/getProductsAll/${branchId}`);
       if (response.data.status === 200) {
         setFetchData(response.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      const res = await axios.get(`/api/getBranches`);
+      const res = await axios.get(`/api/getBranchesAll`);
       if (res.data.status === 200) {
         setBranches(
-          res.data.branches.filter((item) => {
+          res.data.fetchData.filter((item) => {
             return item.id != branchId;
           })
         );
@@ -188,7 +191,7 @@ const AddProduct = (props) => {
   }, []);
   const loadIngredients = async () => {
     try {
-      const result = await axios.post(`/api/getIngredient`);
+      const result = await axios.get(`/api/getIngredientAll`);
       if (result.data.status === 200) {
         setIntgredients(result.data.fetchData);
       } else {
@@ -256,7 +259,9 @@ const AddProduct = (props) => {
 
     axios
       .get(
-        `/api/getSubCategories/${e.target.value == "" ? null : e.target.value}`
+        `/api/getSubCategoriesAll/${
+          e.target.value == "" ? null : e.target.value
+        }`
       )
       .then((res) => {
         if (res.data.status === 200) {
@@ -272,7 +277,7 @@ const AddProduct = (props) => {
     if (!e.target.checked) {
       setProductBranches([]);
       axios
-        .get(`/api/getCategories/${branchId}`)
+        .get(`/api/getCategoriesAll/${branchId}`)
         .then((res) => {
           if (res.data.status === 200) {
             setCategories(res.data.fetchData);
@@ -521,22 +526,6 @@ const AddProduct = (props) => {
                       </div>
                       <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                         <div className="form-group">
-                          <label> {t("description")}</label>
-                          <Field
-                            as="textarea"
-                            name="Description"
-                            className={
-                              "form-control" +
-                              (errors.Description && touched.Description
-                                ? " is-invalid"
-                                : "")
-                            }
-                            placeholder="Description..."
-                          />
-                        </div>
-                      </div>
-                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                        <div className="form-group">
                           <label> {t("price")}</label>
                           <Field
                             name="price"
@@ -644,7 +633,7 @@ const AddProduct = (props) => {
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         {form.map((item, index) => (
-                          <div className="row mt-3" key={`item-${index}`}>
+                          <div className="row my-1" key={`item-${index}`}>
                             <div className="col-10">
                               <input
                                 type="text"
@@ -678,13 +667,13 @@ const AddProduct = (props) => {
                             </div>
                           </div>
                         ))}
-
-                        <button
-                          className="btn btn-primary mt-2"
+                        <MButton
+                          variant="outlined"
+                          size="medium"
                           onClick={handleAddLink}
                         >
-                          {t("add")}
-                        </button>
+                          {t("add_more")}
+                        </MButton>
                       </div>
                     </div>
                   </div>
@@ -820,16 +809,11 @@ const AddProduct = (props) => {
                 </div>
               </div>
               <div className="card-footer text-right">
-                <Button
-                  variant="danger light"
-                  className="m-1"
-                  onClick={() => history.goBack()}
-                >
-                  {t("back")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
+                <SubmitButtons
+                  isSubmitting={isSubmitting}
+                  left={t("back")}
+                  right={t("save")}
+                />
               </div>
             </div>
           </Form>
@@ -851,12 +835,30 @@ const AddProduct = (props) => {
         ) : (
           ""
         )}
-        <div className="d-flex justify-content-between m-1">
-          <h4>{t("add_product")}</h4>
-          <h6 onClick={() => history.goBack()} style={{ cursor: "pointer" }}>
-            List of Products
-          </h6>
+        <div
+          className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
+          style={{ backgroundColor: "#f5f5f5", padding: "5px", color: "#000" }}
+        >
+          <div className="d-flex justify-content-between">
+            <div
+              className="d-flex align-items-center justify-content-center "
+              style={{
+                fontSize: "16px",
+                fontWeight: "bold",
+              }}
+            >
+              {t("add_product")}
+            </div>
+            <div
+              className="d-flex align-items-center justify-content-center "
+              onClick={() => history.goBack()}
+              style={{ cursor: "pointer" }}
+            >
+              List of Products
+            </div>
+          </div>
         </div>
+
         {viewProducts_HTMLTABLE}
 
         <Modal className="fade" show={modalCentered}>

@@ -8,6 +8,8 @@ import {
   Switch,
   useRouteMatch,
 } from "react-router-dom";
+import { checkPermission } from "../../Permissions";
+
 const Locale = () => {
   const { path } = useRouteMatch();
 
@@ -18,8 +20,12 @@ const Locale = () => {
         Localisation.
       </div> */}
       <Switch>
-        <PrivateRoute exact path={`${path}`} component={LanguageList} />
-        <PrivateRoute path={`${path}/edit-locale`} component={EditLocale} />
+        {checkPermission("localization-view") && (
+          <PrivateRoute exact path={`${path}`} component={LanguageList} />
+        )}
+        {checkPermission("localization-edit") && (
+          <PrivateRoute path={`${path}/edit-locale`} component={EditLocale} />
+        )}
       </Switch>
     </Router>
   );

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 function Search(props) {
-  const { setFetchData, url, defaultUrl } = props;
+  const { setFetchData, url, defaultUrl, id } = props;
   let cancelToken;
 
   const searchItem = async (e) => {
@@ -15,9 +15,13 @@ function Search(props) {
       cancelToken = axios.CancelToken.source();
       let results;
       try {
-        results = await axios.get(`${url}/${e.target.value}`, {
-          cancelToken: cancelToken.token,
-        });
+        results = await axios.post(
+          `${url}`,
+          { id: id, name: e.target.value },
+          {
+            cancelToken: cancelToken.token,
+          }
+        );
         if (results.data.status === 200) {
           setFetchData(results.data.fetchData);
         } else if (results.data.status === 404) {

@@ -5,6 +5,8 @@ import AddRole from "./AddRole";
 import { Switch, useRouteMatch } from "react-router-dom";
 import PrivateRoute from "../../PrivateRoute";
 import EditRole from "./EditRole";
+import { checkPermission } from "../../Permissions";
+
 const Role = () => {
   const { path } = useRouteMatch();
 
@@ -14,8 +16,12 @@ const Role = () => {
         You must log out of the system after making changes to your role.
       </div>
       <Switch>
-        <PrivateRoute exact path={`${path}`} component={AddRole} />
-        <PrivateRoute path={`${path}/edit-role`} component={EditRole} />
+        {checkPermission("roles-view") && (
+          <PrivateRoute exact path={`${path}`} component={AddRole} />
+        )}
+        {checkPermission("roles-edit") && (
+          <PrivateRoute path={`${path}/edit-role`} component={EditRole} />
+        )}
       </Switch>
       {/* */}
     </>

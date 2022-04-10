@@ -6,11 +6,15 @@ import Header from "./Header";
 const KokiNav = ({ title }) => {
   const [toggle, setToggle] = useState("");
   const onClick = (name) => setToggle(toggle === name ? "" : name);
+  const [check, setCheck] = useState([]);
+
   return (
     <Fragment>
       <NavHader />
       <SideBar />
       <Header
+        setCheck={setCheck}
+        check={check}
         onActivity={() => onClick("activity")}
         onNotification={() => onClick("notification")}
         onProfile={() => onClick("profile")}

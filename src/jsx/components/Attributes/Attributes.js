@@ -167,7 +167,7 @@ const Attributes = () => {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       return (
         <tr key={item.id}>
-          <td>{i + 1}</td>
+          {/* <td>{i + 1}</td> */}
 
           <td> {item.attributeName}</td>
           <td>
@@ -188,7 +188,7 @@ const Attributes = () => {
                   {t("edit")}
                 </button>
               )}
-              &nbsp;&nbsp;&nbsp;
+              &nbsp;
               {checkPermission("attributes-delete") && (
                 <button
                   type="button"
@@ -358,7 +358,7 @@ const Attributes = () => {
                 <table className="table text-center">
                   <thead className="table-light">
                     <tr>
-                      <th>{t("number")}</th>
+                      {/* <th>{t("number")}</th> */}
                       <th>{t("attribute_name")}</th>
                       <th>{t("actions")}</th>
                     </tr>
@@ -368,7 +368,7 @@ const Attributes = () => {
                       viewProducts_HTMLTABLE
                     ) : (
                       <tr>
-                        <td colSpan={3}> {t("noItemFound")}</td>
+                        <td colSpan={2}> {t("noItemFound")}</td>
                       </tr>
                     )}
                   </tbody>

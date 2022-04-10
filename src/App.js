@@ -81,7 +81,6 @@ const App = () => {
           path="/onboarding/:id"
           exact
         />
-
         <PublicRoute
           restricted={false}
           component={ForgotPassword}

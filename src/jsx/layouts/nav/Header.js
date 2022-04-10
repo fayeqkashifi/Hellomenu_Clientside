@@ -3,17 +3,22 @@ import profile from "../../../images/hellomenu/logo.svg";
 import axios from "axios";
 import "flag-icon-css/css/flag-icons.min.css";
 import IdleTimer from "react-idle-timer";
-
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { base_url, port } from "../../../Consts";
 import { localization as t } from "../../components/Localization";
-
-const Header = ({ toggle, onProfile, onNotification }) => {
+import Menu from "@mui/material/Menu";
+import IconButton from "@mui/material/IconButton";
+const Header = ({ toggle, onProfile, onNotification, setCheck, check }) => {
   const idleTimerRef = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  // const history = useHistory();
+  const open = Boolean(anchorEl);
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const logoutUser = () => {
-    // e.preventDefault();
     axios
       .post("/api/logout")
       .then((res) => {
@@ -31,6 +36,8 @@ const Header = ({ toggle, onProfile, onNotification }) => {
         console.log(error);
       });
   };
+  const [languages, setLanguages] = useState([]);
+  const [activeLang, setActivLang] = useState([]);
 
   const [user, setUser] = useState([]);
   const dataLoad = async () => {
@@ -38,21 +45,45 @@ const Header = ({ toggle, onProfile, onNotification }) => {
       const result = await axios.get(
         `/api/getUser/${atob(localStorage.getItem("auth_id"))}`
       );
-
       if (result.data.status === 200) {
         setUser(result.data.data);
       }
+      axios
+        .get("/api/getlocales")
+        .then((res) => {
+          res.data.filter((item) => {
+            if (item.status == 1) {
+              setActivLang(item);
+            }
+          });
+          setLanguages(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
     dataLoad();
-
     return () => {
       setUser([]);
     };
-  }, []);
+  }, [check]);
+  const changeLocaleStatus = (id) => {
+    axios
+      .get(`/api/changeLocaleStatus/${id}`)
+      .then((res) => {
+        if (res.data.status === 200) {
+          localStorage.setItem("locale", res.data.data.locale);
+          setCheck(!check);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="header">
       <IdleTimer
@@ -66,6 +97,40 @@ const Header = ({ toggle, onProfile, onNotification }) => {
             <div className="header-left"></div>
 
             <ul className="navbar-nav header-right">
+              <div className="nav-item">
+                <IconButton onClick={handleClick}>
+                  <span
+                    className={`flag-icon flag-icon-${activeLang.country_code?.toLowerCase()} `}
+                  ></span>
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <ul>
+                    {languages.map((item, i) => (
+                      <li
+                        key={i}
+                        className={`dropdown-item ${
+                          item.status ? "active" : ""
+                        }`}
+                        onClick={() => changeLocaleStatus(item.id)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <span
+                          className={`flag-icon flag-icon-${item.country_code?.toLowerCase()} mr-2`}
+                        ></span>
+                        {item.Language_name}
+                      </li>
+                    ))}
+                  </ul>
+                </Menu>
+              </div>
               <li
                 className={`nav-item dropdown header-profile ${
                   toggle === "profile" ? "show" : ""
@@ -73,18 +138,14 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                 onClick={() => onProfile()}
               >
                 <a
-                  // to={"#"}
+                  // to={"/#"}
                   className="nav-link"
                   role="button"
                   data-toggle="dropdown"
                 >
                   <div className="header-info">
                     <small>{t("hello_menu")}</small>
-                    <span>
-                      {" "}
-                      {atob(localStorage.getItem("auth_name"))}{" "}
-                      <MoreVertIcon sx={{ color: "#f50b65" }} />
-                    </span>
+                    <span> {atob(localStorage.getItem("auth_name"))} </span>
                   </div>
                   <img
                     src={
@@ -95,42 +156,13 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                     width="10"
                     alt=""
                   />
-                </a>
-                <div
-                  className={`dropdown-menu dropdown-menu-right ${
-                    toggle === "profile" ? "show" : ""
-                  }`}
-                >
-                  {/* <Link to="/profile" className="dropdown-item ai-icon">
-                    <svg
-                      id="icon-user1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="text-success"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span className="ml-2">{t("profile")} </span>
-                  </Link> */}
-
-                  <button
-                    className="dropdown-item ai-icon"
-                    onClick={logoutUser}
-                  >
+                  <div onClick={logoutUser} className="ml-2">
                     <svg
                       id="icon-logout"
                       xmlns="http://www.w3.org/2000/svg"
                       className="text-danger"
-                      width="18"
-                      height="18"
+                      width="32"
+                      height="32"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -142,9 +174,8 @@ const Header = ({ toggle, onProfile, onNotification }) => {
                       <polyline points="16 17 21 12 16 7"></polyline>
                       <line x1="21" y1="12" x2="9" y2="12"></line>
                     </svg>
-                    <span className="ml-2">{t("logout")} </span>
-                  </button>
-                </div>
+                  </div>
+                </a>
               </li>
             </ul>
           </div>

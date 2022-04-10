@@ -10,7 +10,8 @@ import CustomAlert from "../CustomAlert";
 import { useHistory } from "react-router-dom";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
-
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
 const Ingredients = (props) => {
   // validation start
   const history = useHistory();
@@ -159,9 +160,9 @@ const Ingredients = (props) => {
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
     try {
-      const result = await axios.post(`/api/getIngredient`);
+      const result = await axios.get(`/api/getIngredient`);
       if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -199,13 +200,9 @@ const Ingredients = (props) => {
     if (someEmpty) {
       form.map((item, index) => {
         const allPrev = [...form];
-        // console.log();
         if (form[index].name === "") {
           allPrev[index].errors.name = "Name for ingerdient is required";
         }
-        //  if (allPrev.some((val) => val.name == form[index].name)) {
-        //   allPrev[index].errors.name = "Duplicate Entry";
-        // }
         return setForm(allPrev);
       });
     }
@@ -270,29 +267,38 @@ const Ingredients = (props) => {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       return (
         <tr key={item.id}>
-          <td>{i + 1}</td>
+          {/* <td>{i + 1}</td> */}
 
           <td> {item.name}</td>
           <td>
-            {checkPermission("ingredients-edit") && (
-              <button
-                type="button"
-                onClick={(e) => fetch(e, item.id)}
-                className="btn btn-outline-danger btn-sm"
-              >
-                {t("edit")}
-              </button>
-            )}
-            &nbsp;&nbsp;&nbsp;
-            {checkPermission("ingredients-delete") && (
-              <button
-                type="button"
-                onClick={(e) => deleteIngredient(e, item.id)}
-                className="btn btn-outline-warning btn-sm"
-              >
-                {t("delete")}
-              </button>
-            )}
+            <div
+              className="input-group"
+              style={{
+                display: "table" /* Instead of display:block */,
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              {checkPermission("ingredients-edit") && (
+                <button
+                  type="button"
+                  onClick={(e) => fetch(e, item.id)}
+                  className="btn btn-outline-info btn-sm"
+                >
+                  {t("edit")}
+                </button>
+              )}
+              &nbsp;
+              {checkPermission("ingredients-delete") && (
+                <button
+                  type="button"
+                  onClick={(e) => deleteIngredient(e, item.id)}
+                  className="btn btn-outline-danger btn-sm"
+                >
+                  {t("delete")}
+                </button>
+              )}
+            </div>
           </td>
         </tr>
       );
@@ -434,32 +440,54 @@ const Ingredients = (props) => {
               <div>
                 <h4 className="card-title mb-2">{t("ingredients")}</h4>
               </div>
-              <div className="dropdown">
-                {checkPermission("ingredients-create") && (
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mb-2 mr-2"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    {t("add_ingredient")}
-                  </Button>
-                )}
+              <div>
+                <div className="input-group">
+                  <Search
+                    setFetchData={setFetchData}
+                    url={"/api/searchIngredient"}
+                    defaultUrl={"/api/getIngredient"}
+                  />
+                  {checkPermission("ingredients-create") && (
+                    <Button
+                      variant="primary"
+                      type="button"
+                      className="mb-2 mr-2"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      {t("add")}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
             <div className="card-body p-0">
               <div className="table-responsive ">
                 <table className="table text-center">
-                  <thead>
+                  <thead className="table-light">
                     <tr>
-                      <th>{t("number")}</th>
+                      {/* <th>{t("number")}</th> */}
                       <th>{t("name")}</th>
                       <th>{t("actions")}</th>
                     </tr>
                   </thead>
-                  <tbody>{viewProducts_HTMLTABLE}</tbody>
+                  <tbody>
+                    {fetchData.length !== 0 ? (
+                      viewProducts_HTMLTABLE
+                    ) : (
+                      <tr>
+                        <td colSpan={2}> {t("noItemFound")}</td>
+                      </tr>
+                    )}
+                  </tbody>
                 </table>
               </div>
+            </div>
+            <div className="card-footer border-0">
+              <Paginate
+                fetchData={fetchData}
+                setFetchData={setFetchData}
+                url={"/api/getIngredient"}
+              />
             </div>
           </div>
         </div>

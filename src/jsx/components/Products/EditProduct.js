@@ -16,10 +16,11 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
+import SubmitButtons from "../Common/SubmitButtons";
+import MButton from "@mui/material/Button";
 const EditProduct = (props) => {
   const history = useHistory();
   const MySwal = withReactContent(Swal);
-
   const validationSchema = () => {
     return Yup.object().shape({
       ProductName: Yup.string().required("Product Name is required"),
@@ -74,22 +75,19 @@ const EditProduct = (props) => {
 
   // edit Start
   const [editProduct, setEditProduct] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateProduct = (data) => {
-    // console.log(JSON.stringify(data, null, 2));
+    setIsSubmitting(true);
 
     const formData = new FormData();
-    if (
-      // JSON.parse(editProduct.video).length !== 0 ||
-      editProduct.video !== null
-    ) {
+    if (editProduct.video !== null) {
       formData.append("video", editProduct.video);
     } else {
       formData.append("video", null);
     }
 
     formData.append("image", editProduct.image);
-    formData.append("Description", data.Description);
     formData.append("ProductName", data.ProductName);
     formData.append("UnitName", data.UnitName);
     formData.append("price", data.price);
@@ -115,6 +113,7 @@ const EditProduct = (props) => {
             confirmButtonColor: "#93de8b",
           }).then((check) => {
             if (check) {
+              setIsSubmitting(false);
               history.push({
                 pathname: `/branches/show/products`,
                 state: { id: branchId },
@@ -147,7 +146,7 @@ const EditProduct = (props) => {
   };
   const extraHandle = (e, id) => {
     let updatedList = productExtra.map((item) => {
-      if (item.id == id) {
+      if (item.value == id) {
         return { ...item, price: e.target.value }; //gets everything that was already in item, and updates "done"
       }
       return item; // else return unmodified item
@@ -160,13 +159,13 @@ const EditProduct = (props) => {
   };
   const dataLoad = async () => {
     try {
-      const cat = await axios.get(`/api/getCategories/${branchId}`);
+      const cat = await axios.get(`/api/getCategoriesAll/${branchId}`);
       if (cat.data.status === 200) {
         setCategories(cat.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      const response = await axios.get(`/api/getProducts/${branchId}`);
+      const response = await axios.get(`/api/getProductsAll/${branchId}`);
       if (response.data.status === 200) {
         setFetchData(response.data.fetchData);
       } else {
@@ -174,13 +173,14 @@ const EditProduct = (props) => {
       }
       const res = await axios.get(`/api/editProducts/${productId}`);
       if (res.data.status === 200) {
-        const product = res.data.product;
-        setEditProduct(product);
-        setProductIngredient(JSON.parse(product.ingredients));
-        setProductExtra(JSON.parse(product.extras));
-        setProductRecom(JSON.parse(product.recommendations));
+        const data = res.data;
+        setEditProduct(data.product);
+        // console.log(data.ingredients);
+        setProductIngredient(data.ingredients);
+        setProductExtra(data.extras);
+        setProductRecom(data.recommend);
         const value = [];
-        JSON.parse(product.videosUrl).map((item) => {
+        JSON.parse(data.product.videosUrl).map((item) => {
           value.push({
             name: item,
             errors: {
@@ -190,7 +190,7 @@ const EditProduct = (props) => {
         });
         setForm(value);
         axios
-          .get(`/api/getSubCategories/${res.data.product.category_id}`)
+          .get(`/api/getSubCategoriesAll/${res.data.product.category_id}`)
           .then((res) => {
             if (res.data.status === 200) {
               setSubCategories(res.data.fetchData);
@@ -221,7 +221,7 @@ const EditProduct = (props) => {
   }, []);
   const loadIngredients = async () => {
     try {
-      const result = await axios.post(`/api/getIngredient`);
+      const result = await axios.get(`/api/getIngredientAll`);
       if (result.data.status === 200) {
         setIntgredients(result.data.fetchData);
       }
@@ -239,7 +239,9 @@ const EditProduct = (props) => {
     e.preventDefault();
     axios
       .get(
-        `/api/getSubCategories/${e.target.value == "" ? null : e.target.value}`
+        `/api/getSubCategoriesAll/${
+          e.target.value == "" ? null : e.target.value
+        }`
       )
       .then((res) => {
         if (res.data.status === 200) {
@@ -354,13 +356,9 @@ const EditProduct = (props) => {
     if (someEmpty) {
       form.map((item, index) => {
         const allPrev = [...form];
-        // console.log();
         if (form[index].name === "") {
           allPrev[index].errors.name = "URL is required";
         }
-        //  if (allPrev.some((val) => val.name == form[index].name)) {
-        //   allPrev[index].errors.name = "Duplicate Entry";
-        // }
         return setForm(allPrev);
       });
     }
@@ -532,25 +530,6 @@ const EditProduct = (props) => {
                         </div>
                       </div>
 
-                      <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
-                        <div className="form-group">
-                          <label className="mb-1 ">
-                            {" "}
-                            <strong>{t("description")}</strong>{" "}
-                          </label>
-                          <Field
-                            as="textarea"
-                            name="Description"
-                            className={
-                              "form-control" +
-                              (errors.Description && touched.Description
-                                ? " is-invalid"
-                                : "")
-                            }
-                            placeholder="Description..."
-                          />
-                        </div>
-                      </div>
                       <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-12">
                         <div className="form-group">
                           <label className="mb-1 ">
@@ -733,7 +712,7 @@ const EditProduct = (props) => {
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         {form.map((item, index) => (
-                          <div className="row mt-3" key={`item-${index}`}>
+                          <div className="row my-1" key={`item-${index}`}>
                             <div className="col-10">
                               <input
                                 type="text"
@@ -768,12 +747,13 @@ const EditProduct = (props) => {
                           </div>
                         ))}
 
-                        <button
-                          className="btn btn-primary mt-2"
+                        <MButton
+                          variant="outlined"
+                          size="medium"
                           onClick={handleAddLink}
                         >
-                          {t("add")}
-                        </button>
+                          {t("add_more")}
+                        </MButton>
                       </div>
                       {/* <div className="row form-group my-2">
                         {form?.map((item, i) => {
@@ -821,7 +801,7 @@ const EditProduct = (props) => {
                         </div>
                         <MySelect
                           options={intgredients?.map((o, i) => {
-                            return { id: i, value: o.id, label: o.name };
+                            return { value: o.id, label: o.name };
                           })}
                           isMulti
                           closeMenuOnSelect={false}
@@ -849,7 +829,6 @@ const EditProduct = (props) => {
                         <MySelect
                           options={intgredients?.map((o, i) => {
                             return {
-                              id: i,
                               value: o.id,
                               label: o.name,
                               price: 0,
@@ -885,7 +864,7 @@ const EditProduct = (props) => {
                                 <input
                                   type="number"
                                   className="form-control"
-                                  onChange={(e) => extraHandle(e, item.id)}
+                                  onChange={(e) => extraHandle(e, item.value)}
                                   value={productExtra[i].price}
                                 />
                               </div>
@@ -903,10 +882,8 @@ const EditProduct = (props) => {
                         <MySelect
                           options={fetchData?.map((o, i) => {
                             return {
-                              price: o.price,
                               value: o.id,
                               label: o.ProductName,
-                              qty: 1,
                             };
                           })}
                           isMulti
@@ -929,16 +906,11 @@ const EditProduct = (props) => {
             </div>
 
             <div className="card-footer text-right">
-              <Button
-                variant="danger light"
-                className="m-1"
-                onClick={() => history.goBack()}
-              >
-                {t("back")}
-              </Button>
-              <Button variant="primary" type="submit">
-                {t("update")}{" "}
-              </Button>
+              <SubmitButtons
+                isSubmitting={isSubmitting}
+                left={t("update")}
+                right={t("save")}
+              />
             </div>
           </Form>
         )}
@@ -959,22 +931,34 @@ const EditProduct = (props) => {
         ) : (
           ""
         )}
-        <div className="d-flex justify-content-between m-1">
-          <h4>{t("edit_product")}</h4>
-          <h6 onClick={() => history.goBack()} style={{ cursor: "pointer" }}>
-            List of Products
-          </h6>
+        <div
+          className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
+          style={{ backgroundColor: "#f5f5f5", padding: "5px", color: "#000" }}
+        >
+          <div className="d-flex justify-content-between">
+            <div
+              className="d-flex align-items-center justify-content-center "
+              style={{
+                fontSize: "16px",
+                fontWeight: "bold",
+              }}
+            >
+              {t("edit_product")}
+            </div>
+            <div
+              className="d-flex align-items-center justify-content-center "
+              onClick={() => history.goBack()}
+              style={{ cursor: "pointer" }}
+            >
+              List of Products
+            </div>
+          </div>
         </div>
-
         {viewProducts_HTMLTABLE}
         <Modal className="fade" show={modalCentered}>
           <Modal.Header>
             <Modal.Title>{t("add_ingredient")}</Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
+            <Button onClick={() => setModalCentered(false)} className="close">
               <span>&times;</span>
             </Button>
           </Modal.Header>

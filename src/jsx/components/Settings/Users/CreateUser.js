@@ -403,7 +403,7 @@ const CreateUser = () => {
           </>
         )}
         <div style={{ borderBottom: "1px solid #ccc" }}>
-          <ScrollContainer className="scroll-container">
+          <>
             <CSmartTable
               activePage={1}
               cleaner
@@ -500,7 +500,7 @@ const CreateUser = () => {
                 hover: true,
               }}
             />
-          </ScrollContainer>
+          </>
         </div>
       </div>
     );

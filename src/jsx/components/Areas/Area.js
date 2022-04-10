@@ -224,7 +224,7 @@ const Area = () => {
                   {t("edit")}
                 </button>
               )}
-              &nbsp;&nbsp;&nbsp;
+              &nbsp;
               {checkPermission("areas-delete") && (
                 <button
                   type="button"

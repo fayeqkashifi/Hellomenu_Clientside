@@ -84,9 +84,18 @@ const Show = () => {
               )}
             </div>
             <Switch>
-              <PrivateRoute exact path={`${path}`} component={General} />
-              <PrivateRoute path={`${path}/user`} component={User} />
-              <PrivateRoute path={`${path}/localization`} component={Locale} />
+              {checkPermission("general-info-view") && (
+                <PrivateRoute exact path={`${path}`} component={General} />
+              )}
+              {checkPermission("users-view") && (
+                <PrivateRoute path={`${path}/user`} component={User} />
+              )}
+              {checkPermission("localization-view") && (
+                <PrivateRoute
+                  path={`${path}/localization`}
+                  component={Locale}
+                />
+              )}
             </Switch>
           </div>
         </div>

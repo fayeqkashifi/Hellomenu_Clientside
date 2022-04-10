@@ -54,14 +54,14 @@ const LanguageList = () => {
   const options = useMemo(() => countryList().getData(), []);
 
   useEffect(() => {
-    // dataLoad();
+    dataLoad();
     return () => {
       setLoading(true);
     };
-  }, []);
-  useEffect(() => {
-    dataLoad();
-  }, []);
+  }, [check]);
+  // useEffect(() => {
+  //   dataLoad();
+  // }, [check]);
   const columns = [
     {
       key: "country_code",

@@ -4,24 +4,34 @@ import {
   Switch,
   useRouteMatch,
 } from "react-router-dom";
-
 import Product from "../Products/Product";
 import PrivateRoute from "../PrivateRoute";
 import Variants from "../Variants/Variants";
-// import { useTranslation } from "react-i18next";
 import AddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
+import { checkPermission } from "../Permissions";
 
-const ProductShow = (props) => {
+const ProductShow = () => {
   const { path } = useRouteMatch();
   return (
     <Fragment>
       <Router>
         <Switch>
-          <PrivateRoute exact path={`${path}`} component={Product} />
-          <PrivateRoute path={`${path}/variants`} component={Variants} />
-          <PrivateRoute path={`${path}/add-product`} component={AddProduct} />
-          <PrivateRoute path={`${path}/edit-product`} component={EditProduct} />
+          {checkPermission("products-view") && (
+            <PrivateRoute exact path={`${path}`} component={Product} />
+          )}
+          {checkPermission("variants-view") && (
+            <PrivateRoute path={`${path}/variants`} component={Variants} />
+          )}
+          {checkPermission("products-create") && (
+            <PrivateRoute path={`${path}/add-product`} component={AddProduct} />
+          )}
+          {checkPermission("products-edit") && (
+            <PrivateRoute
+              path={`${path}/edit-product`}
+              component={EditProduct}
+            />
+          )}
         </Switch>
       </Router>
     </Fragment>

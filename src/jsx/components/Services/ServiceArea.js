@@ -11,6 +11,8 @@ import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
 const ServiceArea = (props) => {
   const id = props.history.location.state.id;
 
@@ -158,9 +160,9 @@ const ServiceArea = (props) => {
       }
       const response = await axios.get(`/api/getServiceAreas/${id}`);
       if (response.data.status === 200) {
-        setFetchData(response.data.fetchData);
+        setFetchData(response.data.fetchData.data);
         let arrayData = [];
-        response.data.fetchData?.map((val) => {
+        response.data.fetchData.data?.map((val) => {
           return arrayData.push(val.areaName);
         });
       }
@@ -283,30 +285,38 @@ const ServiceArea = (props) => {
     viewProducts_HTMLTABLE = fetchData.map((item, i) => {
       return (
         <tr key={item.id}>
-          <td>{i + 1}</td>
-
+          {/* <td>{i + 1}</td> */}
           <td> {item.areaName}</td>
           <td> {item.deliveryFees}</td>
           <td>
-            {checkPermission("service-areas-edit") && (
-              <button
-                type="button"
-                onClick={(e) => fetchServiceArea(e, item.id)}
-                className="btn btn-outline-danger btn-sm"
-              >
-                {t("edit")}
-              </button>
-            )}
-            &nbsp;&nbsp;&nbsp;
-            {checkPermission("service-areas-delete") && (
-              <button
-                type="button"
-                onClick={(e) => deleteServiceArea(e, item.id)}
-                className="btn btn-outline-warning btn-sm"
-              >
-                {t("delete")}
-              </button>
-            )}
+            <div
+              className="input-group"
+              style={{
+                display: "table" /* Instead of display:block */,
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              {checkPermission("service-areas-edit") && (
+                <button
+                  type="button"
+                  onClick={(e) => fetchServiceArea(e, item.id)}
+                  className="btn btn-outline-info btn-sm"
+                >
+                  {t("edit")}
+                </button>
+              )}
+              &nbsp;
+              {checkPermission("service-areas-delete") && (
+                <button
+                  type="button"
+                  onClick={(e) => deleteServiceArea(e, item.id)}
+                  className="btn btn-outline-danger btn-sm"
+                >
+                  {t("delete")}
+                </button>
+              )}
+            </div>
           </td>
         </tr>
       );
@@ -359,19 +369,18 @@ const ServiceArea = (props) => {
                       </small>
                     )}
                   </div>
-                   <MySelect
-                                    options={areaLocation.map((o, i) => {
+                  <MySelect
+                    options={areaLocation.map((o, i) => {
                       return { value: o.id, label: o.areaName };
                     })}
-                                isMulti
-                                closeMenuOnSelect={false}
-                                hideSelectedOptions={false}
-                                components={{ Option, MultiValue, animatedComponents }}
-                                onChange={handleSelectEvent}
-                                allowSelectAll={true}
-                                value={servicesAreas}
-                              />
-                
+                    isMulti
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
+                    components={{ Option, MultiValue, animatedComponents }}
+                    onChange={handleSelectEvent}
+                    allowSelectAll={true}
+                    value={servicesAreas}
+                  />
                 </div>
               </div>
             </div>
@@ -561,33 +570,56 @@ const ServiceArea = (props) => {
               <div>
                 <h4 className="card-title mb-2">{t("service_area")}</h4>
               </div>
-              <div className="dropdown">
-                {checkPermission("service-areas-create") && (
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="mb-2 mr-2"
-                    onClick={() => setModalCentered(true)}
-                  >
-                    {t("add_service_area")}
-                  </Button>
-                )}
+              <div>
+                <div className="input-group">
+                  <Search
+                    setFetchData={setFetchData}
+                    url={"/api/searchServiceArea"}
+                    id={id}
+                    defaultUrl={`/api/getServiceAreas/${id}`}
+                  />
+                  {checkPermission("service-areas-create") && (
+                    <Button
+                      variant="primary"
+                      type="button"
+                      className="mb-2 mr-2"
+                      onClick={() => setModalCentered(true)}
+                    >
+                      {t("add")}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
             <div className="card-body p-0">
               <div className="table-responsive ">
-                <table className="table ">
-                  <thead>
+                <table className="table text-center">
+                  <thead className="table-light">
                     <tr>
-                      <th>{t("number")}</th>
+                      {/* <th>{t("number")}</th> */}
                       <th>{t("service_area")}</th>
                       <th>{t("delivery_fees")}</th>
                       <th>{t("actions")}</th>
                     </tr>
                   </thead>
-                  <tbody>{viewProducts_HTMLTABLE}</tbody>
+                  <tbody>
+                    {fetchData.length !== 0 ? (
+                      viewProducts_HTMLTABLE
+                    ) : (
+                      <tr>
+                        <td colSpan={3}> {t("noItemFound")}</td>
+                      </tr>
+                    )}
+                  </tbody>
                 </table>
               </div>
+            </div>
+            <div className="card-footer border-0">
+              <Paginate
+                fetchData={fetchData}
+                setFetchData={setFetchData}
+                url={`/api/getServiceAreas/${id}`}
+              />
             </div>
           </div>
         </div>

@@ -2,7 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import QRCode from "qrcode.react";
-import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";
@@ -13,6 +12,10 @@ import { base_url, port } from "../../../Consts";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import Swal from "sweetalert2";
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
+import Tooltip from "@mui/material/Tooltip";
+
 const Branches = () => {
   const [alert, setAlert] = useState({
     open: false,
@@ -58,14 +61,14 @@ const Branches = () => {
     });
   };
   // delete end
-  const [branchdata, setBranchdata] = useState([]);
+  const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
     try {
       const result = await axios.get("/api/getBranches");
       if (result.data.status === 200) {
-        setBranchdata(result.data.branches);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -78,7 +81,7 @@ const Branches = () => {
   useEffect(() => {
     // dataLoad();
     return () => {
-      setBranchdata([]);
+      setFetchData([]);
       setLoading(true);
     };
   }, []);
@@ -118,7 +121,7 @@ const Branches = () => {
       </div>
     );
   } else {
-    viewBranches_HTMLTABLE = branchdata.map((item, i) => {
+    viewBranches_HTMLTABLE = fetchData.map((item, i) => {
       return (
         <div className="col-xl-3 col-md-4 col-lg-6 col-sm-6" key={item.id}>
           <div className="card overflow-hidden">
@@ -205,18 +208,57 @@ const Branches = () => {
       ) : (
         ""
       )}
-
-      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <CBreadcrumbItem active>{t("branches")}</CBreadcrumbItem>
-      </CBreadcrumb>
-      <div className="d-flex justify-content-end">
-        <IconButton aria-label="Example" onClick={changeLayout}>
-          {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-        </IconButton>
+      <div
+        className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
+        style={{ backgroundColor: "#f5f5f5" }}
+      >
+        <div className="d-flex justify-content-between">
+          <div
+            className="d-flex align-items-center justify-content-center "
+            style={{
+              backgroundColor: "#f5f5f5",
+              fontSize: "16px",
+              color: "#000",
+              fontWeight: "bold",
+            }}
+          >
+            {t("branches")}
+          </div>
+          <div>
+            <div className="input-group">
+              <Search
+                setFetchData={setFetchData}
+                url={"/api/searchBranch"}
+                defaultUrl={"/api/getBranches"}
+              />
+              {checkPermission("branches-create") && (
+                <Link to={`/branches/add-branch`}>
+                  <Tooltip title="Add New">
+                    <IconButton aria-label="Example">
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Link>
+              )}
+              <Tooltip title="Layout">
+                <IconButton aria-label="Example" onClick={changeLayout}>
+                  {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
       </div>
+
       {layout ? (
         <div className="row">
-          {viewBranches_HTMLTABLE}
+          {fetchData.length !== 0 ? (
+            viewBranches_HTMLTABLE
+          ) : (
+            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+              {t("noItemFound")}
+            </div>
+          )}
           {checkPermission("branches-create") && (
             <div className="col-xl-3 col-lg-6 col-md-4 col-sm-6">
               <div className="card overflow-hidden ">
@@ -237,30 +279,21 @@ const Branches = () => {
               </div>
             </div>
           )}
+
+          <Paginate
+            fetchData={fetchData}
+            setFetchData={setFetchData}
+            url={"/api/getBranches"}
+          />
         </div>
       ) : (
         <div className="row">
           <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
             <div className="card">
-              <div className="card-header border-0">
-                <div>
-                  <h4 className="card-title mb-2">{t("branches")}</h4>
-                </div>
-                {checkPermission("branches-create") && (
-                  <div className="dropdown">
-                    <Link
-                      className="btn btn-primary"
-                      to={`/branches/add-branch`}
-                    >
-                      {t("add_branch")}
-                    </Link>
-                  </div>
-                )}
-              </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
                   <table className="table text-center ">
-                    <thead>
+                    <thead className="table-light">
                       <tr className="card-title">
                         <th>{t("qr_code")}</th>
                         <th>{t("branch_name")}</th>
@@ -268,86 +301,108 @@ const Branches = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {branchdata.map((item, i) => {
-                        return (
-                          <tr key={item.id}>
-                            <td>
-                              <Link
-                                to={{
-                                  pathname: `/branches/show`,
-                                  state: {
-                                    id: item.id,
-                                    BrancheName: item.BrancheName,
-                                  },
-                                }}
-                              >
-                                <QRCode
-                                  id={btoa(item.id)}
-                                  level={"H"}
-                                  size={100}
-                                  height="100px"
-                                  fgColor="#f50b65"
-                                  value={`http://192.168.1.103:3000/show-branch-details/${btoa(
-                                    item.id
-                                  )}`}
-                                  className="primary"
-                                />
-                                <div
-                                  style={{ cursor: "pointer" }}
-                                  onClick={(e) =>
-                                    downloadQRCode(e, btoa(item.id))
-                                  }
-                                >
-                                  <small>{t("download_qr_code")}</small>
-                                </div>
-                              </Link>
-                            </td>
-                            <td>
-                              {" "}
-                              <Link
-                                to={{
-                                  pathname: `/branches/show`,
-                                  state: {
-                                    id: item.id,
-                                    BrancheName: item.BrancheName,
-                                  },
-                                }}
-                              >
-                                {" "}
-                                {item.BrancheName}
-                              </Link>
-                            </td>
-
-                            <td>
-                              {checkPermission("branches-edit") && (
+                      {fetchData.length !== 0 ? (
+                        fetchData.map((item, i) => {
+                          return (
+                            <tr key={item.id}>
+                              <td>
                                 <Link
                                   to={{
-                                    pathname: `/branches/edit-branch`,
-                                    state: { id: item.id },
+                                    pathname: `/branches/show`,
+                                    state: {
+                                      id: item.id,
+                                      BrancheName: item.BrancheName,
+                                    },
                                   }}
-                                  // onClick={(e) => editBranch(e, item.id)}
-                                  className="btn btn-outline-danger btn-sm"
                                 >
-                                  {t("edit")}
+                                  <QRCode
+                                    id={btoa(item.id)}
+                                    level={"H"}
+                                    size={100}
+                                    height="100px"
+                                    fgColor="#f50b65"
+                                    value={`http://192.168.1.103:3000/show-branch-details/${btoa(
+                                      item.id
+                                    )}`}
+                                    className="primary"
+                                  />
+                                  <div
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) =>
+                                      downloadQRCode(e, btoa(item.id))
+                                    }
+                                  >
+                                    <small>{t("download_qr_code")}</small>
+                                  </div>
                                 </Link>
-                              )}
-                              &nbsp;&nbsp;&nbsp;
-                              {checkPermission("branches-delete") && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => deleteBranch(e, item.id)}
-                                  className="btn btn-outline-warning btn-sm"
+                              </td>
+                              <td>
+                                {" "}
+                                <Link
+                                  to={{
+                                    pathname: `/branches/show`,
+                                    state: {
+                                      id: item.id,
+                                      BrancheName: item.BrancheName,
+                                    },
+                                  }}
                                 >
-                                  {t("delete")}
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
+                                  {" "}
+                                  {item.BrancheName}
+                                </Link>
+                              </td>
+
+                              <td>
+                                <div
+                                  className="input-group"
+                                  style={{
+                                    display:
+                                      "table" /* Instead of display:block */,
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                  }}
+                                >
+                                  {checkPermission("branches-edit") && (
+                                    <Link
+                                      to={{
+                                        pathname: `/branches/edit-branch`,
+                                        state: { id: item.id },
+                                      }}
+                                      className="btn btn-outline-info btn-sm"
+                                    >
+                                      {t("edit")}
+                                    </Link>
+                                  )}
+                                  &nbsp;
+                                  {checkPermission("branches-delete") && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => deleteBranch(e, item.id)}
+                                      className="btn btn-outline-danger btn-sm"
+                                    >
+                                      {t("delete")}
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={3}> {t("noItemFound")}</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
+              </div>
+              <div className="card-footer border-0">
+                <Paginate
+                  fetchData={fetchData}
+                  setFetchData={setFetchData}
+                  url={"/api/getBranches"}
+                />
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 /// React router dom
 import {
   BrowserRouter as Router,
@@ -30,23 +30,50 @@ import EditBranch from "./components/Branches/EditBranch";
 import SettingsShow from "./components/Settings/Show";
 import Storybranch from "./components/Branches/Stories/StoryBranch";
 import EditStories from "./components/Branches/Stories/EditStories";
+import { checkPermission } from "./components/Permissions";
 
 const Markup = () => {
   const routes = [
     /// Login
+    // checkPermission("dashboard-view")
+    // ?
     { url: "dashboard", component: Home },
-    { url: "branches", component: Branches },
-    { url: "branches/add-branch", component: AddBranch },
-    { url: "branches/edit-branch", component: EditBranch },
-    { url: "branches/story-branch", component: Storybranch },
-    { url: "branches/edit-stories", component: EditStories },
-    { url: "ingredients", component: Ingredients },
-    { url: "company", component: Company },
+    // : { url: "", component: "" },
+
+    checkPermission("branches-view")
+      ? { url: "branches", component: Branches }
+      : { url: "", component: "" },
+    checkPermission("branches-create")
+      ? { url: "branches/add-branch", component: AddBranch }
+      : { url: "", component: "" },
+    checkPermission("branches-edit")
+      ? { url: "branches/edit-branch", component: EditBranch }
+      : { url: "", component: "" },
+    checkPermission("branches-view")
+      ? { url: "branches/story-branch", component: Storybranch }
+      : { url: "", component: "" },
+    checkPermission("branches-view")
+      ? { url: "branches/edit-stories", component: EditStories }
+      : { url: "", component: "" },
+    checkPermission("ingredients-view")
+      ? { url: "ingredients", component: Ingredients }
+      : { url: "", component: "" },
+    checkPermission("company-view")
+      ? { url: "company", component: Company }
+      : { url: "", component: "" },
+    checkPermission("orders-view")
+      ? { url: "orders", component: Order }
+      : { url: "", component: "" },
+    checkPermission("orders-view")
+      ? { url: "orders/orders-details", component: OrderDetails }
+      : { url: "", component: "" },
+    checkPermission("attributes-view")
+      ? { url: "attributes", component: Attributes }
+      : { url: "", component: "" },
+    checkPermission("areas-view")
+      ? { url: "areas", component: Area }
+      : { url: "", component: "" },
     { url: "profile", component: Profile },
-    { url: "orders", component: Order },
-    { url: "orders/orders-details", component: OrderDetails },
-    { url: "attributes", component: Attributes },
-    { url: "areas", component: Area },
   ];
 
   return (
@@ -69,8 +96,12 @@ const Markup = () => {
                   component={data.component}
                 />
               ))}
-              <PrivateRoute path={`/branches/show`} component={BranchShow} />
-              <PrivateRoute path={`/settings`} component={SettingsShow} />
+              {checkPermission("branches-view") && (
+                <PrivateRoute path={`/branches/show`} component={BranchShow} />
+              )}
+              {checkPermission("settings-view") && (
+                <PrivateRoute path={`/settings`} component={SettingsShow} />
+              )}
 
               <Route component={Error404} />
             </Switch>

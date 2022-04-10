@@ -14,6 +14,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
 
 const Tables = (props) => {
   const id = props.history.location.state.id;
@@ -152,7 +154,7 @@ const Tables = (props) => {
     try {
       const result = await axios.get(`/api/getTables/${id}`);
       if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -234,25 +236,34 @@ const Tables = (props) => {
             </div>
           </td>
           <td>
-            {checkPermission("tables-edit") && (
-              <button
-                type="button"
-                onClick={(e) => fetchTable(e, item.id)}
-                className="btn btn-outline-danger btn-sm"
-              >
-                {t("edit")}
-              </button>
-            )}
-            &nbsp;&nbsp;&nbsp;
-            {checkPermission("tables-delete") && (
-              <button
-                type="button"
-                onClick={(e) => deleteTable(e, item.id)}
-                className="btn btn-outline-warning btn-sm"
-              >
-                {t("delete")}
-              </button>
-            )}
+            <div
+              className="input-group"
+              style={{
+                display: "table" /* Instead of display:block */,
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              {checkPermission("tables-edit") && (
+                <button
+                  type="button"
+                  onClick={(e) => fetchTable(e, item.id)}
+                  className="btn btn-outline-info btn-sm"
+                >
+                  {t("edit")}
+                </button>
+              )}
+              &nbsp;
+              {checkPermission("tables-delete") && (
+                <button
+                  type="button"
+                  onClick={(e) => deleteTable(e, item.id)}
+                  className="btn btn-outline-danger btn-sm"
+                >
+                  {t("delete")}
+                </button>
+              )}
+            </div>
           </td>
         </tr>
       );
@@ -460,44 +471,65 @@ const Tables = (props) => {
           )}
         </Formik>
       </Modal>
-
-      <div className="d-flex justify-content-end">
-        <Tooltip title="Download All">
-          <IconButton aria-label="Example" onClick={(e) => downloadAll(e)}>
-            <DownloadIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Change Layout">
-          <IconButton aria-label="Example" onClick={changeLayout}>
-            {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
-          </IconButton>
-        </Tooltip>
+      <div
+        className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
+        style={{ backgroundColor: "#f5f5f5" }}
+      >
+        <div className="d-flex justify-content-between">
+          <div
+            className="d-flex align-items-center justify-content-center "
+            style={{
+              backgroundColor: "#f5f5f5",
+              fontSize: "16px",
+              color: "#000",
+              fontWeight: "bold",
+            }}
+          >
+            {t("tables")}
+          </div>
+          <div>
+            <div className="input-group">
+              <Search
+                setFetchData={setFetchData}
+                url={"/api/searchTable"}
+                id={id}
+                defaultUrl={`/api/getTables/${id}`}
+              />
+              {checkPermission("tables-create") && (
+                <Tooltip title="Add New">
+                  <IconButton
+                    aria-label="Example"
+                    onClick={() => setModalCentered(true)}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Tooltip title="Download All">
+                <IconButton
+                  aria-label="Example"
+                  onClick={(e) => downloadAll(e)}
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Change Layout">
+                <IconButton aria-label="Example" onClick={changeLayout}>
+                  {layout ? <TableRowsIcon /> : <ViewComfyIcon />}
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
       </div>
       {layout ? (
         <div className="row">
           <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
             <div className="card">
-              <div className="card-header border-0">
-                <div>
-                  <h4 className="card-title mb-2">{t("tables")}</h4>
-                </div>
-                {checkPermission("tables-create") && (
-                  <div className="dropdown">
-                    <Button
-                      variant="primary"
-                      type="button"
-                      className="mx-1"
-                      onClick={() => setModalCentered(true)}
-                    >
-                      {t("add_table")}
-                    </Button>
-                  </div>
-                )}
-              </div>
               <div className="card-body p-0">
                 <div className="table-responsive ">
                   <table className="table text-center ">
-                    <thead>
+                    <thead className="table-light">
                       <tr className="card-title">
                         {/* <th>{t('number')}</th> */}
                         <th>{t("table_number")}</th>
@@ -507,70 +539,91 @@ const Tables = (props) => {
                         <th>{t("actions")}</th>
                       </tr>
                     </thead>
-                    <tbody>{viewProducts_HTMLTABLE}</tbody>
+                    <tbody>
+                      {fetchData.length !== 0 ? (
+                        viewProducts_HTMLTABLE
+                      ) : (
+                        <tr>
+                          <td colSpan={5}> {t("noItemFound")}</td>
+                        </tr>
+                      )}
+                    </tbody>
                   </table>
                 </div>
+              </div>
+              <div className="card-footer border-0">
+                <Paginate
+                  fetchData={fetchData}
+                  setFetchData={setFetchData}
+                  url={`/api/getTables/${id}`}
+                />
               </div>
             </div>
           </div>
         </div>
       ) : (
         <div className="row">
-          {fetchData.map((item, i) => {
-            return (
-              <div className="col-xl-3 col-lg-4 col-sm-6" key={item.id}>
-                <div className="card overflow-hidden">
-                  <div className="card-body">
-                    <div className="text-center">
-                      <QRCode
-                        id={btoa(item.id)}
-                        level={"H"}
-                        size={128}
-                        fgColor="#f50b65"
-                        value={item.tableId}
-                        className="primary "
-                      />
-                      <div
-                        onClick={(e) => downloadQRCode(e, btoa(item.id))}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {" "}
-                        {t("download_qr_code")}
-                      </div>
+          {fetchData.length !== 0 ? (
+            fetchData.map((item, i) => {
+              return (
+                <div className="col-xl-3 col-lg-4 col-sm-6" key={item.id}>
+                  <div className="card overflow-hidden">
+                    <div className="card-body">
+                      <div className="text-center">
+                        <QRCode
+                          id={btoa(item.id)}
+                          level={"H"}
+                          size={128}
+                          fgColor="#f50b65"
+                          value={item.tableId}
+                          className="primary "
+                        />
+                        <div
+                          onClick={(e) => downloadQRCode(e, btoa(item.id))}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {" "}
+                          {t("download_qr_code")}
+                        </div>
 
-                      <h4> {item.tableName}</h4>
-                      <h6> {item.tableId}</h6>
-                      <h6> {item.numberOfSeats}</h6>
+                        <h4> {item.tableName}</h4>
+                        <h6> {item.tableId}</h6>
+                        <h6> {item.numberOfSeats}</h6>
+                      </div>
                     </div>
-                  </div>
-                  <div className="card-footer pt-0 pb-0 text-center">
-                    <div className="row">
-                      {checkPermission("tables-edit") && (
-                        <div className="col-6 pt-3 pb-3 border-right">
-                          <div
-                            style={{ cursor: "pointer" }}
-                            onClick={(e) => fetchTable(e, item.id)}
-                          >
-                            <span>{t("edit")}</span>
+                    <div className="card-footer pt-0 pb-0 text-center">
+                      <div className="row">
+                        {checkPermission("tables-edit") && (
+                          <div className="col-6 pt-3 pb-3 border-right">
+                            <div
+                              style={{ cursor: "pointer" }}
+                              onClick={(e) => fetchTable(e, item.id)}
+                            >
+                              <span>{t("edit")}</span>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      {checkPermission("tables-delete") && (
-                        <div className="col-6 pt-3 pb-3">
-                          <div
-                            style={{ cursor: "pointer" }}
-                            onClick={(e) => deleteTable(e, item.id)}
-                          >
-                            <span>{t("delete")}</span>
+                        )}
+                        {checkPermission("tables-delete") && (
+                          <div className="col-6 pt-3 pb-3">
+                            <div
+                              style={{ cursor: "pointer" }}
+                              onClick={(e) => deleteTable(e, item.id)}
+                            >
+                              <span>{t("delete")}</span>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+              {t("noItemFound")}
+            </div>
+          )}
           {checkPermission("tables-create") && (
             <div className="col-xl-3 col-lg-4 col-sm-6 ">
               <div className="card overflow-hidden ">
@@ -592,6 +645,11 @@ const Tables = (props) => {
               </div>
             </div>
           )}
+          <Paginate
+            fetchData={fetchData}
+            setFetchData={setFetchData}
+            url={`/api/getTables/${id}`}
+          />
         </div>
       )}
     </Fragment>
