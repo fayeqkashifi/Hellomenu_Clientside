@@ -64,7 +64,13 @@ const EditProduct = (props) => {
         if (res.data.status === 200) {
           setCheck(!check);
           setModalCentered(false);
+          setProductIngredient([
+            ...productIngredient,
+            { value: res.data.id, label: data.name },
+          ]);
           setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 1062) {
+          setAlerts(true, "warning", res.data.message);
         }
       })
       .catch((err) => {

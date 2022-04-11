@@ -185,6 +185,7 @@ export const DarkStyle = (custom) => {
     // cart
     inputfield: {
       width: "100%",
+      height: "35px",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
       fontSize: 12,

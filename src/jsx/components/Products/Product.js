@@ -350,19 +350,19 @@ const Product = (props) => {
                 defaultUrl={`/api/getProducts/${branchId}`}
               />
               {checkPermission("products-create") && (
-                <Link
-                  // className="btn btn-primary mb-2 mr-2"
-                  to={{
-                    pathname: `${url}/add-product`,
-                    state: { id: branchId },
-                  }}
-                >
-                  <Tooltip title="Add New Product">
-                    <IconButton aria-label="Example">
+                <Tooltip title="Add New Product">
+                  <IconButton aria-label="Example">
+                    <Link
+                      // className="btn btn-primary mb-2 mr-2"
+                      to={{
+                        pathname: `${url}/add-product`,
+                        state: { id: branchId },
+                      }}
+                    >
                       <AddIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Link>
+                    </Link>
+                  </IconButton>
+                </Tooltip>
               )}
               <Tooltip title="Change Layout">
                 <IconButton aria-label="Example" onClick={changeLayout}>
@@ -385,82 +385,88 @@ const Product = (props) => {
         </>
       ) : (
         <div className="row">
-          {fetchData.map((item, i) => {
-            return (
-              <div className="col-xl-3 col-lg- col-sm-6" key={item.id}>
-                <div className="card overflow-hidden">
-                  <div className="card-body">
-                    <div className="text-center">
-                      <img
-                        src={`http://${base_url}:${port}/images/products/${
-                          JSON.parse(item.image)[0]
-                        }`}
-                        alt=""
-                        style={{
-                          width: "120px",
-                          height: "100px",
-                          objectFit: "contain",
-                        }}
-                      />
-                      <h4 className="mt-2"> {item.ProductName}</h4>
+          {fetchData.length !== 0 ? (
+            fetchData.map((item, i) => {
+              return (
+                <div className="col-xl-3 col-lg- col-sm-6" key={item.id}>
+                  <div className="card overflow-hidden">
+                    <div className="card-body">
+                      <div className="text-center">
+                        <img
+                          src={`http://${base_url}:${port}/images/products/${
+                            JSON.parse(item.image)[0]
+                          }`}
+                          alt=""
+                          style={{
+                            width: "120px",
+                            height: "100px",
+                            objectFit: "contain",
+                          }}
+                        />
+                        <h4 className="mt-2"> {item.ProductName}</h4>
+                      </div>
                     </div>
-                  </div>
-                  <div className="card-footer pt-0 pb-0 text-center">
-                    <div className="row">
-                      {checkPermission("variants-view") && (
-                        <div className="col-4 pt-3 pb-3 border-right">
-                          <Link
-                            to={{
-                              pathname: `${url}/variants`,
-                              id: item.id,
-                              ProductName: item.ProductName,
-                              state: { p_id: item.id, id: branchId },
-                            }}
-                          >
-                            <Tooltip title="Variants">
-                              <IconButton>
-                                <AutoAwesomeMotionIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Link>
-                        </div>
-                      )}
-                      {checkPermission("products-edit") && (
-                        <div className="col-4 pt-3 pb-3 border-right">
-                          <Link
-                            to={{
-                              pathname: `${url}/edit-product`,
-                              state: { id: branchId, productId: item.id },
-                            }}
-                          >
-                            <Tooltip title="Edit">
-                              <IconButton>
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Link>
-                        </div>
-                      )}
-                      {checkPermission("products-delete") && (
-                        <div className="col-4 pt-3 pb-3">
-                          <Link
-                            to=""
-                            onClick={(e) => deleteProduct(e, item.id)}
-                          >
-                            <Tooltip title="Delete">
-                              <IconButton>
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Link>
-                        </div>
-                      )}
+                    <div className="card-footer pt-0 pb-0 text-center">
+                      <div className="row">
+                        {checkPermission("variants-view") && (
+                          <div className="col-4 pt-3 pb-3 border-right">
+                            <Link
+                              to={{
+                                pathname: `${url}/variants`,
+                                id: item.id,
+                                ProductName: item.ProductName,
+                                state: { p_id: item.id, id: branchId },
+                              }}
+                            >
+                              <Tooltip title="Variants">
+                                <IconButton>
+                                  <AutoAwesomeMotionIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
+                          </div>
+                        )}
+                        {checkPermission("products-edit") && (
+                          <div className="col-4 pt-3 pb-3 border-right">
+                            <Link
+                              to={{
+                                pathname: `${url}/edit-product`,
+                                state: { id: branchId, productId: item.id },
+                              }}
+                            >
+                              <Tooltip title="Edit">
+                                <IconButton>
+                                  <EditIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
+                          </div>
+                        )}
+                        {checkPermission("products-delete") && (
+                          <div className="col-4 pt-3 pb-3">
+                            <Link
+                              to=""
+                              onClick={(e) => deleteProduct(e, item.id)}
+                            >
+                              <Tooltip title="Delete">
+                                <IconButton>
+                                  <DeleteIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}{" "}
+              );
+            })
+          ) : (
+            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+              {t("noItemFound")}
+            </div>
+          )}{" "}
           <Paginate
             fetchData={fetchData}
             setFetchData={setFetchData}

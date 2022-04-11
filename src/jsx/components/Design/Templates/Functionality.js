@@ -92,7 +92,7 @@ export const getVariations = async (proId) => {
 };
 export const getTables = async (branchId) => {
   try {
-    const result = await axios.get(`/api/getTables/${branchId}`);
+    const result = await axios.get(`/api/getTablesAll/${branchId}`);
     if (result.data.status === 200) {
       return result.data.fetchData;
     }

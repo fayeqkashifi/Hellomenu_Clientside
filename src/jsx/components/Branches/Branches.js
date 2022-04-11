@@ -232,13 +232,13 @@ const Branches = () => {
                 defaultUrl={"/api/getBranches"}
               />
               {checkPermission("branches-create") && (
-                <Link to={`/branches/add-branch`}>
-                  <Tooltip title="Add New">
-                    <IconButton aria-label="Example">
+                <Tooltip title="Add New">
+                  <IconButton aria-label="Example">
+                    <Link to={`/branches/add-branch`}>
                       <AddIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Link>
+                    </Link>
+                  </IconButton>
+                </Tooltip>
               )}
               <Tooltip title="Layout">
                 <IconButton aria-label="Example" onClick={changeLayout}>

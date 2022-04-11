@@ -42,18 +42,23 @@ const ProductDetails = (props) => {
     stock: 0,
     image: fetchData?.image,
   });
+  const [productIngredients, setProductIntgredients] = useState([]);
+  const [extra, setExtra] = useState([]);
+
   useEffect(() => {
     const getdata = () => {
       getProduct(id).then((result) => {
         setFetchData(result.data.fetchData[0]);
+        setProductIntgredients(result.data.ingredients);
+        setExtra(result.data.extras);
+        setLoading(false);
       });
       getVariations(id).then((res) => {
         if (res !== "") {
           varData = JSON.parse(res.variants);
-          setVarPics(JSON.parse(res.variants));
+          setVarPics(varData);
           parseVariants(varData);
         }
-        setLoading(false);
       });
     };
     getdata();
@@ -77,7 +82,6 @@ const ProductDetails = (props) => {
   };
   const caluclatePrice = (newSkuArray, variantData) => {
     let sku = id + "-";
-
     for (let i = 0; i < newSkuArray.length; i++) {
       if (i == newSkuArray.length - 1) {
         sku += newSkuArray[i];
@@ -374,7 +378,7 @@ const ProductDetails = (props) => {
               </Typography>
             </div>
             {style?.show_ingredients === 0 ||
-            JSON.parse(fetchData.ingredients).length === 0 ? (
+            productIngredients.length === 0 ? (
               ""
             ) : (
               <>
@@ -387,7 +391,7 @@ const ProductDetails = (props) => {
                   </Typography>
                 </div>
                 <div className="row mx-4">
-                  {JSON.parse(fetchData.ingredients)?.map((item, i) => {
+                  {productIngredients?.map((item, i) => {
                     return (
                       <div
                         key={i}
@@ -408,14 +412,13 @@ const ProductDetails = (props) => {
                 </div>
               </>
             )}
-            {style?.show_extras === 0 ||
-            JSON.parse(fetchData.extras).length === 0 ? (
+            {style?.show_extras === 0 || extra.length === 0 ? (
               ""
             ) : (
               <div className="row mx-3">
                 <Typography style={style?.cartPrice}>{t("extras")}</Typography>
                 <FormGroup>
-                  {JSON.parse(fetchData.extras)?.map((item, i) => {
+                  {extra?.map((item, i) => {
                     return (
                       <FormControlLabel
                         key={i}

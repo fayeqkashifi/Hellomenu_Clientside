@@ -5,9 +5,10 @@ import Chip from "@mui/material/Chip";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import { CBreadcrumb } from "@coreui/react";
 // import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import Search from "../Common/Search";
+import Paginate from "../Common/Paginate";
 
 const Order = () => {
   const [fetchData, setFetchData] = useState([]);
@@ -16,7 +17,7 @@ const Order = () => {
     try {
       const result = await axios.get(`/api/getOrders`);
       if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
+        setFetchData(result.data.fetchData.data);
         setLoading(false);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
@@ -117,22 +118,25 @@ const Order = () => {
   }
   return (
     <Fragment>
-      <CBreadcrumb style={{ "--cui-breadcrumb-divider": "'>'" }}>
-        <Link
-          to={{
-            pathname: `/orders`,
-          }}
-          className="font-weight-bold"
-        >
-          {t("orders")}
-        </Link>
-      </CBreadcrumb>
-
       <div className="card">
+        <div className="card-header border-0">
+          <div>
+            <h4 className="card-title mb-2">{t("orders")}</h4>
+          </div>
+          <div>
+            <div className="input-group">
+              <Search
+                setFetchData={setFetchData}
+                url={"/api/searchOrder"}
+                defaultUrl={"/api/getOrders"}
+              />
+            </div>
+          </div>
+        </div>
         <div className="card-body">
           <div className="table-responsive ">
             <table className="table text-center ">
-              <thead>
+              <thead className="table-light">
                 <tr className="card-title">
                   <th>{t("order_id")}</th>
                   <th>{t("ordering_methods")}</th>
@@ -144,9 +148,24 @@ const Order = () => {
                   <th>{t("details")}</th>
                 </tr>
               </thead>
-              <tbody>{viewOrders_HTMLTABLE}</tbody>
+              <tbody>
+                {fetchData.length !== 0 ? (
+                  viewOrders_HTMLTABLE
+                ) : (
+                  <tr>
+                    <td colSpan={8}> {t("noItemFound")}</td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
+        </div>
+        <div className="card-footer border-0">
+          <Paginate
+            fetchData={fetchData}
+            setFetchData={setFetchData}
+            url={"/api/getOrders"}
+          />
         </div>
       </div>
     </Fragment>

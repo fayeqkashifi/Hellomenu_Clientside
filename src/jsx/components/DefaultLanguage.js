@@ -285,4 +285,5 @@ export const Locale = {
   rows: "Rows",
   areaName: "Area Name",
   noItemFound: "No Item Found",
+  dateAndTime: "Date and Time",
 };

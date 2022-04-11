@@ -49,20 +49,21 @@ const OrderDetails = (props) => {
       await getProduct(id).then((result) => {
         data = result.data.fetchData;
         setItem(data);
+        setFetchData(result.data.recommend);
+        setLoading(false);
       });
-      var recData = [];
-      JSON.parse(data[0].recommendations).map(async (item) => {
-        await getProduct(item.value).then((res) => {
-          if (res.data.status === 200 && res.data.fetchData[0].stock > 0) {
-            recData = recData.concat({
-              stock: res.data.fetchData[0].stock,
-              ...item,
-            });
-          }
-        });
-        setFetchData(recData);
-      });
-      setLoading(false);
+      // var recData = [];
+      // JSON.parse(data[0].recommendations).map(async (item) => {
+      //   await getProduct(item.value).then((res) => {
+      //     if (res.data.status === 200 && res.data.fetchData[0].stock > 0) {
+      //       recData = recData.concat({
+      //         stock: res.data.fetchData[0].stock,
+      //         ...item,
+      //       });
+      //     }
+      //   });
+      //   setFetchData(recData);
+      // });
     };
     // dataLoad();
     getdata();
