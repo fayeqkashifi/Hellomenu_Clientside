@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import Footer from "../Common/Footer";
 import Container from "@mui/material/Container";
 import Header from "../Common/Header";
-import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
@@ -15,16 +14,9 @@ import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-
-import "swiper/swiper-bundle.min.css";
-import "swiper/swiper.min.css";
-
-import SwiperCore, { Navigation, Thumbs } from "swiper";
 import { getProduct, getVariations } from "../Functionality";
 import CustomAlert from "../../../CustomAlert";
-
-SwiperCore.use([Navigation, Thumbs]);
+import ImageSlider from "./ImageSilder";
 
 const ProductDetails = (props) => {
   // for localization
@@ -66,6 +58,7 @@ const ProductDetails = (props) => {
       });
     };
     getdata();
+
     return () => {
       // parseVariants([]);
       // setVarPics([]);
@@ -195,7 +188,6 @@ const ProductDetails = (props) => {
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const addItem = () => {
     const check = cart.every((val) => {
       return val.id !== fetchData.id;
@@ -259,120 +251,12 @@ const ProductDetails = (props) => {
       <Card sx={style?.cardStyle}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
-            {(() => {
-              if (varPics.length != 0) {
-                return (
-                  <div className="swiper">
-                    <Swiper
-                      style={{
-                        "--swiper-navigation-color": "#fff",
-                        "--swiper-pagination-color": "#fff",
-                      }}
-                      spaceBetween={10}
-                      speed={2500}
-                      navigation={true}
-                      thumbs={{ swiper: thumbsSwiper }}
-                      onSwiper={(s) => {
-                        setSwiper(s);
-                      }}
-                      className="mySwiper2 mt-3 mb-1"
-                    >
-                      {varPics?.map((section) => {
-                        return section.image?.map((image, i) => {
-                          return (
-                            <SwiperSlide key={image}>
-                              <img
-                                src={`http://${base_url}:${port}/images/products/${image}`}
-                                alt=""
-                                style={style?.variantsImage}
-                              />
-                            </SwiperSlide>
-                          );
-                        });
-                      })}
-                    </Swiper>
-                    <Swiper
-                      onSwiper={setThumbsSwiper}
-                      spaceBetween={10}
-                      slidesPerView={5}
-                      freeMode={true}
-                      watchSlidesProgress={true}
-                      className="mySwiper mb-3 mx-3"
-                    >
-                      {varPics?.map((section) => {
-                        return section.image?.map((image) => {
-                          return (
-                            <SwiperSlide key={image}>
-                              <img
-                                src={`http://${base_url}:${port}/images/products/${image}`}
-                                alt=""
-                                style={style?.variantsThumbs}
-                              />
-                            </SwiperSlide>
-                          );
-                        });
-                      })}
-                    </Swiper>
-                  </div>
-                );
-              } else {
-                return (
-                  <div className="swiper">
-                    <Swiper
-                      spaceBetween={10}
-                      speed={2500}
-                      navigation={true}
-                      // thumbs={{ swiper: thumbsSwiper }}
-                      onSwiper={(s) => {
-                        setSwiper(s);
-                      }}
-                      className="mySwiper2 mt-3 mb-1"
-                    >
-                      {JSON.parse(fetchData.image).map((image) => {
-                        return (
-                          <SwiperSlide key={image}>
-                            <img
-                              src={
-                                productDetails.stock === "No Stock" ||
-                                productDetails?.stock === 0
-                                  ? `http://${base_url}:${port}/images/products/${
-                                      productDetails.image
-                                        ? productDetails?.image
-                                        : image
-                                    }`
-                                  : `http://${base_url}:${port}/images/products/${productDetails.image}`
-                              }
-                              alt=""
-                              style={style?.variantsImage}
-                            />
-                          </SwiperSlide>
-                        );
-                      })}
-                    </Swiper>
-                    <Swiper
-                      // onSwiper={setThumbsSwiper}
-                      spaceBetween={10}
-                      slidesPerView={5}
-                      freeMode={true}
-                      watchSlidesProgress={true}
-                      className="mySwiper mb-3 mx-3"
-                    >
-                      {JSON.parse(fetchData.image)?.map((image) => {
-                        return (
-                          <SwiperSlide key={image}>
-                            <img
-                              src={`http://${base_url}:${port}/images/products/${image}`}
-                              alt=""
-                              style={style?.variantsThumbs}
-                            />
-                          </SwiperSlide>
-                        );
-                      })}
-                    </Swiper>
-                  </div>
-                );
-              }
-            })()}
+            <ImageSlider
+              varPics={varPics}
+              setSwiper={setSwiper}
+              style={style}
+              fetchData={fetchData}
+            />
           </Grid>
 
           <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>

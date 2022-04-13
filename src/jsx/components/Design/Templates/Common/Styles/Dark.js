@@ -411,5 +411,8 @@ export const DarkStyle = (custom) => {
       borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
       margin: "3px",
     },
+
+    // Image Slider Style
+    imageSilderMainDiv: { minHeight: "70vh" },
   };
 };
