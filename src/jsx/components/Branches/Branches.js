@@ -125,7 +125,7 @@ const Branches = () => {
       return (
         <div className="col-xl-3 col-md-4 col-lg-6 col-sm-6" key={item.id}>
           <div className="card overflow-hidden">
-            <div className="card-body">
+            <div className="card-body ">
               <div className="text-center">
                 <Link
                   to={{
@@ -155,7 +155,7 @@ const Branches = () => {
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
                 {checkPermission("branches-edit") && (
-                  <div className="col-4 pt-3 pb-3 border-right">
+                  <div className="col-4 py-3 border-right">
                     <Link
                       to={{
                         pathname: `/branches/story-branch`,
@@ -167,7 +167,7 @@ const Branches = () => {
                   </div>
                 )}
                 {checkPermission("branches-edit") && (
-                  <div className="col-4 pt-3 pb-3 border-right">
+                  <div className="col-4 py-3 border-right">
                     <Link
                       to={{
                         pathname: `/branches/edit-branch`,
@@ -180,7 +180,7 @@ const Branches = () => {
                   </div>
                 )}
                 {checkPermission("branches-delete") && (
-                  <div className="col-4 pt-3 pb-3">
+                  <div className="col-4 py-3 ">
                     <div
                       style={{ cursor: "pointer" }}
                       onClick={(e) => deleteBranch(e, item.id)}
@@ -226,11 +226,14 @@ const Branches = () => {
           </div>
           <div>
             <div className="input-group">
-              <Search
-                setFetchData={setFetchData}
-                url={"/api/searchBranch"}
-                defaultUrl={"/api/getBranches"}
-              />
+              <div className="d-flex align-items-center justify-content-center ">
+                <Search
+                  setFetchData={setFetchData}
+                  url={"/api/searchBranch"}
+                  defaultUrl={"/api/getBranches"}
+                />
+              </div>
+
               {checkPermission("branches-create") && (
                 <Tooltip title="Add New">
                   <IconButton aria-label="Example">

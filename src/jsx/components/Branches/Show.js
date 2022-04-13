@@ -28,6 +28,7 @@ import Shared from "../Categories/Shared";
 import QRcodeStyle from "./QRcodeStyle";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
+import "./mobileStyle.css";
 
 const Show = (props) => {
   const id = props.history.location.state.id;
@@ -203,8 +204,7 @@ const Show = (props) => {
                 <div className="speaker"></div>
                 <div className="screen">
                   <iframe
-                    src="/filterSelection"
-                    // src={`/${template.URL}/${btoa(id)}`}
+                    src={`/public/${btoa(btoa(btoa(id)))}`}
                     key={check}
                     height="100%"
                     width="100%"

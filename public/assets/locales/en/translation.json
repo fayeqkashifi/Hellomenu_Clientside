@@ -35,6 +35,13 @@
   "loading": "Loading...!",
   "order_details": "Order Details",
   "empty_cart": "Empty Cart",
-  "send_order": "Send Order"
+  "send_order": "Send Order",
+  "add_to_cart":"Add to Cart",
+  "preparation_time":"Preparation Time",
+  "price":"Price",
+  "stock":"Stock",
+  "ingredients":"Ingredients",
+  "extras":"Extras",
+  "vatiants":"Vatiants"
 
 }

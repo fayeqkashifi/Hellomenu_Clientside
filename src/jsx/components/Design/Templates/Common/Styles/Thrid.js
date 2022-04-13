@@ -43,7 +43,7 @@ export const ThridStyle = (custom) => {
     cardStyle: {
       display: "flex",
       flexDirection: "column",
-      borderRadius: "5%",
+      // borderRadius: "5%",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
     },
     cardIconButton: {

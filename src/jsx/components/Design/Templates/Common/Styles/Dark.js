@@ -16,7 +16,7 @@ export const DarkStyle = (custom) => {
     cardStyle: {
       display: "flex",
       flexDirection: "column",
-      borderRadius: "5%",
+      // borderRadius: "20px",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
     },
     favIconDeactive: {
@@ -338,8 +338,8 @@ export const DarkStyle = (custom) => {
       border: "1px solid",
       textAlign: "center",
       borderRadius: "50px",
-      borderColor: "#2d3134",
-      backgroundColor: "#2d3134",
+      borderColor: "#22252a",
+      backgroundColor: "#22252a",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
     },
     checkbox: {

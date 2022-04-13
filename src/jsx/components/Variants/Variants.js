@@ -40,7 +40,7 @@ const Variants = (props) => {
       });
       const res = await axios({
         method: "GET",
-        url: "/api/getAttributes",
+        url: "/api/getAttributesAll",
       });
       const nameAtter = {};
       res.data.fetchData.map(

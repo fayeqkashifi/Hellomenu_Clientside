@@ -239,25 +239,31 @@ const Cart = (props) => {
         `*Product Name*: ${item.ProductName} \n*Category*: ${
           item.CategoryName
         } ${
-          item.SubCategoryName === undefined
+          item.SubCategoryName == null
             ? ""
             : ` \n*Sub Category*: ${item.SubCategoryName}`
-        } \n*QTY*: ${item.qty} \n*Price*: ${item.price + " " + currency} ${
-          item.itemNote === undefined ? "" : `\n*Item Note*: ${item.itemNote}`
-        } ${
+        } \n*QTY*: ${item.qty} \n*Price*: ${item.price + " " + currency}  ${
           item.variantSKU === undefined
+            ? ""
+            : item.variantSKU.length === 0
             ? ""
             : `\n*Item Variant*: ${item.variantSKU}`
         } ${
           item.extras === undefined
             ? ""
+            : item.extras.length === 0
+            ? ""
             : `\n*Extras*: ${item.extras?.map((val) => val.value)} INCLUDED`
         } ${
           item.ingredients === undefined
             ? ""
+            : item.ingredients.length === 0
+            ? ""
             : `\n*Ingredients*: ${item.ingredients} NOT INCLUDED`
         } ${
           item.recommendations === undefined
+            ? ""
+            : item.recommendations.length === 0
             ? ""
             : `\n*Recommendations*: ${item.recommendations?.map((val) =>
                 val.show
@@ -270,10 +276,13 @@ const Cart = (props) => {
                   : ""
               )}`
         } ${
+          item.itemNote == undefined ? "" : `\n*Item Note*: ${item.itemNote}`
+        }${
           item.totalPrice === undefined
             ? `\n*Item Total Price*: ${item.qty * item.price + " " + currency}`
             : `\n*Item Total Price*: ${item.totalPrice + " " + currency}`
         }\n\n`;
+
       return (
         <Card key={i} sx={style?.card} className="m-1">
           <div className="text-right">
@@ -297,19 +306,21 @@ const Cart = (props) => {
                 <Typography style={style?.cartProductName}>
                   {item.ProductName}
                 </Typography>
-                {item?.variantSKU === undefined ? null : (
-                  <Typography style={style?.cartDescription} gutterBottom>
-                    <b>Variants: </b>
+                {item.variantSKU === undefined
+                  ? null
+                  : item?.variantSKU.length !== 0 && (
+                      <Typography style={style?.cartDescription} gutterBottom>
+                        <b>Variants: </b>
 
-                    {item?.variantSKU?.map((val, i) => {
-                      if (item?.variantSKU.length === i + 1) {
-                        return val;
-                      } else {
-                        return val + ", ";
-                      }
-                    })}
-                  </Typography>
-                )}
+                        {item?.variantSKU?.map((val, i) => {
+                          if (item?.variantSKU.length === i + 1) {
+                            return val;
+                          } else {
+                            return val + ", ";
+                          }
+                        })}
+                      </Typography>
+                    )}
                 <Typography
                   style={style?.cartPrice}
                   gutterBottom
@@ -328,61 +339,61 @@ const Cart = (props) => {
               </Grid>
               <Grid item style={style?.cartVariantDiv}>
                 {" "}
-                {item.ingredients === undefined ? (
-                  ""
-                ) : (
-                  <Typography style={style?.cartDescription} gutterBottom>
-                    <b>Ingredients: </b>
-                    {item.ingredients?.map((val, i) => {
-                      if (item.ingredients.length === i + 1) {
-                        return val + " - Not Included";
-                      } else {
-                        return val + ", ";
-                      }
-                    })}
-                  </Typography>
-                )}
-                {item.extras === undefined ? (
-                  ""
-                ) : (
-                  <Typography style={style?.cartDescription} gutterBottom>
-                    <b>Extras: </b>
+                {item.ingredients === undefined
+                  ? ""
+                  : item.ingredients.length !== 0 && (
+                      <Typography style={style?.cartDescription} gutterBottom>
+                        <b>Ingredients: </b>
+                        {item.ingredients?.map((val, i) => {
+                          if (item.ingredients.length === i + 1) {
+                            return val + " - Not Included";
+                          } else {
+                            return val + ", ";
+                          }
+                        })}
+                      </Typography>
+                    )}
+                {item.extras === undefined
+                  ? ""
+                  : item.extras.length !== 0 && (
+                      <Typography style={style?.cartDescription} gutterBottom>
+                        <b>Extras: </b>
 
-                    {item.extras?.map((val, i) => {
-                      if (item?.extras.length === i + 1) {
-                        return val.value + " - Included";
-                      } else {
-                        return val.value + " , ";
-                      }
-                    })}
-                  </Typography>
-                )}
-                {item.recommendations === undefined ? (
-                  ""
-                ) : (
-                  <Typography style={style?.cartDescription} gutterBottom>
-                    <b>Recommendations: </b>
+                        {item.extras?.map((val, i) => {
+                          if (item?.extras.length === i + 1) {
+                            return val.value + " - Included";
+                          } else {
+                            return val.value + " , ";
+                          }
+                        })}
+                      </Typography>
+                    )}
+                {item.recommendations === undefined
+                  ? ""
+                  : item.recommendations.length !== 0 && (
+                      <Typography style={style?.cartDescription} gutterBottom>
+                        <b>Recommendations: </b>
 
-                    {item.recommendations?.map((val, i) => {
-                      if (val.show) {
-                        return (
-                          val.label +
-                          " (Qty: " +
-                          val.qty +
-                          " * " +
-                          val.price +
-                          " = " +
-                          (val.price * val.qty).toFixed(2) +
-                          " " +
-                          currency +
-                          " )"
-                        );
-                      } else {
-                        return "";
-                      }
-                    })}
-                  </Typography>
-                )}
+                        {item.recommendations?.map((val, i) => {
+                          if (val.show) {
+                            return (
+                              val.label +
+                              " (Qty: " +
+                              val.qty +
+                              " * " +
+                              val.price +
+                              " = " +
+                              (val.price * val.qty).toFixed(2) +
+                              " " +
+                              currency +
+                              " )"
+                            );
+                          } else {
+                            return "";
+                          }
+                        })}
+                      </Typography>
+                    )}
               </Grid>
               <Grid item style={style?.cartCounterDiv}>
                 <Counter
@@ -423,369 +434,329 @@ const Cart = (props) => {
         </Card>
       );
     });
+    message =
+      message +
+      `\n\n------------------------- \n *Sub Total*: ${
+        sum.toFixed(2) + "  " + currency
+      }\n *Delivery Fee*: ${
+        deliveryFees.toFixed(2) + "  " + currency
+      }\n *Grand Total*: ${(sum + deliveryFees).toFixed(2) + "  " + currency}${
+        userData?.generalNote === undefined || userData?.generalNote === ""
+          ? ""
+          : `\n *General Note*: ${userData?.generalNote}`
+      }`;
+    if (orderingWay === "delivery") {
+      message =
+        message +
+        `\n---------------- \n *Ordering Method*: Home Delivery\n *Address*: ${userData?.address}\n`;
+    }
   }
   return (
     <div>
-      <Container maxWidth="lg" className="mb-2">
-        {alert.open ? (
-          <CustomAlert
-            open={alert.open}
-            severity={alert.severity}
-            message={alert.message}
-            setAlert={setAlert}
-          />
-        ) : (
-          ""
-        )}
-        {checkBit ? "" : <Header subcategories={0} cart={cart.length} />}
-        {cart.length === 0 ? (
-          <Grid container spacing={2} className="text-center">
-            <Grid item xs={12} lg={12} xl={12} sm={6} md={6}>
-              No Item Available
-            </Grid>
+      {alert.open ? (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      ) : (
+        ""
+      )}
+      {checkBit ? "" : <Header subcategories={0} cart={cart.length} />}
+      {cart.length === 0 ? (
+        <Grid container spacing={2} className="text-center">
+          <Grid item xs={12} lg={12} xl={12} sm={6} md={6}>
+            No Item Available
           </Grid>
-        ) : (
-          <>
-            {viewImages_HTMLTABLE}
-            <Card sx={style?.card} className="m-1">
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                  <Grid
-                    item
-                    xs={12}
-                    lg={3}
-                    xl={3}
-                    sm={12}
-                    md={6}
-                    style={style?.ordersText}
-                  >
-                    <Typography style={style?.cartDescription}>
-                      Ordering Methods
-                    </Typography>
-                  </Grid>
-                  {outputs}
-                  {orderingWay === "tbl_qrcode" ? (
-                    <>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={style?.orderingOptions ? style?.orderingOptions : 4}
-                        xl={4}
-                        sm={12}
-                        md={6}
-                        style={style?.ordersText}
+        </Grid>
+      ) : (
+        <>
+          {viewImages_HTMLTABLE}
+          <Card sx={style?.card} className="m-1">
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Grid container spacing={2}>
+                <Grid
+                  item
+                  xs={12}
+                  lg={3}
+                  xl={3}
+                  sm={12}
+                  md={6}
+                  style={style?.ordersText}
+                >
+                  <Typography style={style?.cartDescription}>
+                    Ordering Methods
+                  </Typography>
+                </Grid>
+                {outputs}
+                {orderingWay === "tbl_qrcode" ? (
+                  <>
+                    <Grid
+                      item
+                      xs={12}
+                      lg={style?.orderingOptions ? style?.orderingOptions : 4}
+                      xl={4}
+                      sm={12}
+                      md={6}
+                      style={style?.ordersText}
+                    >
+                      <Typography style={style?.cartDescription}>
+                        Table Reservation
+                      </Typography>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      lg={style?.orderingOptions ? style?.orderingOptions : 4}
+                      xl={4}
+                      sm={12}
+                      md={6}
+                    >
+                      <div
+                        onClick={() => checkReservation("inside")}
+                        style={
+                          showReservation === "inside"
+                            ? style.active
+                            : style.deactive
+                        }
                       >
                         <Typography style={style?.cartDescription}>
-                          Table Reservation
+                          Scan QR Code
                         </Typography>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={style?.orderingOptions ? style?.orderingOptions : 4}
-                        xl={4}
-                        sm={12}
-                        md={6}
+                      </div>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      lg={style?.orderingOptions ? style?.orderingOptions : 4}
+                      xl={4}
+                      sm={12}
+                      md={6}
+                    >
+                      <div
+                        onClick={() => checkReservation("outside")}
+                        style={
+                          showReservation === "outside"
+                            ? style.active
+                            : style.deactive
+                        }
                       >
-                        <div
-                          onClick={() => checkReservation("inside")}
-                          style={
-                            showReservation === "inside"
-                              ? style.active
-                              : style.deactive
-                          }
-                        >
-                          <Typography style={style?.cartDescription}>
-                            Scan QR Code
-                          </Typography>
-                        </div>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={style?.orderingOptions ? style?.orderingOptions : 4}
-                        xl={4}
-                        sm={12}
-                        md={6}
-                      >
-                        <div
-                          onClick={() => checkReservation("outside")}
-                          style={
-                            showReservation === "outside"
-                              ? style.active
-                              : style.deactive
-                          }
-                        >
-                          <Typography style={style?.cartDescription}>
-                            Reserve a table
-                          </Typography>
-                        </div>
-                      </Grid>
-                    </>
-                  ) : null}
+                        <Typography style={style?.cartDescription}>
+                          Reserve a table
+                        </Typography>
+                      </div>
+                    </Grid>
+                  </>
+                ) : null}
+              </Grid>
+            </CardContent>
+          </Card>
+          <Card sx={style?.card} className="m-1">
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Grid container spacing={2}>
+                <Grid
+                  item
+                  xs={12}
+                  lg={6}
+                  xl={6}
+                  sm={12}
+                  md={6}
+                  className="text-center"
+                >
+                  <Typography style={style?.cartPrice}>Delivery Fee</Typography>
+                  <Typography style={style?.cartPrice}>
+                    {deliveryFees.toFixed(2) + "  " + currency}
+                  </Typography>
                 </Grid>
-              </CardContent>
-            </Card>
+                <Grid
+                  item
+                  xs={12}
+                  lg={6}
+                  xl={6}
+                  sm={12}
+                  md={6}
+                  className="text-center"
+                >
+                  <Typography style={style?.cartPrice}>Grand Total</Typography>
+                  <Typography style={style?.cartPrice}>
+                    {(sum + deliveryFees).toFixed(2) + "  " + currency}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+          {showReservation === "inside" ? (
             <Card sx={style?.card} className="m-1">
               <CardContent sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                  <Grid
-                    item
-                    xs={12}
-                    lg={6}
-                    xl={6}
-                    sm={12}
-                    md={6}
-                    className="text-center"
-                  >
-                    <Typography style={style?.cartPrice}>
-                      Delivery Fee
+                <div>
+                  <QrReader
+                    delay={300}
+                    onError={handleError}
+                    onScan={handleScan}
+                    style={{ width: "100%" }}
+                  />
+                  {table.length !== 0 ? (
+                    <Typography style={style?.cartDescription} gutterBottom>
+                      successfully authenticated: {table.tableId}
                     </Typography>
-                    <Typography style={style?.cartPrice}>
-                      {deliveryFees.toFixed(2) + "  " + currency}
-                    </Typography>
+                  ) : null}
+                </div>
+              </CardContent>
+            </Card>
+          ) : showReservation === "outside" ? (
+            <Card sx={style?.card} className="m-1">
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                    <div className="form-group">
+                      <select
+                        className={`form-control ${error ? "is-invalid" : ""}`}
+                        aria-label="Default select example"
+                        onChange={changeHandle}
+                        style={style?.inputfield}
+                        name="table_id"
+                      >
+                        <option> Select a Table</option>
+                        {tables.map((item) => {
+                          return (
+                            <option value={item.id} key={item.id}>
+                              {item.tableId +
+                                " - " +
+                                item.numberOfSeats +
+                                " Seater"}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    lg={6}
-                    xl={6}
-                    sm={12}
-                    md={6}
-                    className="text-center"
-                  >
-                    <Typography style={style?.cartPrice}>
-                      Grand Total
-                    </Typography>
-                    <Typography style={style?.cartPrice}>
-                      {(sum + deliveryFees).toFixed(2) + "  " + currency}
-                    </Typography>
+                  <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                    <div className="form-group">
+                      <input
+                        name="dateAndTime"
+                        type="datetime-local"
+                        className={`form-control ${error ? "is-invalid" : ""}`}
+                        placeholder="Date and Time"
+                        onChange={changeHandle}
+                        style={style?.inputfield}
+                      />
+                    </div>
                   </Grid>
                 </Grid>
               </CardContent>
             </Card>
-            {showReservation === "inside" ? (
-              <Card sx={style?.card} className="m-1">
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <div>
-                    <QrReader
-                      delay={300}
-                      onError={handleError}
-                      onScan={handleScan}
-                      style={{ width: "100%" }}
-                    />
-                    {table.length !== 0 ? (
-                      <Typography style={style?.cartDescription} gutterBottom>
-                        successfully authenticated: {table.tableId}
-                      </Typography>
-                    ) : null}
-                  </div>
-                </CardContent>
-              </Card>
-            ) : showReservation === "outside" ? (
-              <Card sx={style?.card} className="m-1">
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
-                      <div className="form-group">
-                        <select
-                          className={`form-control ${
-                            error ? "is-invalid" : ""
-                          }`}
-                          aria-label="Default select example"
-                          onChange={changeHandle}
-                          style={style?.inputfield}
-                          name="table_id"
-                        >
-                          <option> Select a Table</option>
-                          {tables.map((item) => {
-                            return (
-                              <option value={item.id} key={item.id}>
-                                {item.tableId +
-                                  " - " +
-                                  item.numberOfSeats +
-                                  " Seater"}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
+          ) : null}
+          {orderingWay === "delivery" ? (
+            <Card sx={style?.card} className="m-1">
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Grid container spacing={1}>
+                  {branch.fullAddress ? (
+                    <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
+                      <TextareaAutosize
+                        name="address"
+                        onChange={changeHandle}
+                        className={`form-control ${error ? "is-invalid" : ""}`}
+                        minRows={1}
+                        placeholder="Full Address"
+                        style={style?.inputfield}
+                      />
                     </Grid>
-                    <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
-                      <div className="form-group">
-                        <input
-                          name="dateAndTime"
-                          type="datetime-local"
-                          className={`form-control ${
-                            error ? "is-invalid" : ""
-                          }`}
-                          placeholder="Date and Time"
-                          onChange={changeHandle}
-                          style={style?.inputfield}
-                        />
-                      </div>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            ) : null}
-            {orderingWay === "delivery" ? (
-              <Card sx={style?.card} className="m-1">
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Grid container spacing={1}>
-                    {branch.fullAddress ? (
-                      <Grid item xs={12} lg={4} xl={3} sm={6} md={6}>
-                        <TextareaAutosize
-                          name="address"
-                          onChange={changeHandle}
-                          className={`form-control ${
-                            error ? "is-invalid" : ""
-                          }`}
-                          minRows={1}
-                          placeholder="Full Address"
-                          style={style?.inputfield}
-                        />
-                      </Grid>
-                    ) : null}
-                    {JSON.parse(branch?.otherAddressFields)?.map((item, i) => {
-                      return (
-                        <Grid item xs={12} lg={4} xl={3} sm={6} md={6} key={i}>
-                          <div className="form-group">
-                            <input
-                              name={item}
-                              type="text"
-                              className={"form-control"}
-                              placeholder={item}
-                              onChange={changeHandleAddress}
-                              style={style?.inputfield}
-                            />
-                          </div>
-                        </Grid>
-                      );
-                    })}
-                  </Grid>
-                </CardContent>
-              </Card>
-            ) : null}
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={saveOrder}
-            >
-              {({ errors, status, touched, values, setFieldValue }) => (
-                <Form>
-                  <Card sx={style?.card} className="m-1">
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
-                          <div className="form-group">
-                            <PhoneInput
-                              country={ipApi?.country_code?.toLowerCase()}
-                              className={
-                                errors.phoneNumber && touched.phoneNumber
-                                  ? " is-invalid"
-                                  : ""
-                              }
-                              name="phoneNumber"
-                              // style={style?.inputfield}
-                              onChange={(getOptionValue) => {
-                                setFieldValue("phoneNumber", getOptionValue);
-                              }}
-                            />
-                            {/* <Field
-                              name="phoneNumber"
-                              type="text"
-                              className={
-                                "form-control" +
-                                (errors.phoneNumber && touched.phoneNumber
-                                  ? " is-invalid"
-                                  : "")
-                              }
-                              placeholder="+93--- ---- ---"
-                              style={style?.inputfield}
-                            /> */}
-                            <ErrorMessage
-                              name="phoneNumber"
-                              component="div"
-                              style={{ fontSize: "0.7em" }}
-                              className="invalid-feedback"
-                            />
-                          </div>
-                        </Grid>
-                        <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
-                          <TextareaAutosize
-                            name="generalNote"
-                            onChange={changeHandle}
+                  ) : null}
+                  {JSON.parse(branch?.otherAddressFields)?.map((item, i) => {
+                    return (
+                      <Grid item xs={12} lg={4} xl={3} sm={6} md={6} key={i}>
+                        <div className="form-group">
+                          <input
+                            name={item}
+                            type="text"
                             className={"form-control"}
-                            minRows={3}
-                            placeholder="General Note"
+                            placeholder={item}
+                            onChange={changeHandleAddress}
                             style={style?.inputfield}
                           />
-                        </Grid>
+                        </div>
                       </Grid>
-                    </CardContent>
-                  </Card>
-                  <Card sx={style?.card} className="m-1">
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
-                          {orderingWay !== "tbl_qrcode" ? (
-                            <>
-                              <p className="d-none">
-                                {
-                                  (message = `\n\n${message} ------------------------- \n *Sub Total*: ${
-                                    sum.toFixed(2) + "  " + currency
-                                  }\n *Delivery Fee*: ${
-                                    deliveryFees.toFixed(2) + "  " + currency
-                                  }\n *Grand Total*: ${
-                                    (sum + deliveryFees).toFixed(2) +
-                                    "  " +
-                                    currency
-                                  }\n *Phone Number*: ${values?.phoneNumber}${
-                                    userData?.generalNote === undefined
-                                      ? ""
-                                      : `\n *General Note*: ${userData?.generalNote}`
-                                  }
-                           `)
-                                }
-                                {orderingWay === "delivery"
-                                  ? (message = `${message} \n---------------- \n *Ordering Method*: Home Delivery\n *Address*: ${userData?.address}\n *Building No*: ${userData?.buildingNo}\n *Floor*: ${userData?.floor}\n *Flat*: ${userData?.flat}\n *Directions*: ${userData?.directions}`)
-                                  : null}
-                              </p>
-                              {orderingWay === undefined ? (
-                                <button
-                                  className="col-12 btn"
-                                  style={style?.buttonStyle}
-                                  type="submit"
-                                  // onClick={() => saveOrder()}
-                                >
-                                  <WhatsAppIcon /> {t("send_order")}
-                                </button>
-                              ) : orderingWay === "delivery" ? (
-                                branch.fullAddress ? (
-                                  userData.address === undefined ||
-                                  userData.address === "" ? (
-                                    <button
-                                      className="col-12 btn"
-                                      style={style?.buttonStyle}
-                                      type="submit"
-                                      // onClick={() => saveOrder()}
-                                    >
-                                      <WhatsAppIcon /> {t("send_order")}
-                                    </button>
-                                  ) : (
-                                    <ReactWhatsapp
-                                      className="col-12 btn"
-                                      type="submit"
-                                      style={style?.buttonStyle}
-                                      number={branch?.phoneNumber}
-                                      message={message}
-                                      max="4096"
-                                      // onClick={() => saveOrder()}
-                                    >
-                                      <WhatsAppIcon /> {t("send_order")}
-                                    </ReactWhatsapp>
-                                  )
+                    );
+                  })}
+                </Grid>
+              </CardContent>
+            </Card>
+          ) : null}
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={saveOrder}
+          >
+            {({ errors, status, touched, values, setFieldValue }) => (
+              <Form>
+                <Card sx={style?.card} className="m-1">
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
+                        <div className="form-group">
+                          <PhoneInput
+                            country={ipApi?.country_code?.toLowerCase()}
+                            className={
+                              errors.phoneNumber && touched.phoneNumber
+                                ? " is-invalid"
+                                : ""
+                            }
+                            name="phoneNumber"
+                            // style={style?.inputfield}
+                            onChange={(getOptionValue) => {
+                              setFieldValue("phoneNumber", getOptionValue);
+                            }}
+                          />
+                          <ErrorMessage
+                            name="phoneNumber"
+                            component="div"
+                            style={{ fontSize: "0.7em" }}
+                            className="invalid-feedback"
+                          />
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
+                        <TextareaAutosize
+                          name="generalNote"
+                          onChange={changeHandle}
+                          className={"form-control"}
+                          minRows={3}
+                          placeholder="General Note"
+                          style={style?.inputfield}
+                        />
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+
+                <Card sx={style?.card} className="m-1">
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                        {orderingWay !== "tbl_qrcode" ? (
+                          <>
+                            {orderingWay === undefined ? (
+                              <button
+                                className="col-12 btn"
+                                style={style?.buttonStyle}
+                                type="submit"
+                                // onClick={() => saveOrder()}
+                              >
+                                <WhatsAppIcon /> {t("send_order")}
+                              </button>
+                            ) : orderingWay === "delivery" ? (
+                              branch.fullAddress ? (
+                                userData.address === undefined ||
+                                userData.address === "" ? (
+                                  <button
+                                    className="col-12 btn"
+                                    style={style?.buttonStyle}
+                                    type="submit"
+                                    // onClick={() => saveOrder()}
+                                  >
+                                    <WhatsAppIcon /> {t("send_order")}
+                                  </button>
                                 ) : (
                                   <ReactWhatsapp
                                     className="col-12 btn"
@@ -799,25 +770,6 @@ const Cart = (props) => {
                                     <WhatsAppIcon /> {t("send_order")}
                                   </ReactWhatsapp>
                                 )
-                              ) : orderingWay === "whatsApp" &&
-                                values.phoneNumber === "" ? (
-                                <button
-                                  className="col-12 btn"
-                                  style={style?.buttonStyle}
-                                  type="submit"
-                                  // onClick={() => saveOrder()}
-                                >
-                                  <WhatsAppIcon /> {t("send_order")}
-                                </button>
-                              ) : errors.phoneNumber && touched.phoneNumber ? (
-                                <button
-                                  className="col-12 btn"
-                                  style={style?.buttonStyle}
-                                  type="submit"
-                                  // onClick={() => saveOrder()}
-                                >
-                                  <WhatsAppIcon /> {t("send_order")}
-                                </button>
                               ) : (
                                 <ReactWhatsapp
                                   className="col-12 btn"
@@ -830,40 +782,71 @@ const Cart = (props) => {
                                 >
                                   <WhatsAppIcon /> {t("send_order")}
                                 </ReactWhatsapp>
-                              )}
-                            </>
-                          ) : (
-                            <button
-                              className="col-12 btn"
-                              style={style?.buttonStyle}
-                              onClick={() => saveOrder()}
-                            >
-                              <SendIcon /> {t("send_order")}
-                            </button>
-                          )}
-                        </Grid>
-                        <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                              )
+                            ) : orderingWay === "whatsApp" &&
+                              values.phoneNumber === "" ? (
+                              <button
+                                className="col-12 btn"
+                                style={style?.buttonStyle}
+                                type="submit"
+                                // onClick={() => saveOrder()}
+                              >
+                                <WhatsAppIcon /> {t("send_order")}
+                              </button>
+                            ) : errors.phoneNumber && touched.phoneNumber ? (
+                              <button
+                                className="col-12 btn"
+                                style={style?.buttonStyle}
+                                type="submit"
+                                // onClick={() => saveOrder()}
+                              >
+                                <WhatsAppIcon /> {t("send_order")}
+                              </button>
+                            ) : (
+                              <ReactWhatsapp
+                                className="col-12 btn"
+                                type="submit"
+                                style={style?.buttonStyle}
+                                number={branch?.phoneNumber}
+                                message={message}
+                                max="4096"
+                                // onClick={() => saveOrder()}
+                              >
+                                <WhatsAppIcon /> {t("send_order")}
+                              </ReactWhatsapp>
+                            )}
+                          </>
+                        ) : (
                           <button
                             className="col-12 btn"
                             style={style?.buttonStyle}
-                            onClick={() => [
-                              emptyCart(),
-                              setCart([]),
-                              setUserData([]),
-                            ]}
+                            onClick={() => saveOrder()}
                           >
-                            <ClearIcon /> {t("empty_cart")}
+                            <SendIcon /> {t("send_order")}
                           </button>
-                        </Grid>
+                        )}
                       </Grid>
-                    </CardContent>
-                  </Card>
-                </Form>
-              )}
-            </Formik>
-          </>
-        )}
-      </Container>
+                      <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
+                        <button
+                          className="col-12 btn"
+                          style={style?.buttonStyle}
+                          onClick={() => [
+                            emptyCart(),
+                            setCart([]),
+                            setUserData([]),
+                          ]}
+                        >
+                          <ClearIcon /> {t("empty_cart")}
+                        </button>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Form>
+            )}
+          </Formik>
+        </>
+      )}
     </div>
   );
 };

@@ -14,12 +14,16 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
+
 import SwiperCore, { Navigation, Thumbs } from "swiper";
 import { getProduct, getVariations } from "../Functionality";
+import CustomAlert from "../../../CustomAlert";
+
 SwiperCore.use([Navigation, Thumbs]);
 
 const ProductDetails = (props) => {
@@ -192,7 +196,51 @@ const ProductDetails = (props) => {
     JSON.parse(localStorage.getItem("cart")) || []
   );
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
+  const addItem = () => {
+    const check = cart.every((val) => {
+      return val.id !== fetchData.id;
+    });
+    if (check) {
+      fetchData.extras = extraValue;
+      fetchData.ingredients = ingredients;
+      fetchData.recommendations = [];
+      fetchData.totalPrice = (parseInt(fetchData.price) + sum).toFixed(2);
+      fetchData.variantSKU = skuarray;
+      fetchData.checkSKU = activeSKU;
+      setFetchData(fetchData);
+      localStorage.setItem("cart", JSON.stringify(cart.concat(fetchData)));
+      setCart(cart.concat(fetchData));
+      setAlerts(true, "success", "Successfully added to cart");
+    } else {
+      let data = cart.filter((val) => {
+        return val.id === fetchData.id;
+      });
+      data[0].extras = extraValue;
+      data[0].ingredients = ingredients;
+      data[0].recommendations = [];
+      data[0].totalPrice = (parseInt(fetchData.price) + sum).toFixed(2);
+      data[0].variantSKU = skuarray;
+      data[0].checkSKU = activeSKU;
+      const otherData = cart.filter((val) => {
+        return val.id !== fetchData.id;
+      });
+      localStorage.setItem("cart", JSON.stringify(otherData.concat(data)));
+      setCart(otherData.concat(data));
+      setAlerts(true, "success", "Cart Updated");
+    }
+  };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -208,30 +256,30 @@ const ProductDetails = (props) => {
     );
   } else {
     viewImages_HTMLTABLE = (
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
-          {(() => {
-            if (varPics.length != 0) {
-              return (
-                <div className="swiper">
-                  <Swiper
-                    style={{
-                      "--swiper-navigation-color": "#fff",
-                      "--swiper-pagination-color": "#fff",
-                    }}
-                    spaceBetween={10}
-                    speed={2500}
-                    navigation={true}
-                    thumbs={{ swiper: thumbsSwiper }}
-                    onSwiper={(s) => {
-                      setSwiper(s);
-                    }}
-                    className="mySwiper2 m-1"
-                  >
-                    {varPics?.map((section) => {
-                      return section.image?.map((image, i) => {
-                        return (
-                          <>
+      <Card sx={style?.cardStyle}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
+            {(() => {
+              if (varPics.length != 0) {
+                return (
+                  <div className="swiper">
+                    <Swiper
+                      style={{
+                        "--swiper-navigation-color": "#fff",
+                        "--swiper-pagination-color": "#fff",
+                      }}
+                      spaceBetween={10}
+                      speed={2500}
+                      navigation={true}
+                      thumbs={{ swiper: thumbsSwiper }}
+                      onSwiper={(s) => {
+                        setSwiper(s);
+                      }}
+                      className="mySwiper2 mt-3 mb-1"
+                    >
+                      {varPics?.map((section) => {
+                        return section.image?.map((image, i) => {
+                          return (
                             <SwiperSlide key={image}>
                               <img
                                 src={`http://${base_url}:${port}/images/products/${image}`}
@@ -239,26 +287,79 @@ const ProductDetails = (props) => {
                                 style={style?.variantsImage}
                               />
                             </SwiperSlide>
-                          </>
-                        );
-                      });
-                    })}
-                  </Swiper>
-                  <Swiper
-                    onSwiper={setThumbsSwiper}
-                    spaceBetween={10}
-                    slidesPerView={5}
-                    freeMode={true}
-                    watchSlidesProgress={true}
-                    className="mySwiper m-1"
-                  >
-                    {varPics?.map((section) => {
-                      return section.image?.map((image) => {
+                          );
+                        });
+                      })}
+                    </Swiper>
+                    <Swiper
+                      onSwiper={setThumbsSwiper}
+                      spaceBetween={10}
+                      slidesPerView={5}
+                      freeMode={true}
+                      watchSlidesProgress={true}
+                      className="mySwiper mb-3 mx-3"
+                    >
+                      {varPics?.map((section) => {
+                        return section.image?.map((image) => {
+                          return (
+                            <SwiperSlide key={image}>
+                              <img
+                                src={`http://${base_url}:${port}/images/products/${image}`}
+                                alt=""
+                                style={style?.variantsThumbs}
+                              />
+                            </SwiperSlide>
+                          );
+                        });
+                      })}
+                    </Swiper>
+                  </div>
+                );
+              } else {
+                return (
+                  <div className="swiper">
+                    <Swiper
+                      spaceBetween={10}
+                      speed={2500}
+                      navigation={true}
+                      // thumbs={{ swiper: thumbsSwiper }}
+                      onSwiper={(s) => {
+                        setSwiper(s);
+                      }}
+                      className="mySwiper2 mt-3 mb-1"
+                    >
+                      {JSON.parse(fetchData.image).map((image) => {
                         return (
-                          <SwiperSlide
-                            // onSwiper={productDetails.image[0]}
-                            key={image}
-                          >
+                          <SwiperSlide key={image}>
+                            <img
+                              src={
+                                productDetails.stock === "No Stock" ||
+                                productDetails?.stock === 0
+                                  ? `http://${base_url}:${port}/images/products/${
+                                      productDetails.image
+                                        ? productDetails?.image
+                                        : image
+                                    }`
+                                  : `http://${base_url}:${port}/images/products/${productDetails.image}`
+                              }
+                              alt=""
+                              style={style?.variantsImage}
+                            />
+                          </SwiperSlide>
+                        );
+                      })}
+                    </Swiper>
+                    <Swiper
+                      // onSwiper={setThumbsSwiper}
+                      spaceBetween={10}
+                      slidesPerView={5}
+                      freeMode={true}
+                      watchSlidesProgress={true}
+                      className="mySwiper mb-3 mx-3"
+                    >
+                      {JSON.parse(fetchData.image)?.map((image) => {
+                        return (
+                          <SwiperSlide key={image}>
                             <img
                               src={`http://${base_url}:${port}/images/products/${image}`}
                               alt=""
@@ -266,85 +367,57 @@ const ProductDetails = (props) => {
                             />
                           </SwiperSlide>
                         );
-                      });
-                    })}
-                  </Swiper>
-                </div>
-              );
-            } else {
-              return (
-                <div className="swiper">
-                  <Swiper
-                    spaceBetween={10}
-                    speed={2500}
-                    navigation={true}
-                    thumbs={{ swiper: thumbsSwiper }}
-                    onSwiper={(s) => {
-                      setSwiper(s);
-                    }}
-                    className="mySwiper2 m-1"
-                  >
-                    {JSON.parse(fetchData.image).map((image) => {
-                      return (
-                        <SwiperSlide key={image}>
-                          <img
-                            src={
-                              productDetails.stock === "No Stock" ||
-                              productDetails?.stock === 0
-                                ? `http://${base_url}:${port}/images/products/${
-                                    productDetails.image
-                                      ? productDetails?.image
-                                      : image
-                                  }`
-                                : `http://${base_url}:${port}/images/products/${productDetails.image}`
-                            }
-                            alt=""
-                            style={style?.variantsImage}
-                          />
-                        </SwiperSlide>
-                      );
-                    })}
-                  </Swiper>
-                  <Swiper
-                    onSwiper={setThumbsSwiper}
-                    spaceBetween={10}
-                    slidesPerView={5}
-                    freeMode={true}
-                    watchSlidesProgress={true}
-                    className="mySwiper m-1"
-                  >
-                    {JSON.parse(fetchData.image)?.map((image) => {
-                      return (
-                        <SwiperSlide
-                          // onSwiper={productDetails.image[0]}
-                          key={image}
-                        >
-                          <img
-                            src={`http://${base_url}:${port}/images/products/${image}`}
-                            alt=""
-                            style={style?.variantsThumbs}
-                          />
-                        </SwiperSlide>
-                      );
-                    })}
-                  </Swiper>
-                </div>
-              );
-            }
-          })()}
-        </Grid>
+                      })}
+                    </Swiper>
+                  </div>
+                );
+              }
+            })()}
+          </Grid>
 
-        <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
-          <Card sx={style?.detailsCard}>
-            <div className="row mx-3 mt-3">
-              <Grid container spacing={2}>
-                <Grid item xs={10}>
+          <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
+            <div className="row ml-3 my-3">
+              <Grid container spacing={1}>
+                <Grid
+                  item
+                  sm={8}
+                  md={8}
+                  lg={8}
+                  xl={8}
+                  xs={12}
+                  className="d-flex align-items-center justify-content-left"
+                >
                   <Typography style={style?.price}>
                     {fetchData.ProductName}
                   </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid
+                  item
+                  sm={1}
+                  md={1}
+                  lg={1}
+                  xl={1}
+                  xs={2}
+                  className="d-flex align-items-center justify-content-right"
+                >
                   <FavoriteIcon style={style?.favIconActive} />
+                </Grid>
+                <Grid
+                  item
+                  sm={3}
+                  md={3}
+                  lg={3}
+                  xl={3}
+                  xs={10}
+                  className="d-flex align-items-center justify-content-righ"
+                >
+                  <button
+                    className="btn btn-sm"
+                    onClick={addItem}
+                    style={style?.buttonStyle}
+                  >
+                    {t("add_to_cart")}
+                  </button>
                 </Grid>
               </Grid>
 
@@ -357,7 +430,7 @@ const ProductDetails = (props) => {
                   ""
                 ) : (
                   <>
-                    {t("preparation_Time")}: {fetchData?.preparationTime}{" "}
+                    {t("preparation_time")}: {fetchData?.preparationTime}{" "}
                     Minutes
                   </>
                 )}
@@ -490,13 +563,21 @@ const ProductDetails = (props) => {
                 </div>
               </>
             )}
-          </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      </Card>
     );
   }
   return (
     <div style={style?.background}>
+      {alert.open && (
+        <CustomAlert
+          open={alert.open}
+          severity={alert.severity}
+          message={alert.message}
+          setAlert={setAlert}
+        />
+      )}
       <Container maxWidth="lg" style={style?.varaintContainer}>
         <Header
           search={false}

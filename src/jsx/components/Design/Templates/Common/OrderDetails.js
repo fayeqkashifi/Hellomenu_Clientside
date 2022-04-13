@@ -215,15 +215,13 @@ const OrderDetails = (props) => {
   }
   return (
     <div style={style?.background}>
-      {alert.open ? (
+      {alert.open && (
         <CustomAlert
           open={alert.open}
           severity={alert.severity}
           message={alert.message}
           setAlert={setAlert}
         />
-      ) : (
-        ""
       )}
       <Container maxWidth="lg">
         <Header

@@ -343,12 +343,14 @@ const Product = (props) => {
           </div>
           <div>
             <div className="input-group">
-              <Search
-                setFetchData={setFetchData}
-                url={"/api/searchProduct"}
-                id={branchId}
-                defaultUrl={`/api/getProducts/${branchId}`}
-              />
+              <div className="d-flex align-items-center justify-content-center ">
+                <Search
+                  setFetchData={setFetchData}
+                  url={"/api/searchProduct"}
+                  id={branchId}
+                  defaultUrl={`/api/getProducts/${branchId}`}
+                />
+              </div>
               {checkPermission("products-create") && (
                 <Tooltip title="Add New Product">
                   <IconButton aria-label="Example">
