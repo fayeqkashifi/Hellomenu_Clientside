@@ -8,7 +8,6 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 
-import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -17,7 +16,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { getProduct, getVariations } from "../Functionality";
 import CustomAlert from "../../../CustomAlert";
 import ImageSlider from "./ImageSilder";
-import "./examples.css";
+import "./imageSilder.css";
 
 const ProductDetails = (props) => {
   // for localization

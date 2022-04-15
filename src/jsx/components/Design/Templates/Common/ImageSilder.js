@@ -5,9 +5,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import SwiperCore, { Navigation, Thumbs } from "swiper";
 import ReactImageMagnify from "react-image-magnify";
-import CursorZoom from "react-cursor-zoom";
-import ReactImageZoom from "react-image-zoom";
-import InnerImageZoom from "react-inner-image-zoom";
 SwiperCore.use([Navigation, Thumbs]);
 const ImageSlider = (props) => {
   // for localization
