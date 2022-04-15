@@ -98,9 +98,9 @@ export default function ShowCards(props) {
                       item.price.toFixed(2)}
                   </Typography>
                 </div>
-                <Typography style={style?.description}>
+                {/* <Typography style={style?.description}>
                   {item.Description}
-                </Typography>
+                </Typography> */}
 
                 {style.counterPosition === "last" ? (
                   <div style={style?.addIcon}>

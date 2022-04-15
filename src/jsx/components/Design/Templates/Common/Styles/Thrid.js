@@ -1,10 +1,14 @@
 export const ThridStyle = (custom) => {
   return {
+    // main public
     template: "thrid",
+    // thrid main
     background: {
       backgroundColor: custom?.bgColor ? custom.bgColor : "#f8f8f8",
       minHeight: "100vh",
     },
+    varaintContainer: { paddingBottom: "100px" },
+
     // header
     title: {
       display: "none",
@@ -12,9 +16,6 @@ export const ThridStyle = (custom) => {
     backIcon: { visibility: "hidden" },
     cartIcon: {
       color: "#000",
-    },
-    searchIcon: {
-      display: "none",
     },
     searchFields: {
       marginLeft: "20px",
@@ -37,13 +38,119 @@ export const ThridStyle = (custom) => {
     totalPriceDiv: {
       marginRight: "20px",
     },
+    BadgeStyle: {
+      "& .MuiBadge-badge": {
+        color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+        backgroundColor: custom?.menusAcriveColor
+          ? custom.menusAcriveColor
+          : "#fbd460",
+      },
+    },
     // header End
-    // card
 
+    // statubar Style
+    headerVideos: {
+      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
+      cursor: "pointer",
+    },
+    branchStory: {
+      width: "100px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    productStory: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : "#000",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    imageVideo: {
+      height: "70px",
+      width: "50px",
+      objectFit: "contain",
+      borderRadius: "5px",
+      border: "1px solid",
+      borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
+      margin: "3px",
+    },
+    // statubar End
+
+    // vidoe Details
+    reactPlayerStyle: {
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: "#fff",
+      margin: "3px",
+      padding: "2px",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    // end
+    // sideBar
+    sidebarPosition: "horizontal",
+    sideBarBox: {
+      flexGrow: 1,
+      // display: "flex",
+      width: "100%",
+      // height: "100%",
+    },
+    sidebarActive: {
+      background: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
+      borderRadius: "40px",
+      padding: "20px",
+      maring: "40px",
+    },
+    sidebarDeActive: {
+      borderRadius: "40px",
+      padding: "20px",
+      maring: "40px",
+    },
+    icon: {
+      height: "50px",
+      width: "50px",
+      objectFit: "contain",
+      margin: "5px",
+    },
+    textActive: {
+      color: "#000",
+      fontSize: 14,
+      fontWeight: "bold",
+      textTransform: "capitalize",
+    },
+    textDeactive: {
+      color: "#000",
+      fontSize: 14,
+      fontWeight: "bold",
+      textTransform: "capitalize",
+    },
+    // end
+
+    // Show card style
     cardStyle: {
       display: "flex",
       flexDirection: "column",
-      // borderRadius: "5%",
+      // borderRadius: "5px",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
     },
     cardIconButton: {
@@ -62,7 +169,7 @@ export const ThridStyle = (custom) => {
     imageStyle: {
       height: "150px",
       width: "100%",
-      borderRadius: "15%",
+      borderRadius: "15px",
       objectFit: "contain",
     },
     productName: {
@@ -78,9 +185,6 @@ export const ThridStyle = (custom) => {
       border: "1px solid #aaa",
     },
     counterPosition: "last",
-    description: {
-      display: "none",
-    },
     priceDiv: {
       textAlign: "right",
       margin: "10px",
@@ -89,18 +193,6 @@ export const ThridStyle = (custom) => {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
       color: custom?.price_color ? custom.price_color : "#000",
       fontWeight: "bold",
-    },
-    BadgeStyle: {
-      "& .MuiBadge-badge": {
-        color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
-        backgroundColor: custom?.menusAcriveColor
-          ? custom.menusAcriveColor
-          : "#fbd460",
-      },
-    },
-    unitName: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "0.75rem",
-      color: custom?.price_color ? custom.price_color : "#000",
     },
     xs: custom?.numberProductInRowMobile
       ? custom.numberProductInRowMobile === 1
@@ -144,15 +236,13 @@ export const ThridStyle = (custom) => {
         ? 2
         : 3
       : 3,
-    // counter
-    divCounter: {},
-    addToCartIcon: {
-      cursor: "pointer",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fbd460",
+    unitName: {
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "0.75rem",
+      color: custom?.price_color ? custom.price_color : "#000",
     },
-    counterRemovIcon: {
-      color: "rgb(223, 71, 89)",
-    },
+    // end
+
+    // ReCounter Style
     counterDecrementIcon: {
       color: "#000",
     },
@@ -162,163 +252,10 @@ export const ThridStyle = (custom) => {
     counterValue: {
       color: "#000",
     },
-    // sideBar
-    sidebarPosition: "horizontal",
-    sideBarBox: {
-      flexGrow: 1,
-      // display: "flex",
-      width: "100%",
-      // height: "100%",
-    },
-    sidebarActive: {
-      background: custom?.menusAcriveColor
-        ? custom.menusAcriveColor
-        : "#fbd460",
-      borderRadius: "40px",
-      padding: "20px",
-      maring: "40px",
-    },
-    sidebarDeActive: {
-      borderRadius: "40px",
-      padding: "20px",
-      maring: "40px",
-    },
-    icon: {
-      height: "50px",
-      width: "50px",
-      objectFit: "contain",
-      margin: "5px",
-    },
-    textActive: {
-      color: "#000",
-      fontSize: 14,
-      fontWeight: "bold",
-      textTransform: "capitalize",
-    },
-    textDeactive: {
-      color: "#000",
-      fontSize: 14,
-      fontWeight: "bold",
-      textTransform: "capitalize",
-    },
-    // General
-    inputfield: {
-      width: "100%",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
-      fontSize: 12,
-      borderColor: custom?.menusAcriveColor
-        ? custom.menusAcriveColor
-        : "#fbd460",
-    },
-    card: {
-      display: "grid",
-      flexDirection: "column",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-    },
-    buttonStyle: {
-      textTransform: "capitalize",
-      backgroundColor: custom?.button_background_color
-        ? custom.button_background_color
-        : "#fbd460",
-      color: custom?.button_text_color ? custom.button_text_color : "#fff",
-      fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "0.75rem",
-    },
-    active: {
-      cursor: "pointer",
-      border: "1px solid",
-      textAlign: "center",
-      borderRadius: "10px",
-      borderColor: "#fbd460",
-      backgroundColor: custom?.menusAcriveColor
-        ? custom.menusAcriveColor
-        : "#fbd460",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
-      fontSize: "0.5rem",
-    },
-    deactive: {
-      cursor: "pointer",
-      border: "1px solid",
-      textAlign: "center",
-      borderRadius: "10px",
-      borderColor: custom?.menusAcriveColor
-        ? custom.menusAcriveColor
-        : "#fbd460",
-      backgroundColor: "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
-      fontSize: "0.25rem",
-    },
+    // End
 
-    ordersText: {
-      display: "none",
-    },
-    orderingOptions: 6,
-    clearIcon: {
-      color: custom?.menusAcriveColor
-        ? custom.menusAcriveColor
-        : "rgb(223, 71, 89)",
-    },
-    cartImage: {
-      height: "100px",
-      width: "100%",
-      borderRadius: "15%",
-      objectFit: "contain",
-    },
-    // cartMainDiv: {
-    // display: "flex",
-    // flexDirection: "column",
-    // flexWrap: "wrap",
-    // },
-    cartImageDiv: {
-      width: "100%",
-    },
-    cartProductDiv: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      flexWrap: "wrap",
-    },
-    cartVariantDiv: {
-      width: "100%",
-    },
-    cartCounterDiv: {
-      width: "100%",
-    },
-    cartNoteDiv: {
-      width: "100%",
-    },
-    cartTotalDiv: {
-      width: "100%",
-      textAlign: "right",
-    },
-    cartProductName: {
-      textTransform: "capitalize",
-      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "0.75rem",
-      color: custom?.product_name_color ? custom.product_name_color : "#000",
-    },
-    // productDiv: { width: "60%", textAlign: "left" },
-    cartPrice: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
-      color: custom?.price_color ? custom.price_color : "#000",
-      fontWeight: "bold",
-    },
-    cartDescription: {
-      fontSize: custom?.pDiscriptionSize
-        ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+    // Product Details style
 
-      color: custom?.product_discription_color
-        ? custom.product_discription_color
-        : "#000",
-    },
-    // product details
-    detailsCard: {
-      // height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      borderRadius: "5%",
-      backgroundColor: custom?.BgColor ? custom.BgColor : "#fff",
-    },
     preparation_time: custom?.preparation_time,
     show_ingredients: custom?.show_ingredients,
     ingredientsActive: {
@@ -395,7 +332,6 @@ export const ThridStyle = (custom) => {
       borderRadius: "5%",
       // objectFit: "contain",
     },
-    varaintContainer: { paddingBottom: "100px" },
     recomandImage: {
       height: "200px",
       width: "100%",
@@ -403,6 +339,34 @@ export const ThridStyle = (custom) => {
 
       objectFit: "contain",
     },
+    // Image Slider Style
+    imageSilderMainDiv: { minHeight: "60vh", position: "sticky" },
+    mainSwiper: {
+      minHeight: "55vh",
+      margin: "10px",
+      padding: "10px",
+    },
+    swiperMainImage: {
+      height: "400px",
+      width: "100%",
+      borderRadius: "10px",
+      // objectFit: "contain",
+    },
+    ThumbsSwiper: { minHeight: "5vh", cursor: "pointer", margin: "10px" },
+    thumbsImage: {
+      height: "60px",
+      width: "40px",
+      textAlign: "center",
+      borderRadius: "10px",
+      ":hover": {
+        border: "1px solid",
+        borderColor: custom?.menusAcriveColor
+          ? custom.menusAcriveColor
+          : "#ff751d",
+      },
+    },
+    // end
+
     // footer
     footerStyle: {
       bgcolor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
@@ -411,49 +375,124 @@ export const ThridStyle = (custom) => {
       width: "100%",
       textAlign: "center",
     },
-    // story style
-    headerVideos: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
-      cursor: "pointer",
+    buttonStyle: {
+      textTransform: "capitalize",
+      backgroundColor: custom?.button_background_color
+        ? custom.button_background_color
+        : "#fbd460",
+      color: custom?.button_text_color ? custom.button_text_color : "#fff",
+      fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "0.75rem",
     },
-    branchStory: {
-      width: "100px",
-      height: "200px",
-      borderRadius: "10px",
-      border: "2px solid",
+    // End
+    // counter
+    divCounter: {},
+    addToCartIcon: {
+      cursor: "pointer",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fbd460",
+    },
+    counterRemovIcon: {
+      color: "rgb(223, 71, 89)",
+    },
+    // End
+
+    // cart
+    inputfield: {
+      width: "100%",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : "#fbd460",
-      padding: "2px",
-      margin: "3px",
-      marginTop: "10px",
-      objectFit: "contain",
-      lineBreak: "anywhere",
-      overflow: "hidden",
     },
-    productStory: {
-      width: "150px",
-      height: "200px",
-      borderRadius: "10px",
-      border: "2px solid",
-      borderColor: custom?.menusDeactiveColor
-        ? custom.menusDeactiveColor
-        : "#000",
-      padding: "2px",
-      margin: "3px",
-      marginTop: "10px",
-      objectFit: "contain",
-      lineBreak: "anywhere",
-      overflow: "hidden",
+    card: {
+      display: "grid",
+      flexDirection: "column",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
     },
-    imageVideo: {
-      height: "70px",
-      width: "50px",
-      objectFit: "contain",
-      borderRadius: "5px",
+
+    active: {
+      cursor: "pointer",
       border: "1px solid",
-      borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
-      margin: "3px",
+      textAlign: "center",
+      borderRadius: "10px",
+      borderColor: "#fbd460",
+      backgroundColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      fontSize: "0.5rem",
     },
+    deactive: {
+      cursor: "pointer",
+      border: "1px solid",
+      textAlign: "center",
+      borderRadius: "10px",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
+      backgroundColor: "#fff",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      fontSize: "0.25rem",
+    },
+
+    ordersText: {
+      display: "none",
+    },
+    orderingOptions: 6,
+    clearIcon: {
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "rgb(223, 71, 89)",
+    },
+    cartImage: {
+      height: "100px",
+      width: "100%",
+      borderRadius: "15%",
+      objectFit: "contain",
+    },
+
+    cartImageDiv: {
+      width: "100%",
+    },
+    cartProductDiv: {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      flexWrap: "wrap",
+    },
+    cartVariantDiv: {
+      width: "100%",
+    },
+    cartCounterDiv: {
+      width: "100%",
+    },
+    cartNoteDiv: {
+      width: "100%",
+    },
+    cartTotalDiv: {
+      width: "100%",
+      textAlign: "right",
+    },
+    cartProductName: {
+      textTransform: "capitalize",
+      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "0.75rem",
+      color: custom?.product_name_color ? custom.product_name_color : "#000",
+    },
+    cartPrice: {
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
+      color: custom?.price_color ? custom.price_color : "#000",
+      fontWeight: "bold",
+    },
+    cartDescription: {
+      fontSize: custom?.pDiscriptionSize
+        ? custom.pDiscriptionSize + "rem"
+        : "0.75rem",
+
+      color: custom?.product_discription_color
+        ? custom.product_discription_color
+        : "#000",
+    },
+    // End
   };
 };

@@ -17,6 +17,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { getProduct, getVariations } from "../Functionality";
 import CustomAlert from "../../../CustomAlert";
 import ImageSlider from "./ImageSilder";
+import "./examples.css";
 
 const ProductDetails = (props) => {
   // for localization
@@ -112,22 +113,22 @@ const ProductDetails = (props) => {
     }
 
     setProductDetails({ ...productdetails });
-    if (swiper) {
-      let counter = 0;
-      varPics.map((section) => {
-        section.image.map((image, i) => {
-          if (Array.isArray(productDetails.image)) {
-            if (image === productDetails.image[0]) {
-              swiper.slideTo(counter);
-            }
-          } else {
-            swiper.slideTo(0);
-          }
+    // if (swiper) {
+    //   let counter = 0;
+    //   varPics.map((section) => {
+    //     section.image.map((image, i) => {
+    //       if (Array.isArray(productDetails.image)) {
+    //         if (image === productDetails.image[0]) {
+    //           swiper.slideTo(counter);
+    //         }
+    //       } else {
+    //         swiper.slideTo(0);
+    //       }
 
-          counter++;
-        });
-      });
-    }
+    //       counter++;
+    //     });
+    //   });
+    // }
     setActiveSKU(sku);
   };
   const parseVariants = (variantData) => {
@@ -256,11 +257,26 @@ const ProductDetails = (props) => {
               setSwiper={setSwiper}
               style={style}
               fetchData={fetchData}
+              {...{
+                rimProps: {
+                  enlargedImagePortalId: "portal",
+                  enlargedImageContainerDimensions: {
+                    width: "150%",
+                    height: "100%",
+                  },
+                },
+              }}
             />
           </Grid>
 
           <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
-            <div className="row ml-3 my-3">
+            <div className="ml-3">
+              <div
+                className="fluid__instructions "
+                style={{ position: "relative", zIndex: 999999 }}
+              >
+                <div id="portal" className="portal" />
+              </div>
               <Grid container spacing={1}>
                 <Grid
                   item
@@ -304,10 +320,6 @@ const ProductDetails = (props) => {
                   </button>
                 </Grid>
               </Grid>
-
-              <Typography style={style?.cartDescription}>
-                {fetchData?.Description}
-              </Typography>
               <Typography style={style?.cartDescription}>
                 {style?.preparation_time === 0 ||
                 fetchData?.preparationTime == null ? (
@@ -333,48 +345,93 @@ const ProductDetails = (props) => {
                   ? fetchData?.stock
                   : productDetails.stock}
               </Typography>
-            </div>
-            {style?.show_ingredients === 0 ||
-            productIngredients.length === 0 ? (
-              ""
-            ) : (
-              <>
-                <div className="row mx-3">
+              {style?.show_variants === 0 ||
+              Object.keys(showVaralint).length === 0 ? (
+                ""
+              ) : (
+                <>
+                  <div>
+                    <Typography style={style?.cartPrice}>
+                      {t("vatiants")}
+                    </Typography>
+                  </div>
+
+                  <div>
+                    {Object.keys(showVaralint).map((list, i) => {
+                      return (
+                        <div className="row m-1" key={i}>
+                          {/* {list} */}
+                          <div
+                            className="row d-flex justify-content-around"
+                            style={style?.variantsDiv}
+                          >
+                            {showVaralint[list].map((variant, z) => {
+                              return (
+                                <div
+                                  className="col"
+                                  key={z}
+                                  onClick={() => {
+                                    changePrice(list, variant);
+                                  }}
+                                  style={
+                                    skuarray[i] == variant
+                                      ? style?.variantActive
+                                      : style?.variantDeActive
+                                  }
+                                >
+                                  {variant}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+              {style?.show_ingredients === 0 ||
+              productIngredients.length === 0 ? (
+                ""
+              ) : (
+                <>
+                  <div>
+                    <Typography style={style?.cartPrice}>
+                      {t("ingredients")}
+                    </Typography>
+                    <Typography style={style?.cartDescription}>
+                      Please select the ingredients you want to remove.
+                    </Typography>
+                  </div>
+                  <div>
+                    {productIngredients?.map((item, i) => {
+                      return (
+                        <div
+                          key={i}
+                          onClick={() => {
+                            changeIngredients(item.label);
+                          }}
+                          style={
+                            ingredients.includes(item.label)
+                              ? style?.ingredientsActive
+                              : style?.ingredientsDeActive
+                          }
+                        >
+                          {item.label}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+              {style?.show_extras === 0 || extra.length === 0 ? (
+                ""
+              ) : (
+                <div>
                   <Typography style={style?.cartPrice}>
-                    {t("ingredients")}
+                    {t("extras")}
                   </Typography>
-                  <Typography style={style?.cartDescription}>
-                    Please select the ingredients you want to remove.
-                  </Typography>
-                </div>
-                <div className="row mx-4">
-                  {productIngredients?.map((item, i) => {
-                    return (
-                      <div
-                        key={i}
-                        className="col-md-auto col-sm-auto col-xl-auto col-lg-auto col-auto"
-                        onClick={() => {
-                          changeIngredients(item.label);
-                        }}
-                        style={
-                          ingredients.includes(item.label)
-                            ? style?.ingredientsActive
-                            : style?.ingredientsDeActive
-                        }
-                      >
-                        {item.label}
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-            {style?.show_extras === 0 || extra.length === 0 ? (
-              ""
-            ) : (
-              <div className="row mx-3">
-                <Typography style={style?.cartPrice}>{t("extras")}</Typography>
-                <FormGroup>
+                  {/* <FormGroup> */}
                   {extra?.map((item, i) => {
                     return (
                       <FormControlLabel
@@ -385,6 +442,7 @@ const ProductDetails = (props) => {
                               extraHandlers(e, item.price);
                             }}
                             color="default"
+                            // size="small"
                             sx={style?.checkbox}
                             value={
                               item.label + " ( +" + item.price + ".00" + " )"
@@ -399,54 +457,10 @@ const ProductDetails = (props) => {
                       />
                     );
                   })}
-                </FormGroup>
-              </div>
-            )}
-            {style?.show_variants === 0 ||
-            Object.keys(showVaralint).length === 0 ? (
-              ""
-            ) : (
-              <>
-                <div className="row mx-3">
-                  <Typography style={style?.cartPrice}>
-                    {t("vatiants")}
-                  </Typography>
+                  {/* </FormGroup> */}
                 </div>
-
-                <div className="row mx-4 ">
-                  {Object.keys(showVaralint).map((list, i) => {
-                    return (
-                      <div className="row m-1" key={i}>
-                        {/* {list} */}
-                        <div
-                          className="row d-flex justify-content-around"
-                          style={style?.variantsDiv}
-                        >
-                          {showVaralint[list].map((variant, z) => {
-                            return (
-                              <div className="col" key={z}>
-                                <div
-                                  onClick={() => {
-                                    changePrice(list, variant);
-                                  }}
-                                  style={
-                                    skuarray[i] == variant
-                                      ? style?.variantActive
-                                      : style?.variantDeActive
-                                  }
-                                >
-                                  {variant}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
+              )}
+            </div>
           </Grid>
         </Grid>
       </Card>
@@ -454,16 +468,21 @@ const ProductDetails = (props) => {
   }
   return (
     <div style={style?.background}>
-      {alert.open && (
-        <CustomAlert
-          open={alert.open}
-          severity={alert.severity}
-          message={alert.message}
-          setAlert={setAlert}
-        />
-      )}
+      <div style={{ zIndex: 99999999 }}>
+        {alert.open && (
+          <CustomAlert
+            vertical="top"
+            horizontal="right"
+            open={alert.open}
+            severity={alert.severity}
+            message={alert.message}
+            setAlert={setAlert}
+          />
+        )}
+      </div>
       <Container maxWidth="lg" style={style?.varaintContainer}>
         <Header
+          details={true}
           search={false}
           style={style}
           cart={cart}
