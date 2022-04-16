@@ -54,8 +54,8 @@ export const ThridStyle = (custom) => {
       cursor: "pointer",
     },
     branchStory: {
-      width: "100px",
-      height: "200px",
+      width: "80px",
+      height: "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
@@ -69,8 +69,8 @@ export const ThridStyle = (custom) => {
       overflow: "hidden",
     },
     productStory: {
-      width: "150px",
-      height: "200px",
+      width: "80px",
+      height: "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
@@ -91,6 +91,41 @@ export const ThridStyle = (custom) => {
       border: "1px solid",
       borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
       margin: "3px",
+    },
+    fullScreenIcon: {
+      width: "70px",
+      height: "100px",
+      overflow: "hidden",
+    },
+    branchStoryList: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    productStoryList: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : "#000",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
     },
     // statubar End
 
@@ -147,6 +182,12 @@ export const ThridStyle = (custom) => {
     // end
 
     // Show card style
+    cardStyleDetails: {
+      display: "flex",
+      flexDirection: "column",
+      // borderRadius: "20px",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+    },
     cardStyle: {
       display: "flex",
       flexDirection: "column",
@@ -260,6 +301,7 @@ export const ThridStyle = (custom) => {
     show_ingredients: custom?.show_ingredients,
     ingredientsActive: {
       cursor: "pointer",
+      display: "inline-block",
 
       padding: "3px",
       margin: "2px",
@@ -277,6 +319,8 @@ export const ThridStyle = (custom) => {
     },
     ingredientsDeActive: {
       cursor: "pointer",
+      display: "inline-block",
+
       padding: "3px",
       margin: "2px",
       border: "1px solid",
@@ -396,6 +440,15 @@ export const ThridStyle = (custom) => {
     // End
 
     // cart
+    inputfieldDetails: {
+      width: "100%",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      fontSize: 12,
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#fbd460",
+    },
     inputfield: {
       width: "100%",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
@@ -406,7 +459,7 @@ export const ThridStyle = (custom) => {
         : "#fbd460",
     },
     card: {
-      display: "grid",
+      display: "flex",
       flexDirection: "column",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
     },

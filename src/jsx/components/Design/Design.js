@@ -23,14 +23,11 @@ import Switch from "@mui/material/Switch";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import { base_url, port } from "../../../Consts";
 import logo from "../../../images/hellomenu/logo.svg";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import Grid from "@mui/material/Grid";
-// import profile from "";
 import CustomAlert from "../CustomAlert";
 import EditIcon from "@mui/icons-material/Edit";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -328,8 +325,8 @@ const Design = (props) => {
               {templates.map((item) => {
                 return (
                   <Grid item xs={4} sm={3} md={3} key={item.id}>
-                    <Card>
-                      <CardActionArea>
+                    <div className="card">
+                      <CardActionArea className="m-2">
                         <CardMedia
                           component="img"
                           height="200"
@@ -337,11 +334,11 @@ const Design = (props) => {
                           alt="template"
                         />
 
-                        <CardContent>
+                        <div className="card-body">
                           <Typography gutterBottom variant="h6" component="div">
                             {item.TemplateName}
                           </Typography>
-                        </CardContent>
+                        </div>
                         <CardActions>
                           <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -380,21 +377,11 @@ const Design = (props) => {
                                   changeTheActiveTemplate(e, item.id)
                                 }
                               />
-                              {/* {item.Status == 1 ? (
-                                <Switch checked disabled color="secondary" />
-                              ) : (
-                                <Switch
-                                  onChange={(e) =>
-                                    changeTheActiveTemplate(e, item.id)
-                                  }
-                                  color="secondary"
-                                />
-                              )} */}
                             </Grid>
                           </Grid>
                         </CardActions>
                       </CardActionArea>
-                    </Card>
+                    </div>
                   </Grid>
                 );
               })}

@@ -112,22 +112,22 @@ const ProductDetails = (props) => {
     }
 
     setProductDetails({ ...productdetails });
-    // if (swiper) {
-    //   let counter = 0;
-    //   varPics.map((section) => {
-    //     section.image.map((image, i) => {
-    //       if (Array.isArray(productDetails.image)) {
-    //         if (image === productDetails.image[0]) {
-    //           swiper.slideTo(counter);
-    //         }
-    //       } else {
-    //         swiper.slideTo(0);
-    //       }
+    if (swiper) {
+      let counter = 0;
+      varPics.map((section) => {
+        section.image.map((image, i) => {
+          if (Array.isArray(productDetails.image)) {
+            if (image === productDetails.image[0]) {
+              swiper.slideTo(counter);
+            }
+          } else {
+            swiper.slideTo(0);
+          }
 
-    //       counter++;
-    //     });
-    //   });
-    // }
+          counter++;
+        });
+      });
+    }
     setActiveSKU(sku);
   };
   const parseVariants = (variantData) => {
@@ -248,7 +248,7 @@ const ProductDetails = (props) => {
     );
   } else {
     viewImages_HTMLTABLE = (
-      <Card sx={style?.cardStyle}>
+      <Card sx={style?.cardStyleDetails}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
             <ImageSlider

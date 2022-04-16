@@ -11,6 +11,7 @@ export const SecondStyle = (custom) => {
     // header file style
     inputfield: {
       width: "50%",
+      height: "35px",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
       color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
       fontSize: 12,
@@ -56,8 +57,8 @@ export const SecondStyle = (custom) => {
       cursor: "pointer",
     },
     branchStory: {
-      width: "150px",
-      height: "200px",
+      width: "80px",
+      height: "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
@@ -71,8 +72,8 @@ export const SecondStyle = (custom) => {
       overflow: "hidden",
     },
     productStory: {
-      width: "150px",
-      height: "200px",
+      width: "80px",
+      height: "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
@@ -93,6 +94,41 @@ export const SecondStyle = (custom) => {
       border: "1px solid",
       borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
       margin: "3px",
+    },
+    fullScreenIcon: {
+      width: "70px",
+      height: "100px",
+      overflow: "hidden",
+    },
+    branchStoryList: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#33cd6b",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    productStoryList: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : "#fff",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
     },
     // statusbar End
 
@@ -148,11 +184,18 @@ export const SecondStyle = (custom) => {
     // end
 
     // Show Card Style
+    cardStyleDetails: {
+      display: "flex",
+      flexDirection: "column",
+      borderRadius: "20px",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+    },
     cardStyle: {
       width: "300px",
       margin: "20px",
       display: "flex",
       flexDirection: "column",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
     },
     favIconDeactive: {
       display: "none",
@@ -203,6 +246,8 @@ export const SecondStyle = (custom) => {
     show_ingredients: custom?.show_ingredients,
     ingredientsActive: {
       cursor: "pointer",
+      display: "inline-block",
+
       padding: "3px",
       margin: "2px",
       border: "1px solid",
@@ -219,6 +264,8 @@ export const SecondStyle = (custom) => {
     },
     ingredientsDeActive: {
       cursor: "pointer",
+      display: "inline-block",
+
       padding: "3px",
       margin: "2px",
       border: "1px solid",
@@ -339,7 +386,7 @@ export const SecondStyle = (custom) => {
 
     // cart
     card: {
-      display: "grid",
+      display: "flex",
       flexDirection: "column",
       backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
     },
@@ -425,6 +472,17 @@ export const SecondStyle = (custom) => {
         : "#000",
     },
     // End
+    // order Details
+    inputfieldDetails: {
+      width: "100%",
+      // height: "35px",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      fontSize: 12,
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#33cd6b",
+    },
     // sideBar
     sidebarMainDiv: {
       position: "relative",
@@ -439,8 +497,8 @@ export const SecondStyle = (custom) => {
       top: 0,
       bottom: 0,
       marginLeft: "5px",
-      marginTop: "5%",
-      marginBottom: "5%",
+      marginTop: "1%",
+      marginBottom: "1%",
       zIndex: 1,
       borderRadius: "30px",
     },

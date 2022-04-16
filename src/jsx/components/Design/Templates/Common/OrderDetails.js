@@ -233,10 +233,10 @@ const OrderDetails = (props) => {
                     speed={2500}
                     className="mySwiper2 m-2"
                     spaceBetween={1}
-                    style={{
-                      "--swiper-navigation-color": "#fff",
-                      "--swiper-pagination-color": "#fff",
-                    }}
+                    // style={{
+                    //   "--swiper-navigation-color": "#fff",
+                    //   "--swiper-pagination-color": "#fff",
+                    // }}
                     // navigation={true}
                   >
                     {JSON.parse(picture)?.map((image, i) => {
@@ -311,7 +311,7 @@ const OrderDetails = (props) => {
                     className="my-3"
                     minRows={3}
                     placeholder="Note"
-                    style={style?.inputfield}
+                    style={style?.inputfieldDetails}
                   />
                 </div>
               </Card>

@@ -120,7 +120,7 @@ function Header(props) {
 
   return (
     <React.Fragment>
-      <Toolbar sx={{ position: "sticky" }} className="top-0">
+      <Toolbar sx={{ position: "sticky", zIndex: 9999999 }} className="top-0">
         <IconButton onClick={() => history.goBack()} sx={style?.backIcon}>
           <KeyboardBackspaceIcon fontSize="small" />
         </IconButton>

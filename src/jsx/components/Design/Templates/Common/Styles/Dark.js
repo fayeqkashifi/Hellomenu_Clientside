@@ -26,6 +26,16 @@ export const DarkStyle = (custom) => {
         ? custom.menusAcriveColor
         : "#ff751d",
     },
+    inputfieldDetails: {
+      width: "100%",
+      // height: "35px",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      fontSize: 12,
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#ff751d",
+    },
     BadgeStyle: {
       "& .MuiBadge-badge": {
         color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
@@ -42,6 +52,7 @@ export const DarkStyle = (custom) => {
     },
     headertoolbar: {
       overflowX: "auto",
+      zIndex: 9999999,
     },
 
     cateActive: {
@@ -71,8 +82,8 @@ export const DarkStyle = (custom) => {
       cursor: "pointer",
     },
     branchStory: {
-      width: "150px",
-      height: "200px",
+      width: "80px",
+      height: "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
@@ -86,8 +97,8 @@ export const DarkStyle = (custom) => {
       overflow: "hidden",
     },
     productStory: {
-      width: "150px",
-      height: "200px",
+      width: "80px",
+      height: "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
@@ -108,6 +119,41 @@ export const DarkStyle = (custom) => {
       border: "1px solid",
       borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
       margin: "3px",
+    },
+    fullScreenIcon: {
+      width: "70px",
+      height: "100px",
+      overflow: "hidden",
+    },
+    branchStoryList: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : "#ff751d",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
+    },
+    productStoryList: {
+      width: "150px",
+      height: "200px",
+      borderRadius: "10px",
+      border: "2px solid",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : "#fff",
+      padding: "2px",
+      margin: "3px",
+      marginTop: "10px",
+      objectFit: "contain",
+      lineBreak: "anywhere",
+      overflow: "hidden",
     },
     // statusbar End
 
@@ -165,6 +211,12 @@ export const DarkStyle = (custom) => {
         ? 2
         : 3
       : 3,
+    cardStyleDetails: {
+      display: "flex",
+      flexDirection: "column",
+      borderRadius: "20px",
+      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+    },
     cardStyle: {
       display: "flex",
       flexDirection: "column",
@@ -370,7 +422,7 @@ export const DarkStyle = (custom) => {
       backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
     },
     // End
-    
+
     // Counter Style
     divCounter: { marginTop: "-5px", marginRight: "15px", textAlign: "center" },
     addToCartIcon: {

@@ -108,10 +108,14 @@ function VideoList(props) {
                         url={JSON.parse(item.storyVideosUrl)[0]}
                       />
                     ) : (
-                      <div style={style?.branchStory} className="text-center">
+                      <div
+                        style={style?.branchStoryList}
+                        className="text-center"
+                      >
                         <ReactPlayer
                           width="140px"
                           height="170px"
+                          style={style?.fullScreenIcon}
                           url={JSON.parse(item.storyVideosUrl)[0]}
                         ></ReactPlayer>
                         <FullscreenIcon fontSize="small" />
@@ -179,12 +183,13 @@ function VideoList(props) {
                         />
                       ) : (
                         <div
-                          style={style?.productStory}
+                          style={style?.productStoryList}
                           className="text-center"
                         >
                           <ReactPlayer
                             width="140px"
                             height="170px"
+                            style={style?.fullScreenIcon}
                             url={JSON.parse(item.videosUrl)[0]}
                           ></ReactPlayer>
                           <FullscreenIcon fontSize="small" />
