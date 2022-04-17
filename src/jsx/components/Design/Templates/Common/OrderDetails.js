@@ -22,7 +22,6 @@ import { getProduct } from "../Functionality";
 import RecCounter from "./RecCounter";
 const OrderDetails = (props) => {
   const { t } = useTranslation();
-
   const {
     id,
     style,
@@ -52,18 +51,6 @@ const OrderDetails = (props) => {
         setFetchData(result.data.recommend);
         setLoading(false);
       });
-      // var recData = [];
-      // JSON.parse(data[0].recommendations).map(async (item) => {
-      //   await getProduct(item.value).then((res) => {
-      //     if (res.data.status === 200 && res.data.fetchData[0].stock > 0) {
-      //       recData = recData.concat({
-      //         stock: res.data.fetchData[0].stock,
-      //         ...item,
-      //       });
-      //     }
-      //   });
-      //   setFetchData(recData);
-      // });
     };
     // dataLoad();
     getdata();
@@ -163,9 +150,7 @@ const OrderDetails = (props) => {
           className="spinner-border text-primary "
           role="status"
           style={{ position: "fixed", top: "50%", left: "50%" }}
-        >
-          {/* <span className="sr-only">{t("loading")}</span> */}
-        </div>
+        ></div>
       </div>
     );
   } else {
@@ -217,6 +202,8 @@ const OrderDetails = (props) => {
     <div style={style?.background}>
       {alert.open && (
         <CustomAlert
+          vertical="top"
+          horizontal="right"
           open={alert.open}
           severity={alert.severity}
           message={alert.message}
@@ -225,6 +212,7 @@ const OrderDetails = (props) => {
       )}
       <Container maxWidth="lg">
         <Header
+          details={true}
           search={false}
           subcategories={0}
           cart={cart}
@@ -243,12 +231,12 @@ const OrderDetails = (props) => {
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <Swiper
                     speed={2500}
-                    className="mySwiper2"
+                    className="mySwiper2 m-2"
                     spaceBetween={1}
-                    style={{
-                      "--swiper-navigation-color": "#fff",
-                      "--swiper-pagination-color": "#fff",
-                    }}
+                    // style={{
+                    //   "--swiper-navigation-color": "#fff",
+                    //   "--swiper-pagination-color": "#fff",
+                    // }}
                     // navigation={true}
                   >
                     {JSON.parse(picture)?.map((image, i) => {
@@ -262,10 +250,9 @@ const OrderDetails = (props) => {
                             }
                             alt=""
                             style={{
-                              height: "200px",
+                              height: "300px",
                               width: "100%",
-                              borderRadius: "5%",
-
+                              borderRadius: "10px",
                               objectFit: "contain",
                             }}
                           />
@@ -324,7 +311,7 @@ const OrderDetails = (props) => {
                     className="my-3"
                     minRows={3}
                     placeholder="Note"
-                    style={style?.inputfield}
+                    style={style?.inputfieldDetails}
                   />
                 </div>
               </Card>

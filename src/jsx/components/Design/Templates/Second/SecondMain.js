@@ -49,6 +49,11 @@ export default function SecondMain(props) {
       />
 
       <div style={style?.sidebarMainDiv}>
+        <Statusbar
+          {...properties}
+          products={products}
+          categories={categories}
+        />
         <Card style={style?.sidebarCard}>
           <SideBar
             branchId={branchId}
@@ -68,16 +73,7 @@ export default function SecondMain(props) {
             marginLeft: "10%",
           }}
         >
-          <Statusbar
-            {...properties}
-            products={products}
-            categories={categories}
-          />
-
-          <ScrollContainer
-            className="scroll-container row align-items-center justify-content-center"
-            // style={{ marginRight: "150px" }}
-          >
+          <ScrollContainer className="scroll-container row align-items-center justify-content-center">
             <Toolbar>
               <ShowCards {...properties} products={products} />
             </Toolbar>

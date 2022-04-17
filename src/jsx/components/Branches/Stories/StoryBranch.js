@@ -14,11 +14,13 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import {Option,MultiValue,animatedComponents} from "../../Common/SelectOption";
+import {
+  Option,
+  MultiValue,
+  animatedComponents,
+} from "../../Common/SelectOption";
 import MySelect from "../../Common/MySelect";
 const Storybranch = (props) => {
-  
-  
   const id = props.history.location.state.id;
 
   // insert start
@@ -76,7 +78,7 @@ const Storybranch = (props) => {
       const response = await axios.get(`/api/getStories/${id}`);
       if (response.data.status === 200) {
         setStories(response.data.data);
-        const result = await axios.get(`/api/getProducts/${id}`);
+        const result = await axios.get(`/api/getProductsAll/${id}`);
         if (result.data.status === 200) {
           setProducts(result.data.fetchData);
         } else {
@@ -102,7 +104,7 @@ const Storybranch = (props) => {
   }, [check]);
 
   const [tagProducts, setTagProducts] = useState([]);
- 
+
   const handleSelect = (e) => {
     setTagProducts(e);
   };
@@ -139,7 +141,6 @@ const Storybranch = (props) => {
         setAlerts(true, "info", "Your Data is safe now!");
       }
     });
-    
   };
   // delete end
 
@@ -248,21 +249,25 @@ const Storybranch = (props) => {
                         {t("tag_product")}
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                      <MySelect
-                        options={products?.map((pro, i) => {
-                          return {
-                            value: pro.id,
-                            label: pro.ProductName,
-                          };
-                        })}
-                        isMulti
-                        closeMenuOnSelect={false}
-                        hideSelectedOptions={false}
-                        components={{ Option, MultiValue, animatedComponents }}
-                        onChange={handleSelect}
-                        allowSelectAll={true}
-                        value={tagProducts}
-                      />
+                        <MySelect
+                          options={products?.map((pro, i) => {
+                            return {
+                              value: pro.id,
+                              label: pro.ProductName,
+                            };
+                          })}
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          components={{
+                            Option,
+                            MultiValue,
+                            animatedComponents,
+                          }}
+                          onChange={handleSelect}
+                          allowSelectAll={true}
+                          value={tagProducts}
+                        />
                       </div>
                     </div>
                     <div className="row form-group">

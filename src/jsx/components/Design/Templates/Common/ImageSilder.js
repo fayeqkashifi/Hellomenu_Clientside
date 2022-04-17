@@ -4,14 +4,12 @@ import { base_url, port } from "../../../../../Consts";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import SwiperCore, { Navigation, Thumbs } from "swiper";
-
+import ReactImageMagnify from "react-image-magnify";
 SwiperCore.use([Navigation, Thumbs]);
-
 const ImageSlider = (props) => {
   // for localization
-  const { varPics, setSwiper, style, fetchData } = props;
+  const { rimProps, rsProps, varPics, setSwiper, style, fetchData } = props;
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  console.log(varPics);
 
   return (
     <div>
@@ -20,22 +18,40 @@ const ImageSlider = (props) => {
           return (
             <div style={style.imageSilderMainDiv}>
               <Swiper
-                spaceBetween={10}
+                spaceBetween={20}
                 speed={2500}
-                navigation={true}
+                navigation={false}
                 thumbs={{ swiper: thumbsSwiper }}
                 onSwiper={(s) => {
                   setSwiper(s);
                 }}
-                className="mySwiper2 mt-3 mb-1 "
+                style={style.mainSwiper}
+                {...rsProps}
               >
                 {varPics?.map((section) => {
                   return section.image?.map((image, i) => {
                     return (
                       <SwiperSlide key={image}>
-                        <img
-                          src={`http://${base_url}:${port}/images/products/${image}`}
-                          style={style?.variantsImage}
+                        <ReactImageMagnify
+                          {...{
+                            smallImage: {
+                              alt: "Wristwatch by Ted Baker London",
+                              isFluidWidth: true,
+                              // width: 430,
+                              // height: 500,
+                              src: `http://${base_url}:${port}/images/products/${image}`,
+                              sizes:
+                                "(max-width: 480px) 100vw, (max-width: 1200px) 30vw, 360px",
+                            },
+                            largeImage: {
+                              src: `http://${base_url}:${port}/images/products/${image}`,
+                              width: 1200,
+                              height: 1800,
+                            },
+                            lensStyle: { backgroundColor: "rgba(0,0,0,.6)" },
+                          }}
+                          {...rimProps}
+                          style={style.swiperMainImage}
                         />
                       </SwiperSlide>
                     );
@@ -45,10 +61,10 @@ const ImageSlider = (props) => {
               <Swiper
                 onClick={setThumbsSwiper}
                 spaceBetween={10}
-                slidesPerView={5}
+                slidesPerView={10}
                 freeMode={true}
                 watchSlidesProgress={true}
-                className="mySwiper mb-3 mx-3"
+                style={style.ThumbsSwiper}
               >
                 {varPics?.map((section) => {
                   return section.image?.map((image) => {
@@ -56,8 +72,7 @@ const ImageSlider = (props) => {
                       <SwiperSlide key={image}>
                         <img
                           src={`http://${base_url}:${port}/images/products/${image}`}
-                          alt=""
-                          style={style?.variantsThumbs}
+                          style={style?.thumbsImage}
                         />
                       </SwiperSlide>
                     );
@@ -72,26 +87,37 @@ const ImageSlider = (props) => {
               <Swiper
                 spaceBetween={20}
                 speed={2500}
-                navigation={true}
+                navigation={false}
                 thumbs={{ swiper: thumbsSwiper }}
                 onSwiper={(s) => {
                   setSwiper(s);
                 }}
-                className="mt-3 mb-1 border p-3"
-                style={{ minHeight: "60vh" }}
+                style={style.mainSwiper}
+                {...rsProps}
               >
                 {JSON.parse(fetchData.image).map((image) => {
                   return (
                     <SwiperSlide key={image}>
-                      <img
-                        src={`http://${base_url}:${port}/images/products/${image}`}
-                        // style={style?.variantsImage}
-                        style={{
-                          height: "60vh",
-                          width: "100%",
-                          borderRadius: "5%",
-                          objectFit: "contain",
+                      <ReactImageMagnify
+                        {...{
+                          smallImage: {
+                            alt: "Wristwatch by Ted Baker London",
+                            isFluidWidth: true,
+                            // width: 430,
+                            // height: 500,
+                            src: `http://${base_url}:${port}/images/products/${image}`,
+                            sizes:
+                              "(max-width: 480px) 100vw, (max-width: 1200px) 30vw, 360px",
+                          },
+                          largeImage: {
+                            src: `http://${base_url}:${port}/images/products/${image}`,
+                            width: 1200,
+                            height: 1800,
+                          },
+                          lensStyle: { backgroundColor: "rgba(0,0,0,.6)" },
                         }}
+                        {...rimProps}
+                        // style={style.swiperMainImage}
                       />
                     </SwiperSlide>
                   );
@@ -100,19 +126,17 @@ const ImageSlider = (props) => {
               <Swiper
                 onClick={setThumbsSwiper}
                 spaceBetween={10}
-                slidesPerView={5}
+                slidesPerView={10}
                 freeMode={true}
                 watchSlidesProgress={true}
-                className="mySwiper mt-3 mb-1 border p-3"
-                style={{ minHeight: "10vh", cursor: "pointer" }}
+                style={style.ThumbsSwiper}
               >
                 {JSON.parse(fetchData.image)?.map((image) => {
                   return (
                     <SwiperSlide key={image}>
                       <img
                         src={`http://${base_url}:${port}/images/products/${image}`}
-                        alt=""
-                        style={style?.variantsThumbs}
+                        style={style?.thumbsImage}
                       />
                     </SwiperSlide>
                   );

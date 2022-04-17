@@ -79,7 +79,6 @@ function VideoDetails(props) {
             <ReactPlayer
               width="500px"
               height="300px"
-              style={style?.statusPlayer}
               url={`http://${base_url}:${port}/videos/products/${
                 JSON.parse(product.video)[0]
               }`}
@@ -90,18 +89,7 @@ function VideoDetails(props) {
             <ReactPlayer
               width="500px"
               height="300px"
-              style={{
-                // width: "200px",
-                // height: "300px",
-                borderRadius: "10px",
-                border: "2px solid",
-                borderColor: "#fff",
-                margin: "3px",
-                padding: "2px",
-                lineBreak: "anywhere",
-                overflow: "hidden",
-              }}
-              // className="d-flex align-items-center justify-content-center"
+              style={style?.reactPlayerStyle}
               url={JSON.parse(product?.videosUrl)[0]}
             >
               {/* <a href={JSON.parse(product?.videosUrl)[0]} target="_blank">

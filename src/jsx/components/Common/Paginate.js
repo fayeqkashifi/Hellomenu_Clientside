@@ -10,10 +10,16 @@ function Paginate(props) {
   useEffect(() => {
     const getComments = async () => {
       const res = await axios.get(`${url}`);
+      // setFetchData(res.data.fetchData.data);
       setpageCount(res.data.fetchData.last_page);
       setTotal(res.data.fetchData.total);
     };
     getComments();
+    return () => {
+      setpageCount(0);
+      setTotal(0);
+      // setFetchData([]);
+    };
   }, [fetchData]);
 
   const fetchComments = async (currentPage) => {

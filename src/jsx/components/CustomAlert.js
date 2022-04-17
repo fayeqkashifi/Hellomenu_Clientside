@@ -38,7 +38,10 @@ export default function CustomAlert(props) {
         open={open}
         autoHideDuration={2000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        anchorOrigin={{
+          vertical: props.vertical || "bottom",
+          horizontal: props.horizontal || "right",
+        }}
       >
         <Alert
           onClose={handleClose}

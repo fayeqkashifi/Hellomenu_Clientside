@@ -6,6 +6,7 @@ import {
   getProductsBasedOnBranchId,
   getThemplate,
   getCategoriesBasedProduct,
+  getThemes,
 } from "./Functionality";
 import { SecondStyle } from "./Common/Styles/Second";
 import { DarkStyle } from "./Common/Styles/Dark";
@@ -22,7 +23,8 @@ const MainPublic = (props) => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All~~~1");
-  const [custom, setCustom] = useState([]);
+  const [template, setTemplate] = useState([]);
+  const [theme, setTheme] = useState([]);
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
@@ -31,7 +33,11 @@ const MainPublic = (props) => {
 
   const dataLoad = async () => {
     getThemplate(branchId).then((data) => {
-      setCustom(data);
+      setTemplate(data);
+    });
+    getThemes(branchId).then((data) => {
+      setTheme(data);
+      // console.log(data);
     });
     getCategoriesBasedProduct(branchId).then((data) => {
       setCategories(data);
@@ -47,11 +53,16 @@ const MainPublic = (props) => {
   useEffect(() => {
     dataLoad();
     return () => {
-      setCustom([]);
-      setCategories([]);
-      setActiveCategory(0);
-      setProducts([]);
       setLoading(true);
+      setCategories([]);
+      setProducts([]);
+      setActiveCategory("All~~~1");
+
+      setPage(0);
+      setLastPage(0);
+
+      setTemplate([]);
+      setTheme([]);
     };
   }, []);
   const properties = {
@@ -59,7 +70,6 @@ const MainPublic = (props) => {
     setLastPage: setLastPage,
     page: page,
     setPage: setPage,
-
     branchId: branchId,
     deliveryFees: deliveryFees,
     activeCategory: activeCategory,
@@ -82,20 +92,26 @@ const MainPublic = (props) => {
       </div>
     );
   } else {
-    if (custom.checkTemplate === "dark") {
+    if (template.checkTemplate === "dark") {
       view = (
-        <DarkMain {...properties} style={DarkStyle(custom?.Customization)} />
+        <DarkMain
+          {...properties}
+          style={DarkStyle(template?.Customization, theme)}
+        />
       );
-    } else if (custom.checkTemplate === "second") {
+    } else if (template.checkTemplate === "second") {
       view = (
         <SecondMain
           {...properties}
-          style={SecondStyle(custom?.Customization)}
+          style={SecondStyle(template?.Customization, theme)}
         />
       );
-    } else if (custom.checkTemplate === "thrid") {
+    } else if (template.checkTemplate === "thrid") {
       view = (
-        <ThridMain {...properties} style={ThridStyle(custom?.Customization)} />
+        <ThridMain
+          {...properties}
+          style={ThridStyle(template?.Customization, theme)}
+        />
       );
     }
   }

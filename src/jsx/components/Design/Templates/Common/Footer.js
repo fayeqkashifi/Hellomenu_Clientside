@@ -34,7 +34,7 @@ function Footer(props) {
       <Box component="footer" sx={style?.footerStyle} className="bottom-0 mt-5">
         <Grid container spacing={2}>
           <Grid item xs={6} lg={4} xl={4} sm={4} md={4}>
-            <Typography style={style?.description}>
+            <Typography style={style?.cartDescription}>
               Sub Total<br></br>
               {sum.toFixed(2) +
                 "  " +
@@ -44,7 +44,7 @@ function Footer(props) {
             </Typography>
           </Grid>
           <Grid item xs={6} lg={4} xl={4} sm={4} md={4}>
-            <Typography style={style?.description}>
+            <Typography style={style?.cartDescription}>
               Delivery Fee<br></br>
               {deliveryFees.toFixed(2) +
                 "  " +

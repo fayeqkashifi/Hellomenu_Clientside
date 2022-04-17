@@ -455,6 +455,8 @@ const Cart = (props) => {
     <div>
       {alert.open ? (
         <CustomAlert
+          vertical="top"
+          horizontal="right"
           open={alert.open}
           severity={alert.severity}
           message={alert.message}

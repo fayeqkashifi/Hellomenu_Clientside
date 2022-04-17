@@ -121,7 +121,7 @@ const Customization = (props) => {
               <CardMedia
                 component="iframe"
                 height="700px"
-                image={`/filterSelection`}
+                src={`/public/${btoa(btoa(btoa(branchId)))}`}
                 // image={`/${template?.URL}/${btoa(branchId)}`}
                 alt="template"
               />

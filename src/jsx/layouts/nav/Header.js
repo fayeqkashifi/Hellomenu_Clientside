@@ -53,7 +53,7 @@ const Header = ({ toggle, onProfile, onNotification, setCheck, check }) => {
         .then((res) => {
           res.data.filter((item) => {
             if (item.status == 1) {
-              setActivLang(item);
+              return setActivLang(item);
             }
           });
           setLanguages(res.data);

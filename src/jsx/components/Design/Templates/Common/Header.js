@@ -33,6 +33,7 @@ function Header(props) {
     setPage,
     setChangeState,
     search,
+    details,
   } = props;
 
   const filterProducts = (menu) => {
@@ -119,23 +120,18 @@ function Header(props) {
 
   return (
     <React.Fragment>
-      <Toolbar sx={{ position: "sticky" }} className="top-0">
+      <Toolbar sx={{ position: "sticky", zIndex: 9999999 }} className="top-0">
         <IconButton onClick={() => history.goBack()} sx={style?.backIcon}>
           <KeyboardBackspaceIcon fontSize="small" />
         </IconButton>
         <Typography align="left" style={style?.title} noWrap>
           {activeCategory?.split("~~~")[0]}
         </Typography>
-        <Typography align="right" sx={{ flex: 1 }} style={style?.searchFields}>
-          {/* <input
-            name="dateAndTime"
-            type="text"
-            className={`form-control`}
-            placeholder="Search By Name"
-            style={style?.inputfield}
-          /> */}
-        </Typography>
-        {/* <div sx={style?.searchIcon}> */}
+        <Typography
+          align="right"
+          sx={{ flex: 1 }}
+          style={style?.searchFields}
+        ></Typography>
         {search && (
           <>
             <input
@@ -146,15 +142,7 @@ function Header(props) {
               placeholder="Search By Name"
             />
           </>
-          // <input
-          //   type="text"
-          //   className={`form-control`}
-          //   placeholder="Search By Name"
-          //   onChange={handleChange}
-          //   style={style?.inputfield}
-          // />
         )}
-        {/* </div> */}
         <IconButton onClick={() => setModalCentered(true)}>
           <Badge
             badgeContent={cart.length}
@@ -165,7 +153,6 @@ function Header(props) {
           </Badge>
         </IconButton>
         <div style={style?.headerTotalDiv}>
-          {" "}
           <IconButton sx={style?.totalPriceIcon}>
             <FunctionsIcon fontSize="small" />
           </IconButton>
@@ -179,7 +166,9 @@ function Header(props) {
       </Toolbar>
 
       {style?.template === "dark" && (
-        <ScrollContainer className="scroll-container">
+        <ScrollContainer
+          className={`croll-container ${details ? "d-none" : ""}`}
+        >
           <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
             {categories && (
               <Typography

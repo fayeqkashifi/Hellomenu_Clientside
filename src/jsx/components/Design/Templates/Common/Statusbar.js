@@ -108,8 +108,8 @@ function Statusbar(props) {
                           .split(".")
                           .includes("tiktok") ? (
                         <ReactPlayer
-                          width="150px"
-                          height="200px"
+                          width="80px"
+                          height="130px"
                           style={style?.branchStory}
                           playIcon={<PlayCircleOutlineIcon fontSize="large" />}
                           light={
@@ -124,11 +124,9 @@ function Statusbar(props) {
                       ) : (
                         <div className="text-center" style={style?.branchStory}>
                           <ReactPlayer
-                            width="140px"
-                            height="170px"
-                            style={{
-                              overflow: "hidden",
-                            }}
+                            width="70px"
+                            height="100px"
+                            style={style?.fullScreenIcon}
                             url={JSON.parse(item.storyVideosUrl)[0]}
                           />
                           <FullscreenIcon fontSize="small" />
@@ -159,8 +157,6 @@ function Statusbar(props) {
                     >
                       {item?.video ? (
                         <video
-                          // width="100px"
-                          // height="150px"
                           style={style?.productStory}
                           src={`http://${base_url}:${port}/videos/products/${
                             JSON.parse(item.video)[0]
@@ -173,8 +169,8 @@ function Statusbar(props) {
                           .split(".")
                           .includes("tiktok") ? (
                         <ReactPlayer
-                          width="150px"
-                          height="200px"
+                          width="80px"
+                          height="130px"
                           style={style?.productStory}
                           playIcon={<PlayCircleOutlineIcon fontSize="large" />}
                           light={`http://${base_url}:${port}/images/products/${
@@ -188,11 +184,9 @@ function Statusbar(props) {
                           style={style?.productStory}
                         >
                           <ReactPlayer
-                            width="140px"
-                            height="170px"
-                            style={{
-                              overflow: "hidden",
-                            }}
+                            width="70px"
+                            height="100px"
+                            style={style?.fullScreenIcon}
                             url={JSON.parse(item.videosUrl)[0]}
                           />
                           <FullscreenIcon fontSize="small" />
