@@ -1,4 +1,5 @@
-export const DarkStyle = (custom) => {
+export const DarkStyle = (custom, theme) => {
+  console.log(theme);
   return {
     // Main public
     template: "dark",
@@ -6,6 +7,7 @@ export const DarkStyle = (custom) => {
     background: {
       backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
       minHeight: "100vh",
+      // transform: "rotate(90deg)",
     },
     varaintContainer: { paddingBottom: "100px" },
     // Header file style

@@ -10,6 +10,16 @@ export const getThemplate = async (branchId) => {
     console.error(err);
   }
 };
+export const getThemes = async (branchId) => {
+  try {
+    const result = await axios.get(`/api/activeTheme/${branchId}`);
+    if (result.data.status === 200) {
+      return result.data.fetchData[0];
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
 export const getBranch = async (branchId) => {
   try {
     const result = await axios.get(`/api/getBranchForShow/${branchId}`);

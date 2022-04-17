@@ -1,4 +1,4 @@
-export const SecondStyle = (custom) => {
+export const SecondStyle = (custom, theme) => {
   return {
     // main public
     template: "second",

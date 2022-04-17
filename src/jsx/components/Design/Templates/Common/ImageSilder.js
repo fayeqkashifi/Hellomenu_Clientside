@@ -10,7 +10,6 @@ const ImageSlider = (props) => {
   // for localization
   const { rimProps, rsProps, varPics, setSwiper, style, fetchData } = props;
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  console.log(varPics);
 
   return (
     <div>

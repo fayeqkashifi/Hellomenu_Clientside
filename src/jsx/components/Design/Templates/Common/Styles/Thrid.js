@@ -1,4 +1,4 @@
-export const ThridStyle = (custom) => {
+export const ThridStyle = (custom, theme) => {
   return {
     // main public
     template: "thrid",
