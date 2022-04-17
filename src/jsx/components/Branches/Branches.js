@@ -324,8 +324,8 @@ const Branches = () => {
                                     size={100}
                                     height="100px"
                                     fgColor="#f50b65"
-                                    value={`http://192.168.1.103:3000/show-branch-details/${btoa(
-                                      item.id
+                                    value={`http://${base_url}:${port}/public/${btoa(
+                                      btoa(btoa(item.id))
                                     )}`}
                                     className="primary"
                                   />
