@@ -18,7 +18,7 @@ const DesignShow = (props) => {
 
   return (
     <Fragment>
-      {checkPermission("desgin-view") && (
+      {checkPermission("design-view") && (
         <Router>
           <Switch>
             <PrivateRoute exact path={`${path}`} component={Design} />

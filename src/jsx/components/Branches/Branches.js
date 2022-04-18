@@ -15,7 +15,9 @@ import Swal from "sweetalert2";
 import Paginate from "../Common/Paginate";
 import Search from "../Common/Search";
 import Tooltip from "@mui/material/Tooltip";
-
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 const Branches = () => {
   const [alert, setAlert] = useState({
     open: false,
@@ -138,7 +140,9 @@ const Branches = () => {
                     level={"H"}
                     size={180}
                     fgColor="#f50b65"
-                    value={`http://${base_url}:${port}/public/${btoa(item.id)}`}
+                    value={`http://${base_url}:${port}/public/${btoa(
+                      btoa(btoa(item.id))
+                    )}`}
                     className="primary"
                   />
                   <div
@@ -155,19 +159,23 @@ const Branches = () => {
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
                 {checkPermission("branches-edit") && (
-                  <div className="col-4 py-3 border-right">
+                  <div className="col-4 py-1 border-right">
                     <Link
                       to={{
                         pathname: `/branches/story-branch`,
                         state: { id: item.id },
                       }}
                     >
-                      <span>{t("stories")}</span>
+                      <Tooltip title={t("stories")}>
+                        <IconButton>
+                          <AutoStoriesIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                     </Link>
                   </div>
                 )}
                 {checkPermission("branches-edit") && (
-                  <div className="col-4 py-3 border-right">
+                  <div className="col-4 py-1 border-right">
                     <Link
                       to={{
                         pathname: `/branches/edit-branch`,
@@ -175,18 +183,21 @@ const Branches = () => {
                       }}
                       // onClick={(e) => editBranch(e, item.id)}
                     >
-                      <span>{t("edit")}</span>
+                      <Tooltip title={t("edit")}>
+                        <IconButton>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                     </Link>
                   </div>
                 )}
                 {checkPermission("branches-delete") && (
-                  <div className="col-4 py-3 ">
-                    <div
-                      style={{ cursor: "pointer" }}
-                      onClick={(e) => deleteBranch(e, item.id)}
-                    >
-                      <span>{t("delete")}</span>
-                    </div>
+                  <div className="col-4 py-1 ">
+                    <Tooltip title={t("delete")}>
+                      <IconButton onClick={(e) => deleteBranch(e, item.id)}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </div>
                 )}
               </div>

@@ -17,7 +17,6 @@ import "react-phone-input-2/lib/style.css";
 import ipapi from "ipapi.co";
 import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 import Button from "@mui/material/Button";
 const AddBranch = () => {
   const initialValues = {
@@ -49,7 +48,6 @@ const AddBranch = () => {
     });
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const MySwal = withReactContent(Swal);
 
   const saveBranch = (data) => {
     setIsSubmitting(true);
@@ -75,8 +73,8 @@ const AddBranch = () => {
         .post("/api/insertBranches", formData)
         .then((res) => {
           if (res.data.status === 200) {
-            MySwal.fire({
-              title: <strong>Good job!</strong>,
+            Swal.fire({
+              title: "Good job!",
               html: res.data.message,
               icon: "success",
               confirmButtonText: "OK",

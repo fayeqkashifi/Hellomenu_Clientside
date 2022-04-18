@@ -50,7 +50,7 @@ const Show = (props) => {
         state: { id: id, BrancheName: BrancheName },
       },
     },
-    checkPermission("desgin-view") && {
+    checkPermission("design-view") && {
       name: t("design"),
       url: {
         pathname: `${url}/design`,
@@ -162,62 +162,64 @@ const Show = (props) => {
             </div>
           </div>
         </div>
-        <COffcanvas
-          placement="end"
-          className="fade bd-example-modal-lg"
-          scroll
-          visible={visible}
-          onHide={() => setVisible(false)}
-        >
-          <COffcanvasHeader>
-            <COffcanvasTitle>
-              {t("display_mobile")}
-              <br></br>
-              <small>First, reload the settings to device.</small>
-            </COffcanvasTitle>
-            <CCloseButton
-              className="text-reset"
-              onClick={() => setVisible(false)}
-            />
-          </COffcanvasHeader>
-          <COffcanvasBody>
-            <div className="d-flex justify-content-between">
-              <IconButton onClick={(e) => reload(e)}>
-                <RefreshIcon />
-              </IconButton>
-              <Link
-                to={`/filterSelection`}
-                // to={`/${template.URL}/${btoa(id)}`}
-                target="_blank"
-              >
-                {t("public_link")}
-              </Link>
-            </div>
+        {visible && (
+          <COffcanvas
+            placement="end"
+            className="fade bd-example-modal-lg"
+            scroll
+            visible={visible}
+            onHide={() => setVisible(false)}
+          >
+            <COffcanvasHeader>
+              <COffcanvasTitle>
+                {t("display_mobile")}
+                <br></br>
+                <small>First, reload the settings to device.</small>
+              </COffcanvasTitle>
+              <CCloseButton
+                className="text-reset"
+                onClick={() => setVisible(false)}
+              />
+            </COffcanvasHeader>
+            <COffcanvasBody>
+              <div className="d-flex justify-content-between">
+                <IconButton onClick={(e) => reload(e)}>
+                  <RefreshIcon />
+                </IconButton>
+                <Link
+                  to={`/filterSelection`}
+                  // to={`/${template.URL}/${btoa(id)}`}
+                  target="_blank"
+                >
+                  {t("public_link")}
+                </Link>
+              </div>
 
-            <div className="wrapper">
-              <div className="iphone">
-                <div className="power"></div>
-                <div className="lock"></div>
-                <div className="volume up"></div>
-                <div className="volume down"></div>
-                <div className="camera"></div>
-                <div className="speaker"></div>
-                <div className="screen">
-                  <iframe
-                    src={`/public/${btoa(btoa(btoa(id)))}`}
-                    key={check}
-                    height="100%"
-                    width="100%"
-                    title="Devices"
-                  ></iframe>
-                </div>
-                <div className="button">
-                  <div className="square"></div>
+              <div className="wrapper">
+                <div className="iphone">
+                  <div className="power"></div>
+                  <div className="lock"></div>
+                  <div className="volume up"></div>
+                  <div className="volume down"></div>
+                  <div className="camera"></div>
+                  <div className="speaker"></div>
+                  <div className="screen">
+                    <iframe
+                      src={`/public/${btoa(btoa(btoa(id)))}`}
+                      key={check}
+                      height="100%"
+                      width="100%"
+                      title="Devices"
+                    ></iframe>
+                  </div>
+                  <div className="button">
+                    <div className="square"></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </COffcanvasBody>
-        </COffcanvas>
+            </COffcanvasBody>
+          </COffcanvas>
+        )}
 
         <Switch>
           {checkPermission("categories-view") && (
@@ -232,7 +234,7 @@ const Show = (props) => {
               component={SubCategory}
             />
           )}
-          {checkPermission("desgin-view") && (
+          {checkPermission("design-view") && (
             <PrivateRoute path={`${path}/design`} component={DesignShow} />
           )}
           {checkPermission("products-view") && (

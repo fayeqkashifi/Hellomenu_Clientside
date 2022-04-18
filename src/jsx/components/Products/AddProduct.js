@@ -10,7 +10,6 @@ import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
@@ -22,7 +21,6 @@ const AddProduct = (props) => {
   // for localization
   const branchId = props.history.location.state.id;
   // validation start
-  const MySwal = withReactContent(Swal);
 
   const initialValues = {
     ProductName: "",
@@ -99,8 +97,8 @@ const AddProduct = (props) => {
       .post(`/api/insertProducts`, formData)
       .then((res) => {
         if (res.data.status === 200) {
-          MySwal.fire({
-            title: <strong>Good job!</strong>,
+          Swal.fire({
+            title: "Good job!",
             html: res.data.message,
             icon: "success",
             confirmButtonText: "OK",

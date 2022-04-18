@@ -7,7 +7,6 @@ import {
   CFormLabel,
   CCol,
 } from "@coreui/react";
-// import Switch from "react-switch";
 import circle_menu_button from "../../../images/hellomenu/circle_menu_button.png";
 import pill_menu_button from "../../../images/hellomenu/pill_menu_button.png";
 import axios from "axios";
@@ -15,7 +14,6 @@ import { Form } from "react-bootstrap";
 import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { localization as t } from "../Localization";
-import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { base_url, port } from "../../../Consts";
 import logo from "../../../images/hellomenu/logo.svg";
@@ -23,11 +21,9 @@ import QRCode from "qrcode.react";
 import Switch from "@mui/material/Switch";
 const Theme = (props) => {
   const history = useHistory();
-  const MySwal = withReactContent(Swal);
 
   const branchId = props.history.location.state.id;
 
-  const [homeScreen, setHomeScreen] = useState(false);
   const [buttonShow, setButtonShow] = useState(true);
   const [imageState, setImageState] = useState([]);
   const handleImage = (e) => {
@@ -45,23 +41,25 @@ const Theme = (props) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("Logo", imageState.Logo);
-    formData.append("HomeScreenBackgroundURL", imageState.HomeScreenBackground);
+    formData.append(
+      "HomeScreenBackgroundURL",
+      imageState.HomeScreenBackgroundURL
+    );
     formData.append("ThemeName", themes.ThemeName);
-    formData.append("Orientation", themes.Orientation);
     formData.append("MenuStructure", themes.MenuStructure);
     formData.append("TextColor", themes.TextColor);
+    formData.append("HighlightColor", themes.HighlightColor);
     formData.append("BackgroundColor", themes.BackgroundColor);
     formData.append("CardColor", themes.CardColor);
     formData.append("QRCodeColor", themes.QRCodeColor);
     formData.append("QRCodeBackgroundColor", themes.QRCodeBackgroundColor);
-    formData.append("HomeScreenBackground", themes.HomeScreenBackground);
     formData.append("ShowButton", buttonShow ? 1 : 0);
     formData.append("ButtonShape", themes.ButtonShape);
     axios
       .post(`/api/insertTheme/${branchId}`, formData)
       .then((res) => {
         if (res.data.status === 200) {
-          MySwal.fire({
+          Swal.fire({
             title: <strong>Good job!</strong>,
             html: res.data.message,
             icon: "success",
@@ -130,68 +128,20 @@ const Theme = (props) => {
                     {t("home_screen_background")}
                   </CCardHeader>
                   <CCardBody>
-                    <RadioGroup
-                      aria-label="HomeScreen"
-                      defaultValue="1"
-                      name="radio-buttons-group"
-                    >
-                      <FormControlLabel
-                        value="1"
-                        control={
-                          <Radio
-                            onClick={() => setHomeScreen(false)}
-                            color="secondary"
-                          />
-                        }
-                        label={t("solid_color")}
-                      />
-                      <FormControlLabel
-                        value="0"
-                        control={
-                          <Radio
-                            onClick={() => setHomeScreen(true)}
-                            color="secondary"
-                          />
-                        }
-                        label={t("image_or_video")}
-                      />
-                    </RadioGroup>
-                    <CRow className="mb-3">
-                      <CCol sm={12} className="text-right">
-                        {homeScreen ? (
-                          " "
-                        ) : (
+                    <div className="form-group">
+                      <div className="input-group">
+                        <div className="custom-file">
                           <input
-                            type="color"
-                            onChange={handleInput}
-                            value={
-                              themes.HomeScreenBackground
-                                ? themes.HomeScreenBackground
-                                : "#ffffff"
-                            }
-                            name="HomeScreenBackground"
+                            type="file"
+                            accept=".jpg, .jpeg, .png"
+                            className="form-control"
+                            name="HomeScreenBackgroundURL"
+                            required
+                            onChange={handleImage}
                           />
-                        )}
-                      </CCol>
-                    </CRow>
-                    {homeScreen ? (
-                      <div className="form-group">
-                        <div className="input-group">
-                          <div className="custom-file">
-                            <input
-                              type="file"
-                              accept=".jpg, .jpeg, .png"
-                              className="form-control"
-                              name="HomeScreenBackground"
-                              required
-                              onChange={handleImage}
-                            />
-                          </div>
                         </div>
                       </div>
-                    ) : (
-                      " "
-                    )}
+                    </div>
                   </CCardBody>
                 </CCard>
               </div>
@@ -214,6 +164,26 @@ const Theme = (props) => {
                             themes.TextColor ? themes.TextColor : "#000000"
                           }
                           name="TextColor"
+                        />
+                      </CCol>
+                    </CRow>
+                    <CRow className="mb-3">
+                      <CFormLabel
+                        htmlFor="staticEmail"
+                        className="col-sm-6 col-form-label"
+                      >
+                        {t("highlight_color")}
+                      </CFormLabel>
+                      <CCol sm={6} className="text-center">
+                        <input
+                          type="color"
+                          onChange={handleInput}
+                          value={
+                            themes.HighlightColor
+                              ? themes.HighlightColor
+                              : "#ffffff"
+                          }
+                          name="HighlightColor"
                         />
                       </CCol>
                     </CRow>
@@ -325,71 +295,6 @@ const Theme = (props) => {
           </div>
           <div className="col-6">
             <div className="row">
-              <div className="col-12">
-                <CCard>
-                  <CCardHeader component="h5">
-                    {t("screen_orientation")}
-                  </CCardHeader>
-                  <CCardBody>
-                    <RadioGroup
-                      row
-                      aria-label="Orientation"
-                      name="Orientation"
-                      defaultValue="P"
-                      onChange={handleInput}
-                    >
-                      <FormControlLabel
-                        value="P"
-                        control={
-                          <div>
-                            <Radio
-                              value="P"
-                              name="Orientation"
-                              color="secondary"
-                            />
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="64"
-                              height="64"
-                              fill="currentColor"
-                              className="bi bi-phone"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z" />
-                              <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                            </svg>
-                          </div>
-                        }
-                        label={t("portrait")}
-                      />
-                      <FormControlLabel
-                        value="L"
-                        control={
-                          <div>
-                            <Radio
-                              value="L"
-                              name="Orientation"
-                              color="secondary"
-                            />{" "}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="64"
-                              height="64"
-                              fill="currentColor"
-                              className="bi bi-phone-landscape mr-2"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M1 4.5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-6zm-1 6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v6z" />
-                              <path d="M14 7.5a1 1 0 1 0-2 0 1 1 0 0 0 2 0z" />
-                            </svg>
-                          </div>
-                        }
-                        label={t("landscape")}
-                      />
-                    </RadioGroup>
-                  </CCardBody>
-                </CCard>
-              </div>
               <div className="col-12">
                 <CCard>
                   <CCardHeader component="h5">{t("button_shape")}</CCardHeader>

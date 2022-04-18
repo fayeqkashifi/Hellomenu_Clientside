@@ -12,7 +12,6 @@ import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import ReactPlayer from "react-player/lazy";
-import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
@@ -20,7 +19,6 @@ import SubmitButtons from "../Common/SubmitButtons";
 import MButton from "@mui/material/Button";
 const EditProduct = (props) => {
   const history = useHistory();
-  const MySwal = withReactContent(Swal);
   const validationSchema = () => {
     return Yup.object().shape({
       ProductName: Yup.string().required("Product Name is required"),
@@ -111,8 +109,8 @@ const EditProduct = (props) => {
       .post("/api/updateProduct", formData)
       .then((res) => {
         if (res.data.status === 200) {
-          MySwal.fire({
-            title: <strong>Good job!</strong>,
+          Swal.fire({
+            title: "Good job!",
             html: res.data.message,
             icon: "success",
             confirmButtonText: "OK",

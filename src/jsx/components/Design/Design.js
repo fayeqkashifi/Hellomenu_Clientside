@@ -28,6 +28,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { localization as t } from "../Localization";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Paginate from "../Common/Paginate";
+import Search from "../Common/Search";
+import AddIcon from "@mui/icons-material/Add";
+import { checkPermission } from "../Permissions";
 
 const Design = (props) => {
   const { url } = useRouteMatch();
@@ -37,9 +43,8 @@ const Design = (props) => {
 
   const [activeKey, setActiveKey] = useState(1);
   // Insert Start
-  const [themes, setThemes] = useState([]);
-  const [activeThemeId, setActiveThemeId] = useState([]);
   const [check, setCheck] = useState(true);
+  const [reload, setReload] = useState(true);
 
   const [alert, setAlert] = useState({
     open: false,
@@ -60,7 +65,7 @@ const Design = (props) => {
       .post(`/api/themeStatus/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
-          setCheck(!check);
+          setReload(!reload);
           setAlerts(true, "info", res.data.message);
         }
       })
@@ -74,7 +79,8 @@ const Design = (props) => {
       .post(`/api/templateStatus/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
-          setCheck(!check);
+          setReload(!reload);
+
           setAlerts(true, "info", res.data.message);
         }
       })
@@ -90,14 +96,7 @@ const Design = (props) => {
     try {
       const res = await axios.get(`/api/getThemes/${branchId}`);
       if (res.data.status === 200) {
-        console.log(res.data.fetchData);
-        setFetchData(res.data.fetchData);
-        res.data.fetchData.map((item, i) => {
-          if (item.Status === 1) {
-            setActiveThemeId(item.id);
-            setThemes(item);
-          }
-        });
+        setFetchData(res.data.fetchData.data);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
@@ -115,13 +114,11 @@ const Design = (props) => {
   useEffect(() => {
     dataLoad();
     return () => {
+      setLoading(true);
       setFetchData([]);
       setTemplates([]);
-      setActiveThemeId([]);
-      setThemes([]);
-      setLoading(true);
     };
-  }, []);
+  }, [reload]);
   useEffect(() => {
     dataLoad();
   }, [check]);
@@ -193,39 +190,38 @@ const Design = (props) => {
               }
               style={{ height: "250px", objectFit: "contain" }}
             />
-            <CCardBody>
-              <Link
-                to={{
-                  pathname: `${url}/edit-theme`,
-                  state: { id: item.id },
-                }}
-                className="m-1"
-              >
-                <EditIcon />
-                {t("edit")}
-              </Link>
-              {item.Status === 1 ? (
-                " "
-              ) : (
+            <CCardBody className="text-right">
+              {checkPermission("design-edit") && (
                 <Link
-                  to="#"
-                  className="m-1"
-                  onClick={(e) => deleteTheme(e, item.id)}
+                  to={{
+                    pathname: `${url}/edit-theme`,
+                    state: { id: item.id },
+                  }}
                 >
-                  <DeleteIcon />
-                  <span> {t("delete")}</span>
+                  <Tooltip title={t("edit")}>
+                    <IconButton>
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </Link>
               )}
-              <Link
-                to="#"
-                className="m-1"
-                onClick={(e) => duplicateTheme(e, item.id)}
-              >
-                <ContentCopyIcon />
-                <span> {t("duplicate")}</span>
-              </Link>
-              <div className="row ">
-                <div className="col-8 mt-2 text-primary font-weight-bold">
+
+              {item.Status === 1
+                ? " "
+                : checkPermission("design-delete") && (
+                    <Tooltip title={t("delete")}>
+                      <IconButton onClick={(e) => deleteTheme(e, item.id)}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+              <Tooltip title={t("duplicate")}>
+                <IconButton onClick={(e) => duplicateTheme(e, item.id)}>
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <div className="row">
+                <div className="col-8 text-primary font-weight-bold">
                   {item.ThemeName}
                 </div>
                 <div className="col-4 text-right">
@@ -245,15 +241,13 @@ const Design = (props) => {
   }
   return (
     <>
-      {alert.open ? (
+      {alert.open && (
         <CustomAlert
           open={alert.open}
           severity={alert.severity}
           message={alert.message}
           setAlert={setAlert}
         />
-      ) : (
-        ""
       )}
       <CNav variant="pills" role="tablist">
         <CNavItem>
@@ -365,35 +359,91 @@ const Design = (props) => {
           aria-labelledby="home-tab"
           visible={activeKey === 2}
         >
-          <div className="row mt-2">
-            {viewThemes_HTMLTABLE}
-
-            <div className="col-xl-3 col-lg-3 col-sm-6">
-              <div className="card overflow-hidden ">
-                <div
-                  className="card-body d-flex justify-content-center text-center"
-                  style={{ border: "2px dashed pink" }}
-                >
-                  <div className="align-self-center text-center">
-                    <div>
-                      <img src={palette} alt="" />
-                    </div>
-                    <div className="pt-3">
-                      <Link
-                        className="btn btn-outline-primary"
-                        to={{
-                          pathname: `${url}/add-theme`,
-                          state: { id: branchId },
-                        }}
-                      >
-                        {t("new_theme")}
-                      </Link>
-                    </div>
+          <div
+            className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 my-2"
+            style={{ backgroundColor: "#f5f5f5" }}
+          >
+            <div className="d-flex justify-content-between">
+              <div
+                className="d-flex align-items-center justify-content-center "
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  fontSize: "16px",
+                  color: "#000",
+                  fontWeight: "bold",
+                }}
+              >
+                {t("themes")}
+              </div>
+              <div>
+                <div className="input-group">
+                  <div className="d-flex align-items-center justify-content-center ">
+                    <Search
+                      setFetchData={setFetchData}
+                      url={"/api/searchTheme"}
+                      id={branchId}
+                      defaultUrl={`/api/getThemes/${branchId}`}
+                    />
                   </div>
+                  {checkPermission("design-create") && (
+                    <Tooltip title="Add New">
+                      <IconButton aria-label="Example">
+                        <Link
+                          to={{
+                            pathname: `${url}/add-theme`,
+                            state: { id: branchId },
+                          }}
+                        >
+                          <AddIcon />
+                        </Link>
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             </div>
           </div>
+          <div className="row mt-2">
+            {fetchData.length !== 0 ? (
+              viewThemes_HTMLTABLE
+            ) : (
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+                {t("noItemFound")}
+              </div>
+            )}
+            {checkPermission("design-create") && (
+              <div className="col-xl-3 col-lg-3 col-sm-6">
+                <div className="card overflow-hidden ">
+                  <div
+                    className="card-body d-flex justify-content-center text-center"
+                    style={{ border: "2px dashed pink" }}
+                  >
+                    <div className="align-self-center text-center">
+                      <div>
+                        <img src={palette} alt="" />
+                      </div>
+                      <div className="pt-3">
+                        <Link
+                          className="btn btn-outline-primary"
+                          to={{
+                            pathname: `${url}/add-theme`,
+                            state: { id: branchId },
+                          }}
+                        >
+                          {t("new_theme")}
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <Paginate
+            fetchData={fetchData}
+            setFetchData={setFetchData}
+            url={`/api/getThemes/${branchId}`}
+          />
         </CTabPane>
       </CTabContent>
     </>

@@ -1,18 +1,30 @@
+import { base_url, port } from "../../../../../../Consts";
+
 export const DarkStyle = (custom, theme) => {
-  console.log(theme);
   return {
     // Main public
     template: "dark",
     // darkMain file style
     background: {
-      backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundImage: `url(http://${base_url}:${port}/images/Themes/${theme.HomeScreenBackgroundURL})`,
+      backgroundColor: custom?.bgColor
+        ? custom.bgColor
+        : theme.BackgroundColor
+        ? theme.BackgroundColor
+        : "#22252a",
       minHeight: "100vh",
-      // transform: "rotate(90deg)",
     },
     varaintContainer: { paddingBottom: "100px" },
     // Header file style
     backIcon: {
-      color: "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     title: { visibility: "hidden" },
     searchFields: {
@@ -21,33 +33,63 @@ export const DarkStyle = (custom, theme) => {
     inputfield: {
       width: "100%",
       height: "35px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#ff751d",
     },
     inputfieldDetails: {
       width: "100%",
       // height: "35px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#ff751d",
     },
     BadgeStyle: {
       "& .MuiBadge-badge": {
-        color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+        color: custom?.menusDeactiveColor
+          ? custom.menusDeactiveColor
+          : theme.HighlightColor
+          ? theme.HighlightColor
+          : "#fff",
         backgroundColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
+          : theme.TextColor
+          ? theme.TextColor
           : "#f27d1e",
       },
     },
     cartIcon: {
-      color: "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     headerTotalDiv: {
       display: "none",
@@ -66,13 +108,23 @@ export const DarkStyle = (custom, theme) => {
       marginLeft: "10px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#f27d1e",
 
-      color: "#f27d1e",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
     },
     cateDeActive: {
       cursor: "pointer",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       marginRight: "10px",
       marginLeft: "10px",
     },
@@ -80,7 +132,11 @@ export const DarkStyle = (custom, theme) => {
 
     // statusbar style
     headerVideos: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#ff751d",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#ff751d",
       cursor: "pointer",
     },
     branchStory: {
@@ -90,6 +146,8 @@ export const DarkStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#ff751d",
       padding: "2px",
       margin: "3px",
@@ -105,6 +163,8 @@ export const DarkStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#fff",
       padding: "2px",
       margin: "3px",
@@ -119,7 +179,11 @@ export const DarkStyle = (custom, theme) => {
       objectFit: "contain",
       borderRadius: "5px",
       border: "1px solid",
-      borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#aaa",
       margin: "3px",
     },
     fullScreenIcon: {
@@ -134,6 +198,8 @@ export const DarkStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#ff751d",
       padding: "2px",
       margin: "3px",
@@ -149,6 +215,8 @@ export const DarkStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#fff",
       padding: "2px",
       margin: "3px",
@@ -163,7 +231,11 @@ export const DarkStyle = (custom, theme) => {
     reactPlayerStyle: {
       borderRadius: "10px",
       border: "2px solid",
-      borderColor: "#fff",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       margin: "3px",
       padding: "2px",
       lineBreak: "anywhere",
@@ -217,19 +289,35 @@ export const DarkStyle = (custom, theme) => {
       display: "flex",
       flexDirection: "column",
       borderRadius: "20px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
     },
     cardStyle: {
       display: "flex",
       flexDirection: "column",
       borderRadius: "20px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
     },
     favIconDeactive: {
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     favIconActive: {
-      color: custom?.menusActiveColor ? custom.menusActiveColor : "#ff751d",
+      color: custom?.menusActiveColor
+        ? custom.menusActiveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#ff751d",
     },
     imageStyle: {
       height: "150px",
@@ -241,12 +329,20 @@ export const DarkStyle = (custom, theme) => {
     productName: {
       textTransform: "capitalize",
       fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
-      color: custom?.product_name_color ? custom.product_name_color : "#fff",
+      color: custom?.product_name_color
+        ? custom.product_name_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fff",
     },
     productDiv: { width: "60%", textAlign: "left" },
     price: {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
-      color: custom?.price_color ? custom.price_color : "#fff",
+      color: custom?.price_color
+        ? custom.price_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fff",
       fontWeight: "bold",
     },
     unitName: {
@@ -259,20 +355,36 @@ export const DarkStyle = (custom, theme) => {
 
     // ReCounter Style
     counterDecrementIcon: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
     },
     counterIncrementIcon: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
     },
     counterValue: {
-      color: "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     // End
 
     // product dtails Style
     cartPrice: {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
-      color: custom?.price_color ? custom.price_color : "#fff",
+      color: custom?.price_color
+        ? custom.price_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fff",
       fontWeight: "bold",
     },
     cartDescription: {
@@ -282,6 +394,8 @@ export const DarkStyle = (custom, theme) => {
 
       color: custom?.product_discription_color
         ? custom.product_discription_color
+        : theme.TextColor
+        ? theme.TextColor
         : "#fff",
     },
     preparation_time: custom?.preparation_time,
@@ -296,9 +410,15 @@ export const DarkStyle = (custom, theme) => {
       borderRadius: "5px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#f27d1e",
       textDecoration: "line-through",
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
         : "0.75rem",
@@ -313,8 +433,14 @@ export const DarkStyle = (custom, theme) => {
       borderRadius: "5px",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
         : "0.75rem",
@@ -322,7 +448,11 @@ export const DarkStyle = (custom, theme) => {
     show_extras: custom?.show_extras,
     show_variants: custom?.show_variants,
     variantsDiv: {
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
       borderRadius: "50px",
       padding: "5px",
     },
@@ -334,8 +464,14 @@ export const DarkStyle = (custom, theme) => {
       borderColor: "black",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "black",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     variantDeActive: {
       cursor: "pointer",
@@ -344,10 +480,18 @@ export const DarkStyle = (custom, theme) => {
       borderRadius: "50px",
       borderColor: "#22252a",
       backgroundColor: "#22252a",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     checkbox: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#ff751d",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#ff751d",
     },
     variantsImage: {
       height: "400px",
@@ -386,6 +530,8 @@ export const DarkStyle = (custom, theme) => {
         border: "1px solid",
         borderColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
+          : theme.TextColor
+          ? theme.TextColor
           : "#ff751d",
       },
     },
@@ -393,15 +539,27 @@ export const DarkStyle = (custom, theme) => {
 
     // footer
     buttonStyle: {
+      display: theme.ShowButton == 1 ? "block" : "none",
       textTransform: "capitalize",
       backgroundColor: custom?.button_background_color
         ? custom.button_background_color
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#ff751d",
-      color: custom?.footerStyle ? custom.button_text_color : "#f1fcfe",
+      color: custom?.footerStyle
+        ? custom.button_text_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f1fcfe",
       fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1rem",
+      borderRadius: theme.ButtonShape == "R" ? 100 : 0,
     },
     footerStyle: {
-      bgcolor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+      bgcolor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
       position: "fixed",
       bottom: 0,
       width: "100%",
@@ -413,15 +571,31 @@ export const DarkStyle = (custom, theme) => {
     // Drawer Style
     categories: {
       fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
     },
 
     cardHeader: {
-      backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
-      borderColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+      backgroundColor: custom?.bgColor
+        ? custom.bgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#22252a",
+      borderColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
     },
     cardBody: {
-      backgroundColor: custom?.bgColor ? custom.bgColor : "#22252a",
+      backgroundColor: custom?.bgColor
+        ? custom.bgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#22252a",
     },
     // End
 
@@ -429,7 +603,11 @@ export const DarkStyle = (custom, theme) => {
     divCounter: { marginTop: "-5px", marginRight: "15px", textAlign: "center" },
     addToCartIcon: {
       cursor: "pointer",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     counterRemovIcon: {
       color: "rgb(223, 71, 89)",
@@ -440,18 +618,32 @@ export const DarkStyle = (custom, theme) => {
     card: {
       display: "flex",
       flexDirection: "column",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#2d3134",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
     },
     active: {
       cursor: "pointer",
       border: "1px solid",
       textAlign: "center",
       borderRadius: "10px",
-      borderColor: "black",
+      borderColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "black",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "black",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     deactive: {
       cursor: "pointer",
@@ -460,9 +652,19 @@ export const DarkStyle = (custom, theme) => {
       borderRadius: "10px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#ff751d",
-      backgroundColor: "#2d3134",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     cartImageDiv: {
       width: "20%",
@@ -487,7 +689,11 @@ export const DarkStyle = (custom, theme) => {
       textAlign: "right",
     },
     clearIcon: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#f27d1e",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#f27d1e",
     },
     cartImage: {
       height: "100px",
@@ -498,7 +704,11 @@ export const DarkStyle = (custom, theme) => {
     cartProductName: {
       textTransform: "capitalize",
       fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
-      color: custom?.product_name_color ? custom.product_name_color : "#fff",
+      color: custom?.product_name_color
+        ? custom.product_name_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fff",
     },
     // End
   };

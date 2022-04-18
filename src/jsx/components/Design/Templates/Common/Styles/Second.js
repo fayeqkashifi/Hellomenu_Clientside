@@ -1,10 +1,20 @@
+import { base_url, port } from "../../../../../../Consts";
+
 export const SecondStyle = (custom, theme) => {
   return {
     // main public
     template: "second",
     // second main
     background: {
-      backgroundColor: custom?.bgColor ? custom.bgColor : "#eee",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundImage: `url(http://${base_url}:${port}/images/Themes/${theme.HomeScreenBackgroundURL})`,
+      backgroundColor: custom?.bgColor
+        ? custom.bgColor
+        : theme.BackgroundColor
+        ? theme.BackgroundColor
+        : "#eee",
       minHeight: "100vh",
     },
 
@@ -12,15 +22,29 @@ export const SecondStyle = (custom, theme) => {
     inputfield: {
       width: "50%",
       height: "35px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#33cd6b",
     },
     cartIcon: {
-      color: "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
     },
     title: {
       marginLeft: 200,
@@ -29,7 +53,11 @@ export const SecondStyle = (custom, theme) => {
       borderBottomStyle: "solid",
       borderottomWidth: "3.1px",
       width: "fit-content",
-      borderColor: "#33cd6b",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
       color: "#000",
       fontSize: "3rem",
       fontWeight: "bold",
@@ -43,9 +71,15 @@ export const SecondStyle = (custom, theme) => {
     backIcon: { visibility: "hidden" },
     BadgeStyle: {
       "& .MuiBadge-badge": {
-        color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+        color: custom?.menusDeactiveColor
+          ? custom.menusDeactiveColor
+          : theme.HighlightColor
+          ? theme.HighlightColor
+          : "#fff",
         backgroundColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
+          : theme.TextColor
+          ? theme.TextColor
           : "#33cd6b",
       },
     },
@@ -53,7 +87,11 @@ export const SecondStyle = (custom, theme) => {
 
     // statusbar Style
     headerVideos: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#33cd6b",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
       cursor: "pointer",
     },
     branchStory: {
@@ -63,6 +101,8 @@ export const SecondStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#33cd6b",
       padding: "2px",
       margin: "3px",
@@ -78,6 +118,8 @@ export const SecondStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#fff",
       padding: "2px",
       margin: "3px",
@@ -92,7 +134,11 @@ export const SecondStyle = (custom, theme) => {
       objectFit: "contain",
       borderRadius: "5px",
       border: "1px solid",
-      borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#aaa",
       margin: "3px",
     },
     fullScreenIcon: {
@@ -107,6 +153,8 @@ export const SecondStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#33cd6b",
       padding: "2px",
       margin: "3px",
@@ -122,6 +170,8 @@ export const SecondStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#fff",
       padding: "2px",
       margin: "3px",
@@ -136,7 +186,11 @@ export const SecondStyle = (custom, theme) => {
     reactPlayerStyle: {
       borderRadius: "10px",
       border: "2px solid",
-      borderColor: "#fff",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       margin: "3px",
       padding: "2px",
       lineBreak: "anywhere",
@@ -153,7 +207,11 @@ export const SecondStyle = (custom, theme) => {
       height: "100%",
     },
     sidebarActive: {
-      background: "#33cd6b",
+      background: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
       borderRadius: "10px",
       padding: "15px",
       maring: "20px",
@@ -188,14 +246,22 @@ export const SecondStyle = (custom, theme) => {
       display: "flex",
       flexDirection: "column",
       borderRadius: "20px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
     },
     cardStyle: {
       width: "300px",
       margin: "20px",
       display: "flex",
       flexDirection: "column",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
     },
     favIconDeactive: {
       display: "none",
@@ -221,7 +287,11 @@ export const SecondStyle = (custom, theme) => {
     price: {
       textAlign: "center",
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.5rem",
-      color: custom?.price_color ? custom.price_color : "#aa3f32",
+      color: custom?.price_color
+        ? custom.price_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#aa3f32",
       fontWeight: "bold",
     },
     unitName: {
@@ -231,13 +301,25 @@ export const SecondStyle = (custom, theme) => {
 
     // ReCounter Style
     counterDecrementIcon: {
-      color: "#000",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
     },
     counterIncrementIcon: {
-      color: "#000",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
     },
     counterValue: {
-      color: "#33cd6b",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#33cd6b",
     },
     // End
 
@@ -255,9 +337,15 @@ export const SecondStyle = (custom, theme) => {
       borderRadius: "5px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#33cd6b",
       textDecoration: "line-through",
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#33cd6b",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
         : "0.75rem",
@@ -273,8 +361,14 @@ export const SecondStyle = (custom, theme) => {
       borderRadius: "5px",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#000",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
         : "0.75rem",
@@ -282,7 +376,11 @@ export const SecondStyle = (custom, theme) => {
     show_extras: custom?.show_extras,
     show_variants: custom?.show_variants,
     variantsDiv: {
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#33cd6b",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#33cd6b",
       borderRadius: "50px",
       padding: "5px",
     },
@@ -291,23 +389,49 @@ export const SecondStyle = (custom, theme) => {
       border: "1px solid",
       textAlign: "center",
       borderRadius: "50px",
-      borderColor: "#aa3f32",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#aa3f32",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#aa3f32",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     variantDeActive: {
       cursor: "pointer",
       border: "1px solid",
       textAlign: "center",
       borderRadius: "50px",
-      borderColor: "#33cd6b",
-      backgroundColor: "#33cd6b",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+      backgroundColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     checkbox: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#33cd6b",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
     },
     variantsImage: {
       height: "400px",
@@ -352,32 +476,50 @@ export const SecondStyle = (custom, theme) => {
         border: "1px solid",
         borderColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
-          : "#ff751d",
+          : theme.TextColor
+          ? theme.TextColor
+          : "#33cd6b",
       },
     },
     // End
     // footer
     footerStyle: {
-      bgcolor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      bgcolor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
       position: "fixed",
       bottom: 0,
       width: "100%",
       textAlign: "center",
     },
     buttonStyle: {
+      display: theme.ShowButton == 1 ? "block" : "none",
       textTransform: "capitalize",
       backgroundColor: custom?.button_background_color
         ? custom.button_background_color
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#33cd6b",
-      color: custom?.button_text_color ? custom.button_text_color : "#fff",
+      color: custom?.button_text_color
+        ? custom.button_text_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fff",
       fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "0.75rem",
+      borderRadius: theme.ButtonShape == "R" ? 100 : 0,
     },
     // End
     // Counter
     divCounter: { marginTop: "0px", textAlign: "center", display: "grid" },
     addToCartIcon: {
       cursor: "pointer",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#33cd6b",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#33cd6b",
     },
     counterRemovIcon: {
       color: "rgb(223, 71, 89)",
@@ -388,18 +530,32 @@ export const SecondStyle = (custom, theme) => {
     card: {
       display: "flex",
       flexDirection: "column",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
     },
     active: {
       cursor: "pointer",
       border: "1px solid",
       textAlign: "center",
       borderRadius: "10px",
-      borderColor: "#33cd6b",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#33cd6b",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       fontSize: "0.5rem",
     },
     deactive: {
@@ -409,9 +565,15 @@ export const SecondStyle = (custom, theme) => {
       borderRadius: "10px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#33cd6b",
       backgroundColor: "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: "0.25rem",
     },
 
@@ -422,6 +584,8 @@ export const SecondStyle = (custom, theme) => {
     clearIcon: {
       color: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "rgb(223, 71, 89)",
     },
     cartImage: {
@@ -455,11 +619,19 @@ export const SecondStyle = (custom, theme) => {
     cartProductName: {
       textTransform: "capitalize",
       fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "0.75rem",
-      color: custom?.product_name_color ? custom.product_name_color : "#000",
+      color: custom?.product_name_color
+        ? custom.product_name_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
     },
     cartPrice: {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
-      color: custom?.price_color ? custom.price_color : "#aa3f32",
+      color: custom?.price_color
+        ? custom.price_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#aa3f32",
       fontWeight: "bold",
     },
     cartDescription: {
@@ -469,6 +641,8 @@ export const SecondStyle = (custom, theme) => {
 
       color: custom?.product_discription_color
         ? custom.product_discription_color
+        : theme.TextColor
+        ? theme.TextColor
         : "#000",
     },
     // End
@@ -476,11 +650,21 @@ export const SecondStyle = (custom, theme) => {
     inputfieldDetails: {
       width: "100%",
       // height: "35px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#33cd6b",
     },
     // sideBar

@@ -1,10 +1,20 @@
+import { base_url, port } from "../../../../../../Consts";
+
 export const ThridStyle = (custom, theme) => {
   return {
     // main public
     template: "thrid",
     // thrid main
     background: {
-      backgroundColor: custom?.bgColor ? custom.bgColor : "#f8f8f8",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundImage: `url(http://${base_url}:${port}/images/Themes/${theme.HomeScreenBackgroundURL})`,
+      backgroundColor: custom?.bgColor
+        ? custom.bgColor
+        : theme.BackgroundColor
+        ? theme.BackgroundColor
+        : "#f8f8f8",
       minHeight: "100vh",
     },
     varaintContainer: { paddingBottom: "100px" },
@@ -15,7 +25,11 @@ export const ThridStyle = (custom, theme) => {
     },
     backIcon: { visibility: "hidden" },
     cartIcon: {
-      color: "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
     },
     searchFields: {
       marginLeft: "20px",
@@ -24,14 +38,26 @@ export const ThridStyle = (custom, theme) => {
     headerTotalDiv: {
       marginLeft: "20px",
       marginRight: "20px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontWeight: "bold",
       borderRadius: "10%",
     },
     totalPriceIcon: {
       backgroundColor: "#503e9d",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
 
       margin: "5px",
     },
@@ -40,9 +66,15 @@ export const ThridStyle = (custom, theme) => {
     },
     BadgeStyle: {
       "& .MuiBadge-badge": {
-        color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+        color: custom?.menusDeactiveColor
+          ? custom.menusDeactiveColor
+          : theme.HighlightColor
+          ? theme.HighlightColor
+          : "#fff",
         backgroundColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
+          : theme.TextColor
+          ? theme.TextColor
           : "#fbd460",
       },
     },
@@ -50,7 +82,11 @@ export const ThridStyle = (custom, theme) => {
 
     // statubar Style
     headerVideos: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fbd460",
       cursor: "pointer",
     },
     branchStory: {
@@ -60,6 +96,8 @@ export const ThridStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
       padding: "2px",
       margin: "3px",
@@ -75,6 +113,8 @@ export const ThridStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#000",
       padding: "2px",
       margin: "3px",
@@ -89,7 +129,11 @@ export const ThridStyle = (custom, theme) => {
       objectFit: "contain",
       borderRadius: "5px",
       border: "1px solid",
-      borderColor: custom?.menusAcriveColor ? custom.menusAcriveColor : "#aaa",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#aaa",
       margin: "3px",
     },
     fullScreenIcon: {
@@ -104,6 +148,8 @@ export const ThridStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
       padding: "2px",
       margin: "3px",
@@ -119,6 +165,8 @@ export const ThridStyle = (custom, theme) => {
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#000",
       padding: "2px",
       margin: "3px",
@@ -133,7 +181,11 @@ export const ThridStyle = (custom, theme) => {
     reactPlayerStyle: {
       borderRadius: "10px",
       border: "2px solid",
-      borderColor: "#fff",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       margin: "3px",
       padding: "2px",
       lineBreak: "anywhere",
@@ -151,6 +203,8 @@ export const ThridStyle = (custom, theme) => {
     sidebarActive: {
       background: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
       borderRadius: "40px",
       padding: "20px",
@@ -186,17 +240,29 @@ export const ThridStyle = (custom, theme) => {
       display: "flex",
       flexDirection: "column",
       // borderRadius: "20px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
     },
     cardStyle: {
       display: "flex",
       flexDirection: "column",
       // borderRadius: "5px",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
     },
     cardIconButton: {
       backgroundColor: "#fbd460",
-      color: "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
     },
     favIconDeactive: {
       display: "none",
@@ -205,7 +271,11 @@ export const ThridStyle = (custom, theme) => {
       display: "none",
     },
     shoppingIcon: {
-      color: "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
     },
     imageStyle: {
       height: "150px",
@@ -232,7 +302,11 @@ export const ThridStyle = (custom, theme) => {
     },
     price: {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
-      color: custom?.price_color ? custom.price_color : "#000",
+      color: custom?.price_color
+        ? custom.price_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
       fontWeight: "bold",
     },
     xs: custom?.numberProductInRowMobile
@@ -279,19 +353,35 @@ export const ThridStyle = (custom, theme) => {
       : 3,
     unitName: {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "0.75rem",
-      color: custom?.price_color ? custom.price_color : "#000",
+      color: custom?.price_color
+        ? custom.price_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
     },
     // end
 
     // ReCounter Style
     counterDecrementIcon: {
-      color: "#000",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
     },
     counterIncrementIcon: {
-      color: "#000",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
     },
     counterValue: {
-      color: "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
     },
     // End
 
@@ -310,9 +400,15 @@ export const ThridStyle = (custom, theme) => {
       borderRadius: "5px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
       textDecoration: "line-through",
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fbd460",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
         : "0.75rem",
@@ -328,8 +424,14 @@ export const ThridStyle = (custom, theme) => {
       borderRadius: "5px",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#000",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
         : "0.75rem",
@@ -337,7 +439,11 @@ export const ThridStyle = (custom, theme) => {
     show_extras: custom?.show_extras,
     show_variants: custom?.show_variants,
     variantsDiv: {
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#503e9d",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#503e9d",
       borderRadius: "50px",
       padding: "5px",
     },
@@ -349,8 +455,14 @@ export const ThridStyle = (custom, theme) => {
       borderColor: "#fbd460",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     variantDeActive: {
       cursor: "pointer",
@@ -359,10 +471,18 @@ export const ThridStyle = (custom, theme) => {
       borderRadius: "50px",
       borderColor: "#503e9d",
       backgroundColor: "#503e9d",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     checkbox: {
-      color: custom?.menusAcriveColor ? custom.menusAcriveColor : "#fbd460",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fbd460",
     },
     variantsImage: {
       height: "400px",
@@ -406,6 +526,8 @@ export const ThridStyle = (custom, theme) => {
         border: "1px solid",
         borderColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
+          : theme.TextColor
+          ? theme.TextColor
           : "#ff751d",
       },
     },
@@ -413,26 +535,43 @@ export const ThridStyle = (custom, theme) => {
 
     // footer
     footerStyle: {
-      bgcolor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      bgcolor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
       position: "fixed",
       bottom: 0,
       width: "100%",
       textAlign: "center",
     },
     buttonStyle: {
+      display: theme.ShowButton == 1 ? "block" : "none",
+
       textTransform: "capitalize",
       backgroundColor: custom?.button_background_color
         ? custom.button_background_color
+        : theme.HighlightColor
+        ? theme.HighlightColor
         : "#fbd460",
-      color: custom?.button_text_color ? custom.button_text_color : "#fff",
+      color: custom?.button_text_color
+        ? custom.button_text_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fff",
       fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "0.75rem",
+      borderRadius: theme.ButtonShape == "R" ? 100 : 0,
     },
     // End
     // counter
     divCounter: {},
     addToCartIcon: {
       cursor: "pointer",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fbd460",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fbd460",
     },
     counterRemovIcon: {
       color: "rgb(223, 71, 89)",
@@ -442,26 +581,50 @@ export const ThridStyle = (custom, theme) => {
     // cart
     inputfieldDetails: {
       width: "100%",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
     },
     inputfield: {
       width: "100%",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: 12,
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
     },
     card: {
       display: "flex",
       flexDirection: "column",
-      backgroundColor: custom?.cardBgColor ? custom.cardBgColor : "#fff",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
     },
 
     active: {
@@ -472,8 +635,14 @@ export const ThridStyle = (custom, theme) => {
       borderColor: "#fbd460",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
       fontSize: "0.5rem",
     },
     deactive: {
@@ -483,9 +652,15 @@ export const ThridStyle = (custom, theme) => {
       borderRadius: "10px",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "#fbd460",
       backgroundColor: "#fff",
-      color: custom?.menusDeactiveColor ? custom.menusDeactiveColor : "#000",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
       fontSize: "0.25rem",
     },
 
@@ -496,6 +671,8 @@ export const ThridStyle = (custom, theme) => {
     clearIcon: {
       color: custom?.menusAcriveColor
         ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
         : "rgb(223, 71, 89)",
     },
     cartImage: {
@@ -530,11 +707,19 @@ export const ThridStyle = (custom, theme) => {
     cartProductName: {
       textTransform: "capitalize",
       fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "0.75rem",
-      color: custom?.product_name_color ? custom.product_name_color : "#000",
+      color: custom?.product_name_color
+        ? custom.product_name_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
     },
     cartPrice: {
       fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
-      color: custom?.price_color ? custom.price_color : "#000",
+      color: custom?.price_color
+        ? custom.price_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
       fontWeight: "bold",
     },
     cartDescription: {
@@ -544,6 +729,8 @@ export const ThridStyle = (custom, theme) => {
 
       color: custom?.product_discription_color
         ? custom.product_discription_color
+        : theme.TextColor
+        ? theme.TextColor
         : "#000",
     },
     // End

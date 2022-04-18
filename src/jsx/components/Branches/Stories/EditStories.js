@@ -10,8 +10,11 @@ import Tooltip from "@mui/material/Tooltip";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-import {Option,MultiValue,animatedComponents} from "../../Common/SelectOption";
+import {
+  Option,
+  MultiValue,
+  animatedComponents,
+} from "../../Common/SelectOption";
 import MySelect from "../../Common/MySelect";
 const EditStories = (props) => {
   const id = props.history.location.state.id;
@@ -19,7 +22,6 @@ const EditStories = (props) => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const history = useHistory();
-  const MySwal = withReactContent(Swal);
 
   const [tagProducts, setTagProducts] = useState([]);
   const handleSelect = (e) => {
@@ -70,8 +72,8 @@ const EditStories = (props) => {
       .post("/api/updateStory", formData)
       .then((res) => {
         if (res.data.status === 200) {
-          MySwal.fire({
-            title: <strong>Good job!</strong>,
+          Swal.fire({
+            title: "Good job!",
             html: res.data.message,
             icon: "success",
             confirmButtonText: "OK",

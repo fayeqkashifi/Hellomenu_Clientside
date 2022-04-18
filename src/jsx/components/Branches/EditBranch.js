@@ -23,7 +23,6 @@ import ReactPlayer from "react-player/lazy";
 // import ipapi from "ipapi.co";
 import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
 
@@ -53,7 +52,6 @@ const EditBranch = (props) => {
   const [orderMethodsEdit, setOrderMethodsEdit] = useState([]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const MySwal = withReactContent(Swal);
 
   const updateBranch = (data) => {
     setIsSubmitting(true);
@@ -76,8 +74,8 @@ const EditBranch = (props) => {
         .post("/api/updateBranches", formData)
         .then((res) => {
           if (res.data.status === 200) {
-            MySwal.fire({
-              title: <strong>Good job!</strong>,
+            Swal.fire({
+              title: "Good job!",
               html: res.data.message,
               icon: "success",
               confirmButtonText: "OK",
