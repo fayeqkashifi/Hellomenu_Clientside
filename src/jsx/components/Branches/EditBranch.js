@@ -23,6 +23,8 @@ import ReactPlayer from "react-player/lazy";
 // import ipapi from "ipapi.co";
 import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
+import Languages from "./Languages";
+
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
 
@@ -52,7 +54,9 @@ const EditBranch = (props) => {
   const [orderMethodsEdit, setOrderMethodsEdit] = useState([]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [selectedLang, setSelectedLang] = useState([
+    { value: 40, label: "English", default: 1, status: 1 },
+  ]);
   const updateBranch = (data) => {
     setIsSubmitting(true);
     const ArrayValue = [];
@@ -69,6 +73,7 @@ const EditBranch = (props) => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("otherAddressFields", JSON.stringify(form));
       formData.append("fullAddress", fullAddress);
+      formData.append("languages", JSON.stringify(selectedLang));
       formData.append("id", data.id);
       axios
         .post("/api/updateBranches", formData)
@@ -117,6 +122,18 @@ const EditBranch = (props) => {
   const arrayAddress = [];
   const dataLoad = async () => {
     try {
+      const res = await axios.get("/api/getCurrencies");
+      if (res.data.status === 200) {
+        setCurrency(res.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
+      const langs = await axios.get(`/api/branchLangs/${id}`);
+      if (langs.data.status === 200) {
+        setSelectedLang(langs.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
       const response = await axios.get(`/api/editBranches/${id}`);
       if (response.data.status === 200) {
         setFullAddress(response.data.branch.fullAddress);
@@ -132,12 +149,6 @@ const EditBranch = (props) => {
         setOrderMethodsEdit(JSON.parse(response.data.branch.orderMethods));
 
         setLoading(false);
-      } else {
-        throw Error("Due to an error, the data cannot be retrieved.");
-      }
-      const res = await axios.get("/api/getCurrencies");
-      if (res.data.status === 200) {
-        setCurrency(res.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
@@ -381,7 +392,14 @@ const EditBranch = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+                <Languages
+                  selectedLang={selectedLang}
+                  setSelectedLang={setSelectedLang}
+                  setAlerts={setAlerts}
+                />
+              </div>
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("ordering_methods")}</h3>
@@ -450,7 +468,7 @@ const EditBranch = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("addressing_method")}</h3>
@@ -516,7 +534,7 @@ const EditBranch = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("images_and_videos")}</h3>

@@ -18,6 +18,8 @@ import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import PublicIcon from "@mui/icons-material/Public";
+import Local from "./Local";
 const Branches = () => {
   const [alert, setAlert] = useState({
     open: false,
@@ -114,6 +116,7 @@ const Branches = () => {
     setLayout(!layout);
     localStorage.setItem("layoutBranch", !layout);
   };
+  const [modalCentered, setModalCentered] = useState(false);
 
   var viewBranches_HTMLTABLE = "";
   if (loading) {
@@ -158,8 +161,15 @@ const Branches = () => {
             </div>
             <div className="card-footer pt-0 pb-0 text-center">
               <div className="row">
+                <div className="col-3 py-1 border-right">
+                  <Tooltip title={t("local")}>
+                    <IconButton onClick={() => setModalCentered(true)}>
+                      <PublicIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </div>
                 {checkPermission("branches-edit") && (
-                  <div className="col-4 py-1 border-right">
+                  <div className="col-3 py-1 border-right">
                     <Link
                       to={{
                         pathname: `/branches/story-branch`,
@@ -175,7 +185,7 @@ const Branches = () => {
                   </div>
                 )}
                 {checkPermission("branches-edit") && (
-                  <div className="col-4 py-1 border-right">
+                  <div className="col-3 py-1 border-right">
                     <Link
                       to={{
                         pathname: `/branches/edit-branch`,
@@ -192,7 +202,7 @@ const Branches = () => {
                   </div>
                 )}
                 {checkPermission("branches-delete") && (
-                  <div className="col-4 py-1 ">
+                  <div className="col-3 py-1 ">
                     <Tooltip title={t("delete")}>
                       <IconButton onClick={(e) => deleteBranch(e, item.id)}>
                         <DeleteIcon fontSize="small" />
@@ -263,7 +273,6 @@ const Branches = () => {
           </div>
         </div>
       </div>
-
       {layout ? (
         <div className="row">
           {fetchData.length !== 0 ? (
@@ -421,6 +430,12 @@ const Branches = () => {
             </div>
           </div>
         </div>
+      )}
+      {modalCentered && (
+        <Local
+          modalCentered={modalCentered}
+          setModalCentered={setModalCentered}
+        />
       )}
     </Fragment>
   );

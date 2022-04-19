@@ -18,6 +18,7 @@ import ipapi from "ipapi.co";
 import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
+import Languages from "./Languages";
 const AddBranch = () => {
   const initialValues = {
     BrancheName: "",
@@ -48,7 +49,9 @@ const AddBranch = () => {
     });
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [selectedLang, setSelectedLang] = useState([
+    { value: 40, label: "English", default: 1, status: 1 },
+  ]);
   const saveBranch = (data) => {
     setIsSubmitting(true);
     const ArrayValue = [];
@@ -69,6 +72,7 @@ const AddBranch = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("otherAddressFields", JSON.stringify(form));
       formData.append("fullAddress", fullAddress);
+      formData.append("languages", JSON.stringify(selectedLang));
       axios
         .post("/api/insertBranches", formData)
         .then((res) => {
@@ -274,7 +278,14 @@ const AddBranch = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+                <Languages
+                  selectedLang={selectedLang}
+                  setSelectedLang={setSelectedLang}
+                  setAlerts={setAlerts}
+                />
+              </div>
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("ordering_methods")}</h3>
@@ -337,7 +348,7 @@ const AddBranch = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("addressing_method")}</h3>
@@ -404,7 +415,7 @@ const AddBranch = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("images_and_videos")}</h3>

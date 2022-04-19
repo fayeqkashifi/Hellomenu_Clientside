@@ -3,7 +3,6 @@ import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { CBreadcrumb, CBreadcrumbItem } from "@coreui/react";
 import { base_url, port } from "../../../Consts";
 import DefaultPic from "../../../images/hellomenu/sub_category.svg";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
@@ -183,10 +182,10 @@ const SubCategory = (props) => {
       setFetchData([]);
       setLoading(true);
     };
-  }, []);
+  }, [id]);
   useEffect(() => {
     dataLoad();
-  }, [check]);
+  }, [id, check]);
   const [layout, setLayout] = useState(
     JSON.parse(
       localStorage.getItem("layoutSubCategory")

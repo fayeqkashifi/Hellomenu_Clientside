@@ -10,7 +10,10 @@ export const Locale = {
   video_url: "Video Url",
   add_story: "Add Story",
   edit_story: "Edit Story",
-
+  languages_localisation: "Languages Localisation",
+  languages: "Languages",
+  default_language: "Default Language",
+  local: "Local",
   // branches
   branch_info: "Branch Info",
   images_and_videos: "Images and videos",
