@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { base_url, port } from "../../../Consts";
 /// Bootstrap
 import { Row } from "react-bootstrap";
@@ -11,12 +11,6 @@ import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import Switch from "@mui/material/Switch";
-import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
-import MySelect from "../Common/MySelect";
-import Select from "react-select";
 import Chip from "@mui/material/Chip";
 import Backdrop from "@mui/material/Backdrop";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -26,34 +20,17 @@ import Search from "../Common/Search";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import Tooltip from "@mui/material/Tooltip";
+import AddCategory from "./Cates/AddCategory";
+import EditCategory from "./Cates/EditCategory";
+import AddSharedCategory from "./Cates/AddSharedCategory";
 
 const Category = (props) => {
   const { url } = useRouteMatch();
-  // for localization
   // ID
   const id = props.history.location.state.id;
   const [check, setCheck] = useState(true);
-  const [share, setShare] = useState(false);
-
-  // insert Start
   const [modal, setModal] = useState(false);
   const [modalCentered, setModalCentered] = useState(false);
-  const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, CategoryIcon: e.target.files[0] });
-  };
-  const initialValues = {
-    CategoryName: "",
-  };
-  const validationSchema = () => {
-    return Yup.object().shape({
-      CategoryName: Yup.string().required("Category Name is required"),
-    });
-  };
-  const [productbranches, setProductBranches] = useState([]);
-  const handleSelectBranches = (e) => {
-    setProductBranches(e);
-  };
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -66,64 +43,12 @@ const Category = (props) => {
       message: message,
     });
   };
-  const saveMenu = (data) => {
-    const checkCate = fetchData.every((item) => {
-      return item.CategoryName !== data.CategoryName;
-    });
-    if (checkCate) {
-      const formData = new FormData();
-      productbranches.map((item) => formData.append("branches[]", item.value));
-      formData.append("CategoryIcon", imageState.CategoryIcon);
-      formData.append("CategoryName", data.CategoryName);
-      formData.append("branchID", id);
-      axios
-        .post("/api/insertCategories", formData)
-        .then((res) => {
-          if (res.data.status === 200) {
-            setImageState([]);
-            setCheck(!check);
-            setShare(false);
-            setProductBranches([]);
-            setAlerts(true, "success", res.data.message);
-            setModalCentered(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      setAlerts(true, "warning", "Already exists, Please Try another name!");
-    }
-  };
-  const initialValuesCate = {
-    categories: "",
-  };
-  const validationSchemaCate = () => {
-    return Yup.object().shape({
-      categories: Yup.string().required("Please select a Category"),
-    });
-  };
-  const saveCate = (data) => {
-    const formData = new FormData();
-    formData.append("CategoryName", data.categories);
-    formData.append("branchID", id);
-    axios
-      .post("/api/insertSharedCate", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setCheck(!check);
-          setAlerts(true, "success", res.data.message);
-          setModal(false);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  // insert End
+
+  const [lang, setLang] = useState([]);
+
   // edit start
   const [editmodalCentered, setEditModalCentered] = useState(false);
-  const [editMenu, setEditMenu] = useState({
+  const [editCate, setEditCate] = useState({
     CategoryName: "",
     CategoryIcon: "",
     branchID: id,
@@ -134,7 +59,7 @@ const Category = (props) => {
       .get(`/api/editCategories/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
-          setEditMenu(res.data.menu);
+          setEditCate(res.data.menu);
           setEditModalCentered(true);
         } else if (res.data.status === 404) {
           setAlerts(true, "error", res.data.message);
@@ -144,37 +69,8 @@ const Category = (props) => {
         console.log(err);
       });
   };
-  const updateMenu = (data) => {
-    const formData = new FormData();
-    formData.append("CategoryIcon", imageState.CategoryIcon);
-    formData.append("CategoryName", data.CategoryName);
-    formData.append("branchID", id);
-    formData.append("id", editMenu.id);
-    axios
-      .post("/api/updateCategories", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setEditMenu({
-            id: "",
-            CategoryName: "",
-            CategoryIcon: "",
-            branchID: id,
-          });
-          setImageState([]);
-          setCheck(!check);
-          setAlerts(true, "success", res.data.message);
-          setEditModalCentered(false);
-        } else if (res.data.status === 404) {
-          setAlerts(true, "error", res.data.message);
-        } else if (res.data.status === 304) {
-          setAlerts(true, "warning", res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   // edit end
+
   // delete start
   const deleteMenu = (e, id) => {
     e.preventDefault();
@@ -210,24 +106,8 @@ const Category = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [branches, setBranches] = useState([]);
-  const [cats, setCates] = useState([]);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/getBranchesAll`);
-      if (result.data.status === 200) {
-        setBranches(
-          result.data.fetchData.filter((item) => {
-            return item.id !== id;
-          })
-        );
-      } else {
-        throw Error("Due to an error, the data cannot be retrieved.");
-      }
-      const shared = await axios.get(`/api/sharedCates/${id}`);
-      if (shared.status === 200) {
-        setCates(shared.data);
-      }
       const cat = await axios.get(`/api/getCategories/${id}`);
       if (cat.data.status === 200) {
         setFetchData(cat.data.fetchData.data);
@@ -240,9 +120,7 @@ const Category = (props) => {
   useEffect(() => {
     // dataLoad();
     return () => {
-      setBranches([]);
       setFetchData([]);
-      setCates([]);
       setLoading(true);
     };
   }, []);
@@ -368,235 +246,43 @@ const Category = (props) => {
       ) : (
         ""
       )}
-      <Modal className="fade" show={modal}>
-        <Modal.Header>
-          <Modal.Title>{t("add_category")} </Modal.Title>
-          <Button onClick={() => setModal(false)} variant="" className="close">
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={initialValuesCate}
-          validationSchema={validationSchemaCate}
-          onSubmit={saveCate}
-        >
-          {({ errors, status, setFieldValue, setFieldTouched, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("categories")}</label>
-                  <Select
-                    // isMulti
-                    options={cats?.map((o, i) => {
-                      return {
-                        value: o.id,
-                        label: o.CategoryName,
-                      };
-                    })}
-                    onChange={(option) => {
-                      setFieldValue("categories", option.label);
-                    }}
-                    // onChange={handleSelectCates}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                  />
-                  {errors.categories ? (
-                    <small
-                      className="invalid"
-                      style={{ color: "red", marginTop: ".5rem" }}
-                    >
-                      {errors.categories}
-                    </small>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button onClick={() => setModal(false)} variant="danger light">
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
-      <Modal className="fade" show={modalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("add_category")} </Modal.Title>
-          <Button
-            onClick={() => setModalCentered(false)}
-            variant=""
-            className="close"
-          >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={saveMenu}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("share_category_with_other_branches")}</label>
-                  <Switch
-                    checked={share}
-                    color="secondary"
-                    onChange={(e) => setShare(!share)}
-                  />
-                </div>
-                {share ? (
-                  <>
-                    <div className="form-group">
-                      <label> {t("branches")}</label>
-                      <MySelect
-                        options={branches?.map((o, i) => {
-                          return {
-                            value: o.id,
-                            label: o.BrancheName,
-                          };
-                        })}
-                        isMulti
-                        closeMenuOnSelect={false}
-                        hideSelectedOptions={false}
-                        components={{ Option, MultiValue, animatedComponents }}
-                        onChange={handleSelectBranches}
-                        allowSelectAll={true}
-                        value={productbranches}
-                        name="branches"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  " "
-                )}
-                <div className="form-group">
-                  <label> {t("category_name")}</label>
-                  <Field
-                    name="CategoryName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.CategoryName && touched.CategoryName
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder={t("category_name")}
-                  />
-                  <ErrorMessage
-                    name="CategoryName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("image")}</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="form-control"
-                    placeholder={t("category_icon")}
-                    name="CategoryIcon"
-                    onChange={handleImage}
-                  />
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
-      {/* Edit Modal */}
-      <Modal className="fade" show={editmodalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("edit_category")}</Modal.Title>
-          <Button
-            onClick={() => setEditModalCentered(false)}
-            variant=""
-            className="close"
-          >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={editMenu}
-          validationSchema={validationSchema}
-          onSubmit={updateMenu}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("category_name")}</label>
-                  <Field
-                    name="CategoryName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.CategoryName && touched.CategoryName
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder={t("category_name")}
-                  />
-                  <ErrorMessage
-                    name="CategoryName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("image")}</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="form-control"
-                    placeholder={t("category_icon")}
-                    name="CategoryIcon"
-                    onChange={handleImage}
-                  />
-                  <img
-                    src={
-                      editMenu.CategoryIcon
-                        ? `http://${base_url}:${port}/images/catagories/${editMenu.CategoryIcon}`
-                        : DefaultPic
-                    }
-                    width="70"
-                    alt=" "
-                  />
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setEditModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("update")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
+      {modal && (
+        <AddSharedCategory
+          modal={modal}
+          setModal={setModal}
+          check={check}
+          setCheck={setCheck}
+          id={id}
+          setAlerts={setAlerts}
+        />
+      )}
+      {modalCentered && (
+        <AddCategory
+          modalCentered={modalCentered}
+          setModalCentered={setModalCentered}
+          lang={lang}
+          setLang={setLang}
+          fetchData={fetchData}
+          check={check}
+          setCheck={setCheck}
+          id={id}
+          setAlerts={setAlerts}
+        />
+      )}
+      {editmodalCentered && (
+        <EditCategory
+          editmodalCentered={editmodalCentered}
+          setEditModalCentered={setEditModalCentered}
+          lang={lang}
+          setLang={setLang}
+          editCate={editCate}
+          setEditCate={setEditCate}
+          id={id}
+          check={check}
+          setCheck={setCheck}
+          setAlerts={setAlerts}
+        />
+      )}
       <div
         className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 mb-2"
         style={{ backgroundColor: "#f5f5f5" }}

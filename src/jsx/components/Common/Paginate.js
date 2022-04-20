@@ -18,7 +18,6 @@ function Paginate(props) {
     return () => {
       setpageCount(0);
       setTotal(0);
-      // setFetchData([]);
     };
   }, [fetchData]);
 
@@ -28,7 +27,6 @@ function Paginate(props) {
     setTotal(res.data.fetchData.total);
     return res.data.fetchData.data;
   };
-
   const handlePageClick = async (data) => {
     let currentPage = data.selected + 1;
     const commentsFormServer = await fetchComments(currentPage);
@@ -55,7 +53,7 @@ function Paginate(props) {
         breakLinkClassName={"page-link"}
         activeClassName={"active"}
       />
-      <label className="mb-1 ">
+      <label className="mb-1">
         <small>
           {t("total")} {t("rows")}({fetchData.length}/{total})
         </small>

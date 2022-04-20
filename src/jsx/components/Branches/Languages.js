@@ -7,7 +7,7 @@ import Switch from "@mui/material/Switch";
 import Radio from "@mui/material/Radio";
 
 const Languages = (props) => {
-  const { selectedLang, setSelectedLang, setAlerts } = props;
+  const { selectedLang, setSelectedLang, setAlerts, BranchName } = props;
   const [lang, setLang] = useState([]);
   useEffect(() => {
     axios
@@ -29,7 +29,11 @@ const Languages = (props) => {
   const changeStatus = (e, value) => {
     let newLang = selectedLang.map((item) => {
       if (item.value === value) {
-        item.status = e.target.checked === true ? 1 : 0;
+        if (item.default === 1) {
+          setAlerts(true, "warning", "This language is default one.");
+        } else {
+          item.status = e.target.checked === true ? 1 : 0;
+        }
       }
       return item;
     });
@@ -56,6 +60,8 @@ const Languages = (props) => {
     let newLang = selectedLang.map((item) => {
       if (item.value === value) {
         item.default = 1;
+        item.status = 1;
+        item.translated_branch_name = "";
       } else {
         item.default = 0;
       }
@@ -63,7 +69,15 @@ const Languages = (props) => {
     });
     setSelectedLang(newLang);
   };
-
+  const onChange = (e, value) => {
+    let newLang = selectedLang.map((item) => {
+      if (item.value === value) {
+        item.translated_branch_name = e.target.value;
+      }
+      return item;
+    });
+    setSelectedLang(newLang);
+  };
   return (
     <div className="card">
       <div className="card-header">
@@ -79,6 +93,7 @@ const Languages = (props) => {
                 label: o.Language_name,
                 default: 0,
                 status: 1,
+                translated_branch_name: "",
               };
             })}
             isMulti
@@ -92,34 +107,40 @@ const Languages = (props) => {
         </div>
         <div className="row m-2">
           <div
-            className="col-xl-4 col-lg-4 col-sm-4 font-weight-bold d-flex align-items-center justify-content-center"
+            className="col-xl-3 col-lg-3 col-sm-3 font-weight-bold py-2 d-flex align-items-center justify-content-center"
             style={{ backgroundColor: "#f0f0f0" }}
           >
             {t("languages")}
           </div>
           <div
-            className="col-xl-4 col-lg-4 col-sm-4 font-weight-bold d-flex align-items-center justify-content-center"
+            className="col-xl-3 col-lg-3 col-sm-3 font-weight-bold py-2 d-flex align-items-center justify-content-center"
             style={{ backgroundColor: "#f0f0f0" }}
           >
             {t("default_language")}
           </div>
           <div
-            className="col-xl-4 col-lg-4 col-sm-4 font-weight-bold d-flex align-items-center justify-content-center"
+            className="col-xl-2 col-lg-2 col-sm-2 font-weight-bold py-2 d-flex align-items-center justify-content-center"
             style={{ backgroundColor: "#f0f0f0" }}
           >
             {t("status")}
+          </div>
+          <div
+            className="col-xl-4 col-lg-4 col-sm-4 font-weight-bold py-2 d-flex align-items-center justify-content-center"
+            style={{ backgroundColor: "#f0f0f0" }}
+          >
+            {t("branch_name")}
           </div>
         </div>
         {selectedLang?.map((item, i) => {
           return (
             <div className="row m-2" key={i}>
               <div
-                className="col-xl-4 col-lg-4 col-sm-4 d-flex align-items-center justify-content-center"
+                className="col-xl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
                 style={{ backgroundColor: "#f5f5f5" }}
               >
                 {item.label}
               </div>
-              <div className="col-xl-4 col-lg-4 col-sm-4 d-flex align-items-center justify-content-center">
+              <div className="col-xl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center">
                 <Radio
                   checked={item.default === 1 ? true : false}
                   onChange={(e) => changeDefault(e, item.value)}
@@ -127,10 +148,25 @@ const Languages = (props) => {
                   name="radio-buttons"
                 />
               </div>
-              <div className="col-xl-4 col-lg-4 col-sm-4 d-flex align-items-center justify-content-center">
+              <div className="col-xl-2 col-lg-2 col-sm-2 d-flex align-items-center justify-content-center">
                 <Switch
                   checked={item.status === 1 ? true : false}
                   onChange={(e) => changeStatus(e, item.value)}
+                />
+              </div>
+              <div className="col-xl-4 col-lg-4 col-sm-4 d-flex align-items-center justify-content-center">
+                <input
+                  type="text"
+                  className="form-control"
+                  name="name"
+                  placeholder="Translate Branch Name..."
+                  disabled={item.default === 1 ? true : false}
+                  value={
+                    item.default === 1
+                      ? BranchName
+                      : item.translated_branch_name
+                  }
+                  onChange={(e) => onChange(e, item.value)}
                 />
               </div>
             </div>

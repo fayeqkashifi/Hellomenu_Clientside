@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
@@ -9,35 +8,22 @@ import ViewComfyIcon from "@mui/icons-material/ViewComfy";
 import IconButton from "@mui/material/IconButton";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import AddIcon from "@mui/icons-material/Add";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import CustomAlert from "../CustomAlert";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import Tooltip from "@mui/material/Tooltip";
 import Search from "../Common/Search";
 import Paginate from "../Common/Paginate";
-
+import AddSubCategory from "./SubCates/AddSubCategory";
+import EditSubCategory from "./SubCates/EditSubCategory";
 const SubCategory = (props) => {
-  const initialValues = {
-    SubCategoryName: "",
-  };
-  const validationSchema = () => {
-    return Yup.object().shape({
-      SubCategoryName: Yup.string().required("Sub Category Name is required"),
-    });
-  };
   const id = props.history.location.state.sub_id;
+  const branchId = props.history.location.state.id;
   const [check, setCheck] = useState(true);
-
-  // insert start
   const [modalCentered, setModalCentered] = useState(false);
-
-  const [imageState, setImageState] = useState([]);
-
-  const handleImage = (e) => {
-    setImageState({ ...imageState, SubCategoryIcon: e.target.files[0] });
-  };
+  const [lang, setLang] = useState([]);
+  const [editmodalCentered, setEditModalCentered] = useState(false);
+  const [editSubCate, setEditSubCate] = useState([]);
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -50,39 +36,8 @@ const SubCategory = (props) => {
       message: message,
     });
   };
-  const saveSubMenu = (data) => {
-    // e.preventDefault();
-    const checkCate = fetchData.every((item) => {
-      return item.SubCategoryName !== data.SubCategoryName;
-    });
-    if (checkCate) {
-      const formData = new FormData();
-      formData.append("SubCategoryName", data.SubCategoryName);
-      formData.append("CategoryID", id);
-      formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
-      axios
-        .post("/api/insertSubCategories", formData)
-        .then((res) => {
-          if (res.data.status === 200) {
-            setImageState([]);
-            setCheck(!check);
-            setAlerts(true, "success", res.data.message);
-            setModalCentered(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      setAlerts(true, "warning", "Already exists, Please Try another name!");
-    }
-  };
-  // insert End
 
   // edit start
-  const [editmodalCentered, setEditModalCentered] = useState(false);
-  const [editSubMenu, setEditSubMenu] = useState([]);
-
   const fetchSubMenus = (e, id) => {
     e.preventDefault();
 
@@ -90,7 +45,7 @@ const SubCategory = (props) => {
       .get(`/api/editSubCategories/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
-          setEditSubMenu(res.data.menu);
+          setEditSubCate(res.data.menu);
           setEditModalCentered(true);
         } else if (res.data.status === 404) {
           setAlerts(true, "error", res.data.message);
@@ -100,32 +55,7 @@ const SubCategory = (props) => {
         console.log(err);
       });
   };
-  const updateSubMenu = (data) => {
-    const formData = new FormData();
-    formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
-    formData.append("SubCategoryName", data.SubCategoryName);
-    formData.append("CategoryID", id);
-    formData.append("id", editSubMenu.id);
-    axios
-      .post("/api/updateSubCategory", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setAlerts(true, "success", res.data.message);
-          setImageState([]);
-          setEditModalCentered(false);
-          setCheck(!check);
 
-          //  this.props.history.push("/")
-        } else if (res.data.status === 404) {
-          setAlerts(true, "error", res.data.message);
-        } else if (res.data.status === 304) {
-          setAlerts(true, "warning", res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   // edit end
   // delete start
   const deleteSubMenu = (e, id) => {
@@ -309,148 +239,6 @@ const SubCategory = (props) => {
           </div>
         </div>
       </div>
-
-      {/* <!-- Insert  Modal --> */}
-      <Modal className="fade" show={modalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("add_sub_Category")}</Modal.Title>
-          <Button
-            onClick={() => setModalCentered(false)}
-            variant=""
-            className="close"
-          >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={saveSubMenu}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("sub_category_icon")}</label>
-                  <Field
-                    name="SubCategoryName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.SubCategoryName && touched.SubCategoryName
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder={t("category_name")}
-                  />
-                  <ErrorMessage
-                    name="SubCategoryName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("image")}</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="form-control"
-                    placeholder={t("sub_category_icon")}
-                    name="SubCategoryIcon"
-                    onChange={handleImage}
-                  />
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
-      {/* Edit Modal */}
-      <Modal className="fade" show={editmodalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("edit_sub_category")}</Modal.Title>
-          <Button
-            onClick={() => setEditModalCentered(false)}
-            variant=""
-            className="close"
-          >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={editSubMenu}
-          validationSchema={validationSchema}
-          onSubmit={updateSubMenu}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> {t("sub_category_icon")}</label>
-                  <Field
-                    name="SubCategoryName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.SubCategoryName && touched.SubCategoryName
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder={t("category_name")}
-                  />
-                  <ErrorMessage
-                    name="SubCategoryName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> {t("image")}</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="form-control"
-                    placeholder={t("sub_category_icon")}
-                    name="SubCategoryIcon"
-                    onChange={handleImage}
-                  />
-                </div>
-                <img
-                  src={
-                    editSubMenu.SubCategoryIcon
-                      ? `http://${base_url}:${port}/images/sub_catagories/${editSubMenu.SubCategoryIcon}`
-                      : DefaultPic
-                  }
-                  width="70"
-                  alt=" "
-                />
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setEditModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
       {layout ? (
         <div className="row">
           {fetchData.length !== 0 ? (
@@ -585,6 +373,34 @@ const SubCategory = (props) => {
             </div>
           </div>
         </div>
+      )}
+      {modalCentered && (
+        <AddSubCategory
+          modalCentered={modalCentered}
+          setModalCentered={setModalCentered}
+          fetchData={fetchData}
+          check={check}
+          setCheck={setCheck}
+          id={id}
+          branchId={branchId}
+          setAlerts={setAlerts}
+          lang={lang}
+          setLang={setLang}
+        />
+      )}
+      {editmodalCentered && (
+        <EditSubCategory
+          editmodalCentered={editmodalCentered}
+          setEditModalCentered={setEditModalCentered}
+          fetchData={fetchData}
+          check={check}
+          setCheck={setCheck}
+          id={id}
+          setAlerts={setAlerts}
+          lang={lang}
+          setLang={setLang}
+          editSubCate={editSubCate}
+        />
       )}
     </Fragment>
   );

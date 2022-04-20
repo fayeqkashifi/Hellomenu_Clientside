@@ -55,56 +55,74 @@ const EditBranch = (props) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedLang, setSelectedLang] = useState([
-    { value: 40, label: "English", default: 1, status: 1 },
+    {
+      value: 40,
+      label: "English",
+      default: 1,
+      status: 1,
+      translated_branch_name: "",
+    },
   ]);
   const updateBranch = (data) => {
-    setIsSubmitting(true);
-    const ArrayValue = [];
-    for (const [key, value] of Object.entries(orderMethodsEdit)) {
-      ArrayValue.push(value);
-    }
-    if (ArrayValue.includes(1)) {
-      const formData = new FormData();
-      formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
-      formData.append("BrancheName", data.BrancheName);
-      formData.append("currencyID", data.currencyID);
-      formData.append("branchImages", editBranchstate.branchImages);
-      formData.append("branchVideos", editBranchstate.branchVideos);
-      formData.append("phoneNumber", data.phoneNumber);
-      formData.append("otherAddressFields", JSON.stringify(form));
-      formData.append("fullAddress", fullAddress);
-      formData.append("languages", JSON.stringify(selectedLang));
-      formData.append("id", data.id);
-      axios
-        .post("/api/updateBranches", formData)
-        .then((res) => {
-          if (res.data.status === 200) {
-            Swal.fire({
-              title: "Good job!",
-              html: res.data.message,
-              icon: "success",
-              confirmButtonText: "OK",
-              confirmButtonColor: "#93de8b",
-            }).then((check) => {
-              if (check) {
-                history.push(`/branches`);
-                setIsSubmitting(false);
-              }
-            });
-            setIsSubmitting(false);
-          } else if (res.data.status === 304) {
-            setAlerts(true, "warning", res.data.message);
-          } else {
-            setAlerts(true, "error", res.data.message);
-            throw Error("Due to an error, the data cannot be retrieved.");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    if (selectedLang.length !== 0) {
+      setIsSubmitting(true);
+      const ArrayValue = [];
+      for (const [key, value] of Object.entries(orderMethodsEdit)) {
+        ArrayValue.push(value);
+      }
+      if (ArrayValue.includes(1)) {
+        const formData = new FormData();
+        formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
+        formData.append("BrancheName", data.BrancheName);
+        formData.append("currencyID", data.currencyID);
+        formData.append("branchImages", editBranchstate.branchImages);
+        formData.append("branchVideos", editBranchstate.branchVideos);
+        formData.append("phoneNumber", data.phoneNumber);
+        formData.append("otherAddressFields", JSON.stringify(form));
+        formData.append("fullAddress", fullAddress);
+        formData.append("languages", JSON.stringify(selectedLang));
+        formData.append("id", data.id);
+        axios
+          .post("/api/updateBranches", formData)
+          .then((res) => {
+            if (res.data.status === 200) {
+              Swal.fire({
+                title: "Good job!",
+                html: res.data.message,
+                icon: "success",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#93de8b",
+              }).then((check) => {
+                if (check) {
+                  history.push(`/branches`);
+                  setIsSubmitting(false);
+                }
+              });
+              setIsSubmitting(false);
+            } else if (res.data.status === 304) {
+              setAlerts(true, "warning", res.data.message);
+            } else {
+              setAlerts(true, "error", res.data.message);
+              throw Error("Due to an error, the data cannot be retrieved.");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        setAlerts(
+          true,
+          "warning",
+          "Please choose at least one way of ordering."
+        );
+        setIsSubmitting(false);
+      }
     } else {
-      setAlerts(true, "warning", "Please choose at least one way of ordering.");
-      setIsSubmitting(false);
+      setAlerts(
+        true,
+        "warning",
+        "Please select at least one default Language."
+      );
     }
   };
   const [fullAddress, setFullAddress] = useState(1);
@@ -336,10 +354,10 @@ const EditBranch = (props) => {
         validationSchema={validationSchema}
         onSubmit={updateBranch}
       >
-        {({ errors, status, touched, setFieldValue }) => (
+        {({ errors, status, touched, values, setFieldValue }) => (
           <Form>
             <div className="row">
-              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("branch_info")}</h3>
@@ -391,13 +409,6 @@ const EditBranch = (props) => {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
-                <Languages
-                  selectedLang={selectedLang}
-                  setSelectedLang={setSelectedLang}
-                  setAlerts={setAlerts}
-                />
               </div>
               <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
@@ -468,6 +479,15 @@ const EditBranch = (props) => {
                   </div>
                 </div>
               </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <Languages
+                  selectedLang={selectedLang}
+                  setSelectedLang={setSelectedLang}
+                  setAlerts={setAlerts}
+                  BranchName={values.BrancheName}
+                />
+              </div>
+
               <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
                 <div className="card">
                   <div className="card-header">
