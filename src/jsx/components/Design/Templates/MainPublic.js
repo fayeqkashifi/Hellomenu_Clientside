@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import SecondMain from "./Second/SecondMain";
 import DarkMain from "./Dark/Main";
 import {
@@ -12,9 +11,11 @@ import { SecondStyle } from "./Common/Styles/Second";
 import { DarkStyle } from "./Common/Styles/Dark";
 import { ThridStyle } from "./Common/Styles/Thrid";
 import ThridMain from "./Thrid/Main";
+import axios from "axios";
+import { TemplateContext } from "./TemplateContext";
+
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
-  const { t } = useTranslation();
   const branchId = atob(atob(atob(props.match.params.id)));
   let deliveryFees = parseInt(props.history.location.state?.deliveryFees);
   if (isNaN(deliveryFees)) {
@@ -30,19 +31,49 @@ const MainPublic = (props) => {
   );
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(0);
-
-  const dataLoad = async () => {
-    getThemplate(branchId).then((data) => {
-      setTemplate(data);
-    });
-    getThemes(branchId).then((data) => {
-      setTheme(data);
-      // console.log(data);
-    });
-    getCategoriesBasedProduct(branchId).then((data) => {
+  const [languages, setLanguages] = useState(
+    JSON.parse(sessionStorage.getItem("languages")) || []
+  );
+  const [selectedLang, setSelectedLang] = useState({});
+  const [locale, setLocale] = useState(
+    JSON.parse(sessionStorage.getItem("locale")) || []
+  );
+  const dataLoad = async (input) => {
+    setActiveCategory("All~~~1");
+    let defaultLang;
+    if (input === undefined) {
+      if (languages.length === 0) {
+        const res = await axios.get(`/api/getBranchLangs/${branchId}`);
+        if (res.data.status === 200) {
+          setLanguages(res.data.fetchData);
+          sessionStorage.setItem(
+            "languages",
+            JSON.stringify(res.data.fetchData)
+          );
+        }
+        defaultLang = res.data.fetchData.filter((item) => {
+          if (item.default == 1) {
+            setLocale(JSON.parse(item.locale));
+            sessionStorage.setItem("locale", item.locale);
+            return item;
+          }
+        })[0];
+      } else {
+        defaultLang = JSON.parse(sessionStorage.getItem("selectedLang"));
+      }
+    }
+    let page = 1;
+    await getCategoriesBasedProduct(
+      branchId,
+      input === undefined ? defaultLang?.id : input.id
+    ).then((data) => {
       setCategories(data);
     });
-    getProductsBasedOnBranchId(branchId, page).then((data) => {
+    await getProductsBasedOnBranchId(
+      branchId,
+      page,
+      input === undefined ? defaultLang?.id : input.id
+    ).then((data) => {
       setLastPage(data.last_page);
       setProducts(data.data);
       setPage(page + 1);
@@ -57,29 +88,22 @@ const MainPublic = (props) => {
       setCategories([]);
       setProducts([]);
       setActiveCategory("All~~~1");
-
-      setPage(0);
+      setPage(1);
       setLastPage(0);
-
+    };
+  }, []);
+  useEffect(() => {
+    getThemplate(branchId).then((data) => {
+      setTemplate(data);
+    });
+    getThemes(branchId).then((data) => {
+      setTheme(data);
+    });
+    return () => {
       setTemplate([]);
       setTheme([]);
     };
   }, []);
-  const properties = {
-    lastPage: lastPage,
-    setLastPage: setLastPage,
-    page: page,
-    setPage: setPage,
-    branchId: branchId,
-    deliveryFees: deliveryFees,
-    activeCategory: activeCategory,
-    setActiveCategory: setActiveCategory,
-    categories: categories,
-    products: products,
-    setCart: setCart,
-    setProducts: setProducts,
-    cart: cart,
-  };
   var view = "";
   if (loading) {
     return (
@@ -88,34 +112,53 @@ const MainPublic = (props) => {
         role="status"
         style={{ position: "fixed", top: "50%", left: "50%" }}
       >
-        <span className="sr-only">{t("loading")}</span>
+        <span className="sr-only"></span>
       </div>
     );
   } else {
     if (template.checkTemplate === "dark") {
-      view = (
-        <DarkMain
-          {...properties}
-          style={DarkStyle(template?.Customization, theme)}
-        />
-      );
+      view = <DarkMain />;
     } else if (template.checkTemplate === "second") {
-      view = (
-        <SecondMain
-          {...properties}
-          style={SecondStyle(template?.Customization, theme)}
-        />
-      );
+      view = <SecondMain />;
     } else if (template.checkTemplate === "thrid") {
-      view = (
-        <ThridMain
-          {...properties}
-          style={ThridStyle(template?.Customization, theme)}
-        />
-      );
+      view = <ThridMain />;
     }
   }
 
-  return view;
+  return (
+    <TemplateContext.Provider
+      value={{
+        products,
+        style:
+          template.checkTemplate === "dark"
+            ? DarkStyle(template?.Customization, theme)
+            : template.checkTemplate === "second"
+            ? SecondStyle(template?.Customization, theme)
+            : template.checkTemplate === "thrid"
+            ? ThridStyle(template?.Customization, theme)
+            : console.log("style Error in Mainpublic file"),
+        branchId,
+        categories,
+        activeCategory,
+        setActiveCategory,
+        setProducts,
+        setPage,
+        page,
+        lastPage,
+        setLastPage,
+        selectedLang,
+        cart,
+        setCart,
+        dataLoad,
+        deliveryFees,
+        languages,
+        setSelectedLang,
+        locale,
+        setLocale,
+      }}
+    >
+      {view}
+    </TemplateContext.Provider>
+  );
 };
 export default MainPublic;

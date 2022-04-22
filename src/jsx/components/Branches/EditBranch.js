@@ -24,6 +24,7 @@ import ReactPlayer from "react-player/lazy";
 import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
 import Languages from "./Languages";
+import { PublicLocale } from "./Public Localization/Default";
 
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
@@ -82,6 +83,7 @@ const EditBranch = (props) => {
         formData.append("fullAddress", fullAddress);
         formData.append("languages", JSON.stringify(selectedLang));
         formData.append("id", data.id);
+        formData.append("locale", JSON.stringify(PublicLocale));
         axios
           .post("/api/updateBranches", formData)
           .then((res) => {

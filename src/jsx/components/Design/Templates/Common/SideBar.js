@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import React, { useState, useContext } from "react";
 import Box from "@mui/material/Box";
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -12,6 +11,7 @@ import {
   getProductBasedOnSubCategory,
 } from "../Functionality";
 import AllOutIcon from "@mui/icons-material/AllOut";
+import { TemplateContext } from "../TemplateContext";
 const SideBar = (props) => {
   const {
     style,
@@ -20,7 +20,10 @@ const SideBar = (props) => {
     setProducts,
     setActiveCategory,
     branchId,
-  } = props;
+    selectedLang,
+    locale,
+  } = useContext(TemplateContext);
+
   const [value, setValue] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -30,17 +33,23 @@ const SideBar = (props) => {
   const filterProducts = (menu) => {
     if (menu !== "All") {
       if (menu.sub_category_id === null) {
-        getProductBasedOnCategory(menu.category_id, 1).then((data) => {
-          setProducts(data.data);
-          // setChangeState(true);
-          // setLastPage(data.last_page);
-          // setPage(2);
-          setActiveCategory(
-            menu.CategoryName + "~~~cate~~~" + menu.category_id
-          );
-        });
+        getProductBasedOnCategory(menu.category_id, 1, selectedLang.id).then(
+          (data) => {
+            setProducts(data.data);
+            // setChangeState(true);
+            // setLastPage(data.last_page);
+            // setPage(2);
+            setActiveCategory(
+              menu.CategoryName + "~~~cate~~~" + menu.category_id
+            );
+          }
+        );
       } else {
-        getProductBasedOnSubCategory(menu.sub_category_id, 1).then((res) => {
+        getProductBasedOnSubCategory(
+          menu.sub_category_id,
+          1,
+          selectedLang.id
+        ).then((res) => {
           setProducts(res.data);
           setActiveCategory(
             menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
@@ -51,7 +60,7 @@ const SideBar = (props) => {
         });
       }
     } else {
-      getProductsBasedOnBranchId(branchId, 1).then((data) => {
+      getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then((data) => {
         setProducts(data.data);
         // setChangeState(true);
         // setLastPage(data.last_page);
@@ -77,8 +86,6 @@ const SideBar = (props) => {
         sx={{
           [`& .${tabsClasses.scrollButtons}`]: {
             "&.Mui-disabled": { opacity: 1 },
-            // borderRight: "red solid 2px",
-            // backgroundSize: 100,
           },
         }}
       >
@@ -108,7 +115,7 @@ const SideBar = (props) => {
                   : style?.textDeactive
               }
             >
-              All
+              {locale?.all}
             </Typography>
           }
         ></Tab>

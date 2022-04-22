@@ -9,7 +9,9 @@ export const ThridStyle = (custom, theme) => {
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center",
-      backgroundImage: `url(http://${base_url}:${port}/images/Themes/${theme.HomeScreenBackgroundURL})`,
+      backgroundImage:
+        theme.HomeScreenBackgroundURL &&
+        `url(http://${base_url}:${port}/images/Themes/${theme.HomeScreenBackgroundURL})`,
       backgroundColor: custom?.bgColor
         ? custom.bgColor
         : theme.BackgroundColor
@@ -36,8 +38,9 @@ export const ThridStyle = (custom, theme) => {
       marginRight: "20px",
     },
     headerTotalDiv: {
-      marginLeft: "20px",
-      marginRight: "20px",
+      width: "250px",
+      marginLeft: "10px",
+      marginRight: "10px",
       backgroundColor: custom?.cardBgColor
         ? custom.cardBgColor
         : theme.CardColor
@@ -49,7 +52,7 @@ export const ThridStyle = (custom, theme) => {
         ? theme.HighlightColor
         : "#000",
       fontWeight: "bold",
-      borderRadius: "10%",
+      borderRadius: "10px",
     },
     totalPriceIcon: {
       backgroundColor: "#503e9d",

@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-// Import css files
+import React, { useState, useContext } from "react";
 import Container from "@mui/material/Container";
 import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
@@ -16,14 +14,19 @@ import FormGroup from "@mui/material/FormGroup";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
 import { Swiper, SwiperSlide } from "swiper/react";
 import CustomAlert from "../../../CustomAlert";
-import "swiper/swiper-bundle.min.css";
-import "swiper/swiper.min.css";
-import { getProduct } from "../Functionality";
+// import "swiper/swiper-bundle.min.css";
+// import "swiper/swiper.min.css";
 import RecCounter from "./RecCounter";
-const OrderDetails = (props) => {
-  const { t } = useTranslation();
+import { TemplateContext } from "../TemplateContext";
+const OrderDetails = () => {
   const {
-    id,
+    fetchData,
+    setFetchData,
+    locale,
+    cart,
+    setCart,
+    item,
+    setItem,
     style,
     orignalPrice,
     orignalStock,
@@ -34,32 +37,11 @@ const OrderDetails = (props) => {
     productName,
     countryCode,
     picture,
-    deliveryFees,
     skuarray,
     activeSKU,
-    branchId,
-  } = props;
-  const [fetchData, setFetchData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [item, setItem] = useState([]);
-  useEffect(() => {
-    const getdata = async () => {
-      var data = [];
-      await getProduct(id).then((result) => {
-        data = result.data.fetchData;
-        setItem(data);
-        setFetchData(result.data.recommend);
-        setLoading(false);
-      });
-    };
-    // dataLoad();
-    getdata();
-    return () => {
-      // setItem([]);
-      // setFetchData([]);
-      setLoading(true);
-    };
-  }, [id]);
+    loading,
+  } = useContext(TemplateContext);
+
   let [sum, setSum] = useState(0);
 
   const extraHandlers = (e, price, id, qty) => {
@@ -80,9 +62,6 @@ const OrderDetails = (props) => {
     }
   };
 
-  const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
-  );
   const [note, setNote] = useState([]);
   const changeHandle = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
@@ -211,16 +190,7 @@ const OrderDetails = (props) => {
         />
       )}
       <Container maxWidth="lg">
-        <Header
-          details={true}
-          search={false}
-          subcategories={0}
-          cart={cart}
-          style={style}
-          branchId={branchId}
-          setCart={setCart}
-          deliveryFees={deliveryFees}
-        />
+        <Header details={true} search={false} />
         <Container
           className="d-flex justify-content-center "
           style={style?.varaintContainer}
@@ -233,11 +203,6 @@ const OrderDetails = (props) => {
                     speed={2500}
                     className="mySwiper2 m-2"
                     spaceBetween={1}
-                    // style={{
-                    //   "--swiper-navigation-color": "#fff",
-                    //   "--swiper-pagination-color": "#fff",
-                    // }}
-                    // navigation={true}
                   >
                     {JSON.parse(picture)?.map((image, i) => {
                       return (
@@ -297,7 +262,7 @@ const OrderDetails = (props) => {
                   ) : (
                     <>
                       <Typography style={style?.cartPrice}>
-                        {t("recommendation")}
+                        {locale?.recommendation}
                       </Typography>
                       <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
                     </>
@@ -337,7 +302,7 @@ const OrderDetails = (props) => {
               style={style?.buttonStyle}
               onClick={(e) => addItem(e)}
             >
-              Add to Cart
+              {locale?.add_to_cart}
             </button>
           </Grid>
         </Grid>

@@ -15,12 +15,14 @@ import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
 import SubmitButtons from "../Common/SubmitButtons";
 import MButton from "@mui/material/Button";
+import Local from "./Local";
 
 const AddProduct = (props) => {
   const history = useHistory();
   // for localization
   const branchId = props.history.location.state.id;
   // validation start
+  const [lang, setLang] = useState([]);
 
   const initialValues = {
     ProductName: "",
@@ -93,6 +95,7 @@ const AddProduct = (props) => {
     formData.append("UnitName", data.UnitName);
     formData.append("branchId", branchId);
     formData.append("form", JSON.stringify(form));
+    formData.append("translation", JSON.stringify(lang));
     axios
       .post(`/api/insertProducts`, formData)
       .then((res) => {
@@ -213,7 +216,6 @@ const AddProduct = (props) => {
   const handleSelectEventExtra = (e) => {
     setProductExtra(e);
   };
-  // const [extraPrices, setextraPrices] = useState({});
 
   const extraHandle = (e, id) => {
     let updatedList = productExtra.map((item) => {
@@ -380,7 +382,7 @@ const AddProduct = (props) => {
         validationSchema={validationSchema}
         onSubmit={saveProduct}
       >
-        {({ errors, status, touched, setFieldValue }) => (
+        {({ errors, touched, setFieldValue, values }) => (
           <Form>
             <div className="row">
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
@@ -569,6 +571,26 @@ const AddProduct = (props) => {
                   </div>
                 </div>
               </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">
+                      {t("languages_localisation")}
+                    </h3>
+                  </div>
+                  <div className="card-body">
+                    <Local
+                      changeBit={true}
+                      url={`/api/branchLangs/${branchId}`}
+                      inputData={values.ProductName}
+                      UnitName={values.UnitName}
+                      lang={lang}
+                      setLang={setLang}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                 <div className="card">
                   <div className="card-header">

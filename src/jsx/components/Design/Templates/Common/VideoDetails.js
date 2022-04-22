@@ -24,16 +24,18 @@ function VideoDetails(props) {
   const [lastPage, setLastPage] = useState(1);
   const [changeState, setChangeState] = useState(true);
   const [value, setValue] = useState("");
-  useEffect(() => {
+  const dataLoad = async () => {
     if (product?.sub_category_id === null) {
-      getProductBasedOnCategory(product?.category_id, page).then((res) => {
-        setProducts(res.data);
-        setLastPage(res.last_page);
-        setValue("cate~~~" + product?.category_id);
-        setPage(page + 1);
-      });
+      await getProductBasedOnCategory(product?.category_id, page).then(
+        (res) => {
+          setProducts(res.data);
+          setLastPage(res.last_page);
+          setValue("cate~~~" + product?.category_id);
+          setPage(page + 1);
+        }
+      );
     } else {
-      getProductBasedOnSubCategory(product?.sub_category_id, page).then(
+      await getProductBasedOnSubCategory(product?.sub_category_id, page).then(
         (res) => {
           setValue("sub~~~" + product?.sub_category_id);
           setProducts(res.data);
@@ -42,6 +44,15 @@ function VideoDetails(props) {
         }
       );
     }
+  };
+  useEffect(() => {
+    dataLoad();
+    return () => {
+      setPage(1);
+      setLastPage(1);
+      setValue("");
+      setProducts([]);
+    };
   }, []);
   const fetchMoreData = () => {
     if (page <= lastPage) {

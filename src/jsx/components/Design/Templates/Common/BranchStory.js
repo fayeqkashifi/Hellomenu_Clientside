@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { base_url, port } from "../../../../../Consts";
-import { useTranslation } from "react-i18next";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { getProduct } from "../Functionality";
 import Stories from "react-insta-stories";
@@ -10,7 +9,6 @@ import { Link } from "react-router-dom";
 import profile from "../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
 function BranchStory(props) {
-  const { t } = useTranslation();
   const { style, branch, deliveryFees, branchStory } = props;
   console.log();
   const [loading, setLoading] = useState(true);
@@ -43,7 +41,7 @@ function BranchStory(props) {
           role="status"
           style={{ position: "fixed", top: "50%", left: "50%" }}
         >
-          <span className="sr-only">{t("loading")}</span>
+          <span className="sr-only"></span>
         </div>
       </div>
     );

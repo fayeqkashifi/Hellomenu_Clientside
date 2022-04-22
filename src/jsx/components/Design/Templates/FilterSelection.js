@@ -10,7 +10,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import QRCode from "qrcode.react";
 import { base_url, port } from "../../../../Consts";
-
 const FilterSelection = () => {
   const { t } = useTranslation();
 

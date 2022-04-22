@@ -123,6 +123,7 @@ export const Locale = {
   number_of_related_products: "Number of related products:",
   add_variant_details: "Add Variant Details",
   public_link: "Public Link",
+  public_loaclization: "Public-Localization",
   details: "Details",
   value: "Value",
   name: "Name",
@@ -291,4 +292,5 @@ export const Locale = {
   areaName: "Area Name",
   noItemFound: "No Item Found",
   dateAndTime: "Date and Time",
+  key: "Key",
 };

@@ -226,7 +226,6 @@ const ServiceArea = (props) => {
     });
   };
   const save = (data) => {
-    // console.log(JSON.stringify(data, null, 2));
     const formData = new FormData();
     formData.append("city_id", data.city);
     formData.append("areaName", data.areaName);
@@ -234,9 +233,15 @@ const ServiceArea = (props) => {
       .post("/api/insertAreas", formData)
       .then((res) => {
         if (res.data.status === 200) {
+          setServicesAreas([
+            ...servicesAreas,
+            { value: res.data.data.id, label: res.data.data.areaName },
+          ]);
           setChangeBit(!changeBit);
           setAreaModal(false);
           setAlerts(true, "success", res.data.message);
+        } else if (res.data.status === 304) {
+          setAlerts(true, "warning", res.data.message);
         }
       })
       .catch((error) => {

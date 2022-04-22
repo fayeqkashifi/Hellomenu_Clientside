@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -16,30 +16,35 @@ import Drawer from "./Drawer";
 import getSymbolFromCurrency from "currency-symbol-map";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
+import LanguageLocalization from "./Localization";
+import { TemplateContext } from "../TemplateContext";
 function Header(props) {
-  const history = useHistory();
-  const [modalCentered, setModalCentered] = useState(false);
   const {
+    style,
     categories,
     activeCategory,
     setProducts,
     setActiveCategory,
-    style,
     cart,
     branchId,
-    setCart,
-    deliveryFees,
     setLastPage,
     setPage,
-    setChangeState,
-    search,
-    details,
-  } = props;
+    selectedLang,
+    locale,
+  } = useContext(TemplateContext);
+  const { search, details, setChangeState } = props;
 
-  const filterProducts = (menu) => {
+  const history = useHistory();
+  const [modalCentered, setModalCentered] = useState(false);
+
+  const filterProducts = async (menu) => {
     if (menu !== "All") {
       if (menu.sub_category_id === null) {
-        getProductBasedOnCategory(menu.category_id, 1).then((data) => {
+        await getProductBasedOnCategory(
+          menu.category_id,
+          1,
+          selectedLang.id
+        ).then((data) => {
           setProducts(data.data);
           setChangeState(true);
           setLastPage(data.last_page);
@@ -49,7 +54,11 @@ function Header(props) {
           );
         });
       } else {
-        getProductBasedOnSubCategory(menu.sub_category_id, 1).then((res) => {
+        await getProductBasedOnSubCategory(
+          menu.sub_category_id,
+          1,
+          selectedLang.id
+        ).then((res) => {
           setProducts(res.data);
           setActiveCategory(
             menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
@@ -60,17 +69,19 @@ function Header(props) {
         });
       }
     } else {
-      getProductsBasedOnBranchId(branchId, 1).then((data) => {
-        setProducts(data.data);
-        setChangeState(true);
-        setLastPage(data.last_page);
-        setPage(2);
-        setActiveCategory("All~~~1");
-      });
+      await getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then(
+        (data) => {
+          setProducts(data.data);
+          setChangeState(true);
+          setLastPage(data.last_page);
+          setPage(2);
+          setActiveCategory("All~~~1");
+        }
+      );
     }
   };
   let [sum, setSum] = useState(0);
-  const dataLoad = () => {
+  const dataLoading = () => {
     let count = 0;
     cart.map(
       (item) =>
@@ -82,7 +93,7 @@ function Header(props) {
     setSum(count);
   };
   useEffect(() => {
-    dataLoad();
+    dataLoading();
     return () => {
       setSum(0);
     };
@@ -90,13 +101,15 @@ function Header(props) {
   let cancelToken;
   const searchItem = async (e) => {
     if (e.target.value === "") {
-      getProductsBasedOnBranchId(branchId, 1).then((data) => {
-        setProducts(data.data);
-        setChangeState(true);
-        setLastPage(data.last_page);
-        setPage(2);
-        setActiveCategory("All~~~1");
-      });
+      await getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then(
+        (data) => {
+          setProducts(data.data);
+          setChangeState(true);
+          setLastPage(data.last_page);
+          setPage(2);
+          setActiveCategory("All~~~1");
+        }
+      );
     } else {
       if (cancelToken) {
         cancelToken.cancel("Operations cancelled due to new request");
@@ -106,6 +119,10 @@ function Header(props) {
       try {
         results = await axios.get(`/api/findProduct/${e.target.value}`, {
           cancelToken: cancelToken.token,
+          params: {
+            branchId: branchId,
+            langId: selectedLang.id,
+          },
         });
         if (results.data.status === 200) {
           setProducts(results.data.fetchData);
@@ -125,7 +142,9 @@ function Header(props) {
           <KeyboardBackspaceIcon fontSize="small" />
         </IconButton>
         <Typography align="left" style={style?.title} noWrap>
-          {activeCategory?.split("~~~")[0]}
+          {activeCategory?.split("~~~")[0] === "All"
+            ? locale?.all
+            : activeCategory?.split("~~~")[0]}
         </Typography>
         <Typography
           align="right"
@@ -139,10 +158,11 @@ function Header(props) {
               onChange={searchItem}
               style={style?.inputfield}
               className={`form-control`}
-              placeholder="Search By Name"
+              placeholder={locale?.search_by_name}
             />
           </>
         )}
+        <LanguageLocalization />
         <IconButton onClick={() => setModalCentered(true)}>
           <Badge
             badgeContent={cart.length}
@@ -180,7 +200,7 @@ function Header(props) {
                 sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
                 onClick={() => filterProducts("All")}
               >
-                All
+                {locale?.all}
               </Typography>
             )}
 
@@ -211,12 +231,7 @@ function Header(props) {
       <Drawer
         modalCentered={modalCentered}
         setModalCentered={setModalCentered}
-        style={style}
         checkBit={true}
-        branchId={branchId}
-        cart={cart}
-        setCart={setCart}
-        deliveryFees={deliveryFees}
       />
     </React.Fragment>
   );

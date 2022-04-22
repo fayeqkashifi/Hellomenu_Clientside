@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import OrderDetails from "./Common/OrderDetails";
+import { TemplateContext } from "./TemplateContext";
+import { getProduct } from "./Functionality";
+
 const MainRrecommend = (props) => {
   const [loading, setLoading] = useState(false);
   const style = props.history.location.state.style;
@@ -18,40 +21,70 @@ const MainRrecommend = (props) => {
   const ingredients = props.history.location.state.ingredients;
   const skuarray = props.history.location.state.skuarray;
   const activeSKU = props.history.location.state.activeSKU;
+  const [cart, setCart] = useState(
+    JSON.parse(localStorage.getItem("cart")) || []
+  );
+  const languages = JSON.parse(sessionStorage.getItem("languages"));
+  const [selectedLang, setSelectedLang] = useState(
+    JSON.parse(sessionStorage.getItem("selectedLang")) || {}
+  );
+  const [locale, setLocale] = useState(
+    JSON.parse(sessionStorage.getItem("locale")) || []
+  );
+  const [item, setItem] = useState([]);
+  const [fetchData, setFetchData] = useState([]);
 
-  var view = "";
-  if (loading) {
-    return (
-      <div
-        className="spinner-border text-primary "
-        role="status"
-        style={{ position: "fixed", top: "50%", left: "50%" }}
-      >
-        <span className="sr-only"></span>
-      </div>
-    );
-  } else {
-    view = (
-      <OrderDetails
-        id={id}
-        style={style}
-        deliveryFees={deliveryFees}
-        branchId={branchId}
-        productName={productName}
-        picture={picture}
-        stock={stock}
-        price={price}
-        orignalPrice={orignalPrice}
-        orignalStock={orignalStock}
-        countryCode={countryCode}
-        extraValue={extraValue}
-        ingredients={ingredients}
-        skuarray={skuarray}
-        activeSKU={activeSKU}
-      />
-    );
-  }
-
-  return view;
+  const dataLoad = async (input) => {
+    var data = [];
+    await getProduct(id, input.id).then((result) => {
+      data = result.data.fetchData;
+      setItem(data);
+      setFetchData(result.data.recommend);
+      setLoading(false);
+    });
+  };
+  useEffect(() => {
+    dataLoad(selectedLang);
+    return () => {
+      setItem([]);
+      setFetchData([]);
+      setLoading(true);
+    };
+  }, [id]);
+  return (
+    <TemplateContext.Provider
+      value={{
+        dataLoad,
+        loading,
+        fetchData,
+        item,
+        setItem,
+        languages,
+        selectedLang,
+        setSelectedLang,
+        setLocale,
+        locale,
+        cart,
+        setCart,
+        deliveryFees,
+        activeSKU,
+        skuarray,
+        ingredients,
+        extraValue,
+        countryCode,
+        orignalStock,
+        orignalPrice,
+        price,
+        stock,
+        picture,
+        productName,
+        branchId,
+        style,
+        id,
+      }}
+    >
+      <OrderDetails />
+    </TemplateContext.Provider>
+  );
 };
 export default MainRrecommend;

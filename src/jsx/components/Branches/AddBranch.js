@@ -19,6 +19,8 @@ import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import Languages from "./Languages";
+import { PublicLocale } from "./Public Localization/Default";
+
 const AddBranch = () => {
   const initialValues = {
     BrancheName: "",
@@ -26,6 +28,7 @@ const AddBranch = () => {
     phoneNumber: "",
     branchVideos: [],
     branchImages: [],
+    locale: JSON.stringify(PublicLocale),
   };
   const validationSchema = () => {
     return Yup.object().shape({
@@ -58,6 +61,7 @@ const AddBranch = () => {
       translated_branch_name: "",
     },
   ]);
+
   const saveBranch = (data) => {
     if (selectedLang.length !== 0) {
       setIsSubmitting(true);
@@ -80,6 +84,7 @@ const AddBranch = () => {
         formData.append("otherAddressFields", JSON.stringify(form));
         formData.append("fullAddress", fullAddress);
         formData.append("languages", JSON.stringify(selectedLang));
+        formData.append("locale", data.locale);
         axios
           .post("/api/insertBranches", formData)
           .then((res) => {

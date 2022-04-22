@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import getSymbolFromCurrency from "currency-symbol-map";
 import Drawer from "./Drawer";
+import { TemplateContext } from "../TemplateContext";
 
 function Footer(props) {
-  const { title, url, style, stock, cart, setCart, deliveryFees, branchId } =
-    props;
+  const { style, stock, cart, deliveryFees, locale } =
+    useContext(TemplateContext);
+  const { title, url } = props;
   let [sum, setSum] = useState(0);
   const dataLoad = () => {
     let count = 0;
@@ -33,9 +35,18 @@ function Footer(props) {
     <>
       <Box component="footer" sx={style?.footerStyle} className="bottom-0 mt-5">
         <Grid container spacing={2}>
-          <Grid item xs={6} lg={4} xl={4} sm={4} md={4}>
+          <Grid
+            item
+            xs={6}
+            lg={4}
+            xl={4}
+            sm={4}
+            md={4}
+            className="d-flex align-items-center justify-content-center"
+          >
             <Typography style={style?.cartDescription}>
-              Sub Total<br></br>
+              {locale?.sub_total}
+              <br></br>
               {sum.toFixed(2) +
                 "  " +
                 (getSymbolFromCurrency(cart[0]?.currency_code) === undefined
@@ -43,9 +54,18 @@ function Footer(props) {
                   : getSymbolFromCurrency(cart[0]?.currency_code))}
             </Typography>
           </Grid>
-          <Grid item xs={6} lg={4} xl={4} sm={4} md={4}>
+          <Grid
+            item
+            xs={6}
+            lg={4}
+            xl={4}
+            sm={4}
+            md={4}
+            className="d-flex align-items-center justify-content-center"
+          >
             <Typography style={style?.cartDescription}>
-              Delivery Fee<br></br>
+              {locale?.delivery_fee}
+              <br></br>
               {deliveryFees.toFixed(2) +
                 "  " +
                 (getSymbolFromCurrency(cart[0]?.currency_code) === undefined
@@ -80,12 +100,7 @@ function Footer(props) {
       <Drawer
         modalCentered={modalCentered}
         setModalCentered={setModalCentered}
-        style={style}
         checkBit={true}
-        branchId={branchId}
-        cart={cart}
-        setCart={setCart}
-        deliveryFees={deliveryFees}
       />
     </>
   );

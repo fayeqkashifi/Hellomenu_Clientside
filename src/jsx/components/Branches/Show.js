@@ -29,6 +29,7 @@ import QRcodeStyle from "./QRcodeStyle";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import "./mobileStyle.css";
+import PublicLocalization from "./Public Localization";
 
 const Show = (props) => {
   const id = props.history.location.state.id;
@@ -50,17 +51,19 @@ const Show = (props) => {
         state: { id: id, BrancheName: BrancheName },
       },
     },
-    checkPermission("design-view") && {
-      name: t("design"),
-      url: {
-        pathname: `${url}/design`,
-        state: { id: id, BrancheName: BrancheName },
-      },
-    },
+
     checkPermission("tables-view") && {
       name: t("tables"),
       url: {
         pathname: `${url}/tables`,
+        state: { id: id, BrancheName: BrancheName },
+      },
+    },
+
+    checkPermission("service-areas-view") && {
+      name: t("services_areas"),
+      url: {
+        pathname: `${url}/services-areas`,
         state: { id: id, BrancheName: BrancheName },
       },
     },
@@ -71,10 +74,17 @@ const Show = (props) => {
         state: { id: id, BrancheName: BrancheName },
       },
     },
-    checkPermission("service-areas-view") && {
-      name: t("services_areas"),
+    checkPermission("design-view") && {
+      name: t("design"),
       url: {
-        pathname: `${url}/services-areas`,
+        pathname: `${url}/design`,
+        state: { id: id, BrancheName: BrancheName },
+      },
+    },
+    {
+      name: t("public_loaclization"),
+      url: {
+        pathname: `${url}/public-localization`,
         state: { id: id, BrancheName: BrancheName },
       },
     },
@@ -84,12 +94,6 @@ const Show = (props) => {
         pathname: `#`,
       },
     },
-    // {
-    //   name: t("public_link"),
-    //   url: {
-    //     pathname: `/${template.URL}/${btoa(id)}`,
-    //   },
-    // },
   ].filter(Boolean);
 
   // to display public link inside phone
@@ -110,53 +114,48 @@ const Show = (props) => {
       <Router>
         <div className="row">
           <div className="col-xl-12 col-xxl-12">
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="card">
-                  <div className="card-header border-0 pb-2 d-lg-flex d-block">
-                    <div>
-                      <h4 className="card-title mb-2">{BrancheName}</h4>
-                    </div>
-                    <div className="card-action card-tabs mt-3 mt-3 mt-lg-0">
-                      <Tab.Container
-                        defaultActiveKey={
-                          geturl[5] !== "sub-category" &&
-                          geturl[5] !== "cat-shared"
-                            ? geturl[5]
-                              ? geturl[5]
-                              : tabData[0].name.toLowerCase()
-                            : tabData[0].name.toLowerCase()
-                        }
-                      >
-                        <Nav as="ul" className="nav-tabs">
-                          {tabData.map((data, i) =>
-                            data.name === t("preview") ? (
-                              <Nav.Item as="li" key={i}>
-                                <Nav.Link
-                                  as={Link}
-                                  to={data.url}
-                                  onClick={(e) => phone(e)}
-                                  eventKey={data.name.toLowerCase()}
-                                >
-                                  {data.name}
-                                </Nav.Link>
-                              </Nav.Item>
-                            ) : (
-                              <Nav.Item as="li" key={i}>
-                                <Nav.Link
-                                  as={Link}
-                                  to={data.url}
-                                  eventKey={data.name.toLowerCase()}
-                                >
-                                  {data.name}
-                                </Nav.Link>
-                              </Nav.Item>
-                            )
-                          )}
-                        </Nav>
-                      </Tab.Container>
-                    </div>
-                  </div>
+            <div className="card p-1">
+              <div className="d-flex justify-content-between">
+                <label className="card-title col-2 text-truncate mt-2">
+                  {BrancheName}
+                </label>
+                <div className="card-action card-tabs">
+                  <Tab.Container
+                    defaultActiveKey={
+                      geturl[5] !== "sub-category" && geturl[5] !== "cat-shared"
+                        ? geturl[5]
+                          ? geturl[5]
+                          : tabData[0].name.toLowerCase()
+                        : tabData[0].name.toLowerCase()
+                    }
+                  >
+                    <Nav as="ul" className="nav-tabs">
+                      {tabData.map((data, i) =>
+                        data.name === t("preview") ? (
+                          <Nav.Item as="li" key={i}>
+                            <Nav.Link
+                              as={Link}
+                              to={data.url}
+                              onClick={(e) => phone(e)}
+                              eventKey={data.name.toLowerCase()}
+                            >
+                              {data.name}
+                            </Nav.Link>
+                          </Nav.Item>
+                        ) : (
+                          <Nav.Item as="li" key={i}>
+                            <Nav.Link
+                              as={Link}
+                              to={data.url}
+                              eventKey={data.name.toLowerCase()}
+                            >
+                              {data.name}
+                            </Nav.Link>
+                          </Nav.Item>
+                        )
+                      )}
+                    </Nav>
+                  </Tab.Container>
                 </div>
               </div>
             </div>
@@ -256,6 +255,10 @@ const Show = (props) => {
               component={QRcodeStyle}
             />
           )}
+          <PrivateRoute
+            path={`${path}/public-localization`}
+            component={PublicLocalization}
+          />
         </Switch>
       </Router>
     </Fragment>

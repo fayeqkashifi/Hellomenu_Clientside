@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { base_url, port } from "../../../../../Consts";
-import { useTranslation } from "react-i18next";
 import axios from "axios";
 import getSymbolFromCurrency from "currency-symbol-map";
-
-import "swiper/swiper-bundle.min.css";
-import "swiper/swiper.min.css";
+// import "swiper/swiper-bundle.min.css";
+// import "swiper/swiper.min.css";
 import { Link } from "react-router-dom";
 import {
   getProductBasedOnCategory,
@@ -19,7 +17,6 @@ import profile from "../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
 
 function ProductsStory(props) {
-  const { t } = useTranslation();
   const { style, branch, product_id, deliveryFees, categories } = props;
 
   const [loading, setLoading] = useState(true);
@@ -34,22 +31,24 @@ function ProductsStory(props) {
         const data = response.data.fetchData[0];
         setData(data);
         if (data?.sub_category_id === null) {
-          getProductBasedOnCategory(data?.category_id).then((res) => {
+          await getProductBasedOnCategory(data?.category_id).then((res) => {
             setRecomandProducts(res.data.filter((item) => item.video !== null));
           });
           setLoading(false);
         } else {
-          getProductBasedOnSubCategory(data?.sub_category_id).then((value) => {
-            setRecomandProducts(
-              value.data.filter((item) => item.video !== null)
-            );
-          });
+          await getProductBasedOnSubCategory(data?.sub_category_id).then(
+            (value) => {
+              setRecomandProducts(
+                value.data.filter((item) => item.video !== null)
+              );
+            }
+          );
           setLoading(false);
         }
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      axios
+      await axios
         .get(`/api/getCategoriesWithPaging/${branch.id}`)
         .then((data) => {
           if (data.status === 200) {
@@ -190,7 +189,7 @@ function ProductsStory(props) {
           role="status"
           style={{ position: "fixed", top: "50%", left: "50%" }}
         >
-          <span className="sr-only">{t("loading")}</span>
+          <span className="sr-only"></span>
         </div>
       </div>
     );
@@ -360,13 +359,7 @@ function ProductsStory(props) {
     return (
       <div className="row" {...handlers} style={style?.background}>
         <div className="d-flex align-items-center justify-content-center mt-2">
-          <Stories
-            stories={urls}
-            defaultInterval={1500}
-            width={432}
-            // height="auto"
-            // style={{ overflow: "auto", minHeight: "500px", height: "auto" }}
-          />
+          <Stories stories={urls} defaultInterval={1500} width={432} />
         </div>
       </div>
     );

@@ -10,9 +10,17 @@ export const getThemplate = async (branchId) => {
     console.error(err);
   }
 };
+let cancelToken;
 export const getThemes = async (branchId) => {
+  if (cancelToken) {
+    cancelToken.cancel("Operations cancelled due to new request");
+  }
+  cancelToken = axios.CancelToken.source();
+  let result;
   try {
-    const result = await axios.get(`/api/activeTheme/${branchId}`);
+    result = await axios.get(`/api/activeTheme/${branchId}`, {
+      cancelToken: cancelToken.token,
+    });
     if (result.data.status === 200) {
       return result.data.fetchData[0];
     }
@@ -30,10 +38,15 @@ export const getBranch = async (branchId) => {
     console.error(err);
   }
 };
-export const getProductsBasedOnBranchId = async (branchId, page) => {
+export const getProductsBasedOnBranchId = async (branchId, page, langId) => {
   try {
     const result = await axios.get(
-      `/api/getProductsBasedOnBranchId/${branchId}?page=${page}`
+      `/api/getProductsBasedOnBranchId/${branchId}?page=${page}`,
+      {
+        params: {
+          langId: langId,
+        },
+      }
     );
     if (result.data.status === 200) {
       return result.data.fetchData;
@@ -42,11 +55,14 @@ export const getProductsBasedOnBranchId = async (branchId, page) => {
     console.error(err);
   }
 };
-export const getCategoriesBasedProduct = async (branchId) => {
+export const getCategoriesBasedProduct = async (branchId, langId) => {
   try {
-    const result = await axios.get(
-      `/api/getCategoriesBasedProducts/${branchId}`
-    );
+    const result = await axios.get(`/api/getCategoriesBasedProducts`, {
+      params: {
+        branchId: branchId,
+        langId: langId,
+      },
+    });
     if (result.data.status === 200) {
       return result.data.fetchData;
     }
@@ -54,10 +70,16 @@ export const getCategoriesBasedProduct = async (branchId) => {
     console.error(err);
   }
 };
-export const getProductBasedOnCategory = async (catId, page) => {
+export const getProductBasedOnCategory = async (catId, page, langId) => {
   try {
+    console.log(langId);
     const result = await axios.get(
-      `/api/getProductsBasedCategory/${catId}?page=${page}`
+      `/api/getProductsBasedCategory/${catId}?page=${page}`,
+      {
+        params: {
+          langId: langId,
+        },
+      }
     );
     if (result.data.status === 200) {
       return result.data.data;
@@ -66,10 +88,15 @@ export const getProductBasedOnCategory = async (catId, page) => {
     console.error(err);
   }
 };
-export const getProductBasedOnSubCategory = async (subCatId, page) => {
+export const getProductBasedOnSubCategory = async (subCatId, page, langId) => {
   try {
     const result = await axios.get(
-      `/api/getProductsBasedOnSubCategory/${subCatId}?page=${page}`
+      `/api/getProductsBasedOnSubCategory/${subCatId}?page=${page}`,
+      {
+        params: {
+          langId: langId,
+        },
+      }
     );
     if (result.data.status === 200) {
       return result.data.data;
@@ -78,11 +105,14 @@ export const getProductBasedOnSubCategory = async (subCatId, page) => {
     console.error(err);
   }
 };
-export const getProduct = async (proId) => {
+export const getProduct = async (proId, langId) => {
   try {
     const result = await axios({
       method: "GET",
       url: `/api/getProduct/${proId}`,
+      params: {
+        langId: langId,
+      },
     });
     return result;
   } catch (err) {

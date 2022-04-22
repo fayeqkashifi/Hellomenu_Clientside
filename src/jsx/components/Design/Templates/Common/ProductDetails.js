@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-// Import css files
+import React, { useState, useEffect, useContext } from "react";
 import Footer from "../Common/Footer";
 import Container from "@mui/material/Container";
 import Header from "../Common/Header";
@@ -13,23 +11,32 @@ import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
 
-import { getProduct, getVariations } from "../Functionality";
+import { getVariations } from "../Functionality";
 import CustomAlert from "../../../CustomAlert";
 import ImageSlider from "./ImageSilder";
 import "./imageSilder.css";
-
-const ProductDetails = (props) => {
-  // for localization
-  const { id, style, branchId, deliveryFees } = props;
-  const { t } = useTranslation();
+import { TemplateContext } from "../TemplateContext";
+const ProductDetails = () => {
+  const {
+    id,
+    style,
+    cart,
+    setCart,
+    locale,
+    loading,
+    fetchData,
+    setFetchData,
+    extra,
+    productIngredients,
+    deliveryFees,
+    branchId,
+  } = useContext(TemplateContext);
   const [swiper, setSwiper] = useState(null);
 
   let varData = [];
   //for retriving data using laravel API
-  const [fetchData, setFetchData] = useState([]);
   const [variantData, setVariantData] = useState([]);
   const [showVaralint, setShowVarlist] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [skuarray, setSkuArray] = useState([]);
   const [varPics, setVarPics] = useState([]);
   const [activeSKU, setActiveSKU] = useState([]);
@@ -38,33 +45,21 @@ const ProductDetails = (props) => {
     stock: 0,
     image: fetchData?.image,
   });
-  const [productIngredients, setProductIntgredients] = useState([]);
-  const [extra, setExtra] = useState([]);
-
+  const getdata = async () => {
+    await getVariations(id).then((res) => {
+      if (res !== "") {
+        varData = JSON.parse(res.variants);
+        setVarPics(varData);
+        parseVariants(varData);
+      }
+    });
+  };
   useEffect(() => {
-    const getdata = () => {
-      getProduct(id).then((result) => {
-        setFetchData(result.data.fetchData[0]);
-        setProductIntgredients(result.data.ingredients);
-        setExtra(result.data.extras);
-        setLoading(false);
-      });
-      getVariations(id).then((res) => {
-        if (res !== "") {
-          varData = JSON.parse(res.variants);
-          setVarPics(varData);
-          parseVariants(varData);
-        }
-      });
-    };
     getdata();
-
-    return () => {
-      // parseVariants([]);
-      // setVarPics([]);
-      // setFetchData([]);
-      setLoading(true);
-    };
+    // return () => {
+    //   parseVariants([]);
+    //   setVarPics([]);
+    // };
   }, [id]);
   const changePrice = (varName, variant) => {
     const keys = Object.keys(showVaralint);
@@ -185,9 +180,7 @@ const ProductDetails = (props) => {
       setExtraValue(extraValue.filter((item) => item.value != e.target.value));
     }
   };
-  const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
-  );
+
   const addItem = () => {
     const check = cart.every((val) => {
       return val.id !== fetchData.id;
@@ -202,7 +195,7 @@ const ProductDetails = (props) => {
       setFetchData(fetchData);
       localStorage.setItem("cart", JSON.stringify(cart.concat(fetchData)));
       setCart(cart.concat(fetchData));
-      setAlerts(true, "success", "Successfully added to cart");
+      setAlerts(true, "success", locale?.successfully_added_to_cart);
     } else {
       let data = cart.filter((val) => {
         return val.id === fetchData.id;
@@ -218,7 +211,7 @@ const ProductDetails = (props) => {
       });
       localStorage.setItem("cart", JSON.stringify(otherData.concat(data)));
       setCart(otherData.concat(data));
-      setAlerts(true, "success", "Cart Updated");
+      setAlerts(true, "success", locale?.cart_updated);
     }
   };
   const [alert, setAlert] = useState({
@@ -242,7 +235,7 @@ const ProductDetails = (props) => {
           role="status"
           style={{ position: "fixed", top: "50%", left: "50%" }}
         >
-          <span className="sr-only">{t("loading")}</span>
+          <span className="sr-only"></span>
         </div>
       </div>
     );
@@ -308,14 +301,14 @@ const ProductDetails = (props) => {
                   lg={3}
                   xl={3}
                   xs={10}
-                  className="d-flex align-items-center justify-content-righ"
+                  className="d-flex align-items-center justify-content-end "
                 >
                   <button
-                    className="btn btn-sm"
+                    className="btn btn-sm mr-2"
                     onClick={addItem}
                     style={style?.buttonStyle}
                   >
-                    {t("add_to_cart")}
+                    {locale?.add_to_cart}
                   </button>
                 </Grid>
               </Grid>
@@ -325,21 +318,20 @@ const ProductDetails = (props) => {
                   ""
                 ) : (
                   <>
-                    {t("preparation_time")}: {fetchData?.preparationTime}{" "}
-                    Minutes
+                    {locale?.preparation_time}: {fetchData?.preparationTime}{" "}
+                    {locale?.minutes}
                   </>
                 )}
               </Typography>
-
               <Typography style={style?.cartPrice}>
-                {t("price")} :{" "}
+                {locale?.price} :{" "}
                 {productDetails.price === 0
                   ? (fetchData?.price + sum).toFixed(2)
                   : (parseInt(productDetails.price) + sum).toFixed(2)}
                 {"  " + getSymbolFromCurrency(fetchData.currency_code)}
               </Typography>
               <Typography style={style?.cartPrice}>
-                {t("stock")}:{" "}
+                {locale?.stock}:{" "}
                 {productDetails.stock === 0
                   ? fetchData?.stock
                   : productDetails.stock}
@@ -351,7 +343,7 @@ const ProductDetails = (props) => {
                 <>
                   <div>
                     <Typography style={style?.cartPrice}>
-                      {t("vatiants")}
+                      {locale?.vatiants}
                     </Typography>
                   </div>
 
@@ -396,7 +388,7 @@ const ProductDetails = (props) => {
                 <>
                   <div>
                     <Typography style={style?.cartPrice}>
-                      {t("ingredients")}
+                      {locale?.ingredients}
                     </Typography>
                     <Typography style={style?.cartDescription}>
                       Please select the ingredients you want to remove.
@@ -428,7 +420,7 @@ const ProductDetails = (props) => {
               ) : (
                 <div>
                   <Typography style={style?.cartPrice}>
-                    {t("extras")}
+                    {locale?.extras}
                   </Typography>
                   {/* <FormGroup> */}
                   {extra?.map((item, i) => {
@@ -480,32 +472,18 @@ const ProductDetails = (props) => {
         )}
       </div>
       <Container maxWidth="lg" style={style?.varaintContainer}>
-        <Header
-          details={true}
-          search={false}
-          style={style}
-          cart={cart}
-          branchId={branchId}
-          setCart={setCart}
-          deliveryFees={deliveryFees}
-        />
+        <Header details={true} search={false} />
         {viewImages_HTMLTABLE}
       </Container>
       <Footer
-        title="Checkout"
-        style={style}
-        branchId={branchId}
-        setCart={setCart}
+        title={locale?.checkout}
         stock={
           productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
         }
-        cart={cart}
-        deliveryFees={deliveryFees}
         url={{
           pathname: `/public/details/recommend/${btoa(btoa(btoa(id)))}`,
           state: {
             productName: fetchData.ProductName,
-
             picture: productDetails.image
               ? JSON.stringify(productDetails?.image)
               : fetchData?.image,

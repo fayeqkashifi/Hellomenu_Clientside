@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import { base_url, port } from "../../../../../Consts";
 import { Link } from "react-router-dom";
@@ -8,15 +8,17 @@ import axios from "axios";
 import ReactPlayer from "react-player/lazy";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import { TemplateContext } from "../TemplateContext";
 function Statusbar(props) {
-  let { style, products, branchId, categories, deliveryFees } = props;
+  const { products, style, branchId, categories, deliveryFees, locale } =
+    useContext(TemplateContext);
+
   // const checkProduct = products.filter((item) => item.video !== null);
   const [branch, setBranch] = useState([]);
   const [branchStories, setBranchStories] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    axios
+  const dataload = async () => {
+    await axios
       .get(`/api/editBranches/${branchId}`)
       .then((res) => {
         if (res.data.status === 200) {
@@ -26,7 +28,7 @@ function Statusbar(props) {
       .catch((err) => {
         console.log(err);
       });
-    axios
+    await axios
       .get(`/api/getStories/${branchId}`)
       .then((res) => {
         if (res.data.status === 200) {
@@ -37,6 +39,14 @@ function Statusbar(props) {
       .catch((err) => {
         console.log(err);
       });
+  };
+  useEffect(() => {
+    dataload();
+    return () => {
+      setBranch([]);
+      setBranchStories([]);
+      setLoading(true);
+    };
   }, []);
 
   if (loading) {
@@ -55,7 +65,7 @@ function Statusbar(props) {
         ).length !== 0 ? (
           <Container>
             <div className="d-flex justify-content-between m-1">
-              <span style={style?.headerVideos}>Stories</span>
+              <span style={style?.headerVideos}> {locale?.stories}</span>
               <Link
                 to={{
                   pathname: `/public/video-list`,
@@ -70,7 +80,7 @@ function Statusbar(props) {
                 }}
                 style={style?.headerVideos}
               >
-                List of Videos
+                {locale?.list_of_videoes}
               </Link>
             </div>
             <ScrollContainer className="scroll-container">

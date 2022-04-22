@@ -9,7 +9,9 @@ export const SecondStyle = (custom, theme) => {
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center",
-      backgroundImage: `url(http://${base_url}:${port}/images/Themes/${theme.HomeScreenBackgroundURL})`,
+      backgroundImage:
+        theme.HomeScreenBackgroundURL &&
+        `url(http://${base_url}:${port}/images/Themes/${theme.HomeScreenBackgroundURL})`,
       backgroundColor: custom?.bgColor
         ? custom.bgColor
         : theme.BackgroundColor

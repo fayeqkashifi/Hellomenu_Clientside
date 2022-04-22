@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import {
   CCloseButton,
   COffcanvas,
@@ -9,20 +9,12 @@ import {
 import { Modal } from "react-bootstrap";
 import Cart from "../Common/Cart";
 import Typography from "@mui/material/Typography";
-import { useTranslation } from "react-i18next";
+import { TemplateContext } from "../TemplateContext";
 
 export default function Drawer(props) {
-  const { t } = useTranslation();
+  const { style, locale } = useContext(TemplateContext);
 
-  const {
-    modalCentered,
-    setModalCentered,
-    cart,
-    setCart,
-    style,
-    branchId,
-    deliveryFees,
-  } = props;
+  const { modalCentered, setModalCentered } = props;
 
   return (
     <div>
@@ -36,33 +28,24 @@ export default function Drawer(props) {
           <Modal.Header style={style?.cardHeader}>
             <Modal.Title>
               <Typography style={style?.categories}>
-                {t("order_details")}
+                {locale?.order_details}
               </Typography>
             </Modal.Title>
           </Modal.Header>
           <Modal.Body style={style?.cardBody}>
-            <Cart
-              style={style}
-              checkBit={true}
-              branchId={branchId}
-              cart={cart}
-              setCart={setCart}
-              deliveryFees={deliveryFees}
-            />
+            <Cart checkBit={true} />
           </Modal.Body>
         </Modal>
       ) : (
         <COffcanvas
           placement="end"
-          // className="fade bd-example-modal-lg"
-          // style={{ width: "70px" }}
           scroll
           visible={modalCentered}
           onHide={() => setModalCentered(false)}
         >
           <COffcanvasHeader>
             <COffcanvasTitle>
-              CART
+              {locale?.cart}
               <br></br>
             </COffcanvasTitle>
             <CCloseButton
@@ -71,14 +54,7 @@ export default function Drawer(props) {
             />
           </COffcanvasHeader>
           <COffcanvasBody>
-            <Cart
-              style={style}
-              checkBit={true}
-              branchId={branchId}
-              cart={cart}
-              setCart={setCart}
-              deliveryFees={deliveryFees}
-            />
+            <Cart checkBit={true} />
           </COffcanvasBody>
         </COffcanvas>
       )}

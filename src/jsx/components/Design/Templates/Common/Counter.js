@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import CustomAlert from "../../../CustomAlert";
 import IconButton from "@mui/material/IconButton";
@@ -13,8 +13,11 @@ import {
   handleDecrementQuantity,
   handelIncrementQuantity,
 } from "../Functionality";
+import { TemplateContext } from "../TemplateContext";
 const Counter = (props) => {
-  const { style, products, item, cart, setCart } = props;
+  const { style, products, cart, setCart, locale } =
+    useContext(TemplateContext);
+  const { item } = props;
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -43,7 +46,7 @@ const Counter = (props) => {
         setAlerts(
           true,
           "warning",
-          "More than that isn't available because it's out of stock."
+          locale?.more_than_that_isnot_available_because_itis_out_of_stock
         );
       }
     });

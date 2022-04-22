@@ -22,7 +22,7 @@ function VideoList(props) {
 
   const [changeState, setChangeState] = useState(true);
   const dataLoad = async () => {
-    getProductsBasedOnBranchId(branch.id, page).then((data) => {
+    await getProductsBasedOnBranchId(branch.id, page).then((data) => {
       setLastPage(data.last_page);
       setProducts(data.data);
       setPage(page + 1);
@@ -54,7 +54,7 @@ function VideoList(props) {
         role="status"
         style={{ position: "fixed", top: "50%", left: "50%" }}
       >
-        <span className="sr-only">{t("loading")}</span>
+        <span className="sr-only"></span>
       </div>
     );
   } else {

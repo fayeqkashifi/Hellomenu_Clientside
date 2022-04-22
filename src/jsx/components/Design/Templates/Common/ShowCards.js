@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -12,8 +12,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Counter from "../Common/Counter";
 import IconButton from "@mui/material/IconButton";
 import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
-export default function ShowCards(props) {
-  let { style, cart, setCart, products, branchId, deliveryFees } = props;
+import { TemplateContext } from "../TemplateContext";
+export default function ShowCards() {
+  const { style, cart, products, branchId, deliveryFees, locale } =
+    useContext(TemplateContext);
   var viewShow_HTMLTABLE = "";
   if (products.length != 0) {
     viewShow_HTMLTABLE = products?.map((item, i) => {
@@ -81,13 +83,7 @@ export default function ShowCards(props) {
                   <div style={style?.unitName}>{item.UnitName}</div>
                   {style.counterPosition === "last" ? null : (
                     <div style={style?.addIcon}>
-                      <Counter
-                        style={style}
-                        item={item}
-                        cart={cart}
-                        setCart={setCart}
-                        products={products}
-                      />
+                      <Counter item={item} />
                     </div>
                   )}
                 </div>
@@ -98,19 +94,10 @@ export default function ShowCards(props) {
                       item.price.toFixed(2)}
                   </Typography>
                 </div>
-                {/* <Typography style={style?.description}>
-                  {item.Description}
-                </Typography> */}
 
                 {style.counterPosition === "last" ? (
                   <div style={style?.addIcon}>
-                    <Counter
-                      style={style}
-                      item={item}
-                      cart={cart}
-                      setCart={setCart}
-                      products={products}
-                    />
+                    <Counter item={item} />
                   </div>
                 ) : null}
               </div>
@@ -120,7 +107,9 @@ export default function ShowCards(props) {
       );
     });
   } else {
-    viewShow_HTMLTABLE = <div className="text-center">No Data Found</div>;
+    viewShow_HTMLTABLE = (
+      <div className="text-center">{locale?.no_data_found}</div>
+    );
   }
   return viewShow_HTMLTABLE;
 }

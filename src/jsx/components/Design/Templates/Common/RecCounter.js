@@ -6,7 +6,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { recDecrementQuantity, recIncrementQuantity } from "../Functionality";
 const RecCounter = (props) => {
-  const { style, setFetchData, item, fetchData, setSum } = props;
+  const { style, setFetchData, item, fetchData, setSum, locale } = props;
   let { sum } = props;
   const [alert, setAlert] = useState({
     open: false,
@@ -40,7 +40,7 @@ const RecCounter = (props) => {
         setAlerts(
           true,
           "warning",
-          "More than that isn't available because it's out of stock."
+          locale?.more_than_that_isnot_available_because_itis_out_of_stock
         );
       }
     });

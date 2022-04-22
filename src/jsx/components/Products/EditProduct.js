@@ -17,6 +17,8 @@ import { Option, MultiValue, animatedComponents } from "../Common/SelectOption";
 import MySelect from "../Common/MySelect";
 import SubmitButtons from "../Common/SubmitButtons";
 import MButton from "@mui/material/Button";
+import Local from "./Local";
+
 const EditProduct = (props) => {
   const history = useHistory();
   const validationSchema = () => {
@@ -38,9 +40,9 @@ const EditProduct = (props) => {
     });
   };
   // validation End
-  // for localization
   const branchId = props.history.location.state.id;
   const productId = props.history.location.state.productId;
+  const [lang, setLang] = useState([]);
 
   const [modalCentered, setModalCentered] = useState(false);
   const [alert, setAlert] = useState({
@@ -83,14 +85,12 @@ const EditProduct = (props) => {
 
   const updateProduct = (data) => {
     setIsSubmitting(true);
-
     const formData = new FormData();
     if (editProduct.video !== null) {
       formData.append("video", editProduct.video);
     } else {
       formData.append("video", null);
     }
-
     formData.append("image", editProduct.image);
     formData.append("ProductName", data.ProductName);
     formData.append("UnitName", data.UnitName);
@@ -104,7 +104,7 @@ const EditProduct = (props) => {
     formData.append("category", data.category_id);
     formData.append("id", productId);
     formData.append("form", JSON.stringify(form));
-
+    formData.append("translation", JSON.stringify(lang));
     axios
       .post("/api/updateProduct", formData)
       .then((res) => {
@@ -429,7 +429,7 @@ const EditProduct = (props) => {
         validationSchema={validationSchema}
         onSubmit={updateProduct}
       >
-        {({ errors, status, touched, setFieldValue }) => (
+        {({ errors, values, touched, setFieldValue }) => (
           <Form>
             <div className="row">
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
@@ -589,6 +589,26 @@ const EditProduct = (props) => {
                   </div>
                 </div>
               </div>
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h3 className="card-title">
+                      {t("languages_localisation")}
+                    </h3>
+                  </div>
+                  <div className="card-body">
+                    <Local
+                      changeBit={false}
+                      url={`/api/productTranslation/${values.id}`}
+                      inputData={values.ProductName}
+                      UnitName={values.UnitName}
+                      lang={lang}
+                      setLang={setLang}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                 <div className="card">
                   <div className="card-header">

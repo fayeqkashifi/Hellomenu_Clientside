@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import Container from "@mui/material/Container";
+import React, { useState, useEffect, useContext } from "react";
 import Header from "./Header";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
@@ -30,10 +28,13 @@ import {
 import PhoneInput from "react-phone-input-2";
 import ipapi from "ipapi.co";
 import Counter from "../Common/Counter";
+import { TemplateContext } from "../TemplateContext";
 const Cart = (props) => {
   let message = "";
-  let { style, checkBit, cart, setCart, branchId, deliveryFees } = props;
 
+  let { style, cart, setCart, branchId, deliveryFees, locale } =
+    useContext(TemplateContext);
+  const { checkBit } = props;
   const initialValues = {
     phoneNumber: "",
   };
@@ -42,21 +43,17 @@ const Cart = (props) => {
       phoneNumber: Yup.string().required("Phone Number is required"),
     });
   };
-
-  // for localization
-  const { t } = useTranslation();
-
   const currency = getSymbolFromCurrency(cart[0]?.currency_code);
   const [loading, setLoading] = useState(true);
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
   const [branch, setBranch] = useState([]);
   const dataLoad = async () => {
-    getBranch(branchId).then((data) => {
+    await getBranch(branchId).then((data) => {
       setBranch(data);
       setLoading(false);
     });
-    getTables(branchId).then((res) => {
+    await getTables(branchId).then((res) => {
       setTables(res);
     });
   };
@@ -136,7 +133,7 @@ const Cart = (props) => {
   const saveOrder = (data) => {
     if (orderingWay !== undefined) {
       if (orderingWay === "tbl_qrcode" && showReservation.length === 0) {
-        setAlerts(true, "warning", "Please Select Table Reservation.");
+        setAlerts(true, "warning", locale?.please_select_table_reservation);
       } else {
         orderingWay === "tbl_qrcode"
           ? showReservation === "outside"
@@ -145,7 +142,7 @@ const Cart = (props) => {
               ? setError(true)
               : save(data)
             : table.length === 0
-            ? setAlerts(true, "warning", "Please Scan The Table QR-Code.")
+            ? setAlerts(true, "warning", locale?.please_scan_the_table_QR_code)
             : save(data)
           : orderingWay === "delivery"
           ? branch.fullAddress
@@ -156,7 +153,11 @@ const Cart = (props) => {
           : save(data);
       }
     } else {
-      setAlerts(true, "warning", "Please choose at least one way of ordering.");
+      setAlerts(
+        true,
+        "warning",
+        locale?.please_choose_at_least_one_way_of_ordering
+      );
     }
   };
   const save = (data) => {
@@ -195,7 +196,7 @@ const Cart = (props) => {
           role="status"
           style={{ position: "fixed", top: "50%", left: "50%" }}
         >
-          <span className="sr-only">{t("loading")}</span>
+          <span className="sr-only"></span>
         </div>
       </div>
     );
@@ -213,7 +214,6 @@ const Cart = (props) => {
             sm={12}
             md={6}
             key={key}
-            // style={}
           >
             <div
               onClick={() => checkOrderingMethod(key)}
@@ -221,11 +221,11 @@ const Cart = (props) => {
             >
               <Typography style={style?.cartDescription}>
                 {key === "tbl_qrcode"
-                  ? "Table Reservation"
+                  ? locale?.table_reservation
                   : key === "delivery"
-                  ? "Home Delivery"
+                  ? locale?.home_delivery
                   : key === "whatsApp"
-                  ? "WhatsApp"
+                  ? locale?.whatsApp
                   : key}
               </Typography>
             </div>
@@ -236,51 +236,62 @@ const Cart = (props) => {
     viewImages_HTMLTABLE = cart?.map((item, i) => {
       message =
         message +
-        `*Product Name*: ${item.ProductName} \n*Category*: ${
-          item.CategoryName
-        } ${
+        `*${locale?.product_name}*: ${item.ProductName} \n*${
+          locale?.category
+        }*: ${item.CategoryName} ${
           item.SubCategoryName == null
             ? ""
-            : ` \n*Sub Category*: ${item.SubCategoryName}`
-        } \n*QTY*: ${item.qty} \n*Price*: ${item.price + " " + currency}  ${
+            : ` \n*${locale?.sub_category}*: ${item.SubCategoryName}`
+        } \n*${locale?.qty}*: ${item.qty} \n*${locale?.price}*: ${
+          item.price + " " + currency
+        }  ${
           item.variantSKU === undefined
             ? ""
             : item.variantSKU.length === 0
             ? ""
-            : `\n*Item Variant*: ${item.variantSKU}`
+            : `\n*${locale?.item_variant}*: ${item.variantSKU}`
         } ${
           item.extras === undefined
             ? ""
             : item.extras.length === 0
             ? ""
-            : `\n*Extras*: ${item.extras?.map((val) => val.value)} INCLUDED`
+            : `\n*${locale?.extras}*: ${item.extras?.map(
+                (val) => val.value
+              )} INCLUDED`
         } ${
           item.ingredients === undefined
             ? ""
             : item.ingredients.length === 0
             ? ""
-            : `\n*Ingredients*: ${item.ingredients} NOT INCLUDED`
+            : `\n*${locale?.ingredients}*: ${item.ingredients} NOT INCLUDED`
         } ${
           item.recommendations === undefined
             ? ""
             : item.recommendations.length === 0
             ? ""
-            : `\n*Recommendations*: ${item.recommendations?.map((val) =>
-                val.show
-                  ? val.label +
-                    " price: " +
-                    val.price +
-                    currency +
-                    " qty: " +
-                    val.qty
-                  : ""
+            : `\n*${locale?.recommendation}*: ${item.recommendations?.map(
+                (val) =>
+                  val.show
+                    ? val.label +
+                      " ${locale?.price}: " +
+                      val.price +
+                      currency +
+                      " ${locale?.qty}: " +
+                      val.qty
+                    : ""
               )}`
         } ${
-          item.itemNote == undefined ? "" : `\n*Item Note*: ${item.itemNote}`
+          item.itemNote == undefined
+            ? ""
+            : `\n*${locale?.item_note}*: ${item.itemNote}`
         }${
           item.totalPrice === undefined
-            ? `\n*Item Total Price*: ${item.qty * item.price + " " + currency}`
-            : `\n*Item Total Price*: ${item.totalPrice + " " + currency}`
+            ? `\n*${locale?.item_total_price}*: ${
+                item.qty * item.price + " " + currency
+              }`
+            : `\n*${locale?.item_total_price}*: ${
+                item.totalPrice + " " + currency
+              }`
         }\n\n`;
 
       return (
@@ -310,7 +321,7 @@ const Cart = (props) => {
                   ? null
                   : item?.variantSKU.length !== 0 && (
                       <Typography style={style?.cartDescription} gutterBottom>
-                        <b>Variants: </b>
+                        <b>{locale?.variants}: </b>
 
                         {item?.variantSKU?.map((val, i) => {
                           if (item?.variantSKU.length === i + 1) {
@@ -329,12 +340,7 @@ const Cart = (props) => {
                   {parseInt(item.price).toFixed(2) + "  " + currency}
                 </Typography>
                 <Typography style={style?.cartDescription} gutterBottom>
-                  <b>Qty:</b> {item.qty + " " + item.UnitName}
-                </Typography>
-
-                <Typography style={style?.cartDescription} gutterBottom>
-                  <b>Discription: </b>
-                  {item.Description}
+                  <b>{locale?.qty}:</b> {item.qty + " " + item.UnitName}
                 </Typography>
               </Grid>
               <Grid item style={style?.cartVariantDiv}>
@@ -343,7 +349,7 @@ const Cart = (props) => {
                   ? ""
                   : item.ingredients.length !== 0 && (
                       <Typography style={style?.cartDescription} gutterBottom>
-                        <b>Ingredients: </b>
+                        <b>{locale?.ingredients}: </b>
                         {item.ingredients?.map((val, i) => {
                           if (item.ingredients.length === i + 1) {
                             return val + " - Not Included";
@@ -357,7 +363,7 @@ const Cart = (props) => {
                   ? ""
                   : item.extras.length !== 0 && (
                       <Typography style={style?.cartDescription} gutterBottom>
-                        <b>Extras: </b>
+                        <b>{locale?.extras}: </b>
 
                         {item.extras?.map((val, i) => {
                           if (item?.extras.length === i + 1) {
@@ -372,7 +378,7 @@ const Cart = (props) => {
                   ? ""
                   : item.recommendations.length !== 0 && (
                       <Typography style={style?.cartDescription} gutterBottom>
-                        <b>Recommendations: </b>
+                        <b>{locale?.recommendation}: </b>
 
                         {item.recommendations?.map((val, i) => {
                           if (val.show) {
@@ -396,12 +402,7 @@ const Cart = (props) => {
                     )}
               </Grid>
               <Grid item style={style?.cartCounterDiv}>
-                <Counter
-                  style={style}
-                  cart={cart}
-                  setCart={setCart}
-                  item={item}
-                />
+                <Counter item={item} />
               </Grid>
               <Grid item style={style?.cartNoteDiv}>
                 {item?.itemNote === undefined ? (
@@ -412,14 +413,14 @@ const Cart = (props) => {
                     gutterBottom
                     className="mx-1"
                   >
-                    <b>Item Note: </b>
+                    <b>{locale?.item_note}: </b>
                     {item?.itemNote}
                   </Typography>
                 )}
               </Grid>
               <Grid item style={style?.cartTotalDiv}>
                 <Typography style={style?.cartDescription} gutterBottom>
-                  <b>Total Price: </b>
+                  <b>{locale?.total_price}: </b>
                   {item?.totalPrice !== undefined
                     ? (
                         parseInt(item.totalPrice) +
@@ -436,19 +437,21 @@ const Cart = (props) => {
     });
     message =
       message +
-      `\n\n------------------------- \n *Sub Total*: ${
+      `\n\n------------------------- \n *${locale?.sub_total}*: ${
         sum.toFixed(2) + "  " + currency
-      }\n *Delivery Fee*: ${
+      }\n *${locale?.delivery_fee}*: ${
         deliveryFees.toFixed(2) + "  " + currency
-      }\n *Grand Total*: ${(sum + deliveryFees).toFixed(2) + "  " + currency}${
+      }\n *${locale?.grand_total}: ${
+        (sum + deliveryFees).toFixed(2) + "  " + currency
+      }${
         userData?.generalNote === undefined || userData?.generalNote === ""
           ? ""
-          : `\n *General Note*: ${userData?.generalNote}`
+          : `\n *${locale?.general_note}*: ${userData?.generalNote}`
       }`;
     if (orderingWay === "delivery") {
       message =
         message +
-        `\n---------------- \n *Ordering Method*: Home Delivery\n *Address*: ${userData?.address}\n`;
+        `\n---------------- \n *${locale?.ordering_methods}*:${locale?.home_delivery}\n *${locale?.address}*: ${userData?.address}\n`;
     }
   }
   return (
@@ -469,7 +472,7 @@ const Cart = (props) => {
       {cart.length === 0 ? (
         <Grid container spacing={2} className="text-center">
           <Grid item xs={12} lg={12} xl={12} sm={6} md={6}>
-            No Item Available
+            {locale?.no_item_available}
           </Grid>
         </Grid>
       ) : (
@@ -488,7 +491,7 @@ const Cart = (props) => {
                   style={style?.ordersText}
                 >
                   <Typography style={style?.cartDescription}>
-                    Ordering Methods
+                    {locale?.ordering_methods}
                   </Typography>
                 </Grid>
                 {outputs}
@@ -504,7 +507,7 @@ const Cart = (props) => {
                       style={style?.ordersText}
                     >
                       <Typography style={style?.cartDescription}>
-                        Table Reservation
+                        {locale?.table_reservation}
                       </Typography>
                     </Grid>
                     <Grid
@@ -524,7 +527,7 @@ const Cart = (props) => {
                         }
                       >
                         <Typography style={style?.cartDescription}>
-                          Scan QR Code
+                          {locale?.scan_QR_code}
                         </Typography>
                       </div>
                     </Grid>
@@ -545,7 +548,7 @@ const Cart = (props) => {
                         }
                       >
                         <Typography style={style?.cartDescription}>
-                          Reserve a table
+                          {locale?.reserve_a_table}
                         </Typography>
                       </div>
                     </Grid>
@@ -566,7 +569,9 @@ const Cart = (props) => {
                   md={6}
                   className="text-center"
                 >
-                  <Typography style={style?.cartPrice}>Delivery Fee</Typography>
+                  <Typography style={style?.cartPrice}>
+                    {locale?.delivery_fee}
+                  </Typography>
                   <Typography style={style?.cartPrice}>
                     {deliveryFees.toFixed(2) + "  " + currency}
                   </Typography>
@@ -580,7 +585,9 @@ const Cart = (props) => {
                   md={6}
                   className="text-center"
                 >
-                  <Typography style={style?.cartPrice}>Grand Total</Typography>
+                  <Typography style={style?.cartPrice}>
+                    {locale?.grand_total}
+                  </Typography>
                   <Typography style={style?.cartPrice}>
                     {(sum + deliveryFees).toFixed(2) + "  " + currency}
                   </Typography>
@@ -600,7 +607,7 @@ const Cart = (props) => {
                   />
                   {table.length !== 0 ? (
                     <Typography style={style?.cartDescription} gutterBottom>
-                      successfully authenticated: {table.tableId}
+                      {locale?.successfully_authenticated}: {table.tableId}
                     </Typography>
                   ) : null}
                 </div>
@@ -614,12 +621,12 @@ const Cart = (props) => {
                     <div className="form-group">
                       <select
                         className={`form-control ${error ? "is-invalid" : ""}`}
-                        aria-label="Default select example"
+                        // aria-label="Default select example"
                         onChange={changeHandle}
                         style={style?.inputfield}
                         name="table_id"
                       >
-                        <option> Select a Table</option>
+                        <option> {locale?.select_a_table}</option>
                         {tables.map((item) => {
                           return (
                             <option value={item.id} key={item.id}>
@@ -639,7 +646,7 @@ const Cart = (props) => {
                         name="dateAndTime"
                         type="datetime-local"
                         className={`form-control ${error ? "is-invalid" : ""}`}
-                        placeholder="Date and Time"
+                        placeholder={locale?.date_and_time}
                         onChange={changeHandle}
                         style={style?.inputfield}
                       />
@@ -660,7 +667,7 @@ const Cart = (props) => {
                         onChange={changeHandle}
                         className={`form-control ${error ? "is-invalid" : ""}`}
                         minRows={1}
-                        placeholder="Full Address"
+                        placeholder={locale?.full_address}
                         style={style?.inputfield}
                       />
                     </Grid>
@@ -690,7 +697,7 @@ const Cart = (props) => {
             validationSchema={validationSchema}
             onSubmit={saveOrder}
           >
-            {({ errors, status, touched, values, setFieldValue }) => (
+            {({ errors, touched, values, setFieldValue }) => (
               <Form>
                 <Card sx={style?.card} className="m-1">
                   <CardContent sx={{ flexGrow: 1 }}>
@@ -724,7 +731,7 @@ const Cart = (props) => {
                           onChange={changeHandle}
                           className={"form-control"}
                           minRows={3}
-                          placeholder="General Note"
+                          placeholder={locale?.general_note}
                           style={style?.inputfield}
                         />
                       </Grid>
@@ -745,7 +752,7 @@ const Cart = (props) => {
                                 type="submit"
                                 // onClick={() => saveOrder()}
                               >
-                                <WhatsAppIcon /> {t("send_order")}
+                                <WhatsAppIcon /> {locale?.send_order}
                               </button>
                             ) : orderingWay === "delivery" ? (
                               branch.fullAddress ? (
@@ -757,7 +764,7 @@ const Cart = (props) => {
                                     type="submit"
                                     // onClick={() => saveOrder()}
                                   >
-                                    <WhatsAppIcon /> {t("send_order")}
+                                    <WhatsAppIcon /> {locale?.send_order}
                                   </button>
                                 ) : (
                                   <ReactWhatsapp
@@ -769,7 +776,7 @@ const Cart = (props) => {
                                     max="4096"
                                     // onClick={() => saveOrder()}
                                   >
-                                    <WhatsAppIcon /> {t("send_order")}
+                                    <WhatsAppIcon /> {locale?.send_order}
                                   </ReactWhatsapp>
                                 )
                               ) : (
@@ -782,7 +789,8 @@ const Cart = (props) => {
                                   max="4096"
                                   // onClick={() => saveOrder()}
                                 >
-                                  <WhatsAppIcon /> {t("send_order")}
+                                  <WhatsAppIcon />
+                                  {locale?.send_order}
                                 </ReactWhatsapp>
                               )
                             ) : orderingWay === "whatsApp" &&
@@ -793,7 +801,7 @@ const Cart = (props) => {
                                 type="submit"
                                 // onClick={() => saveOrder()}
                               >
-                                <WhatsAppIcon /> {t("send_order")}
+                                <WhatsAppIcon /> {locale?.send_order}
                               </button>
                             ) : errors.phoneNumber && touched.phoneNumber ? (
                               <button
@@ -802,7 +810,8 @@ const Cart = (props) => {
                                 type="submit"
                                 // onClick={() => saveOrder()}
                               >
-                                <WhatsAppIcon /> {t("send_order")}
+                                <WhatsAppIcon />
+                                {locale?.send_order}
                               </button>
                             ) : (
                               <ReactWhatsapp
@@ -814,7 +823,7 @@ const Cart = (props) => {
                                 max="4096"
                                 // onClick={() => saveOrder()}
                               >
-                                <WhatsAppIcon /> {t("send_order")}
+                                <WhatsAppIcon /> {locale?.send_order}
                               </ReactWhatsapp>
                             )}
                           </>
@@ -824,7 +833,7 @@ const Cart = (props) => {
                             style={style?.buttonStyle}
                             onClick={() => saveOrder()}
                           >
-                            <SendIcon /> {t("send_order")}
+                            <SendIcon /> {locale?.send_order}
                           </button>
                         )}
                       </Grid>
@@ -838,7 +847,7 @@ const Cart = (props) => {
                             setUserData([]),
                           ]}
                         >
-                          <ClearIcon /> {t("empty_cart")}
+                          <ClearIcon /> {locale?.empty_cart}
                         </button>
                       </Grid>
                     </Grid>
