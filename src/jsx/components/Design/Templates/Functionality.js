@@ -72,7 +72,6 @@ export const getCategoriesBasedProduct = async (branchId, langId) => {
 };
 export const getProductBasedOnCategory = async (catId, page, langId) => {
   try {
-    console.log(langId);
     const result = await axios.get(
       `/api/getProductsBasedCategory/${catId}?page=${page}`,
       {

@@ -343,7 +343,7 @@ const ProductDetails = () => {
                 <>
                   <div>
                     <Typography style={style?.cartPrice}>
-                      {locale?.vatiants}
+                      {locale?.variants}
                     </Typography>
                   </div>
 
@@ -391,7 +391,7 @@ const ProductDetails = () => {
                       {locale?.ingredients}
                     </Typography>
                     <Typography style={style?.cartDescription}>
-                      Please select the ingredients you want to remove.
+                      {locale?.please_select_the_ingredients_you_want_to_remove}
                     </Typography>
                   </div>
                   <div>

@@ -34,7 +34,9 @@ const MainPublic = (props) => {
   const [languages, setLanguages] = useState(
     JSON.parse(sessionStorage.getItem("languages")) || []
   );
-  const [selectedLang, setSelectedLang] = useState({});
+  const [selectedLang, setSelectedLang] = useState(
+    JSON.parse(sessionStorage.getItem("selectedLang")) || {}
+  );
   const [locale, setLocale] = useState(
     JSON.parse(sessionStorage.getItem("locale")) || []
   );

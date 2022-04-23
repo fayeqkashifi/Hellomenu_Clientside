@@ -53,6 +53,9 @@ const OnBoarding = () => {
       setIpApi(loc);
     };
     ipapi.location(callback);
+    return () => {
+      setIpApi([]);
+    };
   }, []);
   return (
     <>

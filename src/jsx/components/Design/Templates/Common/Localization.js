@@ -34,6 +34,7 @@ export default function LanguageLocalization() {
       let defaultLang = languages.filter((item) => {
         if (item.default == 1) {
           sessionStorage.setItem("selectedLang", JSON.stringify(item));
+          setSelectedLang(item);
           return item;
         }
       });

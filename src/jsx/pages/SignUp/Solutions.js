@@ -27,6 +27,9 @@ const Solutions = () => {
       .catch((error) => {
         console.log(error);
       });
+    return () => {
+      setLanguages([]);
+    };
   }, []);
   const initialValues = {
     language: "",

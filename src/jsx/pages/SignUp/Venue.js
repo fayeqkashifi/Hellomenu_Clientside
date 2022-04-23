@@ -25,6 +25,9 @@ const Venue = () => {
       .catch((error) => {
         console.log(error);
       });
+      return ()=>{
+        setBusiness([]);
+      }
   }, []);
   const initialValues = {
     company: "",

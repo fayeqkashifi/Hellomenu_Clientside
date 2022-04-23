@@ -64,7 +64,12 @@ const FilterSelection = () => {
       });
     localStorage.setItem("city", JSON.stringify(value));
   };
+  let cancelToken;
   const loadOptions = (inputValue) => {
+    if (cancelToken) {
+      cancelToken.cancel("Operations cancelled due to new request");
+    }
+    cancelToken = axios.CancelToken.source();
     return axios
       .get(`/api/getAreaCities`, {
         header: {
@@ -75,6 +80,7 @@ const FilterSelection = () => {
         params: {
           id: inputValue,
         },
+        cancelToken: cancelToken.token,
       })
       .then((res) => res.data)
       .catch((err) => {

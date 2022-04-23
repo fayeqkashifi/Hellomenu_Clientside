@@ -12,7 +12,6 @@ import {
 } from "../Functionality";
 import Statusbar from "../Common/Statusbar";
 import { TemplateContext } from "../TemplateContext";
-// import {Template}
 export default function Main() {
   const {
     products,
@@ -29,6 +28,7 @@ export default function Main() {
 
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
+    console.log(selectedLang.id);
     if (page <= lastPage) {
       if (activeCategory === "All~~~1") {
         getProductsBasedOnBranchId(branchId, page, selectedLang.id).then(

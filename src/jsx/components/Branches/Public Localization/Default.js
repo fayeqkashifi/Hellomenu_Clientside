@@ -55,4 +55,6 @@ export const PublicLocale = {
   please_select_table_reservation: "Please Select Table Reservation",
   successfully_added_to_cart: "Successfully added to cart",
   cart_updated: "Cart Updated",
+  please_select_the_ingredients_you_want_to_remove:
+    "Please select the ingredients you want to remove.",
 };

@@ -250,7 +250,6 @@ const ServiceArea = (props) => {
   };
 
   const [inputValue, setValue] = useState("");
-  const [selectedValue, setSelectedValue] = useState(null);
 
   // handle input change event
   const handleInputChange = (value) => {
@@ -258,11 +257,13 @@ const ServiceArea = (props) => {
     setValue(value);
   };
 
-  // handle selection
-  const handleChange = (value) => {
-    setSelectedValue(value);
-  };
+  let cancelToken;
+
   const loadOptions = (inputValue) => {
+    if (cancelToken) {
+      cancelToken.cancel("Operations cancelled due to new request");
+    }
+    cancelToken = axios.CancelToken.source();
     return axios
       .get(`/api/getCities`, {
         header: {
@@ -273,6 +274,7 @@ const ServiceArea = (props) => {
         params: {
           id: inputValue,
         },
+        cancelToken: cancelToken.token,
       })
       .then((res) => res.data)
       .catch((err) => {
