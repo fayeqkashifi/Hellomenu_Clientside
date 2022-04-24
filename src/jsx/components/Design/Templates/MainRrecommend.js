@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import OrderDetails from "./Common/OrderDetails";
 import { TemplateContext } from "./TemplateContext";
 import { getProduct } from "./Functionality";
+import axios from "axios";
 
 const MainRrecommend = (props) => {
   const [loading, setLoading] = useState(false);
@@ -33,19 +34,28 @@ const MainRrecommend = (props) => {
   );
   const [item, setItem] = useState([]);
   const [fetchData, setFetchData] = useState([]);
+  let source = axios.CancelToken.source();
 
   const dataLoad = (input) => {
     var data = [];
-    getProduct(id, input.id).then((result) => {
-      data = result.data.fetchData;
-      setItem(data);
-      setFetchData(result.data.recommend);
-      setLoading(false);
+    getProduct(id, input.id, source).then((result) => {
+      if (result !== undefined) {
+        data = result.data.fetchData;
+        setItem(data);
+        setFetchData(result.data.recommend);
+        setLoading(false);
+      }
     });
   };
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     dataLoad(selectedLang);
     return () => {
+      source.cancel();
+
       setItem([]);
       setFetchData([]);
       setLoading(true);

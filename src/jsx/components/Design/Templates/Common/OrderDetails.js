@@ -14,8 +14,8 @@ import FormGroup from "@mui/material/FormGroup";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
 import { Swiper, SwiperSlide } from "swiper/react";
 import CustomAlert from "../../../CustomAlert";
-// import "swiper/swiper-bundle.min.css";
-// import "swiper/swiper.min.css";
+import "swiper/swiper-bundle.min.css";
+import "swiper/swiper.min.css";
 import RecCounter from "./RecCounter";
 import { TemplateContext } from "../TemplateContext";
 const OrderDetails = () => {
@@ -161,11 +161,7 @@ const OrderDetails = () => {
           </Grid>
           {item?.show ? (
             <Grid item xs={4} sm={4} md={4}>
-              <RecCounter
-                item={item}
-                sum={sum}
-                setSum={setSum}
-              />
+              <RecCounter item={item} sum={sum} setSum={setSum} />
             </Grid>
           ) : (
             " "

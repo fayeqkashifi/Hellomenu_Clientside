@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -12,7 +12,9 @@ import {
 } from "../Functionality";
 import AllOutIcon from "@mui/icons-material/AllOut";
 import { TemplateContext } from "../TemplateContext";
-const SideBar = (props) => {
+import axios from "axios";
+
+const SideBar = () => {
   const {
     style,
     categories,
@@ -33,8 +35,13 @@ const SideBar = (props) => {
   const filterProducts = (menu) => {
     if (menu !== "All") {
       if (menu.sub_category_id === null) {
-        getProductBasedOnCategory(menu.category_id, 1, selectedLang.id).then(
-          (data) => {
+        getProductBasedOnCategory(
+          menu.category_id,
+          1,
+          selectedLang.id,
+          source
+        ).then((data) => {
+          if (data !== undefined) {
             setProducts(data.data);
             // setChangeState(true);
             // setLastPage(data.last_page);
@@ -43,32 +50,50 @@ const SideBar = (props) => {
               menu.CategoryName + "~~~cate~~~" + menu.category_id
             );
           }
-        );
+        });
       } else {
         getProductBasedOnSubCategory(
           menu.sub_category_id,
           1,
-          selectedLang.id
+          selectedLang.id,
+          source
         ).then((res) => {
-          setProducts(res.data);
-          setActiveCategory(
-            menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
-          );
-          // setChangeState(true);
-          // setLastPage(res.last_page);
-          // setPage(2);
+          if (res !== undefined) {
+            setProducts(res.data);
+            setActiveCategory(
+              menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
+            );
+            // setChangeState(true);
+            // setLastPage(res.last_page);
+            // setPage(2);
+          }
         });
       }
     } else {
-      getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then((data) => {
-        setProducts(data.data);
-        // setChangeState(true);
-        // setLastPage(data.last_page);
-        // setPage(2);
-        setActiveCategory("All~~~1");
-      });
+      getProductsBasedOnBranchId(branchId, 1, selectedLang.id, source).then(
+        (data) => {
+          if (data !== undefined) {
+            setProducts(data.data);
+            // setChangeState(true);
+            // setLastPage(data.last_page);
+            // setPage(2);
+            setActiveCategory("All~~~1");
+          }
+        }
+      );
     }
   };
+  let source = axios.CancelToken.source();
+
+  useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
+    return () => {
+      source.cancel();
+    };
+  }, []);
   return (
     <Box sx={style?.sideBarBox}>
       <Tabs

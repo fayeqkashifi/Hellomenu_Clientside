@@ -32,38 +32,49 @@ function ProductsStory() {
         params: {
           langId: selectedLang?.id,
         },
+        cancelToken: source.token,
       });
-      if (response.data.status === 200) {
-        const data = response.data.fetchData[0];
+      if (response?.data?.status === 200) {
+        const data = response?.data?.fetchData[0];
         setData(data);
         if (data?.sub_category_id === null) {
           getProductBasedOnCategory(
             data?.category_id,
             page,
-            selectedLang?.id
+            selectedLang?.id,
+            source
           ).then((res) => {
-            setRecomandProducts(res.data.filter((item) => item.video !== null));
+            if (res !== undefined) {
+              setRecomandProducts(
+                res.data.filter((item) => item.video !== null)
+              );
+            }
           });
           setLoading(false);
         } else {
           getProductBasedOnSubCategory(
             data?.sub_category_id,
             page,
-            selectedLang?.id
+            selectedLang?.id,
+            source
           ).then((value) => {
-            setRecomandProducts(
-              value.data.filter((item) => item.video !== null)
-            );
+            if (value !== undefined) {
+              setRecomandProducts(
+                value.data.filter((item) => item.video !== null)
+              );
+            }
           });
           setLoading(false);
         }
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
-      await axios
-        .get(`/api/getCategoriesWithPaging/${branch.id}`)
+      axios
+        .get(`/api/getCategoriesWithPaging/${branch.id}`, {
+          cancelToken: source.token,
+        })
         .then((data) => {
-          if (data.status === 200) {
+          if (data?.status === 200) {
             setNumberOfCategories(data.data.fetchData.last_page);
           } else {
             console.log(data);
@@ -76,9 +87,16 @@ function ProductsStory() {
       console.error(error);
     }
   };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     loadProdcut();
     return () => {
+      source.cancel();
       setData([]);
       setRecomandProducts([]);
       setLoading(true);
@@ -93,9 +111,10 @@ function ProductsStory() {
         params: {
           langId: selectedLang?.id,
         },
+        cancelToken: source.token,
       });
-      if (response.data.status === 200) {
-        const data = response.data.fetchData[0];
+      if (response?.data?.status === 200) {
+        const data = response?.data?.fetchData[0];
         setData(data);
         setLoading(false);
       } else {
@@ -110,37 +129,46 @@ function ProductsStory() {
   const loadSwiperUp = () => {
     if (page < numberOfCategories) {
       axios
-        .get(`/api/getCategoriesWithPaging/${branch.id}?page=${page + 1}`)
+        .get(`/api/getCategoriesWithPaging/${branch.id}?page=${page + 1}`, {
+          cancelToken: source.token,
+        })
         .then((res) => {
-          if (res.status === 200) {
-            const cate = res.data.fetchData.data[0];
+          if (res?.status === 200) {
+            const cate = res?.data?.fetchData.data[0];
             // console.log(cate);
             if (data?.sub_category_id === null) {
               setLoading(true);
               getProductBasedOnCategory(
                 cate?.category_id,
                 1,
-                selectedLang.id
+                selectedLang.id,
+                source
               ).then((res) => {
-                // console.log(res);
-                const result = res.data.filter((item) => item.video !== null);
-                if (result.length !== 0) {
-                  setRecomandProducts(result);
-                  setData(result[0]);
+                if (res !== undefined) {
+                  const result = res.data.filter((item) => item.video !== null);
+                  if (result.length !== 0) {
+                    setRecomandProducts(result);
+                    setData(result[0]);
+                  }
+                  setLoading(false);
                 }
-                setLoading(false);
               });
             } else {
               setLoading(true);
               getProductBasedOnSubCategory(
                 cate?.sub_category_id,
                 1,
-                selectedLang.id
+                selectedLang.id,
+                source
               ).then((value) => {
-                const result = value.data.filter((item) => item.video !== null);
-                setRecomandProducts(result);
-                setData(result[0]);
-                setLoading(false);
+                if (value !== undefined) {
+                  const result = value.data.filter(
+                    (item) => item.video !== null
+                  );
+                  setRecomandProducts(result);
+                  setData(result[0]);
+                  setLoading(false);
+                }
               });
             }
             setPage(page + 1);
@@ -156,37 +184,47 @@ function ProductsStory() {
   const loadSwiperDown = () => {
     if (page > 1) {
       axios
-        .get(`/api/getCategoriesWithPaging/${branch.id}?page=${page - 1}`)
+        .get(`/api/getCategoriesWithPaging/${branch.id}?page=${page - 1}`, {
+          cancelToken: source.token,
+        })
         .then((res) => {
-          if (res.status === 200) {
+          if (res?.status === 200) {
             setLoading(true);
 
-            const cate = res.data.fetchData.data[0];
+            const cate = res?.data?.fetchData.data[0];
             if (data?.sub_category_id === null) {
               getProductBasedOnCategory(
                 cate?.category_id,
                 1,
-                selectedLang.id
+                selectedLang.id,
+                source
               ).then((res) => {
-                const result = res.data.filter((item) => item.video !== null);
-                if (result.length !== 0) {
-                  setRecomandProducts(result);
-                  setData(result[0]);
+                if (res !== undefined) {
+                  const result = res.data.filter((item) => item.video !== null);
+                  if (result.length !== 0) {
+                    setRecomandProducts(result);
+                    setData(result[0]);
+                  }
+                  setLoading(false);
                 }
-                setLoading(false);
               });
             } else {
               getProductBasedOnSubCategory(
                 cate?.sub_category_id,
                 1,
-                selectedLang.id
+                selectedLang.id,
+                source
               ).then((value) => {
-                const result = value.data.filter((item) => item.video !== null);
-                if (result.length !== 0) {
-                  setRecomandProducts(result);
-                  setData(result[0]);
+                if (value !== undefined) {
+                  const result = value.data.filter(
+                    (item) => item.video !== null
+                  );
+                  if (result.length !== 0) {
+                    setRecomandProducts(result);
+                    setData(result[0]);
+                  }
+                  setLoading(false);
                 }
-                setLoading(false);
               });
             }
             setPage(page - 1);

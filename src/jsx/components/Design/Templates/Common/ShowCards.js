@@ -8,14 +8,14 @@ import { Link } from "react-router-dom";
 import getSymbolFromCurrency from "currency-symbol-map";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
 import Counter from "../Common/Counter";
 import IconButton from "@mui/material/IconButton";
 import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
 import { TemplateContext } from "../TemplateContext";
-export default function ShowCards() {
+export default function ShowCards(props) {
   const { style, cart, products, branchId, deliveryFees, locale } =
     useContext(TemplateContext);
+  const { check } = props;
   var viewShow_HTMLTABLE = "";
   if (products.length != 0) {
     viewShow_HTMLTABLE = products?.map((item, i) => {
@@ -108,7 +108,7 @@ export default function ShowCards() {
     });
   } else {
     viewShow_HTMLTABLE = (
-      <div className="text-center">{locale?.no_data_found}</div>
+      <div className="text-center">{check ? " " : locale?.no_data_found}</div>
     );
   }
   return viewShow_HTMLTABLE;

@@ -41,6 +41,10 @@ const MainPublic = (props) => {
     JSON.parse(sessionStorage.getItem("locale")) || []
   );
   const dataLoad = async (input) => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     setActiveCategory("All~~~1");
     let defaultLang;
     if (input === undefined) {
@@ -53,7 +57,7 @@ const MainPublic = (props) => {
             JSON.stringify(res.data.fetchData)
           );
         }
-        defaultLang = res.data.fetchData.filter((item) => {
+        defaultLang = res?.data?.fetchData?.filter((item) => {
           if (item.default == 1) {
             setLocale(JSON.parse(item.locale));
             sessionStorage.setItem("locale", item.locale);
@@ -74,18 +78,22 @@ const MainPublic = (props) => {
     await getProductsBasedOnBranchId(
       branchId,
       page,
-      input === undefined ? defaultLang?.id : input.id
+      input === undefined ? defaultLang?.id : input.id,
+      source
     ).then((data) => {
-      setLastPage(data.last_page);
-      setProducts(data.data);
-      setPage(page + 1);
-      setLoading(false);
+      if (data !== undefined) {
+        setLastPage(data?.last_page);
+        setProducts(data.data);
+        setPage(page + 1);
+        setLoading(false);
+      }
     });
   };
 
   useEffect(() => {
     dataLoad();
     return () => {
+      source.cancel();
       setLoading(true);
       setCategories([]);
       setProducts([]);
@@ -94,16 +102,26 @@ const MainPublic = (props) => {
       setLastPage(0);
     };
   }, []);
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
-    getThemplate(branchId).then((data) => {
-      setTemplate(data);
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
+    getThemplate(branchId, source).then((data) => {
+      if (data !== undefined) {
+        setTemplate(data);
+      }
     });
-    getThemes(branchId).then((data) => {
-      setTheme(data);
+    getThemes(branchId, source).then((data) => {
+      if (data !== undefined) {
+        setTheme(data);
+      }
     });
+
     return () => {
-      setTemplate([]);
-      setTheme([]);
+      source.cancel();
     };
   }, []);
   var view = "";
@@ -118,11 +136,11 @@ const MainPublic = (props) => {
       </div>
     );
   } else {
-    if (template.checkTemplate === "dark") {
+    if (template?.checkTemplate === "dark") {
       view = <DarkMain />;
-    } else if (template.checkTemplate === "second") {
+    } else if (template?.checkTemplate === "second") {
       view = <SecondMain />;
-    } else if (template.checkTemplate === "thrid") {
+    } else if (template?.checkTemplate === "thrid") {
       view = <ThridMain />;
     }
   }
@@ -132,11 +150,11 @@ const MainPublic = (props) => {
       value={{
         products,
         style:
-          template.checkTemplate === "dark"
+          template?.checkTemplate === "dark"
             ? DarkStyle(template?.Customization, theme)
-            : template.checkTemplate === "second"
+            : template?.checkTemplate === "second"
             ? SecondStyle(template?.Customization, theme)
-            : template.checkTemplate === "thrid"
+            : template?.checkTemplate === "thrid"
             ? ThridStyle(template?.Customization, theme)
             : console.log("style Error in Mainpublic file"),
         branchId,

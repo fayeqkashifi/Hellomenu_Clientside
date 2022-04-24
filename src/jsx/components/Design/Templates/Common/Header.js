@@ -40,8 +40,13 @@ function Header(props) {
   const filterProducts = async (menu) => {
     if (menu !== "All") {
       if (menu.sub_category_id === null) {
-        getProductBasedOnCategory(menu.category_id, 1, selectedLang.id).then(
-          (data) => {
+        getProductBasedOnCategory(
+          menu.category_id,
+          1,
+          selectedLang.id,
+          source
+        ).then((data) => {
+          if (data !== undefined) {
             setProducts(data.data);
             setChangeState(true);
             setLastPage(data.last_page);
@@ -50,30 +55,37 @@ function Header(props) {
               menu.CategoryName + "~~~cate~~~" + menu.category_id
             );
           }
-        );
+        });
       } else {
         getProductBasedOnSubCategory(
           menu.sub_category_id,
           1,
-          selectedLang.id
+          selectedLang.id,
+          source
         ).then((res) => {
-          setProducts(res.data);
-          setActiveCategory(
-            menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
-          );
-          setChangeState(true);
-          setLastPage(res.last_page);
-          setPage(2);
+          if (res !== undefined) {
+            setProducts(res.data);
+            setActiveCategory(
+              menu.SubCategoryName + "~~~sub~~~" + menu.sub_category_id
+            );
+            setChangeState(true);
+            setLastPage(res.last_page);
+            setPage(2);
+          }
         });
       }
     } else {
-      getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then((data) => {
-        setProducts(data.data);
-        setChangeState(true);
-        setLastPage(data.last_page);
-        setPage(2);
-        setActiveCategory("All~~~1");
-      });
+      getProductsBasedOnBranchId(branchId, 1, selectedLang.id, source).then(
+        (data) => {
+          if (data !== undefined) {
+            setProducts(data.data);
+            setChangeState(true);
+            setLastPage(data.last_page);
+            setPage(2);
+            setActiveCategory("All~~~1");
+          }
+        }
+      );
     }
   };
   let [sum, setSum] = useState(0);
@@ -88,22 +100,31 @@ function Header(props) {
     );
     setSum(count);
   };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     dataLoading();
     return () => {
+      source.cancel();
       setSum(0);
     };
   }, [cart]);
   let cancelToken;
   const searchItem = async (e) => {
     if (e.target.value === "") {
-      await getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then(
+      getProductsBasedOnBranchId(branchId, 1, selectedLang.id, source).then(
         (data) => {
-          setProducts(data.data);
-          setChangeState(true);
-          setLastPage(data.last_page);
-          setPage(2);
-          setActiveCategory("All~~~1");
+          if (data !== undefined) {
+            setProducts(data.data);
+            setChangeState(true);
+            setLastPage(data.last_page);
+            setPage(2);
+            setActiveCategory("All~~~1");
+          }
         }
       );
     } else {

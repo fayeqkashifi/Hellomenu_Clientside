@@ -3,13 +3,11 @@ import ReactPlayer from "react-player/lazy";
 import { base_url, port } from "../../../../../Consts";
 import { Link } from "react-router-dom";
 import { getProductsBasedOnBranchId } from "../Functionality";
-import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import axios from "axios";
 function VideoList(props) {
-  const { t } = useTranslation();
-
   const style = props.history.location.state.style;
   const branch = props.history.location.state.branch;
   const deliveryFees = props.history.location.state.deliveryFees;
@@ -20,31 +18,41 @@ function VideoList(props) {
   const [lastPage, setLastPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const selectedLang = JSON.parse(sessionStorage.getItem("selectedLang")) || {};
-
+  const locale = JSON.parse(sessionStorage.getItem("locale")) || [];
   const [changeState, setChangeState] = useState(true);
   const dataLoad = () => {
-    getProductsBasedOnBranchId(branch.id, page, selectedLang.id).then(
+    getProductsBasedOnBranchId(branch.id, page, selectedLang.id, source).then(
       (data) => {
-        setLastPage(data.last_page);
-        setProducts(data.data);
-        setPage(page + 1);
-        setLoading(false);
+        if (data !== undefined) {
+          setLastPage(data.last_page);
+          setProducts(data.data);
+          setPage(page + 1);
+          setLoading(false);
+        }
       }
     );
   };
+  let source = axios.CancelToken.source();
 
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     dataLoad();
     return () => {
+      source.cancel();
       setProducts([]);
       setLoading(true);
     };
   }, []);
   const fetchMoreData = () => {
     if (page <= lastPage) {
-      getProductsBasedOnBranchId(branch.id, page).then((data) => {
-        setProducts(products.concat(data.data));
-        setPage(page + 1);
+      getProductsBasedOnBranchId(branch.id, page, source).then((data) => {
+        if (data !== undefined) {
+          setProducts(products.concat(data.data));
+          setPage(page + 1);
+        }
       });
     } else {
       setChangeState(false);
@@ -210,7 +218,7 @@ function VideoList(props) {
             hasMore={changeState}
             loader={
               <p className="text-center py-4" style={{ marginBottom: "100px" }}>
-                <b>{t("loading")}</b>
+                <b>{locale?.loading}</b>
               </p>
             }
             endMessage={
@@ -218,7 +226,7 @@ function VideoList(props) {
                 style={{ textAlign: "center", marginBottom: "100px" }}
                 className="py-4"
               >
-                <b>{t("yay_you_have_seen_it_all")}</b>
+                <b>{locale?.yay_you_have_seen_it_all}</b>
               </p>
             }
           ></InfiniteScroll>

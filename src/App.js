@@ -49,14 +49,14 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (401 === error.response.status) {
+    if (401 === error?.response?.status) {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_name");
       localStorage.removeItem("auth_company_id");
       localStorage.removeItem("auth_id");
       // window.location = "/";
 
-      return error.response;
+      return error?.response;
     }
   }
 );

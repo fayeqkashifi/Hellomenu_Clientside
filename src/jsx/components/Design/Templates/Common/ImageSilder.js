@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { base_url, port } from "../../../../../Consts";
-
 import { Swiper, SwiperSlide } from "swiper/react";
-
+import "swiper/swiper-bundle.min.css";
+import "swiper/swiper.min.css";
 import SwiperCore, { Navigation, Thumbs } from "swiper";
 import ReactImageMagnify from "react-image-magnify";
 SwiperCore.use([Navigation, Thumbs]);
@@ -10,7 +10,6 @@ const ImageSlider = (props) => {
   // for localization
   const { rimProps, rsProps, varPics, setSwiper, style, fetchData } = props;
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
   return (
     <div>
       {(() => {

@@ -5,15 +5,13 @@ import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
 } from "../Functionality";
-import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Grid from "@mui/material/Grid";
 import ShowCards from "./ShowCards";
 import { TemplateContext } from "../TemplateContext";
+import axios from "axios";
 
 function VideoDetails(props) {
-  const { t } = useTranslation();
-
   const style = props.history.location.state.style;
   const branch = props.history.location.state.branch;
   const deliveryFees = props.history.location.state.deliveryFees;
@@ -30,29 +28,42 @@ function VideoDetails(props) {
       getProductBasedOnCategory(
         product?.category_id,
         page,
-        selectedLang.id
+        selectedLang.id,
+        source
       ).then((res) => {
-        setProducts(res.data);
-        setLastPage(res.last_page);
-        setValue("cate~~~" + product?.category_id);
-        setPage(page + 1);
+        if (res !== undefined) {
+          setProducts(res.data);
+          setLastPage(res.last_page);
+          setValue("cate~~~" + product?.category_id);
+          setPage(page + 1);
+        }
       });
     } else {
       getProductBasedOnSubCategory(
         product?.sub_category_id,
         page,
-        selectedLang.id
+        selectedLang.id,
+        source
       ).then((res) => {
-        setValue("sub~~~" + product?.sub_category_id);
-        setProducts(res.data);
-        setLastPage(res.last_page);
-        setPage(page + 1);
+        if (res != undefined) {
+          setValue("sub~~~" + product?.sub_category_id);
+          setProducts(res.data);
+          setLastPage(res.last_page);
+          setPage(page + 1);
+        }
       });
     }
   };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     dataLoad();
     return () => {
+      source.cancel();
       setPage(1);
       setLastPage(1);
       setValue("");
@@ -63,19 +74,26 @@ function VideoDetails(props) {
     if (page <= lastPage) {
       const data = value?.split("~~~");
       if (data[0] === "cate") {
-        getProductBasedOnCategory(data[1], page, selectedLang.id).then(
+        getProductBasedOnCategory(data[1], page, selectedLang.id, source).then(
           (res) => {
-            setProducts(products.concat(res.data));
-            setPage(page + 1);
+            if (res !== undefined) {
+              setProducts(products.concat(res.data));
+              setPage(page + 1);
+            }
           }
         );
       } else if (data[0] === "sub") {
-        getProductBasedOnSubCategory(data[1], page, selectedLang.id).then(
-          (res) => {
+        getProductBasedOnSubCategory(
+          data[1],
+          page,
+          selectedLang.id,
+          source
+        ).then((res) => {
+          if (res !== undefined) {
             setProducts(products.concat(res.data));
             setPage(page + 1);
           }
-        );
+        });
       }
     } else {
       setChangeState(false);
@@ -125,7 +143,7 @@ function VideoDetails(props) {
         </div>
         <div className=" p-3">
           <Grid container spacing={2} className="d-flex justify-content-center">
-            <ShowCards />
+            <ShowCards check={true} />
           </Grid>
           <InfiniteScroll
             dataLength={products.length} //This is important field to render the next data
@@ -133,7 +151,7 @@ function VideoDetails(props) {
             hasMore={changeState}
             loader={
               <p className="text-center py-4" style={{ marginBottom: "100px" }}>
-                <b>{t("loading")}</b>
+                <b>{locale?.loading}</b>
               </p>
             }
             endMessage={
@@ -141,7 +159,7 @@ function VideoDetails(props) {
                 style={{ textAlign: "center", marginBottom: "100px" }}
                 className="py-4"
               >
-                <b>{t("yay_you_have_seen_it_all")}</b>
+                <b>{locale?.yay_you_have_seen_it_all}</b>
               </p>
             }
           ></InfiniteScroll>

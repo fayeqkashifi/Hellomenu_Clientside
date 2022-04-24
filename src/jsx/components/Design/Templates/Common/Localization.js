@@ -15,7 +15,6 @@ export default function LanguageLocalization() {
     setAnchorEl(event.currentTarget);
   };
   const handleMenuItemClick = (event, option) => {
-
     sessionStorage.setItem("selectedLang", JSON.stringify(option));
     sessionStorage.setItem("locale", option.locale);
     setSelectedLang(option);
@@ -56,7 +55,7 @@ export default function LanguageLocalization() {
         >
           <ListItemText
             primary={
-              selectedLang.label == undefined
+              selectedLang?.label == undefined
                 ? first.label?.toUpperCase()
                 : selectedLang.label?.toUpperCase()
             }

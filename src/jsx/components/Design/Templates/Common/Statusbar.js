@@ -9,7 +9,7 @@ import ReactPlayer from "react-player/lazy";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { TemplateContext } from "../TemplateContext";
-function Statusbar(props) {
+function Statusbar() {
   const { products, style, branchId, categories, deliveryFees, locale } =
     useContext(TemplateContext);
 
@@ -17,26 +17,16 @@ function Statusbar(props) {
   const [branch, setBranch] = useState([]);
   const [branchStories, setBranchStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  let cancelToken;
-  let storyToken;
 
   const dataload = () => {
-    if (cancelToken) {
-      cancelToken.cancel("Operations cancelled due to new request");
-    }
-    cancelToken = axios.CancelToken.source();
-    if (storyToken) {
-      storyToken.cancel("Operations cancelled due to new request");
-    }
-    storyToken = axios.CancelToken.source();
     try {
       axios
         .get(`/api/editBranches/${branchId}`, {
-          cancelToken: cancelToken.token,
+          cancelToken: source.token,
         })
         .then((res) => {
-          if (res.data.status === 200) {
-            setBranch(res.data.branch);
+          if (res?.data?.status === 200) {
+            setBranch(res?.data?.branch);
           }
         })
         .catch((err) => {
@@ -44,11 +34,11 @@ function Statusbar(props) {
         });
       axios
         .get(`/api/getStories/${branchId}`, {
-          cancelToken: cancelToken.token,
+          cancelToken: source.token,
         })
         .then((res) => {
-          if (res.data.status === 200) {
-            setBranchStories(res.data.data);
+          if (res?.data?.status === 200) {
+            setBranchStories(res?.data?.data);
             setLoading(false);
           }
         })
@@ -59,9 +49,16 @@ function Statusbar(props) {
       console.log(error);
     }
   };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     dataload();
     return () => {
+      source.cancel();
       setBranch([]);
       setBranchStories([]);
       setLoading(true);

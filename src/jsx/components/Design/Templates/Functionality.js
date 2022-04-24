@@ -1,31 +1,35 @@
 import axios from "axios";
 
-export const getThemplate = async (branchId) => {
+export const getThemplate = async (branchId, config) => {
   try {
-    const result = await axios.get(`/api/getTempBasedOnBranch/${branchId}`);
-    if (result.data.status === 200) {
-      return result.data.fetchData[0];
+    const result = await axios.get(`/api/getTempBasedOnBranch/${branchId}`, {
+      cancelToken: config.token,
+    });
+    if (result?.data?.status === 200) {
+      return result?.data?.fetchData;
     }
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    if (axios.isCancel(error)) {
+      console.log("cancelled");
+    } else {
+      throw error;
+    }
   }
 };
-let cancelToken;
-export const getThemes = async (branchId) => {
-  if (cancelToken) {
-    cancelToken.cancel("Operations cancelled due to new request");
-  }
-  cancelToken = axios.CancelToken.source();
-  let result;
+export const getThemes = async (branchId, config) => {
   try {
-    result = await axios.get(`/api/activeTheme/${branchId}`, {
-      cancelToken: cancelToken.token,
+    const result = await axios.get(`/api/activeTheme/${branchId}`, {
+      cancelToken: config.token,
     });
-    if (result.data.status === 200) {
-      return result.data.fetchData[0];
+    if (result?.data?.status === 200) {
+      return result?.data?.fetchData;
     }
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    if (axios.isCancel(error)) {
+      console.log("cancelled");
+    } else {
+      throw error;
+    }
   }
 };
 export const getBranch = async (branchId) => {
@@ -38,7 +42,12 @@ export const getBranch = async (branchId) => {
     console.error(err);
   }
 };
-export const getProductsBasedOnBranchId = async (branchId, page, langId) => {
+export const getProductsBasedOnBranchId = async (
+  branchId,
+  page,
+  langId,
+  config
+) => {
   try {
     const result = await axios.get(
       `/api/getProductsBasedOnBranchId/${branchId}?page=${page}`,
@@ -46,13 +55,18 @@ export const getProductsBasedOnBranchId = async (branchId, page, langId) => {
         params: {
           langId: langId,
         },
+        cancelToken: config.token,
       }
     );
-    if (result.data.status === 200) {
-      return result.data.fetchData;
+    if (result?.data?.status === 200) {
+      return result?.data?.fetchData;
     }
   } catch (err) {
-    console.error(err);
+    if (axios.isCancel(err)) {
+      console.log("cancelled");
+    } else {
+      throw err;
+    }
   }
 };
 export const getCategoriesBasedProduct = async (branchId, langId) => {
@@ -67,10 +81,19 @@ export const getCategoriesBasedProduct = async (branchId, langId) => {
       return result.data.fetchData;
     }
   } catch (err) {
-    console.error(err);
+    if (axios.isCancel(err)) {
+      console.log("cancelled");
+    } else {
+      throw err;
+    }
   }
 };
-export const getProductBasedOnCategory = async (catId, page, langId) => {
+export const getProductBasedOnCategory = async (
+  catId,
+  page,
+  langId,
+  config
+) => {
   try {
     const result = await axios.get(
       `/api/getProductsBasedCategory/${catId}?page=${page}`,
@@ -78,16 +101,26 @@ export const getProductBasedOnCategory = async (catId, page, langId) => {
         params: {
           langId: langId,
         },
+        cancelToken: config.token,
       }
     );
-    if (result.data.status === 200) {
-      return result.data.data;
+    if (result?.data?.status === 200) {
+      return result?.data?.data;
     }
   } catch (err) {
-    console.error(err);
+    if (axios.isCancel(err)) {
+      console.log("cancelled");
+    } else {
+      throw err;
+    }
   }
 };
-export const getProductBasedOnSubCategory = async (subCatId, page, langId) => {
+export const getProductBasedOnSubCategory = async (
+  subCatId,
+  page,
+  langId,
+  config
+) => {
   try {
     const result = await axios.get(
       `/api/getProductsBasedOnSubCategory/${subCatId}?page=${page}`,
@@ -95,16 +128,21 @@ export const getProductBasedOnSubCategory = async (subCatId, page, langId) => {
         params: {
           langId: langId,
         },
+        cancelToken: config.token,
       }
     );
-    if (result.data.status === 200) {
-      return result.data.data;
+    if (result?.data?.status === 200) {
+      return result?.data?.data;
     }
   } catch (err) {
-    console.error(err);
+    if (axios.isCancel(err)) {
+      console.log("cancelled");
+    } else {
+      throw err;
+    }
   }
 };
-export const getProduct = async (proId, langId) => {
+export const getProduct = async (proId, langId, config) => {
   try {
     const result = await axios({
       method: "GET",
@@ -112,21 +150,31 @@ export const getProduct = async (proId, langId) => {
       params: {
         langId: langId,
       },
+      cancelToken: config.token,
     });
     return result;
   } catch (err) {
-    console.error(err);
+    if (axios.isCancel(err)) {
+      console.log("cancelled");
+    } else {
+      throw err;
+    }
   }
 };
-export const getVariations = async (proId) => {
+export const getVariations = async (proId, config) => {
   try {
     const result = await axios({
       method: "GET",
       url: `/api/getVariations/${proId}`,
+      cancelToken: config.token,
     });
-    return result.data.fetchData;
+    return result?.data?.fetchData;
   } catch (err) {
-    console.error(err);
+    if (axios.isCancel(err)) {
+      console.log("cancelled");
+    } else {
+      throw err;
+    }
   }
 };
 export const getTables = async (branchId) => {

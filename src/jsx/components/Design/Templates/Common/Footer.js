@@ -30,7 +30,6 @@ function Footer(props) {
     };
   }, [cart]);
   const [modalCentered, setModalCentered] = useState(false);
-  // dark template Style
   return (
     <>
       <Box component="footer" sx={style?.footerStyle} className="bottom-0 mt-5">

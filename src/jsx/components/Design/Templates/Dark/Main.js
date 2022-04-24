@@ -12,6 +12,8 @@ import {
 } from "../Functionality";
 import Statusbar from "../Common/Statusbar";
 import { TemplateContext } from "../TemplateContext";
+import axios from "axios";
+
 export default function Main() {
   const {
     products,
@@ -28,39 +30,63 @@ export default function Main() {
 
   const [changeState, setChangeState] = useState(true);
   const fetchMoreData = () => {
-    console.log(selectedLang.id);
     if (page <= lastPage) {
       if (activeCategory === "All~~~1") {
-        getProductsBasedOnBranchId(branchId, page, selectedLang.id).then(
-          (data) => {
+        getProductsBasedOnBranchId(
+          branchId,
+          page,
+          selectedLang.id,
+          source
+        ).then((data) => {
+          if (data !== undefined) {
             setProducts(products.concat(data.data));
             setPage(page + 1);
           }
-        );
+        });
       } else {
         const data = activeCategory?.split("~~~");
         if (data[1] === "cate") {
-          getProductBasedOnCategory(data[2], page, selectedLang.id).then(
-            (data) => {
+          getProductBasedOnCategory(
+            data[2],
+            page,
+            selectedLang.id,
+            source
+          ).then((data) => {
+            if (data !== undefined) {
               setProducts(products.concat(data.data));
               setPage(page + 1);
             }
-          );
+          });
         } else if (data[1] === "sub") {
-          getProductBasedOnSubCategory(data[2], page, selectedLang.id).then(
-            (res) => {
+          getProductBasedOnSubCategory(
+            data[2],
+            page,
+            selectedLang.id,
+            source
+          ).then((res) => {
+            if (data !== undefined) {
               setProducts(products.concat(res.data));
               setPage(page + 1);
             }
-          );
+          });
         }
       }
     } else {
       setChangeState(false);
     }
   };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     setChangeState(true);
+
+    return () => {
+      source.cancel();
+    };
   }, [selectedLang]);
   var viewShow_HTMLTABLE = (
     <Grid container spacing={2} className="d-flex justify-content-center">

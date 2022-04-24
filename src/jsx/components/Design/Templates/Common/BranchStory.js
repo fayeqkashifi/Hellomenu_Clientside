@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import profile from "../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
 import { TemplateContext } from "../TemplateContext";
+import axios from "axios";
+
 function BranchStory(props) {
   const { style, branch, deliveryFees, branchStory, selectedLang } =
     useContext(TemplateContext);
@@ -19,17 +21,27 @@ function BranchStory(props) {
     const recData = [];
     const value = JSON.parse(branchStory?.storyTagProducts);
     value.map(async (item) => {
-      const product = await getProduct(item.value, selectedLang?.id);
-      if (product.data.status === 200) {
-        recData.push(product.data.fetchData[0]);
+      const product = await getProduct(item.value, selectedLang?.id, source);
+      if (product !== undefined) {
+        if (product.data.status === 200) {
+          recData.push(product.data.fetchData[0]);
+        }
       }
     });
     setTagProducts(recData);
     setLoading(false);
   };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     loadProdcut();
     return () => {
+      source.cancel();
+
       setLoading(true);
     };
   }, []);

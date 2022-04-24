@@ -16,6 +16,8 @@ import CustomAlert from "../../../CustomAlert";
 import ImageSlider from "./ImageSilder";
 import "./imageSilder.css";
 import { TemplateContext } from "../TemplateContext";
+import axios from "axios";
+
 const ProductDetails = () => {
   const {
     id,
@@ -46,20 +48,30 @@ const ProductDetails = () => {
     image: fetchData?.image,
   });
   const getdata = () => {
-    getVariations(id).then((res) => {
-      if (res !== "") {
-        varData = JSON.parse(res.variants);
-        setVarPics(varData);
-        parseVariants(varData);
+    getVariations(id, source).then((res) => {
+      if (res !== undefined) {
+        if (res !== "") {
+          varData = JSON.parse(res.variants);
+          setVarPics(varData);
+          parseVariants(varData);
+        }
       }
     });
   };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     getdata();
-    // return () => {
-    //   parseVariants([]);
-    //   setVarPics([]);
-    // };
+    return () => {
+      source.cancel();
+
+      // parseVariants([]);
+      // setVarPics([]);
+    };
   }, [id]);
   const changePrice = (varName, variant) => {
     const keys = Object.keys(showVaralint);
