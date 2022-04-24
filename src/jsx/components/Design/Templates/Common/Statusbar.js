@@ -17,28 +17,47 @@ function Statusbar(props) {
   const [branch, setBranch] = useState([]);
   const [branchStories, setBranchStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataload = async () => {
-    await axios
-      .get(`/api/editBranches/${branchId}`)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setBranch(res.data.branch);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    await axios
-      .get(`/api/getStories/${branchId}`)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setBranchStories(res.data.data);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  let cancelToken;
+  let storyToken;
+
+  const dataload = () => {
+    if (cancelToken) {
+      cancelToken.cancel("Operations cancelled due to new request");
+    }
+    cancelToken = axios.CancelToken.source();
+    if (storyToken) {
+      storyToken.cancel("Operations cancelled due to new request");
+    }
+    storyToken = axios.CancelToken.source();
+    try {
+      axios
+        .get(`/api/editBranches/${branchId}`, {
+          cancelToken: cancelToken.token,
+        })
+        .then((res) => {
+          if (res.data.status === 200) {
+            setBranch(res.data.branch);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      axios
+        .get(`/api/getStories/${branchId}`, {
+          cancelToken: cancelToken.token,
+        })
+        .then((res) => {
+          if (res.data.status === 200) {
+            setBranchStories(res.data.data);
+            setLoading(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     dataload();

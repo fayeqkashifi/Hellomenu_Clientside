@@ -456,9 +456,9 @@ export const SecondStyle = (custom, theme) => {
       objectFit: "contain",
     },
     // Image Slider Style
-    imageSilderMainDiv: { minHeight: "60vh", position: "sticky" },
+    imageSilderMainDiv: { minHeight: "80vh", position: "sticky" },
     mainSwiper: {
-      minHeight: "55vh",
+      minHeight: "70vh",
       margin: "10px",
       padding: "10px",
     },
@@ -468,7 +468,7 @@ export const SecondStyle = (custom, theme) => {
       borderRadius: "10px",
       // objectFit: "contain",
     },
-    ThumbsSwiper: { minHeight: "5vh", cursor: "pointer", margin: "10px" },
+    ThumbsSwiper: { minHeight: "10vh", cursor: "pointer", margin: "10px" },
     thumbsImage: {
       height: "60px",
       width: "40px",

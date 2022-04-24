@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { base_url, port } from "../../../../../Consts";
 import axios from "axios";
 import getSymbolFromCurrency from "currency-symbol-map";
-// import "swiper/swiper-bundle.min.css";
-// import "swiper/swiper.min.css";
 import { Link } from "react-router-dom";
 import {
   getProductBasedOnCategory,
@@ -15,9 +13,11 @@ import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
 import profile from "../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
+import { TemplateContext } from "../TemplateContext";
 
-function ProductsStory(props) {
-  const { style, branch, product_id, deliveryFees, categories } = props;
+function ProductsStory() {
+  const { style, branch, product_id, deliveryFees, categories, selectedLang } =
+    useContext(TemplateContext);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -26,23 +26,35 @@ function ProductsStory(props) {
 
   const loadProdcut = async () => {
     try {
-      const response = await axios.get(`/api/getProduct/${product_id}`);
+      const response = await axios({
+        method: "GET",
+        url: `/api/getProduct/${product_id}`,
+        params: {
+          langId: selectedLang?.id,
+        },
+      });
       if (response.data.status === 200) {
         const data = response.data.fetchData[0];
         setData(data);
         if (data?.sub_category_id === null) {
-          await getProductBasedOnCategory(data?.category_id).then((res) => {
+          getProductBasedOnCategory(
+            data?.category_id,
+            page,
+            selectedLang?.id
+          ).then((res) => {
             setRecomandProducts(res.data.filter((item) => item.video !== null));
           });
           setLoading(false);
         } else {
-          await getProductBasedOnSubCategory(data?.sub_category_id).then(
-            (value) => {
-              setRecomandProducts(
-                value.data.filter((item) => item.video !== null)
-              );
-            }
-          );
+          getProductBasedOnSubCategory(
+            data?.sub_category_id,
+            page,
+            selectedLang?.id
+          ).then((value) => {
+            setRecomandProducts(
+              value.data.filter((item) => item.video !== null)
+            );
+          });
           setLoading(false);
         }
       } else {
@@ -75,7 +87,13 @@ function ProductsStory(props) {
   const changeProduct = async (id) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/getProduct/${id}`);
+      const response = await axios({
+        method: "GET",
+        url: `/api/getProduct/${id}`,
+        params: {
+          langId: selectedLang?.id,
+        },
+      });
       if (response.data.status === 200) {
         const data = response.data.fetchData[0];
         setData(data);
@@ -99,8 +117,13 @@ function ProductsStory(props) {
             // console.log(cate);
             if (data?.sub_category_id === null) {
               setLoading(true);
-              getProductBasedOnCategory(cate?.category_id).then((res) => {
-                const result = res.filter((item) => item.video !== null);
+              getProductBasedOnCategory(
+                cate?.category_id,
+                1,
+                selectedLang.id
+              ).then((res) => {
+                // console.log(res);
+                const result = res.data.filter((item) => item.video !== null);
                 if (result.length !== 0) {
                   setRecomandProducts(result);
                   setData(result[0]);
@@ -109,14 +132,16 @@ function ProductsStory(props) {
               });
             } else {
               setLoading(true);
-              getProductBasedOnSubCategory(cate?.sub_category_id).then(
-                (value) => {
-                  const result = value.filter((item) => item.video !== null);
-                  setRecomandProducts(result);
-                  setData(result[0]);
-                  setLoading(false);
-                }
-              );
+              getProductBasedOnSubCategory(
+                cate?.sub_category_id,
+                1,
+                selectedLang.id
+              ).then((value) => {
+                const result = value.data.filter((item) => item.video !== null);
+                setRecomandProducts(result);
+                setData(result[0]);
+                setLoading(false);
+              });
             }
             setPage(page + 1);
           } else {
@@ -138,8 +163,12 @@ function ProductsStory(props) {
 
             const cate = res.data.fetchData.data[0];
             if (data?.sub_category_id === null) {
-              getProductBasedOnCategory(cate?.category_id).then((res) => {
-                const result = res.filter((item) => item.video !== null);
+              getProductBasedOnCategory(
+                cate?.category_id,
+                1,
+                selectedLang.id
+              ).then((res) => {
+                const result = res.data.filter((item) => item.video !== null);
                 if (result.length !== 0) {
                   setRecomandProducts(result);
                   setData(result[0]);
@@ -147,16 +176,18 @@ function ProductsStory(props) {
                 setLoading(false);
               });
             } else {
-              getProductBasedOnSubCategory(cate?.sub_category_id).then(
-                (value) => {
-                  const result = value.filter((item) => item.video !== null);
-                  if (result.length !== 0) {
-                    setRecomandProducts(result);
-                    setData(result[0]);
-                  }
-                  setLoading(false);
+              getProductBasedOnSubCategory(
+                cate?.sub_category_id,
+                1,
+                selectedLang.id
+              ).then((value) => {
+                const result = value.data.filter((item) => item.video !== null);
+                if (result.length !== 0) {
+                  setRecomandProducts(result);
+                  setData(result[0]);
                 }
-              );
+                setLoading(false);
+              });
             }
             setPage(page - 1);
           } else {

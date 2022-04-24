@@ -34,9 +34,9 @@ const MainRrecommend = (props) => {
   const [item, setItem] = useState([]);
   const [fetchData, setFetchData] = useState([]);
 
-  const dataLoad = async (input) => {
+  const dataLoad = (input) => {
     var data = [];
-    await getProduct(id, input.id).then((result) => {
+    getProduct(id, input.id).then((result) => {
       data = result.data.fetchData;
       setItem(data);
       setFetchData(result.data.recommend);
@@ -55,6 +55,7 @@ const MainRrecommend = (props) => {
     <TemplateContext.Provider
       value={{
         dataLoad,
+        setFetchData,
         loading,
         fetchData,
         item,

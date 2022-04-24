@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import {
-  Link,
-  BrowserRouter as Router,
-  Switch,
-  useRouteMatch,
-} from "react-router-dom";
-
 import { localization as t } from "../../Localization";
 import PublicLocale from "./Locale";
 const PublicLocalization = (props) => {
   const id = props.history.location.state.id;
-  const { path, url } = useRouteMatch();
   const [lang, setLang] = useState([]);
   const [langId, setLangId] = useState(1);
   const [loading, setLoading] = useState(true);

@@ -48,12 +48,12 @@ const Cart = (props) => {
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
   const [branch, setBranch] = useState([]);
-  const dataLoad = async () => {
-    await getBranch(branchId).then((data) => {
+  const dataLoad = () => {
+    getBranch(branchId).then((data) => {
       setBranch(data);
       setLoading(false);
     });
-    await getTables(branchId).then((res) => {
+    getTables(branchId).then((res) => {
       setTables(res);
     });
   };

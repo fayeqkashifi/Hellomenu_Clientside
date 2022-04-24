@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { base_url, port } from "../../../../../Consts";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { getProduct } from "../Functionality";
@@ -8,9 +8,10 @@ import Toolbar from "@mui/material/Toolbar";
 import { Link } from "react-router-dom";
 import profile from "../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
+import { TemplateContext } from "../TemplateContext";
 function BranchStory(props) {
-  const { style, branch, deliveryFees, branchStory } = props;
-  console.log();
+  const { style, branch, deliveryFees, branchStory, selectedLang } =
+    useContext(TemplateContext);
   const [loading, setLoading] = useState(true);
   const [tagProducts, setTagProducts] = useState([]);
 
@@ -18,7 +19,7 @@ function BranchStory(props) {
     const recData = [];
     const value = JSON.parse(branchStory?.storyTagProducts);
     value.map(async (item) => {
-      const product = await getProduct(item.value);
+      const product = await getProduct(item.value, selectedLang?.id);
       if (product.data.status === 200) {
         recData.push(product.data.fetchData[0]);
       }
@@ -202,7 +203,6 @@ function BranchStory(props) {
             stories={urls}
             defaultInterval={1500}
             width={432}
-            // height="auto"
             // style={{ overflow: "auto", minHeight: "500px", height: "auto" }}
           />
         </div>

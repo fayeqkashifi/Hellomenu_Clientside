@@ -27,80 +27,90 @@ const Variants = (props) => {
   const [tags, setTags] = useState([]);
   const [product, setProduct] = useState(0);
 
-  useEffect(() => {
-    const getdata = async () => {
-      const proRes = await axios.get(`/api/editProducts/${id}`);
-      if (proRes.data.status === 200) {
-        const product = proRes.data.product;
-        setProduct(product);
-      }
-      const jsonvar = await axios({
-        method: "GET",
-        url: `/api/getVariations/${id}`,
-      });
-      const res = await axios({
-        method: "GET",
-        url: "/api/getAttributesAll",
-      });
-      const nameAtter = {};
-      res.data.fetchData.map(
-        (fetchData) => (nameAtter[fetchData.attributeName] = "")
-      );
+  const getdata = async () => {
+    const proRes = await axios.get(`/api/editProducts/${id}`);
+    if (proRes.data.status === 200) {
+      const product = proRes.data.product;
+      setProduct(product);
+    }
+    const jsonvar = await axios({
+      method: "GET",
+      url: `/api/getVariations/${id}`,
+    });
+    const res = await axios({
+      method: "GET",
+      url: "/api/getAttributesAll",
+    });
+    const nameAtter = {};
+    res.data.fetchData.map(
+      (fetchData) => (nameAtter[fetchData.attributeName] = "")
+    );
 
-      if (res.data.fetchData.length !== attributes.length) {
-        setAttributes(res.data.fetchData);
-        // setTags(JSON.parse(jsonvar.data.fetchData.tags));
-      }
+    if (res.data.fetchData.length !== attributes.length) {
+      setAttributes(res.data.fetchData);
+      // setTags(JSON.parse(jsonvar.data.fetchData.tags));
+    }
 
-      if (jsonvar.data.fetchData !== "") {
-        const recTags = JSON.parse(jsonvar.data.fetchData.tags);
-        setTags(recTags);
+    if (jsonvar.data.fetchData !== "") {
+      const recTags = JSON.parse(jsonvar.data.fetchData.tags);
+      setTags(recTags);
 
-        const varLines = [];
+      const varLines = [];
 
-        const arrayVar = JSON.parse(jsonvar.data.fetchData.variants);
-        const AttNames = {};
+      const arrayVar = JSON.parse(jsonvar.data.fetchData.variants);
+      const AttNames = {};
 
-        arrayVar.map((fetchData) => {
-          const attrFilterName = [];
+      arrayVar.map((fetchData) => {
+        const attrFilterName = [];
 
-          let line = {};
-          let count = 0;
-          for (const [key, value] of Object.entries(fetchData)) {
-            if (
-              key == "postion" ||
-              key == "sku" ||
-              key == "price" ||
-              key == "stock" ||
-              key == "image"
-            ) {
-              line[key] = value;
-            } else if (nameAtter.hasOwnProperty(key)) {
-              attrFilterName.push({
-                value: key,
-                label: key,
-              });
-              line[key] = value;
+        let line = {};
+        let count = 0;
+        for (const [key, value] of Object.entries(fetchData)) {
+          if (
+            key == "postion" ||
+            key == "sku" ||
+            key == "price" ||
+            key == "stock" ||
+            key == "image"
+          ) {
+            line[key] = value;
+          } else if (nameAtter.hasOwnProperty(key)) {
+            attrFilterName.push({
+              value: key,
+              label: key,
+            });
+            line[key] = value;
 
-              AttNames[key] = "";
-            } else {
-              if (count < Object.keys(nameAtter).length) {
-                line[Object.keys(nameAtter)[count]] = value;
-              }
-              count++;
+            AttNames[key] = "";
+          } else {
+            if (count < Object.keys(nameAtter).length) {
+              line[Object.keys(nameAtter)[count]] = value;
             }
+            count++;
           }
-          varLines.push(line);
-          setVariantsTage(attrFilterName);
-        });
-        setNumberOfVar(varLines);
-        setLoading(false);
-        // setAttributes(res.data.fetchData);
-      } else {
-        setLoading(false);
-      }
+        }
+        varLines.push(line);
+        setVariantsTage(attrFilterName);
+      });
+      setNumberOfVar(varLines);
+      setLoading(false);
+      // setAttributes(res.data.fetchData);
+    } else {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getdata();
+    return () => {
+      setLoading(true);
+      setProduct([]);
+      setAttributes([]);
+      setTags([]);
+      setVariantsTage([]);
+      setNumberOfVar([]);
     };
-
+  }, []);
+  useEffect(() => {
     getdata();
   }, [check]);
   const CreateNewVar = (tag) => {

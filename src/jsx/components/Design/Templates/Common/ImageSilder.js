@@ -117,7 +117,7 @@ const ImageSlider = (props) => {
                           lensStyle: { backgroundColor: "rgba(0,0,0,.6)" },
                         }}
                         {...rimProps}
-                        // style={style.swiperMainImage}
+                        style={style.swiperMainImage}
                       />
                     </SwiperSlide>
                   );

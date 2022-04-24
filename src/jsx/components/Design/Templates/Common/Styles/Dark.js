@@ -510,9 +510,9 @@ export const DarkStyle = (custom, theme) => {
     },
 
     // Image Slider Style
-    imageSilderMainDiv: { minHeight: "60vh", position: "sticky" },
+    imageSilderMainDiv: { maxHeight: "80vh", position: "sticky" },
     mainSwiper: {
-      minHeight: "55vh",
+      maxHeight: "70vh",
       margin: "10px",
       padding: "10px",
     },
@@ -522,7 +522,7 @@ export const DarkStyle = (custom, theme) => {
       borderRadius: "10px",
       // objectFit: "contain",
     },
-    ThumbsSwiper: { minHeight: "5vh", cursor: "pointer", margin: "10px" },
+    ThumbsSwiper: { maxHeight: "10vh", cursor: "pointer", margin: "10px" },
     thumbsImage: {
       height: "60px",
       width: "40px",
@@ -566,7 +566,7 @@ export const DarkStyle = (custom, theme) => {
       bottom: 0,
       width: "100%",
       textAlign: "center",
-      zIndex: 999999,
+      // zIndex: 999999,
     },
     // End
 

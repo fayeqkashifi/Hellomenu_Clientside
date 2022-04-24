@@ -22,8 +22,8 @@ const MainDetails = (props) => {
   const [extra, setExtra] = useState([]);
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataLoad = async (input) => {
-    await getProduct(id, input.id).then((result) => {
+  const dataLoad = (input) => {
+    getProduct(id, input.id).then((result) => {
       setFetchData(result.data.fetchData[0]);
       setProductIntgredients(result.data.ingredients);
       setExtra(result.data.extras);

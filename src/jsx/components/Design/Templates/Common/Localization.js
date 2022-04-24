@@ -15,6 +15,7 @@ export default function LanguageLocalization() {
     setAnchorEl(event.currentTarget);
   };
   const handleMenuItemClick = (event, option) => {
+
     sessionStorage.setItem("selectedLang", JSON.stringify(option));
     sessionStorage.setItem("locale", option.locale);
     setSelectedLang(option);

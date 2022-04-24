@@ -40,21 +40,19 @@ function Header(props) {
   const filterProducts = async (menu) => {
     if (menu !== "All") {
       if (menu.sub_category_id === null) {
-        await getProductBasedOnCategory(
-          menu.category_id,
-          1,
-          selectedLang.id
-        ).then((data) => {
-          setProducts(data.data);
-          setChangeState(true);
-          setLastPage(data.last_page);
-          setPage(2);
-          setActiveCategory(
-            menu.CategoryName + "~~~cate~~~" + menu.category_id
-          );
-        });
+        getProductBasedOnCategory(menu.category_id, 1, selectedLang.id).then(
+          (data) => {
+            setProducts(data.data);
+            setChangeState(true);
+            setLastPage(data.last_page);
+            setPage(2);
+            setActiveCategory(
+              menu.CategoryName + "~~~cate~~~" + menu.category_id
+            );
+          }
+        );
       } else {
-        await getProductBasedOnSubCategory(
+        getProductBasedOnSubCategory(
           menu.sub_category_id,
           1,
           selectedLang.id
@@ -69,15 +67,13 @@ function Header(props) {
         });
       }
     } else {
-      await getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then(
-        (data) => {
-          setProducts(data.data);
-          setChangeState(true);
-          setLastPage(data.last_page);
-          setPage(2);
-          setActiveCategory("All~~~1");
-        }
-      );
+      getProductsBasedOnBranchId(branchId, 1, selectedLang.id).then((data) => {
+        setProducts(data.data);
+        setChangeState(true);
+        setLastPage(data.last_page);
+        setPage(2);
+        setActiveCategory("All~~~1");
+      });
     }
   };
   let [sum, setSum] = useState(0);

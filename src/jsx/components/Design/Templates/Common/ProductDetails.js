@@ -45,8 +45,8 @@ const ProductDetails = () => {
     stock: 0,
     image: fetchData?.image,
   });
-  const getdata = async () => {
-    await getVariations(id).then((res) => {
+  const getdata = () => {
+    getVariations(id).then((res) => {
       if (res !== "") {
         varData = JSON.parse(res.variants);
         setVarPics(varData);

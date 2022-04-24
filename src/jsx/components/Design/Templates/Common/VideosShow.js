@@ -1,8 +1,7 @@
 import React from "react";
-import "swiper/swiper-bundle.min.css";
-import "swiper/swiper.min.css";
 import ProductsStory from "./ProductsStory";
 import BranchStory from "./BranchStory";
+import { TemplateContext } from "../TemplateContext";
 
 function VideosShow(props) {
   const style = props.history.location.state.style;
@@ -12,22 +11,21 @@ function VideosShow(props) {
   const categories = props.history.location.state.categories;
   const deliveryFees = props.history.location.state.deliveryFees;
   const branchStory = props.history.location.state.branchStory;
-
-  return branchState ? (
-    <BranchStory
-      style={style}
-      branchStory={branchStory}
-      branch={branch}
-      deliveryFees={deliveryFees}
-    />
-  ) : (
-    <ProductsStory
-      style={style}
-      branch={branch}
-      categories={categories}
-      deliveryFees={deliveryFees}
-      product_id={product_id}
-    />
+  const selectedLang = JSON.parse(sessionStorage.getItem("selectedLang")) || {};
+  return (
+    <TemplateContext.Provider
+      value={{
+        style,
+        branchStory,
+        branch,
+        deliveryFees,
+        categories,
+        product_id,
+        selectedLang,
+      }}
+    >
+      {branchState ? <BranchStory /> : <ProductsStory />}
+    </TemplateContext.Provider>
   );
 }
 

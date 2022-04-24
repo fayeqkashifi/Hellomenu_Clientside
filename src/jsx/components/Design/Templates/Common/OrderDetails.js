@@ -162,10 +162,7 @@ const OrderDetails = () => {
           {item?.show ? (
             <Grid item xs={4} sm={4} md={4}>
               <RecCounter
-                style={style}
                 item={item}
-                setFetchData={setFetchData}
-                fetchData={fetchData}
                 sum={sum}
                 setSum={setSum}
               />

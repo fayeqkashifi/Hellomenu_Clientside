@@ -19,15 +19,18 @@ function VideoList(props) {
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const selectedLang = JSON.parse(sessionStorage.getItem("selectedLang")) || {};
 
   const [changeState, setChangeState] = useState(true);
-  const dataLoad = async () => {
-    await getProductsBasedOnBranchId(branch.id, page).then((data) => {
-      setLastPage(data.last_page);
-      setProducts(data.data);
-      setPage(page + 1);
-      setLoading(false);
-    });
+  const dataLoad = () => {
+    getProductsBasedOnBranchId(branch.id, page, selectedLang.id).then(
+      (data) => {
+        setLastPage(data.last_page);
+        setProducts(data.data);
+        setPage(page + 1);
+        setLoading(false);
+      }
+    );
   };
 
   useEffect(() => {
