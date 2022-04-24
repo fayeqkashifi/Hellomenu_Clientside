@@ -77,13 +77,7 @@ export default function LanguageLocalization() {
           <MenuItem
             key={index}
             // disabled={index === 0}
-            selected={
-              option.label === selectedLang.label
-                ? true
-                : first.label
-                ? true
-                : false
-            }
+            selected={option.label == selectedLang.label ? true : false}
             onClick={(event) => handleMenuItemClick(event, option)}
           >
             {option.label.toUpperCase()}
