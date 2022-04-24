@@ -123,26 +123,26 @@ const NewGrid = (props) => {
           return item;
         }
       });
-      axios
-        .post(`/api/removeImage/${image}`)
-        .then((res) => {
-          if (res.data.status === 200) {
-            setNumberOfVar((prev) => {
-              return prev.map((item, i) => {
-                if (i !== index) {
-                  return item;
-                }
-                return {
-                  ...item,
-                  image: imagesArray[0].image.filter((item) => item !== image),
-                };
-              });
-            });
+      // axios
+      // .post(`/api/removeImage/${image}`)
+      // .then((res) => {
+      // if (res.data.status === 200) {
+      setNumberOfVar((prev) => {
+        return prev.map((item, i) => {
+          if (i !== index) {
+            return item;
           }
-        })
-        .catch((error) => {
-          console.log(error);
+          return {
+            ...item,
+            image: imagesArray[0].image.filter((item) => item !== image),
+          };
         });
+      });
+      // }
+      // })
+      // .catch((error) => {
+      // console.log(error);
+      // });
     } else {
       console.log(index);
     }
