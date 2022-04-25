@@ -37,15 +37,11 @@ import { checkPermission } from "../Permissions";
 
 const Design = (props) => {
   const { url } = useRouteMatch();
-
   // const branchId = atob(props.match.params.id);
   const branchId = props.history.location.state.id;
-
   const [activeKey, setActiveKey] = useState(1);
   // Insert Start
   const [check, setCheck] = useState(true);
-  const [reload, setReload] = useState(true);
-
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -65,7 +61,7 @@ const Design = (props) => {
       .post(`/api/themeStatus/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
-          setReload(!reload);
+          setCheck(!check);
           setAlerts(true, "info", res.data.message);
         }
       })
@@ -79,7 +75,7 @@ const Design = (props) => {
       .post(`/api/templateStatus/${id}`)
       .then((res) => {
         if (res.data.status === 200) {
-          setReload(!reload);
+          setCheck(!check);
 
           setAlerts(true, "info", res.data.message);
         }
@@ -118,7 +114,7 @@ const Design = (props) => {
       setFetchData([]);
       setTemplates([]);
     };
-  }, [reload]);
+  }, []);
   useEffect(() => {
     dataLoad();
   }, [check]);
@@ -227,7 +223,7 @@ const Design = (props) => {
                 <div className="col-4 text-right">
                   <Switch
                     disabled={item.Status === 1 ? true : false}
-                    defaultChecked={item.Status === 1 ? true : false}
+                    checked={item.Status === 1 ? true : false}
                     color="secondary"
                     onChange={(e) => changeTheActiveTheme(e, item.id)}
                   />
@@ -325,9 +321,7 @@ const Design = (props) => {
                             <Grid item xs={4}>
                               <Switch
                                 disabled={item.Status === 1 ? true : false}
-                                defaultChecked={
-                                  item.Status === 1 ? true : false
-                                }
+                                checked={item.Status === 1 ? true : false}
                                 color="secondary"
                                 onChange={(e) =>
                                   changeTheActiveTemplate(e, item.id)
