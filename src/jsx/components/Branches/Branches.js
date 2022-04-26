@@ -18,7 +18,6 @@ import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import PublicIcon from "@mui/icons-material/Public";
 const Branches = () => {
   const [alert, setAlert] = useState({
     open: false,
