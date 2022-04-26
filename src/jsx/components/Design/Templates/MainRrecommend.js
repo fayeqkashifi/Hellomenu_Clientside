@@ -55,10 +55,9 @@ const MainRrecommend = (props) => {
     dataLoad(selectedLang);
     return () => {
       source.cancel();
-
+      setLoading(true);
       setItem([]);
       setFetchData([]);
-      setLoading(true);
     };
   }, [id]);
   return (

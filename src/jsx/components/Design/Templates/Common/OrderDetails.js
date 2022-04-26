@@ -140,6 +140,9 @@ const OrderDetails = () => {
             <FormControlLabel
               control={
                 <Checkbox
+                  checked={
+                    item.show == undefined ? false : item.show ? true : false
+                  }
                   color="default"
                   onChange={(e) => {
                     extraHandlers(e, item.price, item.value, item.qty);

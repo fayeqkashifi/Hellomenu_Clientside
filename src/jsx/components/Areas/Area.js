@@ -6,15 +6,12 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
 import CustomAlert from "../CustomAlert";
-import { useHistory } from "react-router-dom";
 import { checkPermission } from "../Permissions";
 import { localization as t } from "../Localization";
 import Paginate from "../Common/Paginate";
 import Search from "../Common/Search";
 
 const Area = () => {
-  const history = useHistory();
-
   // validation start
   const initialValues = {
     areaName: "",

@@ -58,10 +58,10 @@ const LanguageList = () => {
     return () => {
       setLoading(true);
     };
+  }, []);
+  useEffect(() => {
+    dataLoad();
   }, [check]);
-  // useEffect(() => {
-  //   dataLoad();
-  // }, [check]);
   const columns = [
     {
       key: "country_code",
@@ -270,7 +270,7 @@ const LanguageList = () => {
               return (
                 <td>
                   <Switch
-                    defaultChecked={item.status === 1 ? true : false}
+                    checked={item.status === 1 ? true : false}
                     color="secondary"
                     onChange={() => changeLocaleStatus(item.id)}
                   />

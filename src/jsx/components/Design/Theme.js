@@ -60,7 +60,7 @@ const Theme = (props) => {
       .then((res) => {
         if (res.data.status === 200) {
           Swal.fire({
-            title: <strong>Good job!</strong>,
+            title: "Good job!",
             html: res.data.message,
             icon: "success",
             confirmButtonText: "OK",
@@ -136,7 +136,7 @@ const Theme = (props) => {
                             accept=".jpg, .jpeg, .png"
                             className="form-control"
                             name="HomeScreenBackgroundURL"
-                            required
+                            // required
                             onChange={handleImage}
                           />
                         </div>
