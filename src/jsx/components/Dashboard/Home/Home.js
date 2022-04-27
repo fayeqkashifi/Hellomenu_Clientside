@@ -108,7 +108,7 @@ const Home = () => {
                     </svg>
                   </span>
                   <div className="media-body">
-                    <p className="mb-1"> {t("categories")}</p>
+                    <p className="mb-1"> {t("active_categories")}</p>
                     <h4 className="mb-0">{countCategories}</h4>
                     {/* <span className="badge badge-warning">+3.5%</span> */}
                   </div>

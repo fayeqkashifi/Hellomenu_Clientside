@@ -456,7 +456,7 @@ const Cart = (props) => {
   }
   return (
     <div>
-      {alert.open ? (
+      {alert.open && (
         <CustomAlert
           vertical="top"
           horizontal="right"
@@ -465,8 +465,6 @@ const Cart = (props) => {
           message={alert.message}
           setAlert={setAlert}
         />
-      ) : (
-        ""
       )}
       {checkBit ? "" : <Header subcategories={0} cart={cart.length} />}
       {cart.length === 0 ? (

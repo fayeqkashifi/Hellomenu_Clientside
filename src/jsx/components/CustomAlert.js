@@ -47,6 +47,7 @@ export default function CustomAlert(props) {
           onClose={handleClose}
           severity={props.severity}
           sx={{ width: "100%" }}
+          // style={{ zIndex: 99999999999 }}
         >
           {props.message}
         </Alert>

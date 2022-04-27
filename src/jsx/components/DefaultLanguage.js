@@ -41,6 +41,7 @@ export const Locale = {
   category_name: "Category Name",
   edit_category: "Edit Category",
   categories: "Categories",
+  active_categories: "Active Categories",
   add_sub_Category: "Add Sub-Category",
   sub_category_name: "Sub Category Name",
   edit_sub_category: "Edit Sub-Category",

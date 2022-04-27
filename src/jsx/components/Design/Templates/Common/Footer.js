@@ -8,9 +8,8 @@ import Drawer from "./Drawer";
 import { TemplateContext } from "../TemplateContext";
 
 function Footer(props) {
-  const { style, stock, cart, deliveryFees, locale } =
-    useContext(TemplateContext);
-  const { title, url } = props;
+  const { style, cart, deliveryFees, locale } = useContext(TemplateContext);
+  const { title, url, stock } = props;
   let [sum, setSum] = useState(0);
   const dataLoad = () => {
     let count = 0;
