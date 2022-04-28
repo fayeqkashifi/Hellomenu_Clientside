@@ -201,7 +201,6 @@ export const insertOrder = async (data) => {
   try {
     const result = await axios.post("/api/insertOrder", data);
     if (result.data.status === 200) {
-      console.log(result.data.data);
       return result.data.message;
     }
   } catch (err) {
