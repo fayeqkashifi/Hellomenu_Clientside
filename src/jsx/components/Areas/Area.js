@@ -55,7 +55,6 @@ const Area = () => {
     });
   };
   // insert end
-  // edit Attribute start
   const [editmodalCentered, setEditModalCentered] = useState(false);
   const [edit, setEdit] = useState([]);
 
@@ -144,15 +143,16 @@ const Area = () => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = () => {
     try {
-      const result = await axios.get(`/api/getAreasCompany`);
-      if (result.data.status === 200) {
-        setFetchData(result.data.fetchData.data);
-        setLoading(false);
-      } else {
-        throw Error("Due to an error, the data cannot be retrieved.");
-      }
+      axios.get(`/api/getAreasCompany`).then((result) => {
+        if (result.data.status === 200) {
+          setFetchData(result.data.fetchData.data);
+          setLoading(false);
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -192,7 +192,11 @@ const Area = () => {
         },
         cancelToken: cancelToken.token,
       })
-      .then((res) => res.data)
+      .then((res) => {
+        if (res !== undefined) {
+          return res.data;
+        }
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -257,157 +261,164 @@ const Area = () => {
         ""
       )}
       {/* insert */}
-      <Modal className="fade" show={modalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("add")}</Modal.Title>
-          <Button
-            onClick={() => setModalCentered(false)}
-            variant=""
-            className="close"
+      {modalCentered && (
+        <Modal className="fade" show={modalCentered}>
+          <Modal.Header>
+            <Modal.Title>{t("add")}</Modal.Title>
+            <Button
+              onClick={() => setModalCentered(false)}
+              variant=""
+              className="close"
+            >
+              <span>&times;</span>
+            </Button>
+          </Modal.Header>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={save}
           >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={save}
-        >
-          {({ errors, status, setFieldValue, setFieldTouched, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label>
-                    <strong>{t("city")}</strong>
-                  </label>
+            {({ errors, setFieldValue, touched }) => (
+              <Form>
+                <Modal.Body>
+                  <div className="form-group">
+                    <label>
+                      <strong>{t("city")}</strong>
+                    </label>
 
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    // value={selectedValue}
-                    getOptionLabel={(e) => e.cityName}
-                    getOptionValue={(e) => e.id}
-                    loadOptions={loadOptions}
-                    onChange={(getOptionValue) => {
-                      setFieldValue("city", getOptionValue.id);
-                    }}
-                  />
-                  {errors.city ? (
-                    <small
-                      className="invalid"
-                      style={{ color: "red", marginTop: ".5rem" }}
-                    >
-                      {errors.city}
-                    </small>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>
-                    <strong>{t("name_area")}</strong>
-                  </label>
+                    <AsyncSelect
+                      cacheOptions
+                      defaultOptions
+                      // value={selectedValue}
+                      getOptionLabel={(e) => e.cityName}
+                      getOptionValue={(e) => e.id}
+                      loadOptions={loadOptions}
+                      onChange={(getOptionValue) => {
+                        setFieldValue("city", getOptionValue.id);
+                      }}
+                    />
+                    {errors.city ? (
+                      <small
+                        className="invalid"
+                        style={{ color: "red", marginTop: ".5rem" }}
+                      >
+                        {errors.city}
+                      </small>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <strong>{t("name_area")}</strong>
+                    </label>
 
-                  <Field
-                    name="areaName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.areaName && touched.areaName ? " is-invalid" : "")
-                    }
-                    placeholder="Name...."
-                  />
-                  <ErrorMessage
-                    name="areaName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("save")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
-      {/* Edit Modal */}
-      <Modal className="fade" show={editmodalCentered}>
-        <Modal.Header>
-          <Modal.Title>{t("edit")} </Modal.Title>
-          <Button
-            onClick={() => setEditModalCentered(false)}
-            variant=""
-            className="close"
+                    <Field
+                      name="areaName"
+                      type="text"
+                      className={
+                        "form-control" +
+                        (errors.areaName && touched.areaName
+                          ? " is-invalid"
+                          : "")
+                      }
+                      placeholder="Name...."
+                    />
+                    <ErrorMessage
+                      name="areaName"
+                      component="div"
+                      className="invalid-feedback"
+                    />
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={() => setModalCentered(false)}
+                    variant="danger light"
+                  >
+                    {t("close")}
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    {t("save")}{" "}
+                  </Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
+        </Modal>
+      )}{" "}
+      {editmodalCentered && (
+        <Modal className="fade" show={editmodalCentered}>
+          <Modal.Header>
+            <Modal.Title>{t("edit")} </Modal.Title>
+            <Button
+              onClick={() => setEditModalCentered(false)}
+              variant=""
+              className="close"
+            >
+              <span>&times;</span>
+            </Button>
+          </Modal.Header>
+          <Formik
+            initialValues={initialValuesEdit}
+            validationSchema={validationSchema}
+            onSubmit={update}
           >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={initialValuesEdit}
-          validationSchema={validationSchema}
-          onSubmit={update}
-        >
-          {({ errors, status, touched }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label>
-                    <strong>{t("city")}</strong>
-                  </label>
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    value={selectedValue}
-                    getOptionLabel={(e) => e.cityName}
-                    getOptionValue={(e) => e.id}
-                    loadOptions={loadOptions}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>
-                    <strong>{t("name_area")}</strong>
-                  </label>
-                  <Field
-                    name="areaName"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.areaName && touched.areaName ? " is-invalid" : "")
-                    }
-                    placeholder="Name...."
-                  />
-                  <ErrorMessage
-                    name="areaName"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setEditModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t("update")}{" "}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
+            {({ errors, touched }) => (
+              <Form>
+                <Modal.Body>
+                  <div className="form-group">
+                    <label>
+                      <strong>{t("city")}</strong>
+                    </label>
+                    <AsyncSelect
+                      cacheOptions
+                      defaultOptions
+                      value={selectedValue}
+                      getOptionLabel={(e) => e.cityName}
+                      getOptionValue={(e) => e.id}
+                      loadOptions={loadOptions}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <strong>{t("name_area")}</strong>
+                    </label>
+                    <Field
+                      name="areaName"
+                      type="text"
+                      className={
+                        "form-control" +
+                        (errors.areaName && touched.areaName
+                          ? " is-invalid"
+                          : "")
+                      }
+                      placeholder="Name...."
+                    />
+                    <ErrorMessage
+                      name="areaName"
+                      component="div"
+                      className="invalid-feedback"
+                    />
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={() => setEditModalCentered(false)}
+                    variant="danger light"
+                  >
+                    {t("close")}
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    {t("update")}{" "}
+                  </Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
+        </Modal>
+      )}
       <div className="row">
         <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
           <div className="card">

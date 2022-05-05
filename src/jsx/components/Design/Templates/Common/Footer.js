@@ -75,7 +75,7 @@ function Footer(props) {
             {url !== undefined ? (
               <Link
                 className={`col-12 btn ${
-                  stock === "No Stock" || stock === 0 ? "disabled" : ""
+                  stock == "No Stock" || stock == 0 ? "disabled" : ""
                 } `}
                 style={style?.buttonStyle}
                 to={url}

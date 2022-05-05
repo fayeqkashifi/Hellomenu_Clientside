@@ -10,12 +10,13 @@ const AddSharedCategory = (props) => {
   const { modal, setModal, check, setCheck, id, setAlerts } = props;
   const [cats, setCates] = useState([]);
 
-  const dataLoad = async () => {
+  const dataLoad = () => {
     try {
-      const shared = await axios.get(`/api/sharedCates/${id}`);
-      if (shared.status === 200) {
-        setCates(shared.data);
-      }
+      axios.get(`/api/sharedCates/${id}`).then((shared) => {
+        if (shared.status === 200) {
+          setCates(shared.data);
+        }
+      });
     } catch (error) {
       console.error(error);
     }

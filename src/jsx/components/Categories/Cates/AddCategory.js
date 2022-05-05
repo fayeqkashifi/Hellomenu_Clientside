@@ -30,16 +30,17 @@ const AddCategory = (props) => {
 
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/getBranchesAll`);
-      if (result.data.status === 200) {
-        setBranches(
-          result.data.fetchData.filter((item) => {
-            return item.id !== id;
-          })
-        );
-      } else {
-        throw Error("Due to an error, the data cannot be retrieved.");
-      }
+      axios.get(`/api/getBranchesAll`).then((result) => {
+        if (result.data.status === 200) {
+          setBranches(
+            result.data.fetchData.filter((item) => {
+              return item.id !== id;
+            })
+          );
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      });
     } catch (error) {
       console.error(error);
     }

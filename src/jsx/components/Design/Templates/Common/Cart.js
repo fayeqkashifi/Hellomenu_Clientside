@@ -24,15 +24,18 @@ import {
   remCartItem,
   emptyCart,
   getBranch,
+  getProduct,
 } from "../Functionality";
 import PhoneInput from "react-phone-input-2";
 import ipapi from "ipapi.co";
 import Counter from "../Common/Counter";
 import { TemplateContext } from "../TemplateContext";
+import axios from "axios";
+
 const Cart = (props) => {
   let message = "";
 
-  let { style, cart, setCart, branchId, deliveryFees, locale } =
+  let { style, cart, setCart, branchId, deliveryFees, locale, selectedLang } =
     useContext(TemplateContext);
   const { checkBit } = props;
   const initialValues = {
@@ -48,14 +51,57 @@ const Cart = (props) => {
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
   const [branch, setBranch] = useState([]);
-  const dataLoad = () => {
-    getBranch(branchId).then((data) => {
-      setBranch(data);
-      setLoading(false);
+  const [fetchData, setFetchData] = useState([]);
+  let source = axios.CancelToken.source();
+
+  const dataLoad = async () => {
+    let newArray = [];
+    await cart.map((item) => {
+      getProduct(item.id, selectedLang.id, source).then((result) => {
+        if (result !== undefined) {
+          let ingredientArray = [];
+          result.data.ingredients.map((ingredient) => {
+            if (item.ingredients.includes(ingredient.value)) {
+              ingredientArray.push(ingredient.label);
+            }
+          });
+          let extraArray = [];
+          result.data.extras.map((extra) => {
+            if (item.extras.includes(extra.value)) {
+              extraArray.push(extra);
+            }
+          });
+          let recommendArray = [];
+          result.data.recommend.map((recom) => {
+            item.recommendations.filter((recommend) => {
+              if (recommend.value === recom.value) {
+                recommendArray.push({
+                  ...recom,
+                  qty: recommend.qty,
+                });
+              }
+            });
+          });
+          newArray.push({
+            ...result.data.fetchData[0],
+            ...item,
+            // qty: item.qty,
+            ingredients: ingredientArray,
+            extras: extraArray,
+            recommendations: recommendArray,
+          });
+        }
+      });
     });
-    getTables(branchId).then((res) => {
+    await setFetchData(newArray);
+
+    await getBranch(branchId).then((data) => {
+      setBranch(data);
+    });
+    await getTables(branchId).then((res) => {
       setTables(res);
     });
+    setLoading(false);
   };
   const [ipApi, setIpApi] = useState([]);
 
@@ -66,7 +112,14 @@ const Cart = (props) => {
     ipapi.location(callback);
   }, []);
   useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     dataLoad();
+    return () => {
+      source.cancel();
+    };
   }, []);
   useEffect(() => {
     let Total = 0;
@@ -86,6 +139,7 @@ const Cart = (props) => {
     setSum((sum -= price * qty));
     remCartItem(id, cart).then((data) => {
       setCart(data);
+      setFetchData(fetchData.filter((item) => item.id !== id));
     });
   };
   const [orderingWay, setOrderingWay] = useState();
@@ -233,7 +287,7 @@ const Cart = (props) => {
         );
       }
     }
-    viewImages_HTMLTABLE = cart?.map((item, i) => {
+    viewImages_HTMLTABLE = fetchData?.map((item, i) => {
       message =
         message +
         `*${locale?.product_name}*: ${item.ProductName} \n*${
@@ -256,7 +310,7 @@ const Cart = (props) => {
             : item.extras.length === 0
             ? ""
             : `\n*${locale?.extras}*: ${item.extras?.map(
-                (val) => val.value
+                (val) => val.label + "(+" + val.price + ")"
               )} INCLUDED`
         } ${
           item.ingredients === undefined
@@ -271,14 +325,12 @@ const Cart = (props) => {
             ? ""
             : `\n*${locale?.recommendation}*: ${item.recommendations?.map(
                 (val) =>
-                  val.show
-                    ? val.label +
-                      " ${locale?.price}: " +
-                      val.price +
-                      currency +
-                      " ${locale?.qty}: " +
-                      val.qty
-                    : ""
+                  val.label +
+                  " ${locale?.price}: " +
+                  val.price +
+                  currency +
+                  " ${locale?.qty}: " +
+                  val.qty
               )}`
         } ${
           item.itemNote == undefined
@@ -293,7 +345,6 @@ const Cart = (props) => {
                 item.totalPrice + " " + currency
               }`
         }\n\n`;
-
       return (
         <Card key={i} sx={style?.card} className="m-1">
           <div className="text-right">
@@ -340,7 +391,7 @@ const Cart = (props) => {
                   {parseInt(item.price).toFixed(2) + "  " + currency}
                 </Typography>
                 <Typography style={style?.cartDescription} gutterBottom>
-                  <b>{locale?.qty}:</b> {item.qty + " " + item.UnitName}
+                  <b>{locale?.unit_name}:</b> {item.UnitName}
                 </Typography>
               </Grid>
               <Grid item style={style?.cartVariantDiv}>
@@ -367,9 +418,11 @@ const Cart = (props) => {
 
                         {item.extras?.map((val, i) => {
                           if (item?.extras.length === i + 1) {
-                            return val.value + " - Included";
+                            return (
+                              val.label + "(+" + val.price + ")" + " - Included"
+                            );
                           } else {
-                            return val.value + " , ";
+                            return val.label + "(+" + val.price + ")" + " , ";
                           }
                         })}
                       </Typography>
@@ -381,22 +434,18 @@ const Cart = (props) => {
                         <b>{locale?.recommendation}: </b>
 
                         {item.recommendations?.map((val, i) => {
-                          if (val.show) {
-                            return (
-                              val.label +
-                              " (Qty: " +
-                              val.qty +
-                              " * " +
-                              val.price +
-                              " = " +
-                              (val.price * val.qty).toFixed(2) +
-                              " " +
-                              currency +
-                              " )"
-                            );
-                          } else {
-                            return "";
-                          }
+                          return (
+                            val.label +
+                            " (Qty: " +
+                            val.qty +
+                            " * " +
+                            val.price +
+                            " = " +
+                            (val.price * val.qty).toFixed(2) +
+                            " " +
+                            currency +
+                            " )"
+                          );
                         })}
                       </Typography>
                     )}
@@ -667,6 +716,7 @@ const Cart = (props) => {
                         minRows={1}
                         placeholder={locale?.full_address}
                         style={style?.inputfield}
+                        // width="100%"
                       />
                     </Grid>
                   ) : null}

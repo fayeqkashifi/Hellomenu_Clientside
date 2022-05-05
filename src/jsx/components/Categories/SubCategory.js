@@ -18,6 +18,7 @@ import AddSubCategory from "./SubCates/AddSubCategory";
 import EditSubCategory from "./SubCates/EditSubCategory";
 const SubCategory = (props) => {
   const id = props.history.location.state.sub_id;
+  const CategoryName = props.history.location.state.CategoryName;
   const branchId = props.history.location.state.id;
   const [check, setCheck] = useState(true);
   const [modalCentered, setModalCentered] = useState(false);
@@ -93,15 +94,16 @@ const SubCategory = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = () => {
     try {
-      const result = await axios.get(`/api/getSubCategories/${id}`);
-      if (result.data.status === 200) {
-        setFetchData(result.data.fetchData.data);
-        setLoading(false);
-      } else {
-        throw Error("Due to an error, the data cannot be retrieved.");
-      }
+      axios.get(`/api/getSubCategories/${id}`).then((result) => {
+        if (result.data.status === 200) {
+          setFetchData(result.data.fetchData.data);
+          setLoading(false);
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -210,7 +212,7 @@ const SubCategory = (props) => {
               fontWeight: "bold",
             }}
           >
-            {t("sub_category")}
+            {CategoryName + " -> " + t("sub_categories")}
           </div>
           <div>
             <div className="input-group">

@@ -57,6 +57,8 @@ const LanguageList = () => {
     dataLoad();
     return () => {
       setLoading(true);
+      setData([]);
+      setLanguages([]);
     };
   }, []);
   useEffect(() => {

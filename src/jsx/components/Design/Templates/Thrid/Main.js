@@ -96,7 +96,7 @@ export default function ThridMain(props) {
   return (
     <div style={style?.background}>
       <Container maxWidth="lg">
-        <Header search={true} />
+        <Header search={true} setChangeState={setChangeState} />
         <SideBar />
         <Statusbar />
         <Container

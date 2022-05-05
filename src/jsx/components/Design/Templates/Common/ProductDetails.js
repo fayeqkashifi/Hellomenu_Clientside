@@ -27,7 +27,6 @@ const ProductDetails = () => {
     locale,
     loading,
     fetchData,
-    setFetchData,
     extra,
     productIngredients,
     deliveryFees,
@@ -166,30 +165,25 @@ const ProductDetails = () => {
     setVariantData(variantData);
   };
   const [ingredients, setIntgredients] = useState([]);
-  const changeIngredients = (label) => {
-    if (!ingredients.includes(label) === false) {
-      setIntgredients(ingredients.filter((item) => item !== label));
+  const changeIngredients = (value) => {
+    if (!ingredients.includes(value) === false) {
+      setIntgredients(ingredients.filter((item) => item !== value));
     } else {
-      setIntgredients([...ingredients, label]);
+      setIntgredients([...ingredients, value]);
     }
     // console.log(ingredients);
   };
   let [sum, setSum] = useState(0);
   const [extraValue, setExtraValue] = useState([]);
 
-  const extraHandlers = (e, price) => {
+  const extraHandlers = (e, price, value) => {
     if (e.target.checked) {
       // console.log((sum += parseInt(price)));
       setSum((sum += parseInt(price)));
-      setExtraValue([
-        ...extraValue,
-        {
-          value: e.target.value,
-        },
-      ]);
+      setExtraValue([...extraValue, value]);
     } else {
       setSum((sum -= parseInt(price)));
-      setExtraValue(extraValue.filter((item) => item.value != e.target.value));
+      setExtraValue(extraValue.filter((item) => item != value));
     }
   };
 
@@ -197,32 +191,55 @@ const ProductDetails = () => {
     const check = cart.every((val) => {
       return val.id !== fetchData.id;
     });
+    let array = [];
     if (check) {
-      fetchData.extras = extraValue;
-      fetchData.ingredients = ingredients;
-      fetchData.recommendations = [];
-      fetchData.totalPrice = (parseInt(fetchData.price) + sum).toFixed(2);
-      fetchData.variantSKU = skuarray;
-      fetchData.checkSKU = activeSKU;
-      setFetchData(fetchData);
-      localStorage.setItem("cart", JSON.stringify(cart.concat(fetchData)));
-      setCart(cart.concat(fetchData));
+      array.push({
+        id: fetchData.id,
+        qty: fetchData.qty,
+        price: parseInt(
+          productDetails.price == 0 ? fetchData?.price : productDetails.price
+        ),
+        stock: parseInt(
+          productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
+        ),
+        currency_code: fetchData.currency_code,
+        ingredients: ingredients,
+        extras: extraValue,
+        recommendations: [],
+        totalPrice: parseInt(fetchData.price) + sum,
+        variantSKU: skuarray,
+        checkSKU: activeSKU,
+      });
+      // setFetchData(fetchData);
+      localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
+      setCart(cart.concat(array));
       setAlerts(true, "success", locale?.successfully_added_to_cart);
     } else {
       let data = cart.filter((val) => {
         return val.id === fetchData.id;
       });
-      data[0].extras = extraValue;
-      data[0].ingredients = ingredients;
-      data[0].recommendations = [];
-      data[0].totalPrice = (parseInt(fetchData.price) + sum).toFixed(2);
-      data[0].variantSKU = skuarray;
-      data[0].checkSKU = activeSKU;
+      array.push({
+        id: data[0].id,
+        qty: data[0].qty,
+        price: parseInt(
+          productDetails.price == 0 ? fetchData?.price : productDetails.price
+        ),
+        stock: parseInt(
+          productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
+        ),
+        currency_code: data[0].currency_code,
+        ingredients: ingredients,
+        extras: extraValue,
+        recommendations: [],
+        totalPrice: parseInt(parseInt(fetchData.price) + sum),
+        variantSKU: skuarray,
+        checkSKU: activeSKU,
+      });
       const otherData = cart.filter((val) => {
         return val.id !== fetchData.id;
       });
-      localStorage.setItem("cart", JSON.stringify(otherData.concat(data)));
-      setCart(otherData.concat(data));
+      localStorage.setItem("cart", JSON.stringify(otherData.concat(array)));
+      setCart(otherData.concat(array));
       setAlerts(true, "success", locale?.cart_updated);
     }
   };
@@ -316,7 +333,14 @@ const ProductDetails = () => {
                   className="d-flex align-items-center justify-content-end "
                 >
                   <button
-                    className="btn btn-sm mr-2"
+                    className={`btn btn-sm mr-2 ${
+                      skuarray.length != 0
+                        ? productDetails.stock == "No Stock" ||
+                          productDetails.stock == 0
+                          ? "disabled"
+                          : ""
+                        : ""
+                    } `}
                     onClick={addItem}
                     style={style?.buttonStyle}
                   >
@@ -412,14 +436,15 @@ const ProductDetails = () => {
                         <div
                           key={i}
                           onClick={() => {
-                            changeIngredients(item.label);
+                            changeIngredients(item.value);
                           }}
                           style={
-                            ingredients.includes(item.label)
+                            ingredients.includes(item.value)
                               ? style?.ingredientsActive
                               : style?.ingredientsDeActive
                           }
                         >
+                          {/* {console.log(item)} */}
                           {item.label}
                         </div>
                       );
@@ -436,13 +461,14 @@ const ProductDetails = () => {
                   </Typography>
                   {/* <FormGroup> */}
                   {extra?.map((item, i) => {
+                    // console.log(item);
                     return (
                       <FormControlLabel
                         key={i}
                         control={
                           <Checkbox
                             onChange={(e) => {
-                              extraHandlers(e, item.price);
+                              extraHandlers(e, item.price, item.value);
                             }}
                             color="default"
                             // size="small"
@@ -500,7 +526,6 @@ const ProductDetails = () => {
               ? JSON.stringify(productDetails?.image)
               : fetchData?.image,
 
-            stock: productDetails.stock,
             price:
               productDetails.price === 0
                 ? fetchData?.price + sum

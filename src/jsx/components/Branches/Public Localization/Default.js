@@ -42,6 +42,7 @@ export const PublicLocale = {
   total_price: "Total Price",
   item_note: "Item Note",
   qty: "Qty",
+  unit_name: "Unit Name",
   product_name: "Product Name",
   category: "Category",
   sub_category: "Sub Category",

@@ -22,10 +22,12 @@ function Search(props) {
             cancelToken: cancelToken.token,
           }
         );
-        if (results.data.status === 200) {
-          setFetchData(results.data.fetchData);
-        } else if (results.data.status === 404) {
-          setFetchData(results.data.fetchData);
+        if (results !== undefined) {
+          if (results.data.status === 200) {
+            setFetchData(results.data.fetchData);
+          } else if (results.data.status === 404) {
+            setFetchData(results.data.fetchData);
+          }
         }
       } catch (error) {
         console.log(error);

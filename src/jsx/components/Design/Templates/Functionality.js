@@ -219,13 +219,17 @@ export const addItemWithdoutDetails = async (id, cart, products) => {
         return product.id === id;
       });
       array.push({
-        ...data,
+        id: data[0].id,
+        qty: data[0].qty,
+        stock: data[0].stock,
+        price: data[0].price,
+        currency_code: data[0].currency_code,
         ingredients: [],
         extras: [],
         recommendations: [],
       });
-      localStorage.setItem("cart", JSON.stringify(cart.concat(data)));
-      return cart.concat(data);
+      localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
+      return cart.concat(array);
     }
   } catch (err) {
     console.error(err);

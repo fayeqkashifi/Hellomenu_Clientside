@@ -276,7 +276,11 @@ const ServiceArea = (props) => {
         },
         cancelToken: cancelToken.token,
       })
-      .then((res) => res.data)
+      .then((res) => {
+        if (res !== undefined) {
+          return res.data;
+        }
+      })
       .catch((err) => {
         console.log(err);
       });

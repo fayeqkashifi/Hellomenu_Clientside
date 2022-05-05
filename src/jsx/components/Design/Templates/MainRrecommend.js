@@ -13,10 +13,9 @@ const MainRrecommend = (props) => {
   const branchId = props.history.location.state.branchId;
   const productName = props.history.location.state.productName;
   const picture = props.history.location.state.picture;
-  const stock = props.history.location.state.stock;
-  const price = props.history.location.state.price;
-  const orignalPrice = props.history.location.state.orignalPrice;
-  const orignalStock = props.history.location.state.orignalStock;
+  const price = parseInt(props.history.location.state.price);
+  const orignalPrice = parseInt(props.history.location.state.orignalPrice);
+  const orignalStock = parseInt(props.history.location.state.orignalStock);
   const countryCode = props.history.location.state.countryCode;
   const extraValue = props.history.location.state.extraValue;
   const ingredients = props.history.location.state.ingredients;
@@ -85,7 +84,6 @@ const MainRrecommend = (props) => {
         orignalStock,
         orignalPrice,
         price,
-        stock,
         picture,
         productName,
         branchId,

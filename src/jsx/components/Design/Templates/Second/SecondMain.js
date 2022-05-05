@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import ShowCards from "../Common/ShowCards";
@@ -11,9 +11,11 @@ import { TemplateContext } from "../TemplateContext";
 
 export default function SecondMain(props) {
   const { style } = useContext(TemplateContext);
+  const [changeState, setChangeState] = useState(true);
+
   return (
     <div style={style?.background}>
-      <Header search={true} />
+      <Header search={true} setChangeState={setChangeState} />
       <div style={style?.sidebarMainDiv}>
         <Statusbar />
         <Card style={style?.sidebarCard}>

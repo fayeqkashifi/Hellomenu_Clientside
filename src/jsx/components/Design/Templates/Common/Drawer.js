@@ -48,7 +48,7 @@ export default function Drawer(props) {
               <COffcanvasHeader>
                 <COffcanvasTitle>
                   {locale?.cart}
-                  <br></br>
+                  {/* <br></br> */}
                 </COffcanvasTitle>
                 <CCloseButton
                   className="text-reset"

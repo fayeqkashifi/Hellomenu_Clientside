@@ -22,8 +22,8 @@ export const SecondStyle = (custom, theme) => {
 
     // header file style
     inputfield: {
-      width: "50%",
-      height: "35px",
+      width: "100%",
+      // height: "35px",
       backgroundColor: custom?.cardBgColor
         ? custom.cardBgColor
         : theme.CardColor

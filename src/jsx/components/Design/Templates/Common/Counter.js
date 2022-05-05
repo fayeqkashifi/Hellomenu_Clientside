@@ -142,7 +142,7 @@ const Counter = (props) => {
                 cartItem.length !== 0 ? cartItem[0].qty : item.qty,
                 item.id,
                 // item.price,
-                item.stock
+                cartItem[0].stock
               )
             }
           >

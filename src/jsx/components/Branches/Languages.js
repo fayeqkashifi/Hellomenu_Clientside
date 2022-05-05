@@ -24,7 +24,22 @@ const Languages = (props) => {
   }, []);
 
   const handleSelectEvent = (e) => {
-    setSelectedLang(e);
+    let newLang = e.filter((item) => {
+      if (item.default === 1) {
+        return item;
+      }
+    });
+    if (newLang.length === 0) {
+      if (e.length > 0) {
+        let data = e;
+        data[0].default = 1;
+        setSelectedLang(data);
+      } else {
+        setSelectedLang(e);
+      }
+    } else {
+      setSelectedLang(e);
+    }
   };
   const changeStatus = (e, value) => {
     let newLang = selectedLang.map((item) => {
@@ -86,12 +101,14 @@ const Languages = (props) => {
       <div className="card-body">
         <div className="form-group">
           <label> {t("languages")}</label>
+
           <MySelect
+            key={selectedLang}
             options={lang.map((o) => {
               return {
                 value: o.id,
                 label: o.Language_name,
-                default: 0,
+                default: selectedLang.length === 0 ? 1 : 0,
                 status: 1,
                 translated_branch_name: "",
               };

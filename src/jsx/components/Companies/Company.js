@@ -143,15 +143,16 @@ const Company = () => {
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = () => {
     try {
-      const result = await axios.get("/api/getCompanies");
-      if (result.data.status === 200) {
-        setFetchData(result.data.fetchData);
-        setLoading(false);
-      } else {
-        throw Error("Due to an error, the data cannot be retrieved.");
-      }
+      axios.get("/api/getCompanies").then((result) => {
+        if (result.data.status === 200) {
+          setFetchData(result.data.fetchData);
+          setLoading(false);
+        } else {
+          throw Error("Due to an error, the data cannot be retrieved.");
+        }
+      });
     } catch (error) {
       console.error(error);
     }

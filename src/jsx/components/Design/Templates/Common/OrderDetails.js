@@ -26,7 +26,7 @@ const OrderDetails = () => {
     cart,
     setCart,
     item,
-    setItem,
+    // setItem,
     style,
     orignalPrice,
     orignalStock,
@@ -81,43 +81,60 @@ const OrderDetails = () => {
   // const history = useHistory();
 
   const addItem = (e) => {
-    e.preventDefault();
+    const recom = fetchData.map((item) => {
+      if (item.show) {
+        const array = {
+          value: item.value,
+          qty: item.qty,
+        };
+        return array;
+      }
+    });
     const check = cart.every((val) => {
       return val.id !== item[0].id;
     });
+    let array = [];
     if (check) {
-      item[0].price = orignalPrice;
-      item[0].stock = orignalStock;
-      item[0].itemNote = note.itemNote;
-      item[0].recommendations = fetchData;
-      item[0].extras = extraValue;
-      item[0].ingredients = ingredients;
-      item[0].totalPrice = (parseInt(price) + sum).toFixed(2);
-      item[0].variantSKU = skuarray;
-      item[0].checkSKU = activeSKU;
-      setItem(item);
-      localStorage.setItem("cart", JSON.stringify(cart.concat(item)));
-      setCart(cart.concat(item));
+      array.push({
+        id: item[0].id,
+        qty: item[0].qty,
+        currency_code: item[0].currency_code,
+        price: orignalPrice,
+        stock: orignalStock,
+        itemNote: note.itemNote,
+        recommendations: recom.filter((item) => item !== undefined),
+        ingredients: ingredients,
+        extras: extraValue,
+        totalPrice: parseInt(price) + sum,
+        variantSKU: skuarray,
+        checkSKU: activeSKU,
+      });
+      localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
+      setCart(cart.concat(array));
       setAlerts(true, "success", "Successfully added to cart");
     } else {
       let data = cart.filter((val) => {
         return val.id === item[0].id;
       });
-      data[0].price = orignalPrice;
-      data[0].stock = orignalStock;
-      data[0].itemNote = note.itemNote;
-      data[0].recommendations = fetchData;
-      data[0].extras = extraValue;
-      data[0].ingredients = ingredients;
-      data[0].totalPrice = (parseInt(price) + sum).toFixed(2);
-      data[0].variantSKU = skuarray;
-      data[0].checkSKU = activeSKU;
-
+      array.push({
+        id: data[0].id,
+        qty: data[0].qty,
+        currency_code: data[0].currency_code,
+        price: orignalPrice,
+        stock: orignalStock,
+        itemNote: note.itemNote,
+        recommendations: recom.filter((item) => item !== undefined),
+        ingredients: ingredients,
+        extras: extraValue,
+        totalPrice: parseInt(price) + sum,
+        variantSKU: skuarray,
+        checkSKU: activeSKU,
+      });
       const otherData = cart.filter((val) => {
         return val.id !== item[0].id;
       });
-      localStorage.setItem("cart", JSON.stringify(otherData.concat(data)));
-      setCart(otherData.concat(data));
+      localStorage.setItem("cart", JSON.stringify(otherData.concat(array)));
+      setCart(otherData.concat(array));
       setAlerts(true, "success", "Cart Updated");
     }
   };
@@ -228,14 +245,14 @@ const OrderDetails = () => {
                 />
 
                 <div className="row mx-3">
-                  <Typography style={style?.productName}>
+                  <Typography style={style?.cartPrice}>
                     {productName}{" "}
                     {orignalPrice +
                       ".00" +
                       " " +
                       getSymbolFromCurrency(countryCode)}
                   </Typography>
-                  <Typography style={style?.cartDescription}>
+                  {/* <Typography style={style?.cartDescription}>
                     {ingredients?.map((item, i) => {
                       if (ingredients.length == i + 1) {
                         return item + " - Not Included";
@@ -243,8 +260,8 @@ const OrderDetails = () => {
                         return item + " , ";
                       }
                     })}
-                  </Typography>
-                  <Typography style={style?.cartDescription}>
+                  </Typography> */}
+                  {/* <Typography style={style?.cartDescription}>
                     {extraValue?.map((item, i) => {
                       if (extraValue.length == i + 1) {
                         return item.value + " - Included";
@@ -252,12 +269,12 @@ const OrderDetails = () => {
                         return item.value + " , ";
                       }
                     })}
-                  </Typography>
+                  </Typography> */}
                   {style?.show_recommendation == 0 || fetchData.length === 0 ? (
                     ""
                   ) : (
                     <>
-                      <Typography style={style?.cartPrice}>
+                      <Typography style={style?.productName}>
                         {locale?.recommendation}
                       </Typography>
                       <FormGroup>{viewImages_HTMLTABLE}</FormGroup>

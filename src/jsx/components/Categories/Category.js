@@ -106,13 +106,14 @@ const Category = (props) => {
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dataLoad = async () => {
+  const dataLoad = () => {
     try {
-      const cat = await axios.get(`/api/getCategories/${id}`);
-      if (cat.data.status === 200) {
-        setFetchData(cat.data.fetchData.data);
-      }
-      setLoading(false);
+      axios.get(`/api/getCategories/${id}`).then((cat) => {
+        if (cat.data.status === 200) {
+          setFetchData(cat.data.fetchData.data);
+          setLoading(false);
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -166,6 +167,7 @@ const Category = (props) => {
                     state: {
                       id: id,
                       sub_id: item.id,
+                      CategoryName: item.CategoryName,
                     },
                   }}
                 >

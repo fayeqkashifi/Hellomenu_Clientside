@@ -154,7 +154,13 @@ function Header(props) {
 
   return (
     <React.Fragment>
-      <Toolbar sx={{ position: "sticky", zIndex: 9999999 }} className="top-0">
+      <Toolbar
+        sx={{
+          position: "sticky",
+          // , zIndex: 9999999
+        }}
+        className="top-0"
+      >
         <IconButton onClick={() => history.goBack()} sx={style?.backIcon}>
           <KeyboardBackspaceIcon fontSize="small" />
         </IconButton>
@@ -169,15 +175,20 @@ function Header(props) {
           style={style?.searchFields}
         ></Typography>
         {search && (
-          <>
+          <div
+            style={
+              style?.template === "second"
+                ? { width: "60%" }
+                : { width: "100%" }
+            }
+          >
             <input
-              // sx={{ ml: 1, flex: 1 }}
               onChange={searchItem}
               style={style?.inputfield}
               className={`form-control`}
               placeholder={locale?.search_by_name}
             />
-          </>
+          </div>
         )}
         <LanguageLocalization />
         <IconButton onClick={() => setModalCentered(true)}>

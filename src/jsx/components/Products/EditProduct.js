@@ -932,8 +932,8 @@ const EditProduct = (props) => {
             <div className="card-footer text-right">
               <SubmitButtons
                 isSubmitting={isSubmitting}
-                left={t("update")}
-                right={t("save")}
+                left={t("back")}
+                right={t("update")}
               />
             </div>
           </Form>

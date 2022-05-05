@@ -2,6 +2,13 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PageTItle from "../../../layouts/PageTitle";
 import { localization as t } from "../../Localization";
+import Chip from "@mui/material/Chip";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import { base_url, port } from "../../../../Consts";
+import getSymbolFromCurrency from "currency-symbol-map";
+
 import axios from "axios";
 const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -9,6 +16,8 @@ const Home = () => {
   const [countCategories, setCountCategories] = useState(0);
   const [countProducts, setCountProducts] = useState(0);
   const [countOrders, setCountOrders] = useState(0);
+  const [fetchData, setFetchData] = useState([]);
+  const [dailyTrend, setDailyTrend] = useState([]);
 
   const dataLoad = async () => {
     try {
@@ -34,6 +43,18 @@ const Home = () => {
       const orders = await axios.get("/api/countOrders");
       if (orders.data.status === 200) {
         setCountOrders(orders.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
+      const ordersData = await axios.get(`/api/getOrders`);
+      if (ordersData.data.status === 200) {
+        setFetchData(ordersData.data.fetchData.data);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
+      const daily = await axios.get(`/api/dailyTrendProducts`);
+      if (daily.data.status === 200) {
+        setDailyTrend(daily.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
@@ -178,6 +199,161 @@ const Home = () => {
                     </div>
                   </div>
                 </Link>
+              </div>
+            </div>
+          </div>
+          <div className="col-xl-9 col-xxl-8 col-lg-12 col-sm-12">
+            <div className="card">
+              <div className="card-header border-0">
+                <div>
+                  <h4 className="card-title mb-2">
+                    {t("recent_order_request")}
+                  </h4>
+                </div>
+              </div>
+              <div className="card-body p-0">
+                <div className="table-responsive ">
+                  <table className="table table-hover">
+                    <tbody>
+                      {fetchData.map((item, i) => {
+                        return (
+                          <tr key={i} height={100}>
+                            <td>
+                              {item.orderingMethod === "whatsApp" ? (
+                                <Chip
+                                  label="WhatsApp"
+                                  color="success"
+                                  variant="outlined"
+                                  size="small"
+                                />
+                              ) : item.orderingMethod === "tbl_qrcode" ? (
+                                <Chip
+                                  label="Table Reservation"
+                                  color="primary"
+                                  variant="outlined"
+                                  size="small"
+                                />
+                              ) : (
+                                <Chip
+                                  label="Home Delivery"
+                                  color="info"
+                                  variant="outlined"
+                                  size="small"
+                                />
+                              )}
+                            </td>
+                            <td>{item.phoneNumber}</td>
+                            <td>{item.tableId}</td>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                {item.status === 1 ? (
+                                  <Chip
+                                    label="Completed"
+                                    color="success"
+                                    variant="outlined"
+                                    size="small"
+                                  />
+                                ) : item.status === 0 ? (
+                                  <Chip
+                                    label="Discarded"
+                                    color="warning"
+                                    variant="outlined"
+                                    size="small"
+                                  />
+                                ) : (
+                                  <Chip
+                                    label="Pending"
+                                    color="info"
+                                    variant="outlined"
+                                    size="small"
+                                  />
+                                )}
+                              </div>
+                            </td>
+                            <td>
+                              <Link
+                                to={{
+                                  pathname: `/orders/orders-details`,
+                                  state: { id: item.id },
+                                }}
+                              >
+                                <Tooltip title="Details">
+                                  <IconButton>
+                                    <MoreHorizIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <div className="card-footer border-0 pt-0 text-center">
+                    <Link to={"/orders"} className="btn-link">
+                      {t("view_more")} &gt;&gt;
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-xl-3 col-xxl-4 col-lg-12 col-sm-12">
+            <div className="card">
+              <div className="card-header border-0">
+                <div>
+                  <h4 className="card-title mb-2">
+                    {t("daily_trending_products")}
+                  </h4>
+                </div>
+              </div>
+              <div className="card-body px-0 pt-0 pb-2">
+                <div className="widget-media trending-menus">
+                  <ul className="timeline">
+                    {dailyTrend.map((item, i) => {
+                      return (
+                        <li key={i}>
+                          <div className="timeline-panel">
+                            <div className="media mr-3">
+                              {/* <Link to={"/ecom-product-detail"}> */}
+                              <img
+                                alt=""
+                                width="90"
+                                src={`http://${base_url}:${port}/images/products/${
+                                  JSON.parse(item.image)[0]
+                                }`}
+                              />
+                              {/* </Link> */}
+                              <div className="number">#{i + 1}</div>
+                            </div>
+                            <div className="media-body">
+                              <h5 className="mb-3">
+                                <Link
+                                  to={"/ecom-product-detail"}
+                                  className="text-black"
+                                >
+                                  {item.ProductName}
+                                </Link>
+                              </h5>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <h4 className="mb-0 text-black font-w600">
+                                  {item.price}{" "}
+                                  {getSymbolFromCurrency(item.currency_code)}
+                                </h4>
+                                <p className="mb-0">
+                                  {t("order")}{" "}
+                                  <strong className="text-black font-w500">
+                                    {item.count}x
+                                  </strong>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

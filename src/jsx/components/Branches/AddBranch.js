@@ -147,15 +147,16 @@ const AddBranch = () => {
       setIpApi(loc);
     };
     ipapi.location(callback);
-    const dataLoad = async () => {
+    const dataLoad = () => {
       try {
-        const response = await axios.get("/api/getCurrencies");
-        if (response.data.status === 200) {
-          setCurrency(response.data.fetchData);
-          setLoading(false);
-        } else {
-          throw Error("Due to an error, the data cannot be retrieved.");
-        }
+        axios.get("/api/getCurrencies").then((response) => {
+          if (response.data.status === 200) {
+            setCurrency(response.data.fetchData);
+            setLoading(false);
+          } else {
+            throw Error("Due to an error, the data cannot be retrieved.");
+          }
+        });
       } catch (error) {
         console.error(error);
       }

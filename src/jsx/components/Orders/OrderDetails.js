@@ -4,9 +4,7 @@ import axios from "axios";
 import { base_url, port } from "../../../Consts";
 import { CBreadcrumb } from "@coreui/react";
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
-import CardContent from "@mui/material/CardContent";
 import getSymbolFromCurrency from "currency-symbol-map";
 import CustomAlert from "../CustomAlert";
 import { Button, Modal } from "react-bootstrap";
@@ -27,23 +25,48 @@ const OrderDetails = (props) => {
   let [sum, setSum] = useState(0);
   const [check, setCheck] = useState(false);
   const [modalCentered, setModalCentered] = useState(false);
+  const [jsonData, setJsonData] = useState([]);
   const dataLoad = async () => {
     try {
-      const result = await axios.get(`/api/getOrder/${id}`);
-      if (result.data.status === 200) {
-        let items = JSON.parse(result.data.fetchData.orderingItems);
-        setFetchData(items);
-        setOrder(result.data.fetchData);
+      const items = await axios.get(`/api/getOrderItem/${id}`);
+
+      let newArray = [];
+      if (items.data.status === 200) {
+        const data = items.data.fetchData;
         let TotalSum = 0;
-        items.map(
+        await data.map(
           (item) =>
             (TotalSum +=
-              item.totalPrice === undefined
+              item.total_price === null
                 ? item.price * item.qty
-                : parseInt(item.totalPrice) + item.price * (item.qty - 1))
+                : item.total_price)
         );
         setSum(TotalSum);
+        let ingredients;
+        let extras;
+        let recommends;
+        for (var i = 0; i < data.length; i++) {
+          ingredients = await axios.get(
+            `/api/getItemIngredients/${data[i].itemId}`
+          );
+          extras = await axios.get(`/api/getItemExtras/${data[i].itemId}`);
+          recommends = await axios.get(
+            `/api/getItemRecommends/${data[i].itemId}`
+          );
+          // console.log(recommends);
+          newArray.push({
+            ...data[i],
+            ingredients: ingredients.data.fetchData,
+            extras: extras.data.fetchData,
+            recommendations: recommends.data.fetchData,
+          });
+        }
+        setFetchData(newArray);
         setLoading(false);
+      }
+      const result = await axios.get(`/api/getOrder/${id}`);
+      if (result.data.status === 200) {
+        setOrder(result.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
@@ -117,114 +140,104 @@ const OrderDetails = (props) => {
   if (loading) {
     return (
       <div className="spinner-border text-primary " role="status">
-        <span className="sr-only">{t("loading")}</span>
+        <span className="sr-only"></span>
       </div>
     );
   } else {
     viewOrders_HTMLTABLE = fetchData.map((item, i) => {
       return (
-        <Card key={i} className="m-1">
-          <CardContent sx={{ flexGrow: 1 }}>
+        <div key={i} className="card m-2">
+          <div className="card-body">
             <Grid container spacing={2}>
               <Grid item xs={12} lg={2} xl={3} sm={6} md={6}>
                 <img
                   style={{
-                    height: "100px",
+                    height: "200px",
                     width: "100%",
-                    borderRadius: "15%",
+                    borderRadius: "15px",
                     objectFit: "contain",
                   }}
                   src={`http://${base_url}:${port}/images/products/${
                     JSON.parse(item.image)[0]
                   }`}
                   alt="Image"
-                  // className="h-100"
                 />
               </Grid>
-              <Grid item xs={12} lg={3} xl={3} sm={6} md={6}>
-                <Typography
-                  variant="body1"
-                  style={{ textTransform: "capitalize" }}
-                >
-                  <b> Product:</b> {item.ProductName}
-                </Typography>
-                {item?.variantSKU === undefined ? null : (
+              <Grid item xs={12} lg={3} xl={4} sm={6} md={6}>
+                <h1 style={{ textTransform: "capitalize" }}>
+                  {item.ProductName}
+                </h1>
+                {item?.variant_sku && (
                   <Typography variant="body1" gutterBottom>
-                    <b>Variants:</b>{" "}
-                    {item?.variantSKU?.map((val, i) => {
-                      if (item?.variantSKU.length === i + 1) {
-                        return val;
-                      } else {
-                        return val + ", ";
-                      }
-                    })}
+                    <b>{t("variants")}:</b> {item?.variant_sku}
                   </Typography>
                 )}
                 <Typography variant="body1" gutterBottom>
-                  <b>Price:</b>{" "}
+                  <b>{t("price")}:</b>{" "}
                   {parseInt(item.price).toFixed(2) + "  " + currency}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  <b>Qty:</b> {item.qty + " " + item.UnitName}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  <b>Description:</b> {item.Description}
+                  <b>{t("qty")}:</b> {item.qty + " " + item.UnitName}
                 </Typography>
               </Grid>
               <Grid item xs={6} xs={12} lg={5} xl={5} sm={6} md={6}>
-                {item?.ingredients === undefined ? null : (
+                {item?.ingredients.length == 0 ? null : (
                   <Typography variant="subtitle1" gutterBottom>
-                    <b>Ingredients:</b>
-                    {item?.ingredients?.map((val, i) => {
+                    <b>{t("ingredients")}:</b>
+                    {item.ingredients?.map((val, i) => {
                       if (item?.ingredients.length === i + 1) {
-                        return val + " - Not Included";
+                        return val.name + " - Not Included";
                       } else {
-                        return val + ", ";
+                        return val.name + ", ";
                       }
                     })}
                   </Typography>
                 )}
-                {item?.extras === undefined ? null : (
+                {item?.extras.length === 0 ? null : (
                   <Typography variant="subtitle1" gutterBottom>
-                    <b>Extras:</b>
+                    <b>{t("extras")}:</b>
 
                     {item?.extras?.map((val, i) => {
                       if (item?.extras.length == i + 1) {
-                        return val.value + " - Included";
+                        return (
+                          val.name +
+                          "(+" +
+                          val.extra_price +
+                          ")" +
+                          " - Included"
+                        );
                       } else {
-                        return val.value + " , ";
+                        return val.name + "(+" + val.extra_price + ")" + " , ";
                       }
                     })}
                   </Typography>
                 )}
-                {item?.recommendations === undefined ? null : (
+                {item?.recommendations.length === 0 ? null : (
                   <Typography variant="subtitle1" gutterBottom>
-                    <b>Recommendations:</b>
+                    <b>{t("recommendations")}:</b>
 
                     {item?.recommendations?.map((val, i) => {
-                      if (val.show) {
-                        return (
-                          val.label +
-                          " (Qty: " +
-                          val.qty +
-                          " * " +
-                          val.price +
-                          " = " +
-                          (val.price * val.qty).toFixed(2) +
-                          " " +
-                          currency +
-                          " )"
-                        );
-                      }
+                      return (
+                        val.ProductName +
+                        " (Qty: " +
+                        val.qty +
+                        " * " +
+                        val.price +
+                        " = " +
+                        (val.price * val.qty).toFixed(2) +
+                        " " +
+                        currency +
+                        " )"
+                      );
                     })}
                   </Typography>
                 )}
               </Grid>
               <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
-                {item?.itemNote === undefined ? null : (
+                {item?.item_note && (
                   <Typography variant="body1" className="mx-1">
-                    <b>Item Note: </b>
-                    {item.itemNote}
+                    <b>{t("item_note")}: </b>
+                    {item.item_note}
                   </Typography>
                 )}
               </Grid>
@@ -234,19 +247,16 @@ const OrderDetails = (props) => {
                   gutterBottom
                   className="text-right mx-5"
                 >
-                  <b>Total Price: </b>
-                  {item?.totalPrice !== undefined
-                    ? (
-                        parseInt(item.totalPrice) +
-                        item.price * (item.qty - 1)
-                      ).toFixed(2)
-                    : (parseInt(item.price) * item.qty).toFixed(2)}
+                  <b>{t("total_price")}: </b>
+                  {item.total_price === null
+                    ? (item.price * item.qty).toFixed(2)
+                    : item.total_price.toFixed(2)}
                   {" " + currency}
                 </Typography>
               </Grid>
             </Grid>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       );
     });
   }
@@ -275,49 +285,49 @@ const OrderDetails = (props) => {
         <div className="font-weight-bold">{t("details")}</div>
       </CBreadcrumb>
       {viewOrders_HTMLTABLE}
-      <Card className="m-1">
-        <CardContent sx={{ flexGrow: 1 }}>
+      <div className="card m-1">
+        <div className="card-body">
           <Grid container spacing={2}>
             <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
               <Typography variant="body1" gutterBottom>
-                <b>Prdering Method: </b>
+                <b>{t("ordering_methods")}: </b>
                 {order.orderingMethod === "whatsApp"
-                  ? " WhatsApp"
+                  ? t("whatsApp")
                   : order.orderingMethod === "tbl_qrcode"
-                  ? " Table Reservation"
-                  : " Home Delivery"}
+                  ? t("table_qrcode")
+                  : t("home_delivery")}
               </Typography>
               {order.tableId !== null ? (
                 <>
                   <Typography variant="body1" gutterBottom>
-                    <b>Table Number: </b>
+                    <b>{t("table_number")}: </b>
                     {order.tableId}
                   </Typography>
                   <Typography variant="body1" gutterBottom>
-                    <b>Reservation date and time: </b>
+                    <b>{t("reservation_date_and_time")}: </b>
                     {order.dateAndTime === null ? "Now" : order.dateAndTime}
                   </Typography>
                 </>
               ) : null}
               <Typography variant="body1" gutterBottom>
-                <b>General Note: </b>
+                <b>{t("general_note")}: </b>
                 {order.generalNote}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                <b>Phone Number: </b>
+                <b>{t("phone_number")}: </b>
                 {order.phoneNumber}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                <b>Status: </b>
+                <b>{t("status")}: </b>
                 {order.status === 0
-                  ? " Discarded"
+                  ? t("discarded")
                   : order.status === 1
-                  ? " Completed"
-                  : " Pending"}
+                  ? t("completed")
+                  : t("pending")}
               </Typography>
               {order.status === 0 ? (
                 <Typography variant="body1" gutterBottom>
-                  <b>Discard Reason: </b>
+                  <b>{t("discard_reason")}: </b>
                   {order.discardReason}
                 </Typography>
               ) : null}
@@ -326,7 +336,7 @@ const OrderDetails = (props) => {
               <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
                 {order.fullAddress ? (
                   <Typography variant="body1" gutterBottom>
-                    <b>Full Address: </b> {order.fullAddress}
+                    <b>{t("full_address")}: </b> {order.fullAddress}
                   </Typography>
                 ) : null}
                 {(() => {
@@ -345,114 +355,115 @@ const OrderDetails = (props) => {
               </Grid>
             ) : null}
           </Grid>
-        </CardContent>
-      </Card>
-      <Card className="m-1">
-        <CardContent sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
+        </div>
+      </div>
+      <div className="card m-1">
+        <div className="card-body">
+          <Grid container spacing={2} className="text-center ">
             <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
-              <Typography variant="body1" gutterBottom>
-                <b>Delivery Fees: </b>
+              <h4>
+                <b>{t("delivery_fees")}: </b>
                 {order.deliveryFees + "  " + currency}
-              </Typography>
+              </h4>
             </Grid>
             <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
-              <Typography variant="body1" gutterBottom>
-                <b>Grand Total: </b>
+              <h4>
+                <b>{t("grand_total")}: </b>
                 {(sum + order.deliveryFees).toFixed(2) + "  " + currency}
-              </Typography>
+              </h4>
             </Grid>
           </Grid>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       {order.status === 1 ? null : (
         <div className="text-right m-1">
           <Button variant="success" className="m-1" onClick={completedOrder}>
-            Complete Order{" "}
+            {t("complete_order")}{" "}
           </Button>
           <Button
             variant="danger"
             className="m-1"
-            //  onClick={discardOrder}
             onClick={() => setModalCentered(true)}
           >
-            Discard Order{" "}
+            {t("discard_order")}{" "}
           </Button>
         </div>
       )}
-      <Modal className="fade" show={modalCentered}>
-        <Modal.Header>
-          <Modal.Title>Discard Order</Modal.Title>
-          <Button
-            onClick={() => setModalCentered(false)}
-            variant=""
-            className="close"
+      {modalCentered && (
+        <Modal className="fade" show={modalCentered}>
+          <Modal.Header>
+            <Modal.Title>Discard Order</Modal.Title>
+            <Button
+              onClick={() => setModalCentered(false)}
+              variant=""
+              className="close"
+            >
+              <span>&times;</span>
+            </Button>
+          </Modal.Header>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={discardOrder}
           >
-            <span>&times;</span>
-          </Button>
-        </Modal.Header>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={discardOrder}
-        >
-          {({ errors, status, touched, values }) => (
-            <Form>
-              <Modal.Body>
-                <div className="form-group">
-                  <label> Reason </label>
-                  <Field
-                    as="textarea"
-                    name="discardReason"
-                    className={
-                      "form-control" +
-                      (errors.discardReason && touched.discardReason
-                        ? " is-invalid"
-                        : "")
-                    }
-                    placeholder="Reason..."
-                  />
-                  <ErrorMessage
-                    name="discardReason"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={() => setModalCentered(false)}
-                  variant="danger light"
-                >
-                  {t("close")}
-                </Button>
-                <p className="d-none">
-                  {
-                    (message = `*Order Number*: ${order.id} \n*Status*:* Discarded* \n*Reason*: ${values?.discardReason} \n`)
-                  }
-                </p>
-                {values?.discardReason === "" ? (
-                  <Button variant="primary" type="submit">
-                    {t("save")}{" "}
-                  </Button>
-                ) : (
-                  <ReactWhatsapp
-                    className="btn btn-primary"
-                    type="submit"
-                    // style={buttonStyle}
-                    number={order.phoneNumber}
-                    message={message}
-                    max="4096"
-                    onClick={() => discardOrder()}
+            {({ errors, touched, values }) => (
+              <Form>
+                <Modal.Body>
+                  <div className="form-group">
+                    <label> Reason </label>
+                    <Field
+                      as="textarea"
+                      name="discardReason"
+                      className={
+                        "form-control" +
+                        (errors.discardReason && touched.discardReason
+                          ? " is-invalid"
+                          : "")
+                      }
+                      placeholder="Reason..."
+                    />
+                    <ErrorMessage
+                      name="discardReason"
+                      component="div"
+                      className="invalid-feedback"
+                    />
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={() => setModalCentered(false)}
+                    variant="danger light"
                   >
-                    <WhatsAppIcon fontSize="small" /> {t("send_order")}
-                  </ReactWhatsapp>
-                )}
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
+                    {t("close")}
+                  </Button>
+                  <p className="d-none">
+                    {
+                      (message = `*Order Number*: ${order.id} \n*Status*:* Discarded* \n*Reason*: ${values?.discardReason} \n`)
+                    }
+                  </p>
+                  {values?.discardReason === "" ? (
+                    <Button variant="primary" type="submit">
+                      {t("save")}{" "}
+                    </Button>
+                  ) : (
+                    <ReactWhatsapp
+                      className="btn btn-primary"
+                      type="submit"
+                      // style={buttonStyle}
+                      number={order.phoneNumber}
+                      message={message}
+                      max="4096"
+                      onClick={() => discardOrder()}
+                    >
+                      <WhatsAppIcon fontSize="small" /> {t("send_order")}
+                    </ReactWhatsapp>
+                  )}
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
+        </Modal>
+      )}
     </Fragment>
   );
 };

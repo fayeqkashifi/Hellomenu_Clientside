@@ -13,13 +13,14 @@ const Shared = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    (() => {
       try {
-        const result = await axios.get(`/api/getSharedCatBranches/${sub_id}`);
-        if (result.status === 200) {
-          setFetchData(result.data);
-          setLoading(false);
-        }
+        axios.get(`/api/getSharedCatBranches/${sub_id}`).then((result) => {
+          if (result.status === 200) {
+            setFetchData(result.data);
+            setLoading(false);
+          }
+        });
       } catch (error) {
         console.error(error);
       }
