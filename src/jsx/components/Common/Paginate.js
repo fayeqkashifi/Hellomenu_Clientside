@@ -17,8 +17,8 @@ function Paginate(props) {
     getComments();
     return () => {
       // setFetchData([]);
-      setpageCount(0);
-      setTotal(0);
+      // setpageCount(0);
+      // setTotal(0);
     };
   }, [fetchData]);
 

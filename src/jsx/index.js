@@ -22,7 +22,7 @@ import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
 import Attributes from "./components/Attributes/Attributes";
 import Error404 from "./pages/Error404";
-import Ingredients from "./components/Products/Ingredients";
+import Ingredients from "./components/Products/Ingredients/Ingredients";
 import Area from "./components/Areas/Area";
 import OrderDetails from "./components/Orders/OrderDetails";
 import AddBranch from "./components/Branches/AddBranch";

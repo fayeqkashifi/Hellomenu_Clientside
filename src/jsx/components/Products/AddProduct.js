@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -16,14 +15,12 @@ import MySelect from "../Common/MySelect";
 import SubmitButtons from "../Common/SubmitButtons";
 import MButton from "@mui/material/Button";
 import Local from "./Local";
+import AddIngredient from "./Ingredients/Add";
 
 const AddProduct = (props) => {
   const history = useHistory();
-  // for localization
   const branchId = props.history.location.state.id;
-  // validation start
   const [lang, setLang] = useState([]);
-
   const initialValues = {
     ProductName: "",
     category: "",
@@ -43,14 +40,6 @@ const AddProduct = (props) => {
         .typeError("Amount must be a number")
         .required("Price is required.")
         .min(1, "Too little"),
-    });
-  };
-  const initialValuesIngredient = {
-    name: "",
-  };
-  const validationSchemaIngredient = () => {
-    return Yup.object().shape({
-      name: Yup.string().required("Ingredient Name is required"),
     });
   };
   // validation End
@@ -122,26 +111,6 @@ const AddProduct = (props) => {
       });
   };
 
-  const save = (data) => {
-    axios
-      .post("/api/insertSingleIngredient", data)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setCheck(!check);
-          setModalCentered(false);
-          setProductIngredient([
-            ...productIngredient,
-            { value: res.data.id, label: data.name },
-          ]);
-          setAlerts(true, "success", res.data.message);
-        } else if (res.data.status === 1062) {
-          setAlerts(true, "warning", res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -880,59 +849,15 @@ const AddProduct = (props) => {
         </div>
 
         {viewProducts_HTMLTABLE}
-
-        <Modal className="fade" show={modalCentered}>
-          <Modal.Header>
-            <Modal.Title>{t("add_ingredient")}</Modal.Title>
-            <Button
-              onClick={() => setModalCentered(false)}
-              variant=""
-              className="close"
-            >
-              <span>&times;</span>
-            </Button>
-          </Modal.Header>
-          <Formik
-            initialValues={initialValuesIngredient}
-            validationSchema={validationSchemaIngredient}
-            onSubmit={save}
-          >
-            {({ errors, status, touched }) => (
-              <Form>
-                <Modal.Body>
-                  <div className="form-group">
-                    <label> {t("name")}</label>
-                    <Field
-                      name="name"
-                      type="text"
-                      className={
-                        "form-control" +
-                        (errors.name && touched.name ? " is-invalid" : "")
-                      }
-                      placeholder="Name...."
-                    />
-                    <ErrorMessage
-                      name="name"
-                      component="div"
-                      className="invalid-feedback"
-                    />
-                  </div>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    onClick={() => setModalCentered(false)}
-                    variant="danger light"
-                  >
-                    {t("close")}
-                  </Button>
-                  <Button variant="primary" type="submit">
-                    {t("save")}{" "}
-                  </Button>
-                </Modal.Footer>
-              </Form>
-            )}
-          </Formik>
-        </Modal>
+        <AddIngredient
+          setAlerts={setAlerts}
+          setCheck={setCheck}
+          check={check}
+          modalCentered={modalCentered}
+          setModalCentered={setModalCentered}
+          setProductIngredient={setProductIngredient}
+          productIngredient={productIngredient}
+        />
       </Fragment>
     </>
   );
