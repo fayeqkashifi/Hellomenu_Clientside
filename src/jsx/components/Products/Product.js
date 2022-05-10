@@ -108,15 +108,6 @@ const Product = (props) => {
     {
       key: "stock",
     },
-    // {
-    //   key: "ingredients",
-    // },
-    // {
-    //   key: "extras",
-    // },
-    // {
-    //   key: "recommendations",
-    // },
     {
       key: "CategoryName",
     },
@@ -161,78 +152,6 @@ const Product = (props) => {
         itemsPerPageSelect={true}
         itemsPerPageOptions={[5, 10, 20, 50]}
         scopedColumns={{
-          // ingredients: (item) => {
-          //   return (
-          //     <td>
-          //       <div className="row m-3">
-          //         {JSON.parse(item.ingredients)?.map((item, i) => {
-          //           return (
-          //             <Stack
-          //               direction="row"
-          //               className="m-1"
-          //               spacing={1}
-          //               key={i}
-          //             >
-          //               <Chip
-          //                 label={item.label}
-          //                 // color="primary"
-          //                 variant="outlined"
-          //               />
-          //             </Stack>
-          //           );
-          //         })}
-          //       </div>
-          //     </td>
-          //   );
-          // },
-          // extras: (item) => {
-          //   return (
-          //     <td>
-          //       <div className="row m-3">
-          //         {JSON.parse(item.extras)?.map((item, i) => {
-          //           return (
-          //             <Stack
-          //               direction="row"
-          //               className="m-1"
-          //               spacing={1}
-          //               key={i}
-          //             >
-          //               <Chip
-          //                 label={item.label + "( +" + item.price + ".00" + " )"}
-          //                 // color="primary"
-          //                 variant="outlined"
-          //               />
-          //             </Stack>
-          //           );
-          //         })}
-          //       </div>
-          //     </td>
-          //   );
-          // },
-          // recommendations: (item) => {
-          //   return (
-          //     <td>
-          //       <div className="row m-3">
-          //         {JSON.parse(item.recommendations)?.map((item, i) => {
-          //           return (
-          //             <Stack
-          //               direction="row"
-          //               className="m-1"
-          //               spacing={1}
-          //               key={i}
-          //             >
-          //               <Chip
-          //                 label={item.label}
-          //                 // color="primary"
-          //                 variant="outlined"
-          //               />
-          //             </Stack>
-          //           );
-          //         })}
-          //       </div>
-          //     </td>
-          //   );
-          // },
           image: (item) => {
             return (
               <td>
@@ -387,7 +306,7 @@ const Product = (props) => {
           {fetchData.length !== 0 ? (
             fetchData.map((item, i) => {
               return (
-                <div className="col-xl-3 col-lg- col-sm-6" key={item.id}>
+                <div className="col-xl-3 col-lg-  col-sm-6" key={item.id}>
                   <div className="card overflow-hidden">
                     <div className="card-body">
                       <div className="text-center">
@@ -395,10 +314,11 @@ const Product = (props) => {
                           src={`http://${base_url}:${port}/images/products/${
                             JSON.parse(item.image)[0]
                           }`}
-                          alt=""
+                          alt={item.ProductName}
                           style={{
-                            width: "120px",
-                            height: "100px",
+                            height: "150px",
+                            width: "100%",
+                            borderRadius: "20px",
                             objectFit: "contain",
                           }}
                         />

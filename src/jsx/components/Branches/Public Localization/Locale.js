@@ -10,9 +10,10 @@ const PublicLocale = (props) => {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+
   const [publicId, setPublicId] = useState([]);
 
-  const dataLoad = async () => {
+  const dataLoad = () => {
     try {
       axios
         .get(`/api/editLocalePublic/${langId}`)

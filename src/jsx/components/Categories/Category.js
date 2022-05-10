@@ -176,7 +176,7 @@ const Category = (props) => {
                       style={{
                         height: "150px",
                         width: "100%",
-                        borderRadius: "10%",
+                        borderRadius: "20px",
                         objectFit: "contain",
                       }}
                       src={

@@ -86,9 +86,9 @@ const Ingredients = () => {
   const [check, setCheck] = useState(true);
   const dataLoad = () => {
     try {
-      axios.get(`/api/getIngredient`).then((result) => {
+      axios.get(`/api/getIngredientAll`).then((result) => {
         if (result.data.status === 200) {
-          setFetchData(result.data.fetchData.data);
+          setFetchData(result.data.fetchData);
           setLoading(false);
         } else {
           throw Error("Due to an error, the data cannot be retrieved.");

@@ -1,13 +1,11 @@
-
-
 export const logout = () => {
-    localStorage.removeItem('auth_token');
-}
+  localStorage.removeItem("auth_token");
+};
 
 export const isLogin = () => {
-    if (localStorage.getItem('auth_token')) {
-        return true;
-    }
+  if (localStorage.getItem("auth_token")) {
+    return true;
+  }
 
-    return false;
-}
+  return false;
+};

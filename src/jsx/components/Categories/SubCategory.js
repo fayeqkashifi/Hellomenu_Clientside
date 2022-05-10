@@ -145,9 +145,9 @@ const SubCategory = (props) => {
               <div className="text-center">
                 <img
                   style={{
-                    height: "100px",
+                    height: "150px",
                     width: "100%",
-                    borderRadius: "10%",
+                    borderRadius: "20px",
                     objectFit: "contain",
                   }}
                   src={
