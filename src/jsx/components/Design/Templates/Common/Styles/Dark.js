@@ -258,7 +258,7 @@ export const DarkStyle = (custom, theme) => {
         : custom.numberProductInRowMobile === 6
         ? 2
         : 6
-      : 6,
+      : 12,
     sm: custom?.numberProductInRowTablet
       ? custom.numberProductInRowTablet === 1
         ? 12
@@ -669,7 +669,20 @@ export const DarkStyle = (custom, theme) => {
         : "#fff",
     },
     cartImageDiv: {
-      width: "20%",
+      border: "1px solid red",
+
+      "@media (max-width: 1920px)": {
+        width: "20%",
+        border: "1px solid red",
+      },
+      "@media (max-width: 1080px)": {
+        width: "60%",
+        border: "1px solid green",
+      },
+      "@media (max-width: 720px)": {
+        width: "70%",
+        border: "1px solid white",
+      },
     },
     cartProductDiv: {
       width: "30%",

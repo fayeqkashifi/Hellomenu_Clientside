@@ -23,7 +23,7 @@ export default function ShowCards(props) {
         <Grid
           item
           style={
-            item.stock === 0
+            item.stock === 0 || item.stock === null
               ? {
                   pointerEvents: "none",
                   opacity: "0.4",
@@ -34,6 +34,8 @@ export default function ShowCards(props) {
           xs={style?.xs}
           sm={style?.sm}
           md={style?.md}
+          // lg={2}
+          // xl={2}
           key={i}
         >
           <Card sx={style?.cardStyle}>
@@ -76,7 +78,10 @@ export default function ShowCards(props) {
               <div className="mt-2">
                 <div className="row">
                   <div style={style?.productDiv}>
-                    <Typography style={style?.productName}>
+                    <Typography
+                      style={style?.productName}
+                      className="text-truncate"
+                    >
                       {item.ProductName}
                     </Typography>
                   </div>

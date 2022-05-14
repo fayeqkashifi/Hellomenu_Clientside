@@ -10,6 +10,7 @@ import { base_url, port } from "../../../../Consts";
 import getSymbolFromCurrency from "currency-symbol-map";
 
 import axios from "axios";
+import Analytics from "./Analytics/Analytics";
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [countBranches, setCountBranches] = useState(0);
@@ -358,6 +359,7 @@ const Home = () => {
             </div>
           </div>
         </div>
+        {/* <Analytics /> */}
       </Fragment>
     );
   }

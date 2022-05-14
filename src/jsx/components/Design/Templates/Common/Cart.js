@@ -354,8 +354,11 @@ const Cart = (props) => {
           </div>
 
           <CardContent sx={{ flexGrow: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item style={style?.cartImageDiv}>
+            <div className="row">
+              <div
+                // className="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12"
+                style={style?.cartImageDiv}
+              >
                 <img
                   style={style?.cartImage}
                   src={`http://${base_url}:${port}/images/products/${
@@ -363,8 +366,11 @@ const Cart = (props) => {
                   }`}
                   alt="Image"
                 />
-              </Grid>
-              <Grid item sx={style?.cartProductDiv}>
+              </div>
+              <div
+                // className="col-xl-4 col-md-6 col-lg-6 col-sm-6 col-12"
+                sx={style?.cartProductDiv}
+              >
                 <Typography style={style?.cartProductName}>
                   {item.ProductName}
                 </Typography>
@@ -393,8 +399,11 @@ const Cart = (props) => {
                 <Typography style={style?.cartDescription} gutterBottom>
                   <b>{locale?.unit_name}:</b> {item.UnitName}
                 </Typography>
-              </Grid>
-              <Grid item style={style?.cartVariantDiv}>
+              </div>
+              <div
+                // className="col-xl-4 col-md-10 col-lg-10 col-sm-10 col-12"
+                style={style?.cartVariantDiv}
+              >
                 {" "}
                 {item.ingredients === undefined
                   ? ""
@@ -449,11 +458,17 @@ const Cart = (props) => {
                         })}
                       </Typography>
                     )}
-              </Grid>
-              <Grid item style={style?.cartCounterDiv}>
+              </div>
+              <div
+                // className="col-xl-1 col-md-2 col-lg-2 col-sm-2 col-12"
+                style={style?.cartCounterDiv}
+              >
                 <Counter item={item} />
-              </Grid>
-              <Grid item style={style?.cartNoteDiv}>
+              </div>
+              <div
+                className="col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12"
+                // style={style?.cartNoteDiv}
+              >
                 {item?.itemNote === undefined ? (
                   ""
                 ) : (
@@ -466,8 +481,11 @@ const Cart = (props) => {
                     {item?.itemNote}
                   </Typography>
                 )}
-              </Grid>
-              <Grid item style={style?.cartTotalDiv}>
+              </div>
+              <div
+                // className="col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12 text-right"
+                style={style?.cartTotalDiv}
+              >
                 <Typography style={style?.cartDescription} gutterBottom>
                   <b>{locale?.total_price}: </b>
                   {item?.totalPrice !== undefined
@@ -478,8 +496,8 @@ const Cart = (props) => {
                     : (parseInt(item.price) * item.qty).toFixed(2)}
                   {" " + currency}
                 </Typography>
-              </Grid>
-            </Grid>
+              </div>
+            </div>
           </CardContent>
         </Card>
       );
