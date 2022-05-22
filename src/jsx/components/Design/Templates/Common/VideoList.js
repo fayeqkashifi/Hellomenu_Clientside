@@ -75,7 +75,7 @@ function VideoList(props) {
           <div className="row justify-content-start">
             {branchStories?.map((item) => {
               return (
-                <div className="col-2" key={item.id}>
+                <div className="col" key={item.id}>
                   <Link
                     to={{
                       pathname: `/public/video`,
@@ -138,7 +138,7 @@ function VideoList(props) {
             })}
             {products.map((item) => {
               return item?.video ? (
-                <div className={`col-2`} key={item.id}>
+                <div className={`col`} key={item.id}>
                   <Link
                     to={{
                       pathname: `/public/video`,
@@ -165,7 +165,7 @@ function VideoList(props) {
                 </div>
               ) : (
                 JSON.parse(item.videosUrl).length !== 0 && (
-                  <div className={`col-2`} key={item.id}>
+                  <div className={`col`} key={item.id}>
                     <Link
                       to={{
                         pathname: `/public/video`,

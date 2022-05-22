@@ -35,7 +35,7 @@ function Footer(props) {
         <Grid container spacing={2}>
           <Grid
             item
-            xs={6}
+            xs={4}
             lg={4}
             xl={4}
             sm={4}
@@ -54,7 +54,7 @@ function Footer(props) {
           </Grid>
           <Grid
             item
-            xs={6}
+            xs={4}
             lg={4}
             xl={4}
             sm={4}
@@ -71,7 +71,7 @@ function Footer(props) {
                   : getSymbolFromCurrency(cart[0]?.currency_code))}
             </Typography>
           </Grid>
-          <Grid item xs={12} lg={4} xl={4} sm={4} md={4}>
+          <Grid item xs={4} lg={4} xl={4} sm={4} md={4}>
             {url !== undefined ? (
               <Link
                 className={`col-12 btn ${

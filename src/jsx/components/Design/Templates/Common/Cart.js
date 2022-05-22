@@ -353,10 +353,14 @@ const Cart = (props) => {
             </IconButton>
           </div>
 
-          <CardContent sx={{ flexGrow: 1 }}>
+          <CardContent>
             <div className="row">
               <div
-                // className="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12"
+                className={
+                  style.template === "dark" &&
+                  `col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12`
+                }
+                // className="col border"
                 style={style?.cartImageDiv}
               >
                 <img
@@ -368,7 +372,11 @@ const Cart = (props) => {
                 />
               </div>
               <div
-                // className="col-xl-4 col-md-6 col-lg-6 col-sm-6 col-12"
+                className={
+                  style.template === "dark" &&
+                  `col-xl-4 col-md-6 col-lg-6 col-sm-6 col-12`
+                }
+                // className="col border"
                 sx={style?.cartProductDiv}
               >
                 <Typography style={style?.cartProductName}>
@@ -401,7 +409,10 @@ const Cart = (props) => {
                 </Typography>
               </div>
               <div
-                // className="col-xl-4 col-md-10 col-lg-10 col-sm-10 col-12"
+                className={
+                  style.template === "dark" &&
+                  `col-xl-4 col-md-10 col-lg-10 col-sm-10 col-12`
+                }
                 style={style?.cartVariantDiv}
               >
                 {" "}
@@ -460,14 +471,22 @@ const Cart = (props) => {
                     )}
               </div>
               <div
-                // className="col-xl-1 col-md-2 col-lg-2 col-sm-2 col-12"
+                className={
+                  style.template === "dark" &&
+                  `col-xl-1 col-md-2 col-lg-2 col-sm-2 col-12`
+                }
                 style={style?.cartCounterDiv}
               >
                 <Counter item={item} />
               </div>
+            </div>
+            <div className="row">
               <div
-                className="col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12"
-                // style={style?.cartNoteDiv}
+                className={
+                  style.template === "dark" &&
+                  `col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12`
+                }
+                style={style?.cartNoteDiv}
               >
                 {item?.itemNote === undefined ? (
                   ""
@@ -483,7 +502,10 @@ const Cart = (props) => {
                 )}
               </div>
               <div
-                // className="col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12 text-right"
+                className={
+                  style.template === "dark" &&
+                  `col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12 text-right`
+                }
                 style={style?.cartTotalDiv}
               >
                 <Typography style={style?.cartDescription} gutterBottom>

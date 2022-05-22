@@ -7,8 +7,14 @@ import Menu from "@mui/material/Menu";
 import { TemplateContext } from "../TemplateContext";
 
 export default function LanguageLocalization() {
-  const { languages, dataLoad, selectedLang, setSelectedLang, setLocale } =
-    useContext(TemplateContext);
+  const {
+    languages,
+    dataLoad,
+    selectedLang,
+    setSelectedLang,
+    setLocale,
+    style,
+  } = useContext(TemplateContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClickListItem = (event) => {
@@ -52,6 +58,7 @@ export default function LanguageLocalization() {
           aria-controls="lock-menu"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClickListItem}
+          sx={style?.localeBackground}
         >
           <ListItemText
             primary={
@@ -79,6 +86,7 @@ export default function LanguageLocalization() {
             // disabled={index === 0}
             selected={option.label == selectedLang.label ? true : false}
             onClick={(event) => handleMenuItemClick(event, option)}
+            // style={style?.localeBackground}
           >
             {option.label.toUpperCase()}
           </MenuItem>

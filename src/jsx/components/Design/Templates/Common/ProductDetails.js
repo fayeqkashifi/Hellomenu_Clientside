@@ -387,7 +387,6 @@ const ProductDetails = () => {
                     {Object.keys(showVaralint).map((list, i) => {
                       return (
                         <div className="row m-1" key={i}>
-                          {/* {list} */}
                           <div
                             className="row d-flex justify-content-around"
                             style={style?.variantsDiv}
@@ -444,7 +443,6 @@ const ProductDetails = () => {
                               : style?.ingredientsDeActive
                           }
                         >
-                          {/* {console.log(item)} */}
                           {item.label}
                         </div>
                       );
@@ -486,7 +484,6 @@ const ProductDetails = () => {
                       />
                     );
                   })}
-                  {/* </FormGroup> */}
                 </div>
               )}
             </div>

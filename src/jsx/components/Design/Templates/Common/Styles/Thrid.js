@@ -81,6 +81,16 @@ export const ThridStyle = (custom, theme) => {
           : "#fbd460",
       },
     },
+    // localization
+    localeBackground: {
+      fontSize: 12,
+      color: custom?.product_name_color
+        ? custom.product_name_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
+      zIndex: 99999999,
+    },
     // header End
 
     // statubar Style

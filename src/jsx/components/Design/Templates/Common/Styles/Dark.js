@@ -100,6 +100,16 @@ export const DarkStyle = (custom, theme) => {
       overflowX: "auto",
       zIndex: 9999999,
     },
+    // localization
+    localeBackground: {
+      fontSize: 12,
+      color: custom?.product_name_color
+        ? custom.product_name_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fff",
+      zIndex: 99999999,
+    },
 
     cateActive: {
       cursor: "pointer",
@@ -510,9 +520,8 @@ export const DarkStyle = (custom, theme) => {
     },
 
     // Image Slider Style
-    imageSilderMainDiv: { maxHeight: "80vh", position: "sticky" },
+    imageSilderMainDiv: { position: "sticky" },
     mainSwiper: {
-      maxHeight: "70vh",
       margin: "10px",
       padding: "10px",
     },
@@ -520,10 +529,10 @@ export const DarkStyle = (custom, theme) => {
       height: "400px",
       width: "100%",
       borderRadius: "10px",
-      // objectFit: "contain",
     },
-    ThumbsSwiper: { maxHeight: "10vh", cursor: "pointer", margin: "10px" },
+    ThumbsSwiper: { maxHeight: "100px", cursor: "pointer", margin: "10px" },
     thumbsImage: {
+      // objectFit: "contain",
       height: "60px",
       width: "40px",
       textAlign: "center",
@@ -566,7 +575,7 @@ export const DarkStyle = (custom, theme) => {
       bottom: 0,
       width: "100%",
       textAlign: "center",
-      // zIndex: 999999,
+      zIndex: 99999999,
     },
     // End
 
@@ -669,26 +678,13 @@ export const DarkStyle = (custom, theme) => {
         : "#fff",
     },
     cartImageDiv: {
-      border: "1px solid red",
-
-      "@media (max-width: 1920px)": {
-        width: "20%",
-        border: "1px solid red",
-      },
-      "@media (max-width: 1080px)": {
-        width: "60%",
-        border: "1px solid green",
-      },
-      "@media (max-width: 720px)": {
-        width: "70%",
-        border: "1px solid white",
-      },
+      width: "20%",
     },
     cartProductDiv: {
       width: "30%",
       display: "flex",
       flexDirection: "column",
-      flexWrap: "wrap",
+      // flexWrap: "wrap",
     },
     cartVariantDiv: {
       width: "35%",
@@ -711,7 +707,7 @@ export const DarkStyle = (custom, theme) => {
         : "#f27d1e",
     },
     cartImage: {
-      height: "100px",
+      height: "100%",
       width: "100%",
       borderRadius: "15px",
       objectFit: "contain",

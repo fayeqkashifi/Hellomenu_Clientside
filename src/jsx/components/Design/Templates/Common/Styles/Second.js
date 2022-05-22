@@ -85,6 +85,16 @@ export const SecondStyle = (custom, theme) => {
           : "#33cd6b",
       },
     },
+    // localization
+    localeBackground: {
+      fontSize: 12,
+      color: custom?.product_name_color
+        ? custom.product_name_color
+        : theme.TextColor
+        ? theme.TextColor
+        : "#000",
+      zIndex: 99999999,
+    },
     // Header End
 
     // statusbar Style

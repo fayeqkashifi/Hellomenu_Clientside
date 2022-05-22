@@ -34,7 +34,7 @@ const ImageSlider = (props) => {
                         <ReactImageMagnify
                           {...{
                             smallImage: {
-                              alt: "Wristwatch by Ted Baker London",
+                              alt: "image",
                               isFluidWidth: true,
                               // width: 430,
                               // height: 500,
@@ -100,7 +100,7 @@ const ImageSlider = (props) => {
                       <ReactImageMagnify
                         {...{
                           smallImage: {
-                            alt: "Wristwatch by Ted Baker London",
+                            alt: "image",
                             isFluidWidth: true,
                             // width: 430,
                             // height: 500,
@@ -124,8 +124,8 @@ const ImageSlider = (props) => {
               </Swiper>
               <Swiper
                 onClick={setThumbsSwiper}
-                spaceBetween={10}
-                slidesPerView={10}
+                spaceBetween={5}
+                slidesPerView={5}
                 freeMode={true}
                 watchSlidesProgress={true}
                 style={style.ThumbsSwiper}

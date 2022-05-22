@@ -119,8 +119,8 @@ function VideoDetails(props) {
           <div className="d-flex align-items-center justify-content-center">
             {product?.video ? (
               <ReactPlayer
-                width="500px"
-                height="300px"
+                width="40%"
+                height="50vh"
                 url={`http://${base_url}:${port}/videos/products/${
                   JSON.parse(product.video)[0]
                 }`}
@@ -129,8 +129,8 @@ function VideoDetails(props) {
               />
             ) : (
               <ReactPlayer
-                width="500px"
-                height="300px"
+                width="40%"
+                height="50vh"
                 style={style?.reactPlayerStyle}
                 url={JSON.parse(product?.videosUrl)[0]}
               >

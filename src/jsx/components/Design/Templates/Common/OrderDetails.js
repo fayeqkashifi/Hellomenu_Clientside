@@ -252,24 +252,6 @@ const OrderDetails = () => {
                       " " +
                       getSymbolFromCurrency(countryCode)}
                   </Typography>
-                  {/* <Typography style={style?.cartDescription}>
-                    {ingredients?.map((item, i) => {
-                      if (ingredients.length == i + 1) {
-                        return item + " - Not Included";
-                      } else {
-                        return item + " , ";
-                      }
-                    })}
-                  </Typography> */}
-                  {/* <Typography style={style?.cartDescription}>
-                    {extraValue?.map((item, i) => {
-                      if (extraValue.length == i + 1) {
-                        return item.value + " - Included";
-                      } else {
-                        return item.value + " , ";
-                      }
-                    })}
-                  </Typography> */}
                   {style?.show_recommendation == 0 || fetchData.length === 0 ? (
                     ""
                   ) : (
@@ -301,7 +283,7 @@ const OrderDetails = () => {
         <Grid container spacing={2}>
           <Grid item xs={7}>
             <Typography
-              style={style?.price}
+              style={style?.cartDescription}
               className="font-weight-bold text-center col-12 btn"
             >
               {(parseInt(price) + sum).toFixed(2) +
