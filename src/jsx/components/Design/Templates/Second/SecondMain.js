@@ -17,7 +17,9 @@ export default function SecondMain(props) {
     <div style={style?.background}>
       <Header search={true} setChangeState={setChangeState} />
       <div style={style?.sidebarMainDiv}>
-        <Statusbar />
+        <div className="container">
+          <Statusbar />
+        </div>
         <Card style={style?.sidebarCard}>
           <SideBar />
         </Card>

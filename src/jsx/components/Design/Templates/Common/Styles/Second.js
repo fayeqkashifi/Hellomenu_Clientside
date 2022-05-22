@@ -215,7 +215,7 @@ export const SecondStyle = (custom, theme) => {
     sideBarBox: {
       flexGrow: 1,
       display: "flex",
-      // width: "10%",
+      // width: "100%",
       height: "100%",
     },
     sidebarActive: {
@@ -226,16 +226,16 @@ export const SecondStyle = (custom, theme) => {
         : "#33cd6b",
       borderRadius: "10px",
       padding: "15px",
-      maring: "20px",
+      // margin: "20px",
     },
     sidebarDeActive: {
       borderRadius: "10px",
       padding: "15px",
-      maring: "20px",
+      // margin: "px",
     },
     icon: {
-      height: "50px",
-      width: "50px",
+      height: "10vh",
+      width: "100%",
       objectFit: "contain",
       margin: "5px",
     },
@@ -265,7 +265,7 @@ export const SecondStyle = (custom, theme) => {
         : "#fff",
     },
     cardStyle: {
-      width: "300px",
+      width: "50vh",
       margin: "20px",
       display: "flex",
       flexDirection: "column",
@@ -282,7 +282,7 @@ export const SecondStyle = (custom, theme) => {
       display: "none",
     },
     imageStyle: {
-      height: "250px",
+      height: "40vh",
       width: "100%",
       borderRadius: "15px",
       objectFit: "contain",
@@ -466,9 +466,9 @@ export const SecondStyle = (custom, theme) => {
       objectFit: "contain",
     },
     // Image Slider Style
-    imageSilderMainDiv: { minHeight: "80vh", position: "sticky" },
+    imageSilderMainDiv: { position: "sticky" },
     mainSwiper: {
-      minHeight: "70vh",
+      // minHeight: "70vh",
       margin: "10px",
       padding: "10px",
     },
@@ -478,7 +478,7 @@ export const SecondStyle = (custom, theme) => {
       borderRadius: "10px",
       // objectFit: "contain",
     },
-    ThumbsSwiper: { minHeight: "10vh", cursor: "pointer", margin: "10px" },
+    ThumbsSwiper: { minHeight: "100px", cursor: "pointer", margin: "10px" },
     thumbsImage: {
       height: "60px",
       width: "40px",
@@ -697,6 +697,7 @@ export const SecondStyle = (custom, theme) => {
       marginBottom: "1%",
       zIndex: 1,
       borderRadius: "30px",
+      width: "10%",
     },
   };
 };

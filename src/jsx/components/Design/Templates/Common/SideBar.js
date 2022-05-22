@@ -102,7 +102,7 @@ const SideBar = () => {
         onChange={handleChange}
         variant="scrollable"
         scrollButtons
-        aria-label="Vertical tabs example"
+        aria-label="menu"
         TabIndicatorProps={{
           style: {
             display: "none",
