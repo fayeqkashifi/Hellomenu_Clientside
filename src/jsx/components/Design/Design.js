@@ -296,7 +296,9 @@ const Design = (props) => {
                             <Grid item xs={12}>
                               <Link
                                 to={{
-                                  pathname: `/filterSelection`,
+                                  pathname: `/public/${btoa(
+                                    btoa(btoa(branchId))
+                                  )}`,
                                   // state: { id: item.id },
                                 }}
                                 target="_blank"
@@ -327,16 +329,6 @@ const Design = (props) => {
                                   changeTheActiveTemplate(e, item.id)
                                 }
                               />
-                              {/* {item.Status == 1 ? (
-                                <Switch checked disabled color="secondary" />
-                              ) : (
-                                <Switch
-                                  onChange={(e) =>
-                                    changeTheActiveTemplate(e, item.id)
-                                  }
-                                  color="secondary"
-                                />
-                              )} */}
                             </Grid>
                           </Grid>
                         </CardActions>
