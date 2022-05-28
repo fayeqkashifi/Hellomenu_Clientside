@@ -35,18 +35,8 @@ const Login = () => {
   const nextYear = new Date();
 
   nextYear.setFullYear(current.getFullYear() + 2);
-  const [alert, setAlert] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
-  const setAlerts = (open, severity, message) => {
-    setAlert({
-      open: open,
-      severity: severity,
-      message: message,
-    });
-  };
+  const [alert, setAlert] = useState("");
+
   const checkAuth = (data) => {
     // console.log(JSON.stringify(data, null, 2));
     if (data.remember_me) {
@@ -82,7 +72,7 @@ const Login = () => {
               localStorage.setItem("locale", res.data.locale?.locale);
               history.push("/dashboard");
             } else {
-              setAlerts(true, "warning", res.data.message);
+              setAlert(res.data.message);
             }
           })
           .catch((error) => {
@@ -99,16 +89,6 @@ const Login = () => {
     <>
       <Header route="/signup" linkName={t("sign_up")} />
       <div className="row justify-content-center ">
-        {alert.open ? (
-          <CustomAlert
-            open={alert.open}
-            severity={alert.severity}
-            message={alert.message}
-            setAlert={setAlert}
-          />
-        ) : (
-          ""
-        )}
         <div className="col-md-4">
           <div className="authincation-content">
             <div className="row no-gutters">
@@ -122,6 +102,14 @@ const Login = () => {
                   >
                     {({ errors, status, touched }) => (
                       <Form>
+                        {alert.length !== 0 && (
+                          <div
+                            className="alert alert-warning "
+                            style={{ color: "#000000" }}
+                          >
+                            {alert}
+                          </div>
+                        )}
                         <div className="form-group">
                           <label htmlFor="email"> {t("email")} </label>
                           <Field

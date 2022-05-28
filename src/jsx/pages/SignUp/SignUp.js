@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Header from "../Header";
+import PasswordChecklist from "react-password-checklist";
 import { useTranslation } from "react-i18next";
 import "./style.css";
 import { useHistory } from "react-router-dom";
@@ -16,6 +17,7 @@ const SignUp = () => {
   const initialValues = {
     email: "",
     password: "",
+    confirmpassword: "",
   };
   // atob
   const validationSchema = () => {
@@ -25,8 +27,36 @@ const SignUp = () => {
         .email("Email is invalid"),
       password: Yup.string()
         .required("Password is required")
-        .min(6, "Password must be at least 6 characters")
-        .max(40, "Password must not exceed 40 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(40, "Password must not exceed 40 characters")
+        .test(
+          "isValidPass",
+          "At least 1 upper case, numeric, and special character",
+          (value, context) => {
+            const hasUpperCase = /[A-Z]/.test(value);
+            const hasLowerCase = /[a-z]/.test(value);
+            const hasNumber = /[0-9]/.test(value);
+            const hasSymbole = /[!@#%&]/.test(value);
+            let validConditions = 0;
+            const numberOfMustBeValidConditions = 3;
+            const conditions = [
+              hasLowerCase,
+              hasUpperCase,
+              hasNumber,
+              hasSymbole,
+            ];
+            conditions.forEach((condition) =>
+              condition ? validConditions++ : null
+            );
+            if (validConditions >= numberOfMustBeValidConditions) {
+              return true;
+            }
+            return false;
+          }
+        ),
+      confirmpassword: Yup.string()
+        .required("Confirm Password Required")
+        .oneOf([Yup.ref("password"), null], "Passwords must match"),
     });
   };
   const [alert, setAlert] = useState("");
@@ -95,7 +125,14 @@ const SignUp = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                   >
-                    {({ errors, status, touched }) => (
+                    {({
+                      errors,
+                      status,
+                      touched,
+                      values,
+                      isValid,
+                      setFieldValue,
+                    }) => (
                       <Form>
                         <div className="form-group">
                           <Field
@@ -126,10 +163,28 @@ const SignUp = () => {
                                 ? " is-invalid"
                                 : "")
                             }
-                            placeholder="*******"
+                            placeholder="Password"
                           />
                           <ErrorMessage
                             name="password"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <Field
+                            name="confirmpassword"
+                            type="password"
+                            className={
+                              "form-control" +
+                              (errors.confirmpassword && touched.confirmpassword
+                                ? " is-invalid"
+                                : "")
+                            }
+                            placeholder="Re-Type Password"
+                          />
+                          <ErrorMessage
+                            name="confirmpassword"
                             component="div"
                             className="invalid-feedback"
                           />
