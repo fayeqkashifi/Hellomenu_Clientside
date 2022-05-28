@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Header from "../Header";
-import PasswordChecklist from "react-password-checklist";
 import { useTranslation } from "react-i18next";
 import "./style.css";
 import { useHistory } from "react-router-dom";
@@ -29,30 +28,18 @@ const SignUp = () => {
         .required("Password is required")
         .min(8, "Password must be at least 8 characters")
         .max(40, "Password must not exceed 40 characters")
-        .test(
-          "isValidPass",
-          "At least 1 upper case, numeric, and special character",
-          (value, context) => {
-            const hasUpperCase = /[A-Z]/.test(value);
-            const hasLowerCase = /[a-z]/.test(value);
-            const hasNumber = /[0-9]/.test(value);
-            const hasSymbole = /[!@#%&]/.test(value);
-            let validConditions = 0;
-            const numberOfMustBeValidConditions = 3;
-            const conditions = [
-              hasLowerCase,
-              hasUpperCase,
-              hasNumber,
-              hasSymbole,
-            ];
-            conditions.forEach((condition) =>
-              condition ? validConditions++ : null
-            );
-            if (validConditions >= numberOfMustBeValidConditions) {
-              return true;
-            }
-            return false;
-          }
+        .matches(
+          /^(?=.*[a-z])/,
+          "Must contain at least one lowercase character"
+        )
+        .matches(
+          /^(?=.*[A-Z])/,
+          "Must contain at least one uppercase character"
+        )
+        .matches(/^(?=.*[0-9])/, "Must contain at least one number")
+        .matches(
+          /^(?=.*[!@#%&])/,
+          "Must contain at least one special character"
         ),
       confirmpassword: Yup.string()
         .required("Confirm Password Required")
@@ -74,21 +61,12 @@ const SignUp = () => {
                   userId: res.data.id,
                 },
               });
+              localStorage.setItem(
+                "credentials",
+                btoa(btoa(btoa(JSON.stringify(data))))
+              );
             } else {
               setAlert(res.data.message);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        axios
-          .post("/api/login", data)
-          .then((res) => {
-            if (res.data.status === 200) {
-              localStorage.setItem("auth_token", res.data.token);
-              localStorage.setItem("auth_id", btoa(res.data.id));
-              localStorage.setItem("role", btoa(JSON.stringify(res.data.role)));
-              localStorage.setItem("locale", res.data.locale?.locale);
             }
           })
           .catch((error) => {

@@ -6,7 +6,6 @@ import Cookies from "universal-cookie";
 import { base_url, port } from "../../Consts";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import CustomAlert from "../components/CustomAlert";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -27,8 +26,21 @@ const Login = () => {
       email: Yup.string().required("Email Or Phone Number is required"),
       password: Yup.string()
         .required("Password is required")
-        .min(6, "Password must be at least 6 characters")
-        .max(40, "Password must not exceed 40 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(40, "Password must not exceed 40 characters")
+        .matches(
+          /^(?=.*[a-z])/,
+          "Must contain at least one lowercase character"
+        )
+        .matches(
+          /^(?=.*[A-Z])/,
+          "Must contain at least one uppercase character"
+        )
+        .matches(/^(?=.*[0-9])/, "Must contain at least one number")
+        .matches(
+          /^(?=.*[!@#%&])/,
+          "Must contain at least one special character"
+        ),
     });
   };
   const current = new Date();
@@ -100,15 +112,10 @@ const Login = () => {
                     validationSchema={validationSchema}
                     onSubmit={checkAuth}
                   >
-                    {({ errors, status, touched }) => (
+                    {({ errors, touched }) => (
                       <Form>
                         {alert.length !== 0 && (
-                          <div
-                            className="alert alert-warning "
-                            style={{ color: "#000000" }}
-                          >
-                            {alert}
-                          </div>
+                          <div className="alert alert-danger">{alert}</div>
                         )}
                         <div className="form-group">
                           <label htmlFor="email"> {t("email")} </label>

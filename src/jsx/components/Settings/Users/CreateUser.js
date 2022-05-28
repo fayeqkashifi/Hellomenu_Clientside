@@ -77,7 +77,21 @@ const CreateUser = () => {
         .email("Email is invalid"),
       password: Yup.string()
         .required("Password is required")
-        .min(8, "Password length should be at least 8 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(40, "Password must not exceed 40 characters")
+        .matches(
+          /^(?=.*[a-z])/,
+          "Must contain at least one lowercase character"
+        )
+        .matches(
+          /^(?=.*[A-Z])/,
+          "Must contain at least one uppercase character"
+        )
+        .matches(/^(?=.*[0-9])/, "Must contain at least one number")
+        .matches(
+          /^(?=.*[!@#%&])/,
+          "Must contain at least one special character"
+        ),
       confirm_new_password: Yup.string()
         .required("Confirm Password is required")
         .oneOf([Yup.ref("password")], "Passwords must and should match"),

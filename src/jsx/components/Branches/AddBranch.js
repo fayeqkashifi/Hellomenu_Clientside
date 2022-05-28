@@ -12,7 +12,7 @@ import "yup-phone";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { localization as t } from "../Localization";
-import PhoneInput from "react-phone-input-2";
+// import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import ipapi from "ipapi.co";
 import SubmitButtons from "../Common/SubmitButtons";
@@ -20,6 +20,13 @@ import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import Languages from "./Languages";
 import { PublicLocale } from "./Public Localization/Default";
+import "react-phone-number-input/style.css";
+import PhoneInput, {
+  formatPhoneNumber,
+  formatPhoneNumberIntl,
+  isValidPhoneNumber,
+  isPossiblePhoneNumber,
+} from "react-phone-number-input";
 
 const AddBranch = () => {
   const initialValues = {
@@ -34,7 +41,7 @@ const AddBranch = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      phoneNumber: Yup.number().required("Phone Number is required"),
+      // phoneNumber: Yup.number().required("Phone Number is required"),
     });
   };
   // insert start
@@ -231,7 +238,7 @@ const AddBranch = () => {
 
     setForm((prev) => prev.filter((item) => item !== prev[index]));
   };
-
+  const [value, setValue] = useState();
   var viewBranches_HTMLTABLE = "";
   if (loading) {
     return (
@@ -345,22 +352,20 @@ const AddBranch = () => {
                     <div className="form-group">
                       <label> {t("ordering_phone_number")}</label>
                       <PhoneInput
-                        country={ipApi?.country_code?.toLowerCase()}
-                        className={
-                          errors.phoneNumber && touched.phoneNumber
-                            ? " is-invalid"
-                            : ""
-                        }
+                        placeholder="Enter phone number"
+                        defaultCountry={ipApi?.country_code}
                         name="phoneNumber"
                         onChange={(getOptionValue) => {
                           setFieldValue("phoneNumber", getOptionValue);
                         }}
                       />
-                      <ErrorMessage
-                        name="phoneNumber"
-                        component="div"
-                        className="invalid-feedback"
-                      />
+                      <div className="text-danger">
+                        {values.phoneNumber
+                          ? isValidPhoneNumber(values.phoneNumber)
+                            ? undefined
+                            : "Invalid phone number"
+                          : "Phone number required"}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -493,7 +498,6 @@ const AddBranch = () => {
                   </div>
                 </div>
               </div>
-
               <div className="card-footer text-right">
                 <SubmitButtons
                   isSubmitting={isSubmitting}
