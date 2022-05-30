@@ -22,36 +22,21 @@ import PhoneInput, {
   // isPossiblePhoneNumber,
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-
+import UploadImage from "../Common/UploadImage";
 const AddBranch = () => {
   const initialValues = {
     BrancheName: "",
     currencyID: "",
     phoneNumber: "",
     branchVideos: [],
-    branchImages: null,
+    // branchImages: null,
     locale: JSON.stringify(PublicLocale),
   };
   const [value, setValue] = useState();
-  const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
-  const FILE_SIZE = 160 * 1024;
   const validationSchema = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      branchImages: Yup.mixed()
-        .nullable()
-        .required("A file is required")
-        .test(
-          "FILE_SIZE",
-          "File Size is too large",
-          (value) => !value || (value && value.size <= 1024 * 1024)
-        )
-        .test(
-          "FILE_FORMAT",
-          "Unsupported File Format",
-          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
-        ),
     });
   };
   // insert start
@@ -78,6 +63,7 @@ const AddBranch = () => {
       translated_branch_name: "",
     },
   ]);
+  const [images, setImages] = React.useState([]);
 
   const saveBranch = (data) => {
     if (isValidPhoneNumber(value)) {
@@ -92,8 +78,8 @@ const AddBranch = () => {
           formData.append("orderMethods", JSON.stringify(orderMethods));
           formData.append("BrancheName", data.BrancheName);
           formData.append("currencyID", data.currencyID);
-          for (let i = 0; i < data.branchImages.length; i++) {
-            formData.append("branchImages[]", data.branchImages[i]);
+          for (let i = 0; i < images.length; i++) {
+            formData.append("branchImages[]", images[i].file);
           }
           for (let i = 0; i < data.branchVideos.length; i++) {
             formData.append("branchVideos[]", data.branchVideos[i]);
@@ -480,9 +466,13 @@ const AddBranch = () => {
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("images")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 5MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <input
+                        <UploadImage images={images} setImages={setImages} />
+                        {/* <input
                           type="file"
                           // accept="image/*"
                           className={
@@ -503,7 +493,7 @@ const AddBranch = () => {
                           name="branchImages"
                           component="div"
                           className="invalid-feedback"
-                        />
+                        /> */}
                       </div>
                     </div>
                     <div className="row form-group">

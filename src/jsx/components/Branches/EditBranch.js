@@ -27,6 +27,8 @@ import PhoneInput, {
   // isPossiblePhoneNumber,
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import UploadImage from "../Common/UploadImage";
+
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
 
@@ -67,6 +69,7 @@ const EditBranch = (props) => {
       translated_branch_name: "",
     },
   ]);
+  const [images, setImages] = React.useState([]);
   const updateBranch = (data) => {
     if (isValidPhoneNumber(value)) {
       if (selectedLang.length !== 0) {
@@ -578,8 +581,18 @@ const EditBranch = (props) => {
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("images")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 5MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        <UploadImage
+                          images={images}
+                          setImages={setImages}
+                          values={JSON.parse(editBranchstate?.branchImages)}
+                          urlPath={`http://${base_url}:${port}/images/branches/`}
+                        />
+
                         <input
                           type="file"
                           accept="image/*"
