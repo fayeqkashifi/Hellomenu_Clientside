@@ -3,19 +3,22 @@ import React, { useState, useEffect } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+import PhoneInput, {
+  isValidPhoneNumber,
+  // isPossiblePhoneNumber,
+} from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import * as Yup from "yup";
 import CustomAlert from "../../CustomAlert";
 import { base_url, port } from "../../../../Consts";
 import DefaultPic from "../../../../images/hellomenu/logo.svg";
 import { localization as t } from "../../Localization";
-// import ipapi from "ipapi.co";
-
 const EditUser = (props) => {
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   const [user, setUser] = useState([]);
+  const [value, setValue] = useState();
+
   const dataLoad = async () => {
     try {
       const result = await axios.get(
@@ -23,13 +26,13 @@ const EditUser = (props) => {
       );
       if (result.data.status === 200) {
         setUser(result.data.data);
+        setValue(result.data.data.phone_number);
         setLoading(false);
       }
     } catch (error) {
       console.error(error);
     }
   };
-  // const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
     return () => {
@@ -38,10 +41,6 @@ const EditUser = (props) => {
     };
   }, []);
   useEffect(() => {
-    // var callback = function (loc) {
-    //   setIpApi(loc);
-    // };
-    // ipapi.location(callback);
     dataLoad();
   }, [check]);
   const initialValues = {
@@ -73,22 +72,25 @@ const EditUser = (props) => {
     setImageState({ ...imageState, profilePic: e.target.files[0] });
   };
   const handleSubmit = (data) => {
-    const formData = new FormData();
-    formData.append("profilePic", imageState.profilePic);
-    formData.append("id", data.id);
-    formData.append("email", data.email);
-    formData.append("name", data.name);
-    axios
-      .post(`/api/updateRegister/${data.id}`, formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setAlerts(true, "success", res.data.message);
-          setCheck(!check);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (isValidPhoneNumber(value)) {
+      const formData = new FormData();
+      formData.append("profilePic", imageState.profilePic);
+      formData.append("id", data.id);
+      formData.append("email", data.email);
+      formData.append("name", data.name);
+      formData.append("phone_number", value);
+      axios
+        .post(`/api/updateRegister/${data.id}`, formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setAlerts(true, "success", res.data.message);
+            setCheck(!check);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
   const values = {
     id: user?.id,
@@ -211,7 +213,7 @@ const EditUser = (props) => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ errors, status, setFieldValue, touched }) => (
+            {({ errors, status, setFieldValue, touched, values }) => (
               <Form>
                 <div className="form-group">
                   <label> {t("name")}</label>
@@ -242,13 +244,28 @@ const EditUser = (props) => {
                 <div className="form-group">
                   <label> {t("phone_number")}</label>
                   <PhoneInput
-                    // country={ipApi?.country_code?.toLowerCase()}
-                    value={user?.phone_number}
-                    //   name="whatsapp"
-                    onChange={(getOptionValue) => {
-                      setFieldValue("phone_number", getOptionValue);
+                    placeholder="Enter phone number"
+                    value={value}
+                    // onChange={(getOptionValue) => {
+                    //   setFieldValue("phone_number", getOptionValue);
+                    // }}
+                    onChange={setValue}
+                    style={{
+                      padding: "7px",
+                      border: "1px solid #ccc",
+                      borderRadius: "10px",
                     }}
                   />
+                  <div className="text-danger">
+                    <small>
+                      {" "}
+                      {value
+                        ? isValidPhoneNumber(value)
+                          ? undefined
+                          : "Invalid phone number"
+                        : "Phone number required"}
+                    </small>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label> {t("profile_pic")}</label>

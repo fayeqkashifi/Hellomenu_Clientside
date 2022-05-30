@@ -4,8 +4,11 @@ import { Formik, Field, Form } from "formik";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 import CustomAlert from "../CustomAlert";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+import PhoneInput, {
+  isValidPhoneNumber,
+  // isPossiblePhoneNumber,
+} from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import Select from "react-select";
 import { checkPermission } from "../Permissions";
 import { base_url, port } from "../../../Consts";
@@ -265,11 +268,17 @@ const General = () => {
                   <div className="form-group">
                     <label> {t("whatsapp")}</label>
                     <PhoneInput
-                      country={ipApi?.country_code?.toLowerCase()}
+                      placeholder="Enter phone number"
+                      defaultCountry={ipApi?.country_code}
                       value={fetchData?.whatsapp}
                       //   name="whatsapp"
                       onChange={(getOptionValue) => {
                         setFieldValue("whatsapp", getOptionValue);
+                      }}
+                      style={{
+                        padding: "7px",
+                        border: "1px solid #ccc",
+                        borderRadius: "10px",
                       }}
                     />
                   </div>

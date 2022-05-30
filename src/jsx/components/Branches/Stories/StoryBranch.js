@@ -8,7 +8,6 @@ import { Formik, Form } from "formik";
 import CustomAlert from "../../CustomAlert";
 import "yup-phone";
 import { localization as t } from "../../Localization";
-import "react-phone-input-2/lib/style.css";
 import { checkPermission } from "../../Permissions";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";

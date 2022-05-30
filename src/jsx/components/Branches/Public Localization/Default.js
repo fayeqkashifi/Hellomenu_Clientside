@@ -6,6 +6,7 @@ export const PublicLocale = {
   no_data_found: "No Data Found",
   more_than_that_isnot_available_because_itis_out_of_stock:
     "More than that isn't available because it's out of stock.",
+  please_select_product_variantion: "Please select product variantion",
   see_more: "See More",
   add_to_cart: "Add to Cart",
   preparation_time: "Preparation Time",

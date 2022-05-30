@@ -25,8 +25,13 @@ import {
   emptyCart,
   getBranch,
   getProduct,
+  getVariations,
 } from "../Functionality";
-import PhoneInput from "react-phone-input-2";
+import PhoneInput, {
+  isValidPhoneNumber,
+  // isPossiblePhoneNumber,
+} from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import ipapi from "ipapi.co";
 import Counter from "../Common/Counter";
 import { TemplateContext } from "../TemplateContext";
@@ -66,9 +71,11 @@ const Cart = (props) => {
             }
           });
           let extraArray = [];
+          let extraTotal = 0;
           result.data.extras.map((extra) => {
             if (item.extras.includes(extra.value)) {
               extraArray.push(extra);
+              extraTotal += extra.price;
             }
           });
           let recommendArray = [];
@@ -82,17 +89,42 @@ const Cart = (props) => {
               }
             });
           });
-          newArray.push({
-            ...result.data.fetchData[0],
-            ...item,
-            // qty: item.qty,
-            ingredients: ingredientArray,
-            extras: extraArray,
-            recommendations: recommendArray,
-          });
+          if (item.checkSKU) {
+            getVariations(item.id, source).then((res) => {
+              if (res !== undefined) {
+                if (res !== "") {
+                  let varData = JSON.parse(res.variants).filter(
+                    (variant) => variant.sku === item.checkSKU
+                  );
+                  newArray.push({
+                    ...result.data.fetchData[0],
+                    ...item,
+                    price: parseInt(varData[0].price),
+                    stock: parseInt(varData[0].stock),
+                    ingredients: ingredientArray,
+                    totalPrice: parseInt(varData[0].price) + extraTotal,
+                    extras: extraArray,
+                    recommendations: recommendArray,
+                  });
+                  console.log(varData);
+                }
+              }
+            });
+          } else {
+            newArray.push({
+              ...result.data.fetchData[0],
+              ...item,
+              totalPrice: 0,
+
+              ingredients: ingredientArray,
+              extras: extraArray,
+              recommendations: recommendArray,
+            });
+          }
         }
       });
     });
+
     await setFetchData(newArray);
 
     await getBranch(branchId).then((data) => {
@@ -104,7 +136,6 @@ const Cart = (props) => {
     setLoading(false);
   };
   const [ipApi, setIpApi] = useState([]);
-
   useEffect(() => {
     var callback = function (loc) {
       setIpApi(loc);
@@ -123,7 +154,7 @@ const Cart = (props) => {
   }, []);
   useEffect(() => {
     let Total = 0;
-    cart.map(
+    fetchData.map(
       (item) =>
         (Total +=
           item.totalPrice === undefined
@@ -287,6 +318,7 @@ const Cart = (props) => {
         );
       }
     }
+
     viewImages_HTMLTABLE = fetchData?.map((item, i) => {
       message =
         message +
@@ -404,9 +436,11 @@ const Cart = (props) => {
                 >
                   {parseInt(item.price).toFixed(2) + "  " + currency}
                 </Typography>
-                <Typography style={style?.cartDescription} gutterBottom>
-                  <b>{locale?.unit_name}:</b> {item.UnitName}
-                </Typography>
+                {item.UnitName && (
+                  <Typography style={style?.cartDescription} gutterBottom>
+                    <b>{locale?.unit_name}:</b> {item.UnitName}
+                  </Typography>
+                )}
               </div>
               <div
                 className={
@@ -793,7 +827,8 @@ const Cart = (props) => {
                       <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
                         <div className="form-group">
                           <PhoneInput
-                            country={ipApi?.country_code?.toLowerCase()}
+                            placeholder="Enter phone number"
+                            defaultCountry={ipApi?.country_code}
                             className={
                               errors.phoneNumber && touched.phoneNumber
                                 ? " is-invalid"

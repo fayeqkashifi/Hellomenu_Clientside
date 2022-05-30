@@ -51,6 +51,7 @@ const Login = () => {
 
   const checkAuth = (data) => {
     // console.log(JSON.stringify(data, null, 2));
+    setAlert("");
     if (data.remember_me) {
       cookies.set("myUserName", btoa(data.email), {
         path: `http://${base_url}:${port}/login`,

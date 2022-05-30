@@ -196,17 +196,17 @@ const ProductDetails = () => {
       array.push({
         id: fetchData.id,
         qty: fetchData.qty,
-        price: parseInt(
-          productDetails.price == 0 ? fetchData?.price : productDetails.price
-        ),
-        stock: parseInt(
-          productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
-        ),
+        // price: parseInt(
+        //   productDetails.price == 0 ? fetchData?.price : productDetails.price
+        // ),
+        // stock: parseInt(
+        //   productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
+        // ),
         currency_code: fetchData.currency_code,
         ingredients: ingredients,
         extras: extraValue,
         recommendations: [],
-        totalPrice: parseInt(fetchData.price) + sum,
+        // totalPrice: parseInt(fetchData.price) + sum,
         variantSKU: skuarray,
         checkSKU: activeSKU,
       });
@@ -221,17 +221,17 @@ const ProductDetails = () => {
       array.push({
         id: data[0].id,
         qty: data[0].qty,
-        price: parseInt(
-          productDetails.price == 0 ? fetchData?.price : productDetails.price
-        ),
-        stock: parseInt(
-          productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
-        ),
+        // price: parseInt(
+        //   productDetails.price == 0 ? fetchData?.price : productDetails.price
+        // ),
+        // stock: parseInt(
+        //   productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
+        // ),
         currency_code: data[0].currency_code,
         ingredients: ingredients,
         extras: extraValue,
         recommendations: [],
-        totalPrice: parseInt(parseInt(fetchData.price) + sum),
+        // totalPrice: parseInt(parseInt(fetchData.price) + sum),
         variantSKU: skuarray,
         checkSKU: activeSKU,
       });

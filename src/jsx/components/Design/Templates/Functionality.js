@@ -215,20 +215,28 @@ export const addItemWithdoutDetails = async (id, cart, products) => {
     });
     if (check) {
       const array = [];
-      const data = products.filter((product) => {
-        return product.id === id;
+      const result = await axios({
+        method: "GET",
+        url: `/api/getVariations/${id}`,
       });
-      array.push({
-        id: data[0].id,
-        qty: data[0].qty,
-        stock: data[0].stock,
-        price: data[0].price,
-        currency_code: data[0].currency_code,
-        ingredients: [],
-        extras: [],
-        recommendations: [],
-      });
-      localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
+      if (result?.data?.fetchData !== "") {
+        return "";
+      } else {
+        const data = products.filter((product) => {
+          return product.id === id;
+        });
+        array.push({
+          id: data[0].id,
+          qty: data[0].qty,
+          // stock: data[0].stock,
+          // price: data[0].price,
+          currency_code: data[0].currency_code,
+          ingredients: [],
+          extras: [],
+          recommendations: [],
+        });
+        localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
+      }
       return cart.concat(array);
     }
   } catch (err) {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 import axios from "axios";
-import "react-phone-input-2/lib/style.css";
 import { CSmartTable } from "@coreui/react-pro";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";

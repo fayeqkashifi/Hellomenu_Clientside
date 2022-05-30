@@ -8,25 +8,20 @@ import CustomAlert from "../CustomAlert";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import "yup-phone";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { localization as t } from "../Localization";
-// import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import ipapi from "ipapi.co";
 import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import Languages from "./Languages";
 import { PublicLocale } from "./Public Localization/Default";
-import "react-phone-number-input/style.css";
 import PhoneInput, {
-  formatPhoneNumber,
-  formatPhoneNumberIntl,
   isValidPhoneNumber,
-  isPossiblePhoneNumber,
+  // isPossiblePhoneNumber,
 } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 const AddBranch = () => {
   const initialValues = {
@@ -34,14 +29,29 @@ const AddBranch = () => {
     currencyID: "",
     phoneNumber: "",
     branchVideos: [],
-    branchImages: [],
+    branchImages: null,
     locale: JSON.stringify(PublicLocale),
   };
+  const [value, setValue] = useState();
+  const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
+  const FILE_SIZE = 160 * 1024;
   const validationSchema = () => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      // phoneNumber: Yup.number().required("Phone Number is required"),
+      branchImages: Yup.mixed()
+        .nullable()
+        .required("A file is required")
+        .test(
+          "FILE_SIZE",
+          "File Size is too large",
+          (value) => !value || (value && value.size <= 1024 * 1024)
+        )
+        .test(
+          "FILE_FORMAT",
+          "Unsupported File Format",
+          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+        ),
     });
   };
   // insert start
@@ -70,68 +80,71 @@ const AddBranch = () => {
   ]);
 
   const saveBranch = (data) => {
-    if (selectedLang.length !== 0) {
-      setIsSubmitting(true);
-      const ArrayValue = [];
-      for (const [key, value] of Object.entries(orderMethods)) {
-        ArrayValue.push(value);
-      }
-      if (ArrayValue.includes(1)) {
-        const formData = new FormData();
-        formData.append("orderMethods", JSON.stringify(orderMethods));
-        formData.append("BrancheName", data.BrancheName);
-        formData.append("currencyID", data.currencyID);
-        for (let i = 0; i < data.branchImages.length; i++) {
-          formData.append("branchImages[]", data.branchImages[i]);
+    if (isValidPhoneNumber(value)) {
+      if (selectedLang.length !== 0) {
+        setIsSubmitting(true);
+        const ArrayValue = [];
+        for (const [key, value] of Object.entries(orderMethods)) {
+          ArrayValue.push(value);
         }
-        for (let i = 0; i < data.branchVideos.length; i++) {
-          formData.append("branchVideos[]", data.branchVideos[i]);
+        if (ArrayValue.includes(1)) {
+          const formData = new FormData();
+          formData.append("orderMethods", JSON.stringify(orderMethods));
+          formData.append("BrancheName", data.BrancheName);
+          formData.append("currencyID", data.currencyID);
+          for (let i = 0; i < data.branchImages.length; i++) {
+            formData.append("branchImages[]", data.branchImages[i]);
+          }
+          for (let i = 0; i < data.branchVideos.length; i++) {
+            formData.append("branchVideos[]", data.branchVideos[i]);
+          }
+          formData.append("phoneNumber", value);
+          formData.append("otherAddressFields", JSON.stringify(form));
+          formData.append("fullAddress", fullAddress);
+          formData.append("languages", JSON.stringify(selectedLang));
+          formData.append("locale", data.locale);
+          axios
+            .post("/api/insertBranches", formData)
+            .then((res) => {
+              if (res.data.status === 200) {
+                Swal.fire({
+                  title: "Good job!",
+                  html: res.data.message,
+                  icon: "success",
+                  confirmButtonText: "OK",
+                  confirmButtonColor: "#93de8b",
+                }).then((check) => {
+                  if (check) {
+                    history.push(`/branches`);
+                    setIsSubmitting(false);
+                  }
+                });
+              } else if (res.data.status === 304) {
+                setAlerts(true, "warning", res.data.message);
+                setIsSubmitting(false);
+              } else {
+                setAlerts(true, "error", res.data.error);
+                throw Error("Due to an error, the data cannot be retrieved.");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          setAlerts(
+            true,
+            "warning",
+            "Please choose at least one way of ordering."
+          );
+          setIsSubmitting(false);
         }
-        formData.append("phoneNumber", data.phoneNumber);
-        formData.append("otherAddressFields", JSON.stringify(form));
-        formData.append("fullAddress", fullAddress);
-        formData.append("languages", JSON.stringify(selectedLang));
-        formData.append("locale", data.locale);
-        axios
-          .post("/api/insertBranches", formData)
-          .then((res) => {
-            if (res.data.status === 200) {
-              Swal.fire({
-                title: "Good job!",
-                html: res.data.message,
-                icon: "success",
-                confirmButtonText: "OK",
-                confirmButtonColor: "#93de8b",
-              }).then((check) => {
-                if (check) {
-                  history.push(`/branches`);
-                  setIsSubmitting(false);
-                }
-              });
-            } else if (res.data.status === 304) {
-              setAlerts(true, "warning", res.data.message);
-            } else {
-              setAlerts(true, "error", res.data.error);
-              throw Error("Due to an error, the data cannot be retrieved.");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
       } else {
         setAlerts(
           true,
           "warning",
-          "Please choose at least one way of ordering."
+          "Please select at least one default Language."
         );
-        setIsSubmitting(false);
       }
-    } else {
-      setAlerts(
-        true,
-        "warning",
-        "Please select at least one default Language."
-      );
     }
   };
   const [currency, setCurrency] = useState([]);
@@ -238,7 +251,6 @@ const AddBranch = () => {
 
     setForm((prev) => prev.filter((item) => item !== prev[index]));
   };
-  const [value, setValue] = useState();
   var viewBranches_HTMLTABLE = "";
   if (loading) {
     return (
@@ -355,16 +367,27 @@ const AddBranch = () => {
                         placeholder="Enter phone number"
                         defaultCountry={ipApi?.country_code}
                         name="phoneNumber"
-                        onChange={(getOptionValue) => {
-                          setFieldValue("phoneNumber", getOptionValue);
+                        value={value}
+                        onChange={setValue}
+                        style={{
+                          padding: "7px",
+                          border: value
+                            ? isValidPhoneNumber(value)
+                              ? "1px solid #ccc"
+                              : "1px solid #FF5252"
+                            : "1px solid #FF5252",
+                          borderRadius: "10px",
                         }}
                       />
                       <div className="text-danger">
-                        {values.phoneNumber
-                          ? isValidPhoneNumber(values.phoneNumber)
-                            ? undefined
-                            : "Invalid phone number"
-                          : "Phone number required"}
+                        <small>
+                          {" "}
+                          {value
+                            ? isValidPhoneNumber(value)
+                              ? undefined
+                              : "Invalid phone number"
+                            : "Phone number required"}
+                        </small>
                       </div>
                     </div>
                   </div>
@@ -461,15 +484,25 @@ const AddBranch = () => {
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <input
                           type="file"
-                          accept="image/*"
-                          className="form-control"
-                          name="branchImages"
+                          // accept="image/*"
+                          className={
+                            "form-control" +
+                            (errors.branchImages && touched.branchImages
+                              ? " is-invalid"
+                              : "")
+                          }
+                          // name="branchImages"
                           onChange={(event) => {
                             setFieldValue("branchImages", event.target.files);
                           }}
                           multiple
-                          data-overwrite-initial="false"
-                          data-min-file-count="1"
+                          // data-overwrite-initial="false"
+                          // data-min-file-count="1"
+                        />
+                        <ErrorMessage
+                          name="branchImages"
+                          component="div"
+                          className="invalid-feedback"
                         />
                       </div>
                     </div>

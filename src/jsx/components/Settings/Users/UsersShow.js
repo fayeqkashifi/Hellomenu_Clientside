@@ -1,6 +1,5 @@
 import React from "react";
 
-import "react-phone-input-2/lib/style.css";
 import EditNewUser from "./EditNewUser";
 import { Switch, useRouteMatch } from "react-router-dom";
 import PrivateRoute from "../../PrivateRoute";

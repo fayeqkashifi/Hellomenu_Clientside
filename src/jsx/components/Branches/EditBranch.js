@@ -16,16 +16,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { base_url, port } from "../../../Consts";
 import { localization as t } from "../Localization";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import Tooltip from "@mui/material/Tooltip";
 import ReactPlayer from "react-player/lazy";
-// import ipapi from "ipapi.co";
 import SubmitButtons from "../Common/SubmitButtons";
 import Swal from "sweetalert2";
 import Languages from "./Languages";
 import { PublicLocale } from "./Public Localization/Default";
-
+import PhoneInput, {
+  isValidPhoneNumber,
+  // isPossiblePhoneNumber,
+} from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 const EditBranch = (props) => {
   const id = props.history.location.state.id;
 
@@ -33,9 +34,11 @@ const EditBranch = (props) => {
     return Yup.object().shape({
       BrancheName: Yup.string().required("Branch Name is required"),
       currencyID: Yup.string().required("Currency is required"),
-      phoneNumber: Yup.string().required("Phone Number is required"),
+      // phoneNumber: Yup.string().required("Phone Number is required"),
     });
   };
+  const [value, setValue] = useState();
+
   // insert start
   const history = useHistory();
   const [alert, setAlert] = useState({
@@ -65,66 +68,69 @@ const EditBranch = (props) => {
     },
   ]);
   const updateBranch = (data) => {
-    if (selectedLang.length !== 0) {
-      setIsSubmitting(true);
-      const ArrayValue = [];
-      for (const [key, value] of Object.entries(orderMethodsEdit)) {
-        ArrayValue.push(value);
-      }
-      if (ArrayValue.includes(1)) {
-        const formData = new FormData();
-        formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
-        formData.append("BrancheName", data.BrancheName);
-        formData.append("currencyID", data.currencyID);
-        formData.append("branchImages", editBranchstate.branchImages);
-        formData.append("branchVideos", editBranchstate.branchVideos);
-        formData.append("phoneNumber", data.phoneNumber);
-        formData.append("otherAddressFields", JSON.stringify(form));
-        formData.append("fullAddress", fullAddress);
-        formData.append("languages", JSON.stringify(selectedLang));
-        formData.append("id", data.id);
-        formData.append("locale", JSON.stringify(PublicLocale));
-        axios
-          .post("/api/updateBranches", formData)
-          .then((res) => {
-            if (res.data.status === 200) {
-              Swal.fire({
-                title: "Good job!",
-                html: res.data.message,
-                icon: "success",
-                confirmButtonText: "OK",
-                confirmButtonColor: "#93de8b",
-              }).then((check) => {
-                if (check) {
-                  history.push(`/branches`);
-                  setIsSubmitting(false);
-                }
-              });
-              setIsSubmitting(false);
-            } else if (res.data.status === 304) {
-              setAlerts(true, "warning", res.data.message);
-            } else {
-              setAlerts(true, "error", res.data.message);
-              throw Error("Due to an error, the data cannot be retrieved.");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+    if (isValidPhoneNumber(value)) {
+      if (selectedLang.length !== 0) {
+        setIsSubmitting(true);
+        const ArrayValue = [];
+        for (const [key, value] of Object.entries(orderMethodsEdit)) {
+          ArrayValue.push(value);
+        }
+        if (ArrayValue.includes(1)) {
+          const formData = new FormData();
+          formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
+          formData.append("BrancheName", data.BrancheName);
+          formData.append("currencyID", data.currencyID);
+          formData.append("branchImages", editBranchstate.branchImages);
+          formData.append("branchVideos", editBranchstate.branchVideos);
+          formData.append("phoneNumber", value);
+          formData.append("otherAddressFields", JSON.stringify(form));
+          formData.append("fullAddress", fullAddress);
+          formData.append("languages", JSON.stringify(selectedLang));
+          formData.append("id", data.id);
+          formData.append("locale", JSON.stringify(PublicLocale));
+          axios
+            .post("/api/updateBranches", formData)
+            .then((res) => {
+              if (res.data.status === 200) {
+                Swal.fire({
+                  title: "Good job!",
+                  html: res.data.message,
+                  icon: "success",
+                  confirmButtonText: "OK",
+                  confirmButtonColor: "#93de8b",
+                }).then((check) => {
+                  if (check) {
+                    history.push(`/branches`);
+                    setIsSubmitting(false);
+                  }
+                });
+                setIsSubmitting(false);
+              } else if (res.data.status === 304) {
+                setAlerts(true, "warning", res.data.message);
+                setIsSubmitting(false);
+              } else {
+                setAlerts(true, "error", res.data.message);
+                throw Error("Due to an error, the data cannot be retrieved.");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          setAlerts(
+            true,
+            "warning",
+            "Please choose at least one way of ordering."
+          );
+          setIsSubmitting(false);
+        }
       } else {
         setAlerts(
           true,
           "warning",
-          "Please choose at least one way of ordering."
+          "Please select at least one default Language."
         );
-        setIsSubmitting(false);
       }
-    } else {
-      setAlerts(
-        true,
-        "warning",
-        "Please select at least one default Language."
-      );
     }
   };
   const [fullAddress, setFullAddress] = useState(1);
@@ -166,6 +172,7 @@ const EditBranch = (props) => {
           })
         );
         setEditBranchstate(response.data.branch);
+        setValue(response.data.branch.phoneNumber);
         setOrderMethodsEdit(JSON.parse(response.data.branch.orderMethods));
 
         setLoading(false);
@@ -176,13 +183,8 @@ const EditBranch = (props) => {
       console.error(error);
     }
   };
-  // const [ipApi, setIpApi] = useState([]);
 
   useEffect(() => {
-    // var callback = function (loc) {
-    //   setIpApi(loc);
-    // };
-    // ipapi.location(callback);
     dataLoad();
     return () => {
       setCurrency([]);
@@ -460,23 +462,31 @@ const EditBranch = (props) => {
                     <div className="form-group">
                       <label> {t("ordering_phone_number")}</label>
                       <PhoneInput
-                        // country={ipApi?.country_code?.toLowerCase()}
-                        className={
-                          errors.phoneNumber && touched.phoneNumber
-                            ? " is-invalid"
-                            : ""
-                        }
-                        value={editBranchstate.phoneNumber}
+                        placeholder="Enter phone number"
+                        // defaultCountry={ipApi?.country_code}
                         name="phoneNumber"
-                        onChange={(getOptionValue) => {
-                          setFieldValue("phoneNumber", getOptionValue);
+                        value={value}
+                        onChange={setValue}
+                        style={{
+                          padding: "7px",
+                          border: value
+                            ? isValidPhoneNumber(value)
+                              ? "1px solid #ccc"
+                              : "1px solid #FF5252"
+                            : "1px solid #FF5252",
+                          borderRadius: "10px",
                         }}
                       />
-                      <ErrorMessage
-                        name="phoneNumber"
-                        component="div"
-                        className="invalid-feedback"
-                      />
+                      <div className="text-danger">
+                        <small>
+                          {" "}
+                          {value
+                            ? isValidPhoneNumber(value)
+                              ? undefined
+                              : "Invalid phone number"
+                            : "Phone number required"}
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>

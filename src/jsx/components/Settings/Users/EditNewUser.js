@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import axios from "axios";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+import PhoneInput, {
+  isValidPhoneNumber,
+  // isPossiblePhoneNumber,
+} from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import * as Yup from "yup";
 import CustomAlert from "../../CustomAlert";
 import Select from "react-select";
@@ -18,6 +21,7 @@ const EditNewUser = (props) => {
 
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
+  const [value, setValue] = useState();
 
   const dataLoad = async () => {
     try {
@@ -88,27 +92,27 @@ const EditNewUser = (props) => {
     setImageState({ ...imageState, profilePic: e.target.files[0] });
   };
   const handleSubmit = (data) => {
-    const formData = new FormData();
-    // console.log(data);
-    data.id && formData.append("id", data?.id);
-    formData.append("profilePic", imageState.profilePic);
-    formData.append("confirm_new_password", data.confirm_new_password);
-    formData.append("email", data.email);
-    formData.append("name", data.name);
-    formData.append("password", data.password);
-    formData.append("phone_number", data.phone_number);
-    formData.append("role_id", data.role_id);
-
-    axios
-      .post(`/api/register`, formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setAlerts(true, "success", res.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (isValidPhoneNumber(value)) {
+      const formData = new FormData();
+      data.id && formData.append("id", data?.id);
+      formData.append("profilePic", imageState.profilePic);
+      formData.append("confirm_new_password", data.confirm_new_password);
+      formData.append("email", data.email);
+      formData.append("name", data.name);
+      formData.append("password", data.password);
+      formData.append("phone_number", value);
+      formData.append("role_id", data.role_id);
+      axios
+        .post(`/api/register`, formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setAlerts(true, "success", res.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
   const fetchUser = (id) => {
     var array = [];
@@ -122,6 +126,8 @@ const EditNewUser = (props) => {
             ...res.data.data,
           });
           setInitialValues(array[0]);
+          setValue(array[0].phone_number);
+
           setLoading(false);
         }
       })
@@ -282,12 +288,29 @@ const EditNewUser = (props) => {
                     <div className="form-group">
                       <label> {t("phone_number")}</label>
                       <PhoneInput
-                        // country={ipApi?.country_code?.toLowerCase()}
-                        value={initialValues?.phone_number}
-                        onChange={(getOptionValue) => {
-                          setFieldValue("phone_number", getOptionValue);
+                        placeholder="Enter phone number"
+                        value={value}
+                        onChange={setValue}
+                        style={{
+                          padding: "7px",
+                          border: value
+                            ? isValidPhoneNumber(value)
+                              ? "1px solid #ccc"
+                              : "1px solid #FF5252"
+                            : "1px solid #FF5252",
+                          borderRadius: "10px",
                         }}
                       />
+                      <div className="text-danger">
+                        <small>
+                          {" "}
+                          {value
+                            ? isValidPhoneNumber(value)
+                              ? undefined
+                              : "Invalid phone number"
+                            : "Phone number required"}
+                        </small>
+                      </div>
                     </div>
                   </div>
                   <div className="col-6">

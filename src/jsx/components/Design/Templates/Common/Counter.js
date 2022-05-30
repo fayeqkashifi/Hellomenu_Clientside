@@ -54,7 +54,11 @@ const Counter = (props) => {
 
   const addItem = (id) => {
     addItemWithdoutDetails(id, cart, products).then((data) => {
-      setCart(data);
+      if (data === "") {
+        setAlerts(true, "warning", locale?.please_select_product_variantion);
+      } else {
+        setCart(data);
+      }
     });
   };
   const remItem = (id) => {
@@ -142,7 +146,7 @@ const Counter = (props) => {
                 cartItem.length !== 0 ? cartItem[0].qty : item.qty,
                 item.id,
                 // item.price,
-                cartItem[0].stock
+                item.stock
               )
             }
           >
