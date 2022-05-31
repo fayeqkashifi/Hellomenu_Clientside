@@ -33,6 +33,15 @@ function Footer(props) {
     <>
       <Box component="footer" sx={style?.footerStyle} className="bottom-0 mt-5">
         <Grid container spacing={2}>
+          <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
+            <Link
+              className={`col-12 btn border-1 border-solid border-white text-white`}
+              // style={style?.buttonStyle}
+              to="/track-order"
+            >
+              Track Order
+            </Link>
+          </Grid>
           <Grid
             item
             xs={4}
@@ -71,7 +80,7 @@ function Footer(props) {
                   : getSymbolFromCurrency(cart[0]?.currency_code))}
             </Typography>
           </Grid>
-          <Grid item xs={4} lg={4} xl={4} sm={4} md={4}>
+          <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
             {url !== undefined ? (
               <Link
                 className={`col-12 btn ${

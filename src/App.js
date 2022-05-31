@@ -26,6 +26,7 @@ import ResetPassword from "./jsx/pages/ResetPassword";
 import VideosShow from "./jsx/components/Design/Templates/Common/VideosShow";
 import VideoList from "./jsx/components/Design/Templates/Common/VideoList";
 import VideoDetails from "./jsx/components/Design/Templates/Common/VideoDetails";
+import TrackOrder from "./jsx/components/Design/Templates/Common/TrackOrder";
 // import Error404 from "./jsx/pages/Error404";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
@@ -113,6 +114,7 @@ const App = () => {
           component={MainRrecommend}
           path="/public/details/recommend/:id"
         />
+        <PublicRoute exact component={TrackOrder} path="/track-order" />
 
         <Markup />
         {/* <Route component={Error404} /> */}

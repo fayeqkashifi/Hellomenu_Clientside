@@ -83,7 +83,10 @@ const EditBranch = (props) => {
           formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
           formData.append("BrancheName", data.BrancheName);
           formData.append("currencyID", data.currencyID);
-          formData.append("branchImages", editBranchstate.branchImages);
+          for (let i = 0; i < images.length; i++) {
+            formData.append("branchImages[]", images[i].file);
+          }
+          // formData.append("branchImages", editBranchstate.branchImages);
           formData.append("branchVideos", editBranchstate.branchVideos);
           formData.append("phoneNumber", value);
           formData.append("otherAddressFields", JSON.stringify(form));
@@ -259,51 +262,51 @@ const EditBranch = (props) => {
     e.preventDefault();
     setForm((prev) => prev.filter((item) => item !== prev[index]));
   };
-  const removeImage = (e, image) => {
-    e.preventDefault();
-    axios
-      .post(`/api/removeBranchImage/${image}`)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setEditBranchstate({
-            ...editBranchstate,
-            branchImages: JSON.stringify(
-              JSON.parse(editBranchstate.branchImages).filter(
-                (item) => item !== image
-              )
-            ),
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const handleImage = (e) => {
-    const formData = new FormData();
-    for (let i = 0; i < e.target.files.length; i++) {
-      formData.append("file[]", e.target.files[i]);
-    }
+  // const removeImage = (e, image) => {
+  //   e.preventDefault();
+  //   axios
+  //     .post(`/api/removeBranchImage/${image}`)
+  //     .then((res) => {
+  //       if (res.data.status === 200) {
+  //         setEditBranchstate({
+  //           ...editBranchstate,
+  //           branchImages: JSON.stringify(
+  //             JSON.parse(editBranchstate.branchImages).filter(
+  //               (item) => item !== image
+  //             )
+  //           ),
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+  // const handleImage = (e) => {
+  //   const formData = new FormData();
+  //   for (let i = 0; i < e.target.files.length; i++) {
+  //     formData.append("file[]", e.target.files[i]);
+  //   }
 
-    const images = [];
-    axios
-      .post("/api/uploadBranchImage", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          JSON.parse(editBranchstate?.branchImages)?.map((item) =>
-            images.push(item)
-          );
-          res.data.filenames.map((item) => images.push(item));
-          setEditBranchstate({
-            ...editBranchstate,
-            branchImages: JSON.stringify(images),
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  //   const images = [];
+  //   axios
+  //     .post("/api/uploadBranchImage", formData)
+  //     .then((res) => {
+  //       if (res.data.status === 200) {
+  //         JSON.parse(editBranchstate?.branchImages)?.map((item) =>
+  //           images.push(item)
+  //         );
+  //         res.data.filenames.map((item) => images.push(item));
+  //         setEditBranchstate({
+  //           ...editBranchstate,
+  //           branchImages: JSON.stringify(images),
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
   const removeVideo = (e, video) => {
     e.preventDefault();
     axios
@@ -590,10 +593,10 @@ const EditBranch = (props) => {
                           images={images}
                           setImages={setImages}
                           values={JSON.parse(editBranchstate?.branchImages)}
-                          urlPath={`http://${base_url}:${port}/images/branches/`}
+                          urlPath={`/images/branches/`}
                         />
 
-                        <input
+                        {/* <input
                           type="file"
                           accept="image/*"
                           className="form-control"
@@ -602,9 +605,9 @@ const EditBranch = (props) => {
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
-                        />
+                        /> */}
                       </div>
-                      <div className="row form-group my-2">
+                      {/* <div className="row form-group my-2">
                         {JSON.parse(editBranchstate?.branchImages)?.map(
                           (photo) => {
                             return (
@@ -641,7 +644,7 @@ const EditBranch = (props) => {
                             );
                           }
                         )}
-                      </div>
+                      </div> */}
                     </div>
                     <div className="row form-group">
                       <div
