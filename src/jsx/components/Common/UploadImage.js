@@ -13,7 +13,7 @@ const UploadImage = (props) => {
   useEffect(() => {
     const valuePush = [];
     console.log(values);
-    if (values !== undefined) {
+    if (values !== undefined && values !== null) {
       if (values.length > 0) {
         values.map((v) => {});
 
