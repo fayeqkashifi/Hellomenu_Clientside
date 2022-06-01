@@ -22,14 +22,22 @@ const QRcodeStyle = (props) => {
   });
   var [image, setImage] = useState([]);
   const [source, setSource] = useState(null);
-
+  const [imageValidation, setImageValidation] = useState();
   const handleImageChange = (e) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setImage(filesArray);
-      Array.from(e.target.files).map((file) => URL.revokeObjectURL(file));
+    setImageValidation();
+    const image = e.target.files[0];
+    if (image) {
+      if (!image.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+        setImageValidation("Unsupported File Format.");
+      } else if (image.size >= 5000000) {
+        setImageValidation("File Size is too large(Max Size 5MB).");
+      } else {
+        const filesArray = Array.from(e.target.files).map((file) =>
+          URL.createObjectURL(file)
+        );
+        setImage(filesArray);
+        Array.from(e.target.files).map((file) => URL.revokeObjectURL(file));
+      }
     }
   };
   const renderPhotos = (source) => {
@@ -239,12 +247,17 @@ const QRcodeStyle = (props) => {
                     type="file"
                     name="file"
                     accept="image/*"
-                    className="form-control"
+                    className={
+                      "form-control" + (imageValidation ? " is-invalid" : "")
+                    }
                     onChange={handleImageChange}
                     // required
                     data-overwrite-initial="false"
                     data-min-file-count="1"
                   />
+                  <div className="text-danger">
+                    <small> {imageValidation}</small>
+                  </div>
                 </div>
                 {image.length !== 0 ? (
                   <div className="result">{renderPhotos(image)}</div>

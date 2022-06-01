@@ -26,8 +26,31 @@ const Theme = (props) => {
 
   const [buttonShow, setButtonShow] = useState(true);
   const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, [e.target.name]: e.target.files[0] });
+  const [imageValidation, setImageValidation] = useState();
+  const [backValidation, setbackValidation] = useState();
+
+  const handleImage = (e, text) => {
+    if (text === "logo") {
+      setImageValidation();
+    } else {
+      setbackValidation();
+    }
+    const image = e.target.files[0];
+    if (!image.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+      if (text === "logo") {
+        setImageValidation("Unsupported File Format.");
+      } else {
+        setbackValidation("Unsupported File Format.");
+      }
+    } else if (image.size >= 5000000) {
+      if (text === "logo") {
+        setImageValidation("File Size is too large(Max Size 5MB).");
+      } else {
+        setbackValidation("File Size is too large(Max Size 5MB).");
+      }
+    } else {
+      setImageState({ ...imageState, [e.target.name]: image });
+    }
   };
 
   // Insert Start
@@ -102,10 +125,15 @@ const Theme = (props) => {
                   <input
                     type="file"
                     accept="image/*"
-                    className="form-control"
+                    className={
+                      "form-control" + (imageValidation ? " is-invalid" : "")
+                    }
                     name="Logo"
-                    onChange={handleImage}
+                    onChange={(e) => handleImage(e, "logo")}
                   />
+                  <div className="text-danger">
+                    <small> {imageValidation}</small>
+                  </div>
                   <img
                     style={{ height: "50px", objectFit: "contain" }}
                     src={
@@ -129,17 +157,18 @@ const Theme = (props) => {
                   </CCardHeader>
                   <CCardBody>
                     <div className="form-group">
-                      <div className="input-group">
-                        <div className="custom-file">
-                          <input
-                            type="file"
-                            accept=".jpg, .jpeg, .png"
-                            className="form-control"
-                            name="HomeScreenBackgroundURL"
-                            // required
-                            onChange={handleImage}
-                          />
-                        </div>
+                      <input
+                        type="file"
+                        accept=".jpg, .jpeg, .png"
+                        className={
+                          "form-control" + (backValidation ? " is-invalid" : "")
+                        }
+                        name="HomeScreenBackgroundURL"
+                        // required
+                        onChange={(e) => handleImage(e, "backgrouond")}
+                      />
+                      <div className="text-danger">
+                        <small> {backValidation}</small>
                       </div>
                     </div>
                   </CCardBody>

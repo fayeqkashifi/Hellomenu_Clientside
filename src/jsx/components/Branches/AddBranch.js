@@ -23,12 +23,37 @@ import PhoneInput, {
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import UploadImage from "../Common/UploadImage";
+export function checkIfFilesAreTooBig(files?: [File]): boolean {
+  let valid = true;
+  if (files) {
+    console.log(files);
+    files.map((file) => {
+      const size = file.size;
+      if (size <= 5000000) {
+        valid = false;
+      }
+    });
+  }
+  return valid;
+}
+
+export function checkIfFilesAreCorrectType(files?: [File]): boolean {
+  let valid = true;
+  if (files) {
+    files.map((file) => {
+      if (!["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
+        valid = false;
+      }
+    });
+  }
+  return valid;
+}
 const AddBranch = () => {
   const initialValues = {
     BrancheName: "",
     currencyID: "",
     phoneNumber: "",
-    branchVideos: [],
+    branchVideos: null,
     // branchImages: null,
     locale: JSON.stringify(PublicLocale),
   };
@@ -81,8 +106,9 @@ const AddBranch = () => {
           for (let i = 0; i < images.length; i++) {
             formData.append("branchImages[]", images[i].file);
           }
-          for (let i = 0; i < data.branchVideos.length; i++) {
-            formData.append("branchVideos[]", data.branchVideos[i]);
+
+          for (let i = 0; i < videos.branchVideos.length; i++) {
+            formData.append("branchVideos[]", videos.branchVideos[i]);
           }
           formData.append("phoneNumber", value);
           formData.append("otherAddressFields", JSON.stringify(form));
@@ -236,6 +262,27 @@ const AddBranch = () => {
     e.preventDefault();
 
     setForm((prev) => prev.filter((item) => item !== prev[index]));
+  };
+  const [videos, setVideos] = useState([]);
+  const [videoValidation, setVideoValidation] = useState();
+
+  const handeVideos = (e) => {
+    setVideoValidation();
+    const data = e.target.files;
+    let valid = "";
+    for (let i = 0; i < data.length; i++) {
+      if (!data[i].name.match(/\.(mp4|wmv|mov|flv|avi|mkv)$/)) {
+        valid = "Unsupported File Format.";
+      } else if (data[i].size >= 10000000) {
+        valid = "File Size is too large(Max Size 10MB).";
+      }
+    }
+
+    if (valid == "") {
+      setVideos({ ...videos, [e.target.name]: data });
+    } else {
+      setVideoValidation(valid);
+    }
   };
   var viewBranches_HTMLTABLE = "";
   if (loading) {
@@ -471,29 +518,11 @@ const AddBranch = () => {
                         </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <UploadImage images={images} setImages={setImages} />
-                        {/* <input
-                          type="file"
-                          // accept="image/*"
-                          className={
-                            "form-control" +
-                            (errors.branchImages && touched.branchImages
-                              ? " is-invalid"
-                              : "")
-                          }
-                          // name="branchImages"
-                          onChange={(event) => {
-                            setFieldValue("branchImages", event.target.files);
-                          }}
-                          multiple
-                          // data-overwrite-initial="false"
-                          // data-min-file-count="1"
+                        <UploadImage
+                          images={images}
+                          setImages={setImages}
+                          maxFileSize={5000000}
                         />
-                        <ErrorMessage
-                          name="branchImages"
-                          component="div"
-                          className="invalid-feedback"
-                        /> */}
                       </div>
                     </div>
                     <div className="row form-group">
@@ -502,20 +531,34 @@ const AddBranch = () => {
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("video")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 10MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
+                        {/* <UploadImage
+                          images={videos}
+                          setImages={setVideos}
+                          // acceptType={["mp4", "avi", "mov"]}
+                          maxFileSize={10000000}
+                        /> */}
+
                         <input
                           type="file"
                           accept="video/*"
-                          className="form-control"
                           name="branchVideos"
-                          onChange={(event) => {
-                            setFieldValue("branchVideos", event.target.files);
-                          }}
+                          className={
+                            "form-control" +
+                            (videoValidation ? " is-invalid" : "")
+                          }
+                          onChange={(event) => handeVideos(event)}
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
                         />
+                        <div className="text-danger">
+                          <small> {videoValidation}</small>
+                        </div>
                       </div>
                     </div>
                   </div>

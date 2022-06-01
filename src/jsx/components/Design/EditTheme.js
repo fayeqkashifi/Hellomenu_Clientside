@@ -32,7 +32,30 @@ const EditTheme = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
+  const [imageValidation, setImageValidation] = useState();
+  const [backValidation, setbackValidation] = useState();
+  const handleImage = (e, text) => {
+    if (text === "logo") {
+      setImageValidation();
+    } else {
+      setbackValidation();
+    }
+    const image = e.target.files[0];
+    if (!image.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+      if (text === "logo") {
+        setImageValidation("Unsupported File Format.");
+      } else {
+        setbackValidation("Unsupported File Format.");
+      }
+    } else if (image.size >= 5000000) {
+      if (text === "logo") {
+        setImageValidation("File Size is too large(Max Size 5MB).");
+      } else {
+        setbackValidation("File Size is too large(Max Size 5MB).");
+      }
+    } else {
+      setImageState({ ...imageState, [e.target.name]: image });
+    }
     setImageState({ ...imageState, [e.target.name]: e.target.files[0] });
   };
 
@@ -46,7 +69,6 @@ const EditTheme = (props) => {
 
   const update = (e) => {
     e.preventDefault();
-    console.log(buttonShow);
     const formData = new FormData();
     formData.append("Logo", imageState.Logo);
     formData.append(
@@ -192,7 +214,7 @@ const EditTheme = (props) => {
                     className="form-control"
                     placeholder={t("theme_name")}
                     onChange={handleInput}
-                    value={themes.ThemeName}
+                    value={themes.ThemeName ? themes.ThemeName : ""}
                     name="ThemeName"
                   />
                 </div>
@@ -205,13 +227,19 @@ const EditTheme = (props) => {
                         <input
                           type="file"
                           accept="image/*"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (imageValidation ? " is-invalid" : "")
+                          }
                           name="Logo"
-                          onChange={handleImage}
+                          onChange={(e) => handleImage(e, "logo")}
                         />
+                        <div className="text-danger">
+                          <small> {imageValidation}</small>
+                        </div>
                         <div className="text-left m-2">
                           <img
-                            style={{ height: "150px", objectFit: "contain" }}
+                            style={{ height: "100px", objectFit: "contain" }}
                             src={
                               themes.Logo
                                 ? `http://${base_url}:${port}/images/Themes/${themes.Logo}`
@@ -241,44 +269,47 @@ const EditTheme = (props) => {
                         </CCardHeader>
                         <CCardBody>
                           <div className="form-group">
-                            <div className="input-group">
-                              <div className="custom-file">
-                                <input
-                                  type="file"
-                                  accept=".jpg, .jpeg, .png"
-                                  className="form-control"
-                                  name="HomeScreenBackgroundURL"
-                                  onChange={handleImage}
-                                />
-                                {themes.HomeScreenBackgroundURL && (
-                                  <div className="row m-2">
-                                    <img
-                                      style={{
-                                        height: "100px",
-                                        objectFit: "contain",
-                                      }}
-                                      src={`http://${base_url}:${port}/images/Themes/${themes.HomeScreenBackgroundURL}`}
-                                      className="w-100 "
-                                      alt="Menu"
-                                    />
-                                    <div className="card-footer pt-0 pb-0 text-center">
-                                      <Tooltip title="Delete">
-                                        <IconButton
-                                          onClick={(e) =>
-                                            removeImage(
-                                              e,
-                                              "HomeScreenBackgroundURL"
-                                            )
-                                          }
-                                        >
-                                          <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                      </Tooltip>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                            <input
+                              type="file"
+                              accept=".jpg, .jpeg, .png"
+                              className={
+                                "form-control" +
+                                (backValidation ? " is-invalid" : "")
+                              }
+                              name="HomeScreenBackgroundURL"
+                              onChange={(e) => handleImage(e, "backgrouond")}
+                            />
+                            <div className="text-danger">
+                              <small> {backValidation}</small>
                             </div>
+
+                            {themes.HomeScreenBackgroundURL && (
+                              <div className="m-2">
+                                <img
+                                  style={{
+                                    height: "100px",
+                                    objectFit: "contain",
+                                  }}
+                                  src={`http://${base_url}:${port}/images/Themes/${themes.HomeScreenBackgroundURL}`}
+                                  className="w-100 "
+                                  alt="Menu"
+                                />
+                                <div className="card-footer pt-0 pb-0 text-center">
+                                  <Tooltip title="Delete">
+                                    <IconButton
+                                      onClick={(e) =>
+                                        removeImage(
+                                          e,
+                                          "HomeScreenBackgroundURL"
+                                        )
+                                      }
+                                    >
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </CCardBody>
                       </CCard>

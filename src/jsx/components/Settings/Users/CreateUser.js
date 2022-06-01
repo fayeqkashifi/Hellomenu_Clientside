@@ -25,7 +25,7 @@ import DefaultPic from "../../../../images/hellomenu/logo.svg";
 import { localization as t } from "../../Localization";
 import ipapi from "ipapi.co";
 import { Link, useRouteMatch } from "react-router-dom";
-import ScrollContainer from "react-indiana-drag-scroll";
+// import ScrollContainer from "react-indiana-drag-scroll";
 
 const CreateUser = () => {
   const { url } = useRouteMatch();
@@ -70,8 +70,15 @@ const CreateUser = () => {
     password: "",
     confirm_new_password: "",
     role_id: "",
+    profilePic: null,
   });
-
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/svg",
+    "image/gif",
+    "image/png",
+  ];
   const validationSchema = () => {
     return Yup.object().shape({
       name: Yup.string().required("Name is required"),
@@ -99,6 +106,19 @@ const CreateUser = () => {
         .required("Confirm Password is required")
         .oneOf([Yup.ref("password")], "Passwords must and should match"),
       role_id: Yup.string().required("Role is required"),
+      profilePic: Yup.mixed()
+        .nullable()
+        // .required("A file is required")
+        .test(
+          "FILE_SIZE",
+          "File Size is too large",
+          (value) => !value || (value && value.size <= 5000000)
+        )
+        .test(
+          "FILE_FORMAT",
+          "Unsupported File Format",
+          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+        ),
     });
   };
 
@@ -114,16 +134,13 @@ const CreateUser = () => {
       message: message,
     });
   };
-  const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, profilePic: e.target.files[0] });
-  };
+
   const handleSubmit = (data, { resetForm }) => {
     if (isValidPhoneNumber(value)) {
       const formData = new FormData();
       // console.log(data);
       data.id && formData.append("id", data?.id);
-      formData.append("profilePic", imageState.profilePic);
+      formData.append("profilePic", data.profilePic);
       formData.append("confirm_new_password", data.confirm_new_password);
       formData.append("email", data.email);
       formData.append("name", data.name);
@@ -139,7 +156,6 @@ const CreateUser = () => {
             setCheck(!check);
             resetForm();
             setValue();
-            setImageState([]);
             setInitialValues({
               name: "",
               email: "",
@@ -404,13 +420,32 @@ const CreateUser = () => {
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          <label> {t("profile_pic")}</label>
+                          <label>
+                            {t("profile_pic")}
+                            <small style={{ fontSize: "10px" }}>
+                              {"(Max Size 5MB)"}
+                            </small>
+                          </label>
                           <input
                             type="file"
                             accept="image/*"
-                            className="form-control"
+                            className={
+                              "form-control" +
+                              (errors.profilePic && touched.profilePic
+                                ? " is-invalid"
+                                : "")
+                            }
+                            onChange={(event) => {
+                              setFieldValue(
+                                "profilePic",
+                                event.target.files[0]
+                              );
+                            }}
+                          />
+                          <ErrorMessage
                             name="profilePic"
-                            onChange={handleImage}
+                            component="div"
+                            className="invalid-feedback"
                           />
                         </div>
                         <img

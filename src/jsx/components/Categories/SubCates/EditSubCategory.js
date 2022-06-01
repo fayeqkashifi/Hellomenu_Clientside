@@ -20,18 +20,36 @@ const EditSubCategory = (props) => {
     setLang,
     editSubCate,
   } = props;
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/svg",
+    "image/gif",
+    "image/png",
+  ];
+
   const validationSchema = () => {
     return Yup.object().shape({
       SubCategoryName: Yup.string().required("Sub Category Name is required"),
+      SubCategoryIcon: Yup.mixed()
+        .nullable()
+        // .required("A file is required")
+        .test(
+          "FILE_SIZE",
+          "File Size is too large",
+          (value) => !value || (value && value.size <= 5000000)
+        )
+        .test(
+          "FILE_FORMAT",
+          "Unsupported File Format",
+          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+        ),
     });
   };
-  const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, SubCategoryIcon: e.target.files[0] });
-  };
+
   const updateSubMenu = (data) => {
     const formData = new FormData();
-    formData.append("SubCategoryIcon", imageState.SubCategoryIcon);
+    formData.append("SubCategoryIcon", data.SubCategoryIcon);
     formData.append("SubCategoryName", data.SubCategoryName);
     formData.append("CategoryID", id);
     formData.append("id", data.id);
@@ -41,7 +59,6 @@ const EditSubCategory = (props) => {
       .then((res) => {
         if (res.data.status === 200) {
           setAlerts(true, "success", res.data.message);
-          setImageState([]);
           setEditModalCentered(false);
           setCheck(!check);
         } else if (res.data.status === 404) {
@@ -71,7 +88,7 @@ const EditSubCategory = (props) => {
         validationSchema={validationSchema}
         onSubmit={updateSubMenu}
       >
-        {({ errors, touched, values }) => (
+        {({ errors, touched, values, setFieldValue }) => (
           <Form>
             <Modal.Body>
               <div className="form-group">
@@ -94,14 +111,27 @@ const EditSubCategory = (props) => {
                 />
               </div>
               <div className="form-group">
-                <label> {t("image")}</label>
+                <label>
+                  {t("image")}
+                  <small style={{ fontSize: "10px" }}>{"(Max Size 5MB)"}</small>
+                </label>
                 <input
                   type="file"
                   accept="image/*"
-                  className="form-control"
-                  placeholder={t("sub_category_icon")}
+                  className={
+                    "form-control" +
+                    (errors.SubCategoryIcon && touched.SubCategoryIcon
+                      ? " is-invalid"
+                      : "")
+                  }
+                  onChange={(event) => {
+                    setFieldValue("SubCategoryIcon", event.target.files[0]);
+                  }}
+                />
+                <ErrorMessage
                   name="SubCategoryIcon"
-                  onChange={handleImage}
+                  component="div"
+                  className="invalid-feedback"
                 />
               </div>
               <img

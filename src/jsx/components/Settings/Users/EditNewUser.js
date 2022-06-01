@@ -44,7 +44,13 @@ const EditNewUser = (props) => {
   }, []);
 
   const [initialValues, setInitialValues] = useState([]);
-
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/svg",
+    "image/gif",
+    "image/png",
+  ];
   const validationSchema = () => {
     return Yup.object().shape({
       name: Yup.string().required("Name is required"),
@@ -72,6 +78,19 @@ const EditNewUser = (props) => {
         .required("Confirm Password is required")
         .oneOf([Yup.ref("password")], "Passwords must and should match"),
       role_id: Yup.string().required("Role is required"),
+      profilePicCheck: Yup.mixed()
+        .nullable()
+        // .required("A file is required")
+        .test(
+          "FILE_SIZE",
+          "File Size is too large",
+          (value) => !value || (value && value.size <= 5000000)
+        )
+        .test(
+          "FILE_FORMAT",
+          "Unsupported File Format",
+          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+        ),
     });
   };
 
@@ -87,15 +106,12 @@ const EditNewUser = (props) => {
       message: message,
     });
   };
-  const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, profilePic: e.target.files[0] });
-  };
+
   const handleSubmit = (data) => {
     if (isValidPhoneNumber(value)) {
       const formData = new FormData();
       data.id && formData.append("id", data?.id);
-      formData.append("profilePic", imageState.profilePic);
+      formData.append("profilePic", data.profilePicCheck);
       formData.append("confirm_new_password", data.confirm_new_password);
       formData.append("email", data.email);
       formData.append("name", data.name);
@@ -315,13 +331,33 @@ const EditNewUser = (props) => {
                   </div>
                   <div className="col-6">
                     <div className="form-group">
-                      <label> {t("profile_pic")}</label>
+                      <label>
+                        {" "}
+                        {t("profile_pic")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 5MB)"}
+                        </small>
+                      </label>
                       <input
                         type="file"
                         accept="image/*"
-                        className="form-control"
-                        name="profilePic"
-                        onChange={handleImage}
+                        className={
+                          "form-control" +
+                          (errors.profilePicCheck && touched.profilePicCheck
+                            ? " is-invalid"
+                            : "")
+                        }
+                        onChange={(event) => {
+                          setFieldValue(
+                            "profilePicCheck",
+                            event.target.files[0]
+                          );
+                        }}
+                      />
+                      <ErrorMessage
+                        name="profilePicCheck"
+                        component="div"
+                        className="invalid-feedback"
                       />
                     </div>
                     <img

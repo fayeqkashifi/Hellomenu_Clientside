@@ -310,4 +310,5 @@ export const Locale = {
   full_address: "Full Address",
   complete_order: "Complete Order",
   qty: "Qty",
+  profile_pic: "Profile Pic",
 };

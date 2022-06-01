@@ -53,15 +53,32 @@ const AddCategory = (props) => {
   }, []);
   const initialValues = {
     CategoryName: "",
+    CategoryIcon: null,
   };
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/svg",
+    "image/gif",
+    "image/png",
+  ];
   const validationSchema = () => {
     return Yup.object().shape({
       CategoryName: Yup.string().required("Category Name is required"),
+      CategoryIcon: Yup.mixed()
+        .nullable()
+        // .required("A file is required")
+        .test(
+          "FILE_SIZE",
+          "File Size is too large",
+          (value) => !value || (value && value.size <= 5000000)
+        )
+        .test(
+          "FILE_FORMAT",
+          "Unsupported File Format",
+          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+        ),
     });
-  };
-  const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, CategoryIcon: e.target.files[0] });
   };
 
   const [productbranches, setProductBranches] = useState([]);
@@ -75,16 +92,14 @@ const AddCategory = (props) => {
     if (checkCate) {
       const formData = new FormData();
       productbranches.map((item) => formData.append("branches[]", item.value));
-      formData.append("CategoryIcon", imageState.CategoryIcon);
+      formData.append("CategoryIcon", data.CategoryIcon);
       formData.append("CategoryName", data.CategoryName);
       formData.append("branchID", id);
       formData.append("translation", JSON.stringify(lang));
-
       axios
         .post("/api/insertCategories", formData)
         .then((res) => {
           if (res.data.status === 200) {
-            setImageState([]);
             setCheck(!check);
             setShare(false);
             setProductBranches([]);
@@ -116,7 +131,7 @@ const AddCategory = (props) => {
         validationSchema={validationSchema}
         onSubmit={saveMenu}
       >
-        {({ errors, touched, values }) => (
+        {({ errors, touched, values, setFieldValue }) => (
           <Form>
             <Modal.Body>
               <div className="form-group">
@@ -157,7 +172,7 @@ const AddCategory = (props) => {
                 " "
               )}
               <div className="form-group">
-                <label> {t("category_name")}</label>
+                <label>{t("category_name")}</label>
                 <Field
                   name="CategoryName"
                   type="text"
@@ -176,14 +191,27 @@ const AddCategory = (props) => {
                 />
               </div>
               <div className="form-group">
-                <label> {t("image")}</label>
+                <label>
+                  {t("image")}
+                  <small style={{ fontSize: "10px" }}>{"(Max Size 5MB)"}</small>
+                </label>
                 <input
                   type="file"
                   accept="image/*"
-                  className="form-control"
-                  placeholder={t("category_icon")}
+                  className={
+                    "form-control" +
+                    (errors.CategoryIcon && touched.CategoryIcon
+                      ? " is-invalid"
+                      : "")
+                  }
+                  onChange={(event) => {
+                    setFieldValue("CategoryIcon", event.target.files[0]);
+                  }}
+                />
+                <ErrorMessage
                   name="CategoryIcon"
-                  onChange={handleImage}
+                  component="div"
+                  className="invalid-feedback"
                 />
               </div>
 

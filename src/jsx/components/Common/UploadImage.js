@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
 
 const UploadImage = (props) => {
-  const { images, setImages, values, urlPath } = props;
+  const { images, setImages, values, urlPath, maxFileSize } = props;
   const [loading, setLoading] = useState(true);
 
   const onChangeTest = (imageList, addUpdateIndex) => {
@@ -82,7 +82,7 @@ const UploadImage = (props) => {
           onChange={onChangeTest}
           dataURLKey="data_url"
           acceptType={["jpg", "gif", "png"]}
-          maxFileSize={5000000}
+          maxFileSize={maxFileSize}
         >
           {({
             imageList,
@@ -110,7 +110,7 @@ const UploadImage = (props) => {
                 onClick={onImageRemoveAll}
                 className="btn btn-outline-danger btn-sm"
               >
-                Remove all images
+                Remove all
               </button>
               <div className="row my-2">
                 {imageList.map((image, index) => (
@@ -138,9 +138,9 @@ const UploadImage = (props) => {
               </div>
               {errors && (
                 <div className="text-danger">
-                  {errors.maxNumber && (
+                  {/* {errors.maxNumber && (
                     <small>Number of selected images exceed maxNumber</small>
-                  )}
+                  )} */}
                   {errors.acceptType && (
                     <small>Your selected file type is not allow</small>
                   )}

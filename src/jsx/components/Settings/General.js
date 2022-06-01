@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 import CustomAlert from "../CustomAlert";
@@ -15,6 +15,7 @@ import { base_url, port } from "../../../Consts";
 import DefaultPic from "../../../images/hellomenu/logo.svg";
 import { localization as t } from "../Localization";
 import ipapi from "ipapi.co";
+import * as Yup from "yup";
 
 const General = () => {
   const [alert, setAlert] = useState({
@@ -29,13 +30,33 @@ const General = () => {
       message: message,
     });
   };
-  const [imageState, setImageState] = useState([]);
-  const handleImage = (e) => {
-    setImageState({ ...imageState, companyLogo: e.target.files[0] });
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/svg",
+    "image/gif",
+    "image/png",
+  ];
+  const validationSchema = () => {
+    return Yup.object().shape({
+      companyLogo: Yup.mixed()
+        .nullable()
+        // .required("A file is required")
+        .test(
+          "FILE_SIZE",
+          "File Size is too large",
+          (value) => !value || (value && value.size <= 5000000)
+        )
+        .test(
+          "FILE_FORMAT",
+          "Unsupported File Format",
+          (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type))
+        ),
+    });
   };
   const save = (data) => {
     const formData = new FormData();
-    formData.append("companyLogo", imageState.companyLogo);
+    formData.append("companyLogo", data.companyLogo);
     formData.append("id", data.id);
     formData.append("company", data.company);
     formData.append("companyDiscription", data.companyDiscription);
@@ -110,6 +131,7 @@ const General = () => {
     tiktok: fetchData?.tiktok ? fetchData.tiktok : "",
     contactEmail: fetchData?.contactEmail ? fetchData.contactEmail : "",
     whatsapp: fetchData?.whatsapp ? fetchData.whatsapp : "",
+    companyLogo: null,
   };
   if (loading) {
     return (
@@ -137,8 +159,12 @@ const General = () => {
           ""
         )}
 
-        <Formik onSubmit={save} initialValues={initialValues}>
-          {({ setFieldValue }) => (
+        <Formik
+          onSubmit={save}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+        >
+          {({ setFieldValue, errors, touched }) => (
             <Form>
               <div className="form-group">
                 <label> {t("company_name")}</label>
@@ -181,13 +207,27 @@ const General = () => {
                 />
               </div>
               <div className="form-group">
-                <label> {t("logo")}</label>
+                <label>
+                  {t("logo")}
+                  <small style={{ fontSize: "10px" }}>{"(Max Size 5MB)"}</small>
+                </label>
                 <input
                   type="file"
                   accept="image/*"
-                  className="form-control"
+                  className={
+                    "form-control" +
+                    (errors.companyLogo && touched.companyLogo
+                      ? " is-invalid"
+                      : "")
+                  }
+                  onChange={(event) => {
+                    setFieldValue("companyLogo", event.target.files[0]);
+                  }}
+                />
+                <ErrorMessage
                   name="companyLogo"
-                  onChange={handleImage}
+                  component="div"
+                  className="invalid-feedback"
                 />
               </div>
               <img
