@@ -38,34 +38,39 @@ const Storybranch = (props) => {
   };
 
   const save = (data, { resetForm }) => {
-    const formData = new FormData();
-    for (let i = 0; i < data.storyVideos.length; i++) {
-      formData.append("storyVideos[]", data.storyVideos[i]);
-    }
-    formData.append("storyTagProducts", JSON.stringify(tagProducts));
-    formData.append("branch_id", id);
-    formData.append("form", JSON.stringify(form));
-    axios
-      .post("/api/insertStories", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setCheck(!check);
-          resetForm();
-          setForm([
-            {
-              name: "",
-              errors: {
-                name: null,
+    if (videos.length != 0) {
+      const formData = new FormData();
+      for (let i = 0; i < videos.storyVideos.length; i++) {
+        formData.append("storyVideos[]", videos.storyVideos[i]);
+      }
+      formData.append("storyTagProducts", JSON.stringify(tagProducts));
+      formData.append("branch_id", id);
+      formData.append("form", JSON.stringify(form));
+      axios
+        .post("/api/insertStories", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setCheck(!check);
+
+            resetForm();
+            setForm([
+              {
+                name: "",
+                errors: {
+                  name: null,
+                },
               },
-            },
-          ]);
-          setTagProducts([]);
-          setAlerts(true, "success", res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+            ]);
+            setTagProducts([]);
+            setAlerts(true, "success", res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setVideoValidation("This Field is Required.");
+    }
   };
 
   const [loading, setLoading] = useState(true);
@@ -100,6 +105,9 @@ const Storybranch = (props) => {
   }, []);
   useEffect(() => {
     dataLoad();
+    return () => {
+      setVideos();
+    };
   }, [check]);
 
   const [tagProducts, setTagProducts] = useState([]);
@@ -221,6 +229,27 @@ const Storybranch = (props) => {
 
     setForm((prev) => prev.filter((item) => item !== prev[index]));
   };
+  const [videos, setVideos] = useState([]);
+  const [videoValidation, setVideoValidation] = useState();
+
+  const handleVideo = (e) => {
+    setVideoValidation();
+    const data = e.target.files;
+    let valid = "";
+    for (let i = 0; i < data.length; i++) {
+      if (!data[i].name.match(/\.(mp4|wmv|mov|flv|avi|mkv)$/)) {
+        valid = "Unsupported File Format.";
+      } else if (data[i].size >= 10000000) {
+        valid = "File Size is too large(Max Size 10MB).";
+      }
+    }
+
+    if (valid == "") {
+      setVideos({ ...videos, [e.target.name]: data });
+    } else {
+      setVideoValidation(valid);
+    }
+  };
   var viewBranches_HTMLTABLE = "";
   if (loading) {
     return (
@@ -275,21 +304,31 @@ const Storybranch = (props) => {
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("video")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 10MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <input
                           key={check}
                           type="file"
                           accept="video/*"
-                          className="form-control"
                           name="storyVideos"
-                          onChange={(event) => {
-                            setFieldValue("storyVideos", event.target.files);
-                          }}
+                          // onChange={(event) => {
+                          //   setFieldValue("storyVideos", event.target.files);
+                          // }}
+                          className={
+                            "form-control" +
+                            (videoValidation ? " is-invalid" : "")
+                          }
+                          onChange={(event) => handleVideo(event)}
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
                         />
+                        <div className="text-danger">
+                          <small> {videoValidation}</small>
+                        </div>
                       </div>
                     </div>
 

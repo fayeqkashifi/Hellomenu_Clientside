@@ -83,9 +83,14 @@ const EditBranch = (props) => {
           formData.append("orderMethods", JSON.stringify(orderMethodsEdit));
           formData.append("BrancheName", data.BrancheName);
           formData.append("currencyID", data.currencyID);
-          for (let i = 0; i < images.length; i++) {
-            formData.append("branchImages[]", images[i].file);
+          if (images.length !== 0) {
+            for (let i = 0; i < images.length; i++) {
+              formData.append("branchImages[]", images[i].file);
+            }
+          } else {
+            formData.append("branchImages", "");
           }
+
           // formData.append("branchImages", editBranchstate.branchImages);
           formData.append("branchVideos", editBranchstate.branchVideos);
           formData.append("phoneNumber", value);
@@ -327,27 +332,47 @@ const EditBranch = (props) => {
         console.log(err);
       });
   };
-  const handleVideo = (e) => {
-    const formData = new FormData();
-    for (let i = 0; i < e.target.files.length; i++) {
-      formData.append("file[]", e.target.files[i]);
-    }
-    const images = [];
-    axios
-      .post("/api/uploadBranchVideo", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          res.data.filenames.map((item) => images.push(item));
+  const [videoValidation, setVideoValidation] = useState();
 
-          setEditBranchstate({
-            ...editBranchstate,
-            branchVideos: JSON.stringify(images),
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleVideo = (e) => {
+    setVideoValidation();
+    const data = e.target.files;
+    let valid = "";
+    for (let i = 0; i < data.length; i++) {
+      if (!data[i].name.match(/\.(mp4|wmv|mov|flv|avi|mkv)$/)) {
+        valid = "Unsupported File Format.";
+      } else if (data[i].size >= 10000000) {
+        valid = "File Size is too large(Max Size 10MB).";
+      }
+    }
+    if (valid == "") {
+      // console.log(videos);
+
+      const formData = new FormData();
+      for (let i = 0; i < e.target.files.length; i++) {
+        formData.append("file[]", e.target.files[i]);
+      }
+      const videos =
+        editBranchstate.branchVideos == null
+          ? []
+          : JSON.parse(editBranchstate.branchVideos);
+      axios
+        .post("/api/uploadBranchVideo", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            res.data.filenames.map((item) => videos.push(item));
+            setEditBranchstate({
+              ...editBranchstate,
+              branchVideos: JSON.stringify(videos),
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setVideoValidation(valid);
+    }
   };
 
   var viewBranches_HTMLTABLE = "";
@@ -595,56 +620,7 @@ const EditBranch = (props) => {
                           values={JSON.parse(editBranchstate?.branchImages)}
                           urlPath={`/images/branches/`}
                         />
-
-                        {/* <input
-                          type="file"
-                          accept="image/*"
-                          className="form-control"
-                          name="branchImages"
-                          onChange={handleImage}
-                          multiple
-                          data-overwrite-initial="false"
-                          data-min-file-count="1"
-                        /> */}
                       </div>
-                      {/* <div className="row form-group my-2">
-                        {JSON.parse(editBranchstate?.branchImages)?.map(
-                          (photo) => {
-                            return (
-                              <div
-                                className="col-xl-2 col-lg-2 col-sm-2"
-                                key={photo}
-                              >
-                                <div className="card ">
-                                  <div className="text-center">
-                                    <img
-                                      className="w-100"
-                                      src={`http://${base_url}:${port}/images/branches/${photo}`}
-                                      alt=""
-                                      key={photo}
-                                      style={{
-                                        // width: "100px",
-                                        height: "100px",
-                                        objectFit: "contain",
-                                      }}
-                                    />
-                                  </div>
-
-                                  <div className="card-footer pt-0 pb-0 text-center">
-                                    <Tooltip title="Delete">
-                                      <IconButton
-                                        onClick={(e) => removeImage(e, photo)}
-                                      >
-                                        <DeleteIcon fontSize="small" />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          }
-                        )}
-                      </div> */}
                     </div>
                     <div className="row form-group">
                       <div
@@ -652,32 +628,38 @@ const EditBranch = (props) => {
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("video")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 10MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <input
                           type="file"
                           accept="video/*"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (videoValidation ? " is-invalid" : "")
+                          }
                           name="branchVideos"
                           onChange={handleVideo}
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
                         />
+                        <div className="text-danger">
+                          <small> {videoValidation}</small>
+                        </div>
                       </div>
                       <div className="row form-group my-2">
                         {JSON.parse(editBranchstate?.branchVideos)?.map(
                           (video) => {
                             return (
-                              <div
-                                className="col-xl-2 col-lg-2 col-sm-2"
-                                key={video}
-                              >
+                              <div className="col" key={video}>
                                 <div className="card ">
                                   <div className="text-center">
                                     <ReactPlayer
-                                      width="150px"
-                                      height="200px"
+                                      width="100px"
+                                      height="100px"
                                       url={`http://${base_url}:${port}/videos/branches/${video}`}
                                       controls={true}
                                       playing={false}

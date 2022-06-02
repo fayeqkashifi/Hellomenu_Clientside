@@ -45,7 +45,7 @@ const EditStories = (props) => {
         });
         setForm(value);
         setTagProducts(JSON.parse(result?.storyTagProducts));
-        const res = await axios.get(`/api/getProducts/${result.branch_id}`);
+        const res = await axios.get(`/api/getProductsAll/${result.branch_id}`);
         if (res.data.status === 200) {
           setProducts(res.data.fetchData);
         } else {
@@ -110,32 +110,50 @@ const EditStories = (props) => {
         console.log(err);
       });
   };
-  const handleVideo = (e) => {
-    const formData = new FormData();
-    for (let i = 0; i < e.target.files.length; i++) {
-      formData.append("file[]", e.target.files[i]);
-    }
-    const images = [];
-    axios
-      .post("/api/uploadBranchStoryVideo", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          JSON.parse(data.storyVideos)?.map((item) => {
-            images.push(item);
-          });
-          res.data.filenames.map((item) => {
-            images.push(item);
-          });
+  const [videoValidation, setVideoValidation] = useState();
 
-          setData({
-            ...data,
-            storyVideos: JSON.stringify(images),
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleVideo = (e) => {
+    setVideoValidation();
+    const fileData = e.target.files;
+    let valid = "";
+    for (let i = 0; i < fileData.length; i++) {
+      if (!fileData[i].name.match(/\.(mp4|wmv|mov|flv|avi|mkv)$/)) {
+        valid = "Unsupported File Format.";
+      } else if (fileData[i].size >= 10000000) {
+        valid = "File Size is too large(Max Size 10MB).";
+      }
+    }
+    if (valid == "") {
+      const formData = new FormData();
+      for (let i = 0; i < e.target.files.length; i++) {
+        formData.append("file[]", e.target.files[i]);
+      }
+      const videos =
+        data.storyVideos == null ? [] : JSON.parse(data.storyVideos);
+      axios
+        .post("/api/uploadBranchStoryVideo", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            // console.log(res);
+            // JSON.parse(data.storyVideos)?.map((item) => {
+            //   videos.push(item);
+            // });
+            res.data.filenames.map((item) => {
+              videos.push(item);
+            });
+
+            setData({
+              ...data,
+              storyVideos: JSON.stringify(videos),
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setVideoValidation(valid);
+    }
   };
 
   const [form, setForm] = useState([]);
@@ -257,18 +275,26 @@ const EditStories = (props) => {
                   style={{ backgroundColor: "#f5f5f5" }}
                 >
                   {t("video")}
+                  <small style={{ fontSize: "10px" }}>
+                    {"(Max Size 10MB)"}
+                  </small>
                 </div>
                 <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                   <input
                     type="file"
                     accept="video/*"
-                    className="form-control"
+                    className={
+                      "form-control" + (videoValidation ? " is-invalid" : "")
+                    }
                     name="video"
                     onChange={handleVideo}
                     multiple
                     data-overwrite-initial="false"
                     data-min-file-count="1"
                   />
+                  <div className="text-danger">
+                    <small> {videoValidation}</small>
+                  </div>
                 </div>
                 <div className="row form-group my-2">
                   {JSON.parse(data.storyVideos)?.map((video) => {

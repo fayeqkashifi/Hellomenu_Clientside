@@ -242,7 +242,7 @@ const AddBranch = () => {
   const [videos, setVideos] = useState([]);
   const [videoValidation, setVideoValidation] = useState();
 
-  const handeVideos = (e) => {
+  const handleVideo = (e) => {
     setVideoValidation();
     const data = e.target.files;
     let valid = "";
@@ -512,13 +512,6 @@ const AddBranch = () => {
                         </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        {/* <UploadImage
-                          images={videos}
-                          setImages={setVideos}
-                          // acceptType={["mp4", "avi", "mov"]}
-                          maxFileSize={10000000}
-                        /> */}
-
                         <input
                           type="file"
                           accept="video/*"
@@ -527,7 +520,7 @@ const AddBranch = () => {
                             "form-control" +
                             (videoValidation ? " is-invalid" : "")
                           }
-                          onChange={(event) => handeVideos(event)}
+                          onChange={(event) => handleVideo(event)}
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
