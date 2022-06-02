@@ -77,43 +77,59 @@ const NewGrid = (props) => {
       });
     }
   };
+  const [imageValidation, setImageValidation] = useState();
+
   const uploadImage = (event, index) => {
-    const val = numberOfVar.filter((item, i) => {
-      if (i === index) {
-        return item;
+    setImageValidation();
+    const data = event.target.files;
+    let valid = "";
+    for (let i = 0; i < data.length; i++) {
+      if (!data[i].name.match(/\.(jpg|jpeg|png|gif)$/)) {
+        valid = "Unsupported File Format.";
+      } else if (data[i].size >= 10000000) {
+        valid = "File Size is too large(Max Size 10MB).";
       }
-    });
-    const formData = new FormData();
-    for (let i = 0; i < event.target.files.length; i++) {
-      formData.append("file[]", event.target.files[i]);
     }
-    const images = [];
-    axios
-      .post("/api/uploadImage", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          val[0].image.map((item) => {
-            images.push(item);
-          });
-          res.data.filenames.map((item) => {
-            images.push(item);
-          });
-          setNumberOfVar((prev) => {
-            return prev.map((item, i) => {
-              if (i !== index) {
-                return item;
-              }
-              return {
-                ...item,
-                image: images,
-              };
-            });
-          });
+    if (valid == "") {
+      const val = numberOfVar.filter((item, i) => {
+        if (i === index) {
+          return item;
         }
-      })
-      .catch((error) => {
-        console.log(error);
       });
+      const formData = new FormData();
+      for (let i = 0; i < event.target.files.length; i++) {
+        formData.append("file[]", event.target.files[i]);
+      }
+      const images = [];
+      axios
+        .post("/api/uploadImage", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            val[0].image.map((item) => {
+              images.push(item);
+            });
+            res.data.filenames.map((item) => {
+              images.push(item);
+            });
+            setNumberOfVar((prev) => {
+              return prev.map((item, i) => {
+                if (i !== index) {
+                  return item;
+                }
+                return {
+                  ...item,
+                  image: images,
+                };
+              });
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setImageValidation(valid);
+    }
   };
   const removeImage = (e, image, index) => {
     e.preventDefault();
@@ -170,6 +186,8 @@ const NewGrid = (props) => {
                   ? value < 0 || value == ""
                     ? " form-control is-invalid"
                     : "form-control"
+                  : imageValidation
+                  ? "form-control is-invalid"
                   : "form-control"
               }
               disabled={key == "sku"}
@@ -191,6 +209,12 @@ const NewGrid = (props) => {
               min="0"
               multiple
             ></input>
+            {key == "image" && (
+              <div className="text-danger">
+                <small> {imageValidation}</small>
+              </div>
+            )}
+
             {key == "price" || key == "stock" ? (
               value < 0 || value == "" ? (
                 <div className="invalid-feedback">
@@ -237,17 +261,15 @@ const NewGrid = (props) => {
                     </div>
                     {checkPermission("variants-delete") && (
                       <div className="card-footer pt-0 pb-0 text-center">
-                        <div className="row">
-                          <Tooltip title="Delete">
-                            <IconButton
-                              onClick={(e) =>
-                                removeImage(e, photo, x, indexOfImage)
-                              }
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
+                        <Tooltip title="Delete">
+                          <IconButton
+                            onClick={(e) =>
+                              removeImage(e, photo, x, indexOfImage)
+                            }
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                       </div>
                     )}
                   </div>
@@ -294,7 +316,10 @@ const NewGrid = (props) => {
         <div className="col-md-3">{t("sku")}</div>
         <div className="col-md-2">{t("price")}</div>
         <div className="col-md-2">{t("stock")}</div>
-        <div className="col-md-3">{t("image")}</div>
+        <div className="col-md-3">
+          {t("image")}{" "}
+          <small style={{ fontSize: "10px" }}>{"(Max Size 5MB)"}</small>
+        </div>
       </div>
       <div className={`card-body ${numberOfVar.length == 0 ? "d-none" : ""}`}>
         <div className="row">{outputs}</div>

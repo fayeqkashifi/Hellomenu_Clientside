@@ -18,6 +18,7 @@ import SubmitButtons from "../Common/SubmitButtons";
 import MButton from "@mui/material/Button";
 import Local from "./Local";
 import AddIngredient from "./Ingredients/Add";
+import UploadImage from "../Common/UploadImage";
 
 const EditProduct = (props) => {
   const history = useHistory();
@@ -53,54 +54,67 @@ const EditProduct = (props) => {
   // edit Start
   const [editProduct, setEditProduct] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = React.useState([]);
+  const [imageValidation, setImageValidation] = useState();
 
   const updateProduct = (data) => {
-    setIsSubmitting(true);
-    const formData = new FormData();
-    if (editProduct.video !== null) {
-      formData.append("video", editProduct.video);
-    } else {
-      formData.append("video", null);
-    }
-    formData.append("image", editProduct.image);
-    formData.append("ProductName", data.ProductName);
-    formData.append("UnitName", data.UnitName);
-    formData.append("price", data.price);
-    formData.append("stock", data.stock);
-    formData.append("preparationTime", data.preparationTime);
-    formData.append("ingredients", JSON.stringify(productIngredient));
-    formData.append("extras", JSON.stringify(productExtra));
-    formData.append("recommendations", JSON.stringify(productRecom));
-    formData.append("sub_category", data.sub_category_id);
-    formData.append("category", data.category_id);
-    formData.append("id", productId);
-    formData.append("form", JSON.stringify(form));
-    formData.append("translation", JSON.stringify(lang));
-    axios
-      .post("/api/updateProduct", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          Swal.fire({
-            title: "Good job!",
-            html: res.data.message,
-            icon: "success",
-            confirmButtonText: "OK",
-            confirmButtonColor: "#93de8b",
-          }).then((check) => {
-            if (check) {
-              setIsSubmitting(false);
-              history.push({
-                pathname: `/branches/show/products`,
-                state: { id: branchId },
-              });
-              setCheck(!check);
-            }
-          });
+    if (images.length != 0) {
+      setIsSubmitting(true);
+      const formData = new FormData();
+      if (editProduct.video !== null) {
+        formData.append("video", editProduct.video);
+      } else {
+        formData.append("video", null);
+      }
+      if (images.length !== 0) {
+        for (let i = 0; i < images.length; i++) {
+          formData.append("image[]", images[i].file);
         }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      } else {
+        formData.append("image", "");
+      }
+      // formData.append("image", editProduct.image);
+      formData.append("ProductName", data.ProductName);
+      formData.append("UnitName", data.UnitName);
+      formData.append("price", data.price);
+      formData.append("stock", data.stock);
+      formData.append("preparationTime", data.preparationTime);
+      formData.append("ingredients", JSON.stringify(productIngredient));
+      formData.append("extras", JSON.stringify(productExtra));
+      formData.append("recommendations", JSON.stringify(productRecom));
+      formData.append("sub_category", data.sub_category_id);
+      formData.append("category", data.category_id);
+      formData.append("id", productId);
+      formData.append("form", JSON.stringify(form));
+      formData.append("translation", JSON.stringify(lang));
+      axios
+        .post("/api/updateProduct", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            Swal.fire({
+              title: "Good job!",
+              html: res.data.message,
+              icon: "success",
+              confirmButtonText: "OK",
+              confirmButtonColor: "#93de8b",
+            }).then((check) => {
+              if (check) {
+                setIsSubmitting(false);
+                history.push({
+                  pathname: `/branches/show/products`,
+                  state: { id: branchId },
+                });
+                setCheck(!check);
+              }
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setImageValidation("This Field is Required.");
+    }
   };
   // edit ENd
   //for retriving data using laravel API
@@ -228,51 +242,7 @@ const EditProduct = (props) => {
       });
     setEditProduct({ ...editProduct, [e.target.name]: e.target.value });
   };
-  const handleImage = (e) => {
-    const formData = new FormData();
-    for (let i = 0; i < e.target.files.length; i++) {
-      formData.append("file[]", e.target.files[i]);
-    }
-    const images = [];
-    axios
-      .post("/api/uploadProductImage", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          JSON.parse(editProduct.image).map((item) => {
-            images.push(item);
-          });
-          res.data.filenames.map((item) => {
-            images.push(item);
-          });
-
-          setEditProduct({
-            ...editProduct,
-            image: JSON.stringify(images),
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const removeImage = (e, image) => {
-    e.preventDefault();
-    axios
-      .post(`/api/removeProductImage/${image}`)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setEditProduct({
-            ...editProduct,
-            image: JSON.stringify(
-              JSON.parse(editProduct.image).filter((item) => item !== image)
-            ),
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  
   const removeVideo = (e, video) => {
     e.preventDefault();
     axios
@@ -291,32 +261,49 @@ const EditProduct = (props) => {
         console.log(err);
       });
   };
-  const handleVideo = (e) => {
-    const formData = new FormData();
-    for (let i = 0; i < e.target.files.length; i++) {
-      formData.append("file[]", e.target.files[i]);
-    }
-    const images = [];
-    axios
-      .post("/api/uploadProductVideo", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          JSON.parse(editProduct.video)?.map((item) => {
-            images.push(item);
-          });
-          res.data.filenames.map((item) => {
-            images.push(item);
-          });
+  const [videoValidation, setVideoValidation] = useState();
 
-          setEditProduct({
-            ...editProduct,
-            video: JSON.stringify(images),
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleVideo = (e) => {
+    setVideoValidation();
+    const data = e.target.files;
+    let valid = "";
+    for (let i = 0; i < data.length; i++) {
+      if (!data[i].name.match(/\.(mp4|wmv|mov|flv|avi|mkv)$/)) {
+        valid = "Unsupported File Format.";
+      } else if (data[i].size >= 10000000) {
+        valid = "File Size is too large(Max Size 10MB).";
+      }
+    }
+    if (valid == "") {
+      const formData = new FormData();
+      for (let i = 0; i < e.target.files.length; i++) {
+        formData.append("file[]", e.target.files[i]);
+      }
+      const videos =
+        editProduct.video == null ? [] : JSON.parse(editProduct.video);
+      axios
+        .post("/api/uploadProductVideo", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            // JSON.parse(editProduct.video)?.map((item) => {
+            //   videos.push(item);
+            // });
+            res.data.filenames.map((item) => {
+              videos.push(item);
+            });
+
+            setEditProduct({
+              ...editProduct,
+              video: JSON.stringify(videos),
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setVideoValidation(valid);
+    }
   };
 
   const [form, setForm] = useState([]);
@@ -596,7 +583,17 @@ const EditProduct = (props) => {
                         {t("images")}
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <input
+                        <UploadImage
+                          images={images}
+                          setImages={setImages}
+                          values={JSON.parse(editProduct?.image)}
+                          urlPath={`/images/products/`}
+                          setImageValidation={setImageValidation}
+                        />
+                        <div className="text-danger">
+                          <small> {imageValidation}</small>
+                        </div>
+                        {/* <input
                           type="file"
                           accept="image/*"
                           className="form-control"
@@ -606,64 +603,37 @@ const EditProduct = (props) => {
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
-                        />
+                        /> */}
                       </div>
                     </div>
 
-                    <div className="row form-group my-2">
-                      {JSON.parse(editProduct.image)?.map((photo) => {
-                        return (
-                          <div
-                            className="col-xl-2 col-lg-2 col-sm-2"
-                            key={photo}
-                          >
-                            <div className="card ">
-                              <div className="text-center">
-                                <img
-                                  className="w-100"
-                                  src={`http://${base_url}:${port}/images/products/${photo}`}
-                                  alt=""
-                                  key={photo}
-                                  style={{
-                                    // width: "100px",
-                                    height: "100px",
-                                    objectFit: "contain",
-                                  }}
-                                />
-                              </div>
-
-                              <div className="card-footer pt-0 pb-0 text-center">
-                                <Tooltip title="Delete">
-                                  <IconButton
-                                    onClick={(e) => removeImage(e, photo)}
-                                  >
-                                    <DeleteIcon fontSize="small" />
-                                  </IconButton>
-                                </Tooltip>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
                     <div className="row form-group">
                       <div
                         className="col-xl-3 col-xxl-3 col-lg-3 col-sm-3 d-flex align-items-center justify-content-center"
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("video")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 10MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <input
                           type="file"
                           accept="video/*"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (videoValidation ? " is-invalid" : "")
+                          }
                           name="video"
                           onChange={handleVideo}
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
                         />
+                        <div className="text-danger">
+                          <small> {videoValidation}</small>
+                        </div>
                       </div>
                       <div className="row form-group my-2">
                         {JSON.parse(editProduct.video)?.map((video) => {

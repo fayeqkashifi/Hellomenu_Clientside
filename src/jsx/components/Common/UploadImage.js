@@ -5,10 +5,18 @@ import IconButton from "@mui/material/IconButton";
 import BrowserUpdatedIcon from "@mui/icons-material/BrowserUpdated";
 
 const UploadImage = (props) => {
-  const { images, setImages, values, urlPath, maxFileSize } = props;
+  const {
+    images,
+    setImages,
+    values,
+    urlPath,
+    maxFileSize,
+    setImageValidation,
+  } = props;
   const [loading, setLoading] = useState(true);
 
   const onChangeTest = (imageList, addUpdateIndex) => {
+    setImageValidation();
     // console.log(imageList);
     setImages(imageList);
   };
@@ -83,6 +91,7 @@ const UploadImage = (props) => {
           dataURLKey="data_url"
           acceptType={["jpg", "gif", "png"]}
           maxFileSize={maxFileSize}
+          required
         >
           {({
             imageList,

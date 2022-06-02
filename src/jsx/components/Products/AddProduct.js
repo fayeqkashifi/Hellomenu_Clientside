@@ -16,6 +16,7 @@ import SubmitButtons from "../Common/SubmitButtons";
 import MButton from "@mui/material/Button";
 import Local from "./Local";
 import AddIngredient from "./Ingredients/Add";
+import UploadImage from "../Common/UploadImage";
 
 const AddProduct = (props) => {
   const history = useHistory();
@@ -58,57 +59,68 @@ const AddProduct = (props) => {
     });
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = React.useState([]);
+  const [imageValidation, setImageValidation] = useState();
 
   const saveProduct = (data) => {
-    setIsSubmitting(true);
+    setImageValidation();
+    if (images.length != 0) {
+      setIsSubmitting(true);
 
-    const formData = new FormData();
-    for (let i = 0; i < data.photo.length; i++) {
-      formData.append("image[]", data.photo[i]);
-    }
-    productbranches.map((item) => {
-      formData.append("branches[]", item.value);
-    });
-    for (let i = 0; i < data.videos.length; i++) {
-      formData.append("videos[]", data.videos[i]);
-    }
-    formData.append("ProductName", data.ProductName);
-    formData.append("sub_category", data.sub_category);
-    formData.append("category", data.category);
-    formData.append("price", data.price);
-    formData.append("stock", data.stock);
-    formData.append("preparationTime", data.preparationTime);
-    formData.append("ingredients", JSON.stringify(productIngredient));
-    formData.append("extras", JSON.stringify(productExtra));
-    formData.append("recommendations", JSON.stringify(productRecom));
-    formData.append("UnitName", data.UnitName);
-    formData.append("branchId", branchId);
-    formData.append("form", JSON.stringify(form));
-    formData.append("translation", JSON.stringify(lang));
-    axios
-      .post(`/api/insertProducts`, formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          Swal.fire({
-            title: "Good job!",
-            html: res.data.message,
-            icon: "success",
-            confirmButtonText: "OK",
-            confirmButtonColor: "#93de8b",
-          }).then((check) => {
-            if (check) {
-              setIsSubmitting(false);
-              history.push({
-                pathname: `/branches/show/products`,
-                state: { id: branchId },
-              });
-            }
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
+      const formData = new FormData();
+      for (let i = 0; i < images.length; i++) {
+        formData.append("image[]", images[i].file);
+      }
+      // for (let i = 0; i < data.photo.length; i++) {
+      //   formData.append("image[]", data.photo[i]);
+      // }
+
+      productbranches.map((item) => {
+        formData.append("branches[]", item.value);
       });
+      for (let i = 0; i < videos.videos.length; i++) {
+        formData.append("videos[]", videos.videos[i]);
+      }
+      formData.append("ProductName", data.ProductName);
+      formData.append("sub_category", data.sub_category);
+      formData.append("category", data.category);
+      formData.append("price", data.price);
+      formData.append("stock", data.stock);
+      formData.append("preparationTime", data.preparationTime);
+      formData.append("ingredients", JSON.stringify(productIngredient));
+      formData.append("extras", JSON.stringify(productExtra));
+      formData.append("recommendations", JSON.stringify(productRecom));
+      formData.append("UnitName", data.UnitName);
+      formData.append("branchId", branchId);
+      formData.append("form", JSON.stringify(form));
+      formData.append("translation", JSON.stringify(lang));
+      axios
+        .post(`/api/insertProducts`, formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            Swal.fire({
+              title: "Good job!",
+              html: res.data.message,
+              icon: "success",
+              confirmButtonText: "OK",
+              confirmButtonColor: "#93de8b",
+            }).then((check) => {
+              if (check) {
+                setIsSubmitting(false);
+                history.push({
+                  pathname: `/branches/show/products`,
+                  state: { id: branchId },
+                });
+              }
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setImageValidation("This Field is Required.");
+    }
   };
 
   //for retriving data using laravel API
@@ -336,7 +348,27 @@ const AddProduct = (props) => {
 
     setForm((prev) => prev.filter((item) => item !== prev[index]));
   };
+  const [videos, setVideos] = useState([]);
+  const [videoValidation, setVideoValidation] = useState();
 
+  const handleVideo = (e) => {
+    setVideoValidation();
+    const data = e.target.files;
+    let valid = "";
+    for (let i = 0; i < data.length; i++) {
+      if (!data[i].name.match(/\.(mp4|wmv|mov|flv|avi|mkv)$/)) {
+        valid = "Unsupported File Format.";
+      } else if (data[i].size >= 10000000) {
+        valid = "File Size is too large(Max Size 10MB).";
+      }
+    }
+
+    if (valid == "") {
+      setVideos({ ...videos, [e.target.name]: data });
+    } else {
+      setVideoValidation(valid);
+    }
+  };
   var viewProducts_HTMLTABLE = "";
   if (loading) {
     return (
@@ -574,21 +606,24 @@ const AddProduct = (props) => {
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("images")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 5MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="form-control"
-                          name="photo"
-                          required
-                          onChange={(event) => {
-                            setFieldValue("photo", event.target.files);
-                          }}
-                          multiple
-                          data-overwrite-initial="false"
-                          data-min-file-count="1"
+                        {/* <div className={imageValidation ? " is-invalid" : ""}> */}
+                        <UploadImage
+                          images={images}
+                          setImages={setImages}
+                          maxFileSize={5000000}
+                          setImageValidation={setImageValidation}
+                          
                         />
+                        {/* </div> */}
+
+                        <div className="text-danger">
+                          <small> {imageValidation}</small>
+                        </div>
                       </div>
                     </div>
                     <div className="row form-group">
@@ -597,20 +632,27 @@ const AddProduct = (props) => {
                         style={{ backgroundColor: "#f5f5f5" }}
                       >
                         {t("video")}
+                        <small style={{ fontSize: "10px" }}>
+                          {"(Max Size 10MB)"}
+                        </small>
                       </div>
                       <div className="col-xl-9 col-xxl-9 col-lg-9 col-sm-9">
                         <input
                           type="file"
                           accept="video/*"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (videoValidation ? " is-invalid" : "")
+                          }
+                          onChange={(event) => handleVideo(event)}
                           name="videos"
-                          onChange={(event) => {
-                            setFieldValue("videos", event.target.files);
-                          }}
                           multiple
                           data-overwrite-initial="false"
                           data-min-file-count="1"
                         />
+                        <div className="text-danger">
+                          <small> {videoValidation}</small>
+                        </div>
                       </div>
                     </div>
                     <div className="row form-group">
