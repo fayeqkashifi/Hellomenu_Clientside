@@ -23,7 +23,12 @@ const Header = ({ toggle, onProfile, onNotification, setCheck, check }) => {
       .post("/api/logout")
       .then((res) => {
         if (res.data.status === 200) {
-          localStorage.clear();
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("auth_name");
+          localStorage.removeItem("auth_company_id");
+          localStorage.removeItem("auth_id");
+          localStorage.removeItem("role");
+          localStorage.removeItem("locale");
           window.location = "/login";
         }
       })

@@ -58,8 +58,8 @@ const Cart = (props) => {
   const [branch, setBranch] = useState([]);
   const [fetchData, setFetchData] = useState([]);
   let source = axios.CancelToken.source();
-
   const dataLoad = async () => {
+    let total = 0;
     let newArray = [];
     await cart.map((item) => {
       getProduct(item.id, selectedLang.id, source).then((result) => {
@@ -79,6 +79,7 @@ const Cart = (props) => {
             }
           });
           let recommendArray = [];
+          let recomendTotal = 0;
           result.data.recommend.map((recom) => {
             item.recommendations.filter((recommend) => {
               if (recommend.value === recom.value) {
@@ -86,47 +87,71 @@ const Cart = (props) => {
                   ...recom,
                   qty: recommend.qty,
                 });
+                recomendTotal += recom.price * recommend.qty;
               }
             });
           });
+          const itemFetchData = result.data.fetchData[0];
+
           if (item.checkSKU) {
-            getVariations(item.id, source).then((res) => {
-              if (res !== undefined) {
-                if (res !== "") {
-                  let varData = JSON.parse(res.variants).filter(
-                    (variant) => variant.sku === item.checkSKU
-                  );
-                  newArray.push({
-                    ...result.data.fetchData[0],
-                    ...item,
-                    price: parseInt(varData[0].price),
-                    stock: parseInt(varData[0].stock),
-                    ingredients: ingredientArray,
-                    totalPrice: parseInt(varData[0].price) + extraTotal,
-                    extras: extraArray,
-                    recommendations: recommendArray,
-                  });
-                  console.log(varData);
+            if (item.checkSKU.length != 0) {
+              getVariations(item.id, source).then((res) => {
+                if (res !== undefined) {
+                  if (res !== "") {
+                    let varData = JSON.parse(res.variants).filter(
+                      (variant) => variant.sku === item.checkSKU
+                    );
+                    newArray.push({
+                      ...itemFetchData,
+                      ...item,
+                      price: parseInt(varData[0].price),
+                      stock: parseInt(varData[0].stock),
+                      ingredients: ingredientArray,
+                      totalPrice:
+                        parseInt(varData[0].price) * item.qty +
+                        extraTotal +
+                        recomendTotal,
+                      extras: extraArray,
+                      recommendations: recommendArray,
+                    });
+                    total +=
+                      parseInt(varData[0].price) * item.qty +
+                      extraTotal +
+                      recomendTotal;
+                    setSum(total);
+                  }
                 }
-              }
-            });
+              });
+            } else {
+              newArray.push({
+                ...itemFetchData,
+                ...item,
+                ingredients: ingredientArray,
+                totalPrice:
+                  itemFetchData.price * item.qty + extraTotal + recomendTotal,
+                extras: extraArray,
+                recommendations: recommendArray,
+              });
+              total +=
+                itemFetchData.price * item.qty + extraTotal + recomendTotal;
+              setSum(total);
+            }
           } else {
             newArray.push({
-              ...result.data.fetchData[0],
+              ...itemFetchData,
               ...item,
-              totalPrice: 0,
-
+              // totalPrice: 0,
               ingredients: ingredientArray,
               extras: extraArray,
               recommendations: recommendArray,
             });
+            total += item.qty * itemFetchData.price;
+            setSum(total);
           }
         }
       });
     });
-
     await setFetchData(newArray);
-
     await getBranch(branchId).then((data) => {
       setBranch(data);
     });
@@ -153,6 +178,9 @@ const Cart = (props) => {
     };
   }, []);
   useEffect(() => {
+    // if (fetchData.length !== cart.length) {
+    //   dataLoad();
+    // } else {
     let Total = 0;
     fetchData.map(
       (item) =>
@@ -162,10 +190,12 @@ const Cart = (props) => {
             : parseInt(item.totalPrice) + item.price * (item.qty - 1))
     );
     setSum(Total);
+    // }
+
     return () => {
       setSum(0);
     };
-  }, [cart]);
+  }, [cart, fetchData]);
   const remItem = (id, qty, price) => {
     setSum((sum -= price * qty));
     remCartItem(id, cart).then((data) => {
@@ -358,10 +388,10 @@ const Cart = (props) => {
             : `\n*${locale?.recommendation}*: ${item.recommendations?.map(
                 (val) =>
                   val.label +
-                  " ${locale?.price}: " +
+                  ` ${locale?.price}: ` +
                   val.price +
                   currency +
-                  " ${locale?.qty}: " +
+                  ` ${locale?.qty}: ` +
                   val.qty
               )}`
         } ${
@@ -511,7 +541,11 @@ const Cart = (props) => {
                 }
                 style={style?.cartCounterDiv}
               >
-                <Counter item={item} />
+                <Counter
+                  item={item}
+                  setFetchData={setFetchData}
+                  fetchData={fetchData}
+                />
               </div>
             </div>
             <div className="row">
@@ -545,10 +579,7 @@ const Cart = (props) => {
                 <Typography style={style?.cartDescription} gutterBottom>
                   <b>{locale?.total_price}: </b>
                   {item?.totalPrice !== undefined
-                    ? (
-                        parseInt(item.totalPrice) +
-                        item.price * (item.qty - 1)
-                      ).toFixed(2)
+                    ? item.totalPrice.toFixed(2)
                     : (parseInt(item.price) * item.qty).toFixed(2)}
                   {" " + currency}
                 </Typography>

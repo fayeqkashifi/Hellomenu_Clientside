@@ -105,7 +105,7 @@ const OrderDetails = () => {
         recommendations: recom.filter((item) => item !== undefined),
         ingredients: ingredients,
         extras: extraValue,
-        totalPrice: parseInt(price) + sum,
+        // totalPrice: parseInt(price) + sum,
         variantSKU: skuarray,
         checkSKU: activeSKU,
       });
@@ -126,7 +126,7 @@ const OrderDetails = () => {
         recommendations: recom.filter((item) => item !== undefined),
         ingredients: ingredients,
         extras: extraValue,
-        totalPrice: parseInt(price) + sum,
+        // totalPrice: parseInt(price) + sum,
         variantSKU: skuarray,
         checkSKU: activeSKU,
       });

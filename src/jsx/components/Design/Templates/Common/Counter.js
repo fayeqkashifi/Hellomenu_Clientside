@@ -17,7 +17,7 @@ import { TemplateContext } from "../TemplateContext";
 const Counter = (props) => {
   const { style, products, cart, setCart, locale } =
     useContext(TemplateContext);
-  const { item } = props;
+  const { item, setFetchData, fetchData } = props;
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -64,6 +64,9 @@ const Counter = (props) => {
   const remItem = (id) => {
     remCartItem(id, cart).then((data) => {
       setCart(data);
+      if (fetchData) {
+        setFetchData(fetchData.filter((item) => item.id !== id));
+      }
     });
   };
   var cartItem = [];
