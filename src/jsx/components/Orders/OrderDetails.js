@@ -13,6 +13,7 @@ import * as Yup from "yup";
 import ReactWhatsapp from "react-whatsapp";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { localization as t } from "../Localization";
+import Chip from "@mui/material/Chip";
 
 const OrderDetails = (props) => {
   let message = "";
@@ -62,7 +63,6 @@ const OrderDetails = (props) => {
           });
         }
         setFetchData(newArray);
-        setLoading(false);
       }
       const result = await axios.get(`/api/getOrder/${id}`);
       if (result.data.status === 200) {
@@ -70,6 +70,7 @@ const OrderDetails = (props) => {
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
+      await setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -177,10 +178,13 @@ const OrderDetails = (props) => {
                   {parseInt(item.price).toFixed(2) + "  " + currency}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  <b>{t("qty")}:</b> {item.qty + " " + item.UnitName}
+                  <b>{t("qty")}:</b>{" "}
+                  {item.qty +
+                    " " +
+                    (item.UnitName == null ? "" : item.UnitName)}
                 </Typography>
               </Grid>
-              <Grid item xs={6} xs={12} lg={5} xl={5} sm={6} md={6}>
+              <Grid item xs={12} lg={5} xl={5} sm={6} md={6}>
                 {item?.ingredients.length == 0 ? null : (
                   <Typography variant="subtitle1" gutterBottom>
                     <b>{t("ingredients")}:</b>
@@ -214,7 +218,7 @@ const OrderDetails = (props) => {
                 )}
                 {item?.recommendations.length === 0 ? null : (
                   <Typography variant="subtitle1" gutterBottom>
-                    <b>{t("recommendations")}:</b>
+                    <b>{t("recommendation")}: </b>
 
                     {item?.recommendations?.map((val, i) => {
                       return (
@@ -292,7 +296,7 @@ const OrderDetails = (props) => {
               <Typography variant="body1" gutterBottom>
                 <b>{t("ordering_methods")}: </b>
                 {order.orderingMethod === "whatsApp"
-                  ? t("whatsApp")
+                  ? t("whatsapp")
                   : order.orderingMethod === "tbl_qrcode"
                   ? t("table_qrcode")
                   : t("home_delivery")}
@@ -309,21 +313,39 @@ const OrderDetails = (props) => {
                   </Typography>
                 </>
               ) : null}
-              <Typography variant="body1" gutterBottom>
-                <b>{t("general_note")}: </b>
-                {order.generalNote}
-              </Typography>
+              {order.generalNote && (
+                <Typography variant="body1" gutterBottom>
+                  <b>{t("general_note")}: </b>
+                  {order.generalNote}
+                </Typography>
+              )}
+
               <Typography variant="body1" gutterBottom>
                 <b>{t("phone_number")}: </b>
                 {order.phoneNumber}
               </Typography>
               <Typography variant="body1" gutterBottom>
                 <b>{t("status")}: </b>
-                {order.status === 0
-                  ? t("discarded")
-                  : order.status === 1
-                  ? t("completed")
-                  : t("pending")}
+                <Chip
+                  label={order.status}
+                  color={
+                    order.status_id === 1
+                      ? "default"
+                      : order.status_id === 2
+                      ? "primary"
+                      : order.status_id === 3
+                      ? "secondary"
+                      : order.status_id === 4
+                      ? "info"
+                      : order.status_id === 5
+                      ? "error"
+                      : order.status_id === 5
+                      ? "danger"
+                      : "success"
+                  }
+                  variant="outlined"
+                  size="small"
+                />
               </Typography>
               {order.status === 0 ? (
                 <Typography variant="body1" gutterBottom>

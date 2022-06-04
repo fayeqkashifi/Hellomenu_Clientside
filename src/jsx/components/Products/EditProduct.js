@@ -242,7 +242,7 @@ const EditProduct = (props) => {
       });
     setEditProduct({ ...editProduct, [e.target.name]: e.target.value });
   };
-  
+
   const removeVideo = (e, video) => {
     e.preventDefault();
     axios
@@ -440,6 +440,11 @@ const EditProduct = (props) => {
                               as="select"
                               name="sub_category_id"
                               className={"form-control"}
+                              // value={
+                              //   editProduct.sub_category_id
+                              //     ? editProduct.sub_category_id
+                              //     : ""
+                              // }
                             >
                               <option key="empty" value="">
                                 {t("select_a_option")}

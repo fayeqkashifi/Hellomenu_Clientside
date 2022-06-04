@@ -247,28 +247,26 @@ const Home = () => {
                             <td>{item.tableId}</td>
                             <td>
                               <div className="d-flex align-items-center">
-                                {item.status === 1 ? (
-                                  <Chip
-                                    label="Completed"
-                                    color="success"
-                                    variant="outlined"
-                                    size="small"
-                                  />
-                                ) : item.status === 0 ? (
-                                  <Chip
-                                    label="Discarded"
-                                    color="warning"
-                                    variant="outlined"
-                                    size="small"
-                                  />
-                                ) : (
-                                  <Chip
-                                    label="Pending"
-                                    color="info"
-                                    variant="outlined"
-                                    size="small"
-                                  />
-                                )}
+                                <Chip
+                                  label={item.status}
+                                  color={
+                                    item.status_id === 1
+                                      ? "default"
+                                      : item.status_id === 2
+                                      ? "primary"
+                                      : item.status_id === 3
+                                      ? "secondary"
+                                      : item.status_id === 4
+                                      ? "info"
+                                      : item.status_id === 5
+                                      ? "error"
+                                      : item.status_id === 5
+                                      ? "danger"
+                                      : "success"
+                                  } 
+                                  variant="outlined"
+                                  size="small"
+                                />
                               </div>
                             </td>
                             <td>

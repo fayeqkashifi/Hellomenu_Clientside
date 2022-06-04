@@ -80,6 +80,7 @@ const NewGrid = (props) => {
   const [imageValidation, setImageValidation] = useState();
 
   const uploadImage = (event, index) => {
+    // console.log(index);
     setImageValidation();
     const data = event.target.files;
     let valid = "";
@@ -128,7 +129,7 @@ const NewGrid = (props) => {
           console.log(error);
         });
     } else {
-      setImageValidation(valid);
+      setImageValidation({ valid: valid, index: index });
     }
   };
   const removeImage = (e, image, index) => {
@@ -186,7 +187,7 @@ const NewGrid = (props) => {
                   ? value < 0 || value == ""
                     ? " form-control is-invalid"
                     : "form-control"
-                  : imageValidation
+                  : x == imageValidation?.index
                   ? "form-control is-invalid"
                   : "form-control"
               }
@@ -209,12 +210,13 @@ const NewGrid = (props) => {
               min="0"
               multiple
             ></input>
-            {key == "image" && (
-              <div className="text-danger">
-                <small> {imageValidation}</small>
-              </div>
-            )}
-
+            {key == "image" ? (
+              x == imageValidation?.index ? (
+                <div className="text-danger">
+                  <small> {imageValidation?.valid}</small>
+                </div>
+              ) : null
+            ) : null}
             {key == "price" || key == "stock" ? (
               value < 0 || value == "" ? (
                 <div className="invalid-feedback">

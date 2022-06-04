@@ -16,7 +16,9 @@ const UploadImage = (props) => {
   const [loading, setLoading] = useState(true);
 
   const onChangeTest = (imageList, addUpdateIndex) => {
-    setImageValidation();
+    if (setImageValidation) {
+      setImageValidation();
+    }
     // console.log(imageList);
     setImages(imageList);
   };

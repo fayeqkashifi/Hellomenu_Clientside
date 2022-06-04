@@ -78,8 +78,10 @@ const AddProduct = (props) => {
       productbranches.map((item) => {
         formData.append("branches[]", item.value);
       });
-      for (let i = 0; i < videos.videos.length; i++) {
-        formData.append("videos[]", videos.videos[i]);
+      if (videos.length != 0) {
+        for (let i = 0; i < videos.videos.length; i++) {
+          formData.append("videos[]", videos.videos[i]);
+        }
       }
       formData.append("ProductName", data.ProductName);
       formData.append("sub_category", data.sub_category);
@@ -617,7 +619,6 @@ const AddProduct = (props) => {
                           setImages={setImages}
                           maxFileSize={5000000}
                           setImageValidation={setImageValidation}
-                          
                         />
                         {/* </div> */}
 
