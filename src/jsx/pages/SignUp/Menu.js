@@ -1,30 +1,9 @@
 import React from "react";
 import HeaderWizard from "./HeaderWizard";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
-import { useHistory } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 const Menu = () => {
   const { t } = useTranslation();
-  const history = useHistory();
-
-  // const login = () => {
-  //   axios
-  //     .post("/api/login", atob(atob(atob(localStorage.getItem("credentials")))))
-  //     .then((res) => {
-  //       if (res.data.status === 200) {
-  //         localStorage.setItem("auth_token", res.data.token);
-  //         localStorage.setItem("auth_id", btoa(res.data.id));
-  //         localStorage.setItem("role", btoa(JSON.stringify(res.data.role)));
-  //         localStorage.setItem("locale", res.data.locale?.locale);
-  //         history.push("/dashboard");
-  //         localStorage.removeItem("credentials");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
   return (
     <>
       <HeaderWizard

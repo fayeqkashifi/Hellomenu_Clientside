@@ -575,7 +575,7 @@ export const DarkStyle = (custom, theme) => {
       bottom: 0,
       width: "100%",
       textAlign: "center",
-      zIndex: 99999999,
+      // zIndex: 99999999,
     },
     // End
 

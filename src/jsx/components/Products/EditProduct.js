@@ -446,7 +446,13 @@ const EditProduct = (props) => {
                               //     : ""
                               // }
                             >
-                              <option key="empty" value="">
+                              <option
+                                key="empty"
+                                value=""
+                                selected={
+                                  editProduct.sub_category_id ? "" : "selected"
+                                }
+                              >
                                 {t("select_a_option")}
                               </option>
                               {subCategories.map((item) => (

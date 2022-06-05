@@ -9,6 +9,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { localization as t } from "../Localization";
 import Search from "../Common/Search";
 import Paginate from "../Common/Paginate";
+import OrderStatus from "./Status";
 
 const Order = () => {
   const [fetchData, setFetchData] = useState([]);
@@ -68,26 +69,7 @@ const Order = () => {
         <td>{item.tableId}</td>
         <td>{item.dateAndTime}</td>
         <td>
-          <Chip
-            label={item.status}
-            color={
-              item.status_id === 1
-                ? "default"
-                : item.status_id === 2
-                ? "primary"
-                : item.status_id === 3
-                ? "secondary"
-                : item.status_id === 4
-                ? "info"
-                : item.status_id === 5
-                ? "error"
-                : item.status_id === 5
-                ? "danger"
-                : "success"
-            }
-            variant="outlined"
-            size="small"
-          />
+          <OrderStatus item={item} />
         </td>
         <td>
           <Link

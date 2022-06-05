@@ -311,4 +311,5 @@ export const Locale = {
   complete_order: "Complete Order",
   qty: "Qty",
   profile_pic: "Profile Pic",
+  change_status: "Change Status",
 };
