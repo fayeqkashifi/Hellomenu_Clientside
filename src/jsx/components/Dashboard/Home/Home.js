@@ -8,9 +8,10 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { base_url, port } from "../../../../Consts";
 import getSymbolFromCurrency from "currency-symbol-map";
+import { Dropdown } from "react-bootstrap";
 
 import axios from "axios";
-import Analytics from "./Analytics/Analytics";
+// import Analytics from "./Analytics/Analytics";
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [countBranches, setCountBranches] = useState(0);
@@ -263,10 +264,166 @@ const Home = () => {
                                       : item.status_id === 5
                                       ? "danger"
                                       : "success"
-                                  } 
+                                  }
                                   variant="outlined"
                                   size="small"
                                 />
+                              </div>
+                            </td>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                <Link
+                                  to={"#"}
+                                  className="btn bgl-warning text-warning"
+                                >
+                                  PENDING
+                                </Link>
+                                <Dropdown>
+                                  <Dropdown.Toggle
+                                    variant
+                                    className="table-dropdown icon-false "
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="24px"
+                                      height="24px"
+                                      viewBox="0 0 24 24"
+                                      version="1.1"
+                                    >
+                                      <g
+                                        stroke="none"
+                                        strokeWidth="1"
+                                        fill="none"
+                                        fillRule="evenodd"
+                                      >
+                                        <rect
+                                          x="0"
+                                          y="0"
+                                          width="24"
+                                          height="24"
+                                        ></rect>
+                                        <circle
+                                          fill="#000000"
+                                          cx="12"
+                                          cy="5"
+                                          r="2"
+                                        ></circle>
+                                        <circle
+                                          fill="#000000"
+                                          cx="12"
+                                          cy="12"
+                                          r="2"
+                                        ></circle>
+                                        <circle
+                                          fill="#000000"
+                                          cx="12"
+                                          cy="19"
+                                          r="2"
+                                        ></circle>
+                                      </g>
+                                    </svg>
+                                  </Dropdown.Toggle>
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item>
+                                      <Link to={"#"} className="text-black">
+                                        <svg
+                                          className="mr-3"
+                                          width="24"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999"
+                                            stroke="#209F84"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                          <path
+                                            d="M22 4L12 14.01L9 11.01"
+                                            stroke="#209F84"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                        </svg>
+                                        Accept order
+                                      </Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                      <Link to={"#"} className="text-black">
+                                        <svg
+                                          className="mr-3"
+                                          width="24"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="#F24242"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                          ></path>
+                                          <path
+                                            d="M15 9L9 15"
+                                            stroke="#F24242"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                          ></path>
+                                          <path
+                                            d="M9 9L15 15"
+                                            stroke="#F24242"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                          ></path>
+                                        </svg>
+                                        Reject order
+                                      </Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                      <Link to={"#"} className="text-black">
+                                        <svg
+                                          className="mr-3"
+                                          width="24"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="#6F6F6F"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                          ></path>
+                                          <path
+                                            d="M12 16V12"
+                                            stroke="#6F6F6F"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                          ></path>
+                                          <path
+                                            d="M12 8H12.01"
+                                            stroke="#6F6F6F"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                          ></path>
+                                        </svg>
+                                        View Details
+                                      </Link>
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </td>
                             <td>

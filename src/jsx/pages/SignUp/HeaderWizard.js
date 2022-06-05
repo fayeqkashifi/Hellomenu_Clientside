@@ -1,6 +1,6 @@
 import React from "react";
 const HeaderWizard = (props) => {
-  const { first, second, thrid, fourth } = props;
+  const { first, second, thrid } = props;
   return (
     <div className="row justify-content-center">
       <div className="col-md-5">
@@ -9,7 +9,6 @@ const HeaderWizard = (props) => {
             <div className="md-step-circle">
               <span>1</span>
             </div>
-            {/* <div className="md-step-title">Checkout</div> */}
             <div className="md-step-bar-left"></div>
             <div className="md-step-bar-right"></div>
           </div>
@@ -17,8 +16,6 @@ const HeaderWizard = (props) => {
             <div className="md-step-circle">
               <span>2</span>
             </div>
-            {/* <div className="md-step-title">Shipping</div>
-            <div className="md-step-optional">Optional</div> */}
             <div className="md-step-bar-left"></div>
             <div className="md-step-bar-right"></div>
           </div>
@@ -26,18 +23,16 @@ const HeaderWizard = (props) => {
             <div className="md-step-circle">
               <span>3</span>
             </div>
-            {/* <div className="md-step-title">Payment</div> */}
             <div className="md-step-bar-left"></div>
             <div className="md-step-bar-right"></div>
           </div>
-          <div className={`md-step ${fourth}`}>
+          {/* <div className={`md-step ${fourth}`}>
             <div className="md-step-circle">
               <span>4</span>
             </div>
-            {/* <div className="md-step-title">Review</div> */}
             <div className="md-step-bar-left"></div>
             <div className="md-step-bar-right"></div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

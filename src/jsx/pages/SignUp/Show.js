@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 
 import Header from "../Header";
 import OnBoarding from "./OnBoarding";
-import Venue from "./Venue";
 import Solutions from "./Solutions";
 import Menu from "./Menu";
 import Error404 from "../Error404";
@@ -14,8 +13,6 @@ const Show = (props) => {
       <Header />
       {route === "user" ? (
         <OnBoarding />
-      ) : route === "venue" ? (
-        <Venue />
       ) : route === "solutions" ? (
         <Solutions />
       ) : route === "menu" ? (

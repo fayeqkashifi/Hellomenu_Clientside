@@ -62,12 +62,7 @@ const Solutions = () => {
   };
   return (
     <>
-      <HeaderWizard
-        first="done active"
-        second="done active"
-        thrid="editable active"
-        fourth=""
-      />
+      <HeaderWizard first="done active" second="editable active" thrid="" />
       <div className="row justify-content-center">
         <div className="col-md-5">
           <div className="authincation-content">

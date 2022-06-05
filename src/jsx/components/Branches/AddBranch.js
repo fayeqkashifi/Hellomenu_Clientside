@@ -82,9 +82,10 @@ const AddBranch = () => {
           for (let i = 0; i < images.length; i++) {
             formData.append("branchImages[]", images[i].file);
           }
-
-          for (let i = 0; i < videos.branchVideos.length; i++) {
-            formData.append("branchVideos[]", videos.branchVideos[i]);
+          if (videos.length != 0) {
+            for (let i = 0; i < videos.branchVideos.length; i++) {
+              formData.append("branchVideos[]", videos.branchVideos[i]);
+            }
           }
           formData.append("phoneNumber", value);
           formData.append("otherAddressFields", JSON.stringify(form));
@@ -410,7 +411,7 @@ const AddBranch = () => {
                   BranchName={values.BrancheName}
                 />
               </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+              <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-4">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("addressing_method")}</h3>
@@ -477,7 +478,7 @@ const AddBranch = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+              <div className="col-xl-8 col-xxl-8 col-lg-8 col-sm-8">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("images_and_videos")}</h3>

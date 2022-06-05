@@ -531,7 +531,7 @@ const EditBranch = (props) => {
                 />
               </div>
 
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+              <div className="col-xl-4 col-xxl-4 col-lg-4 col-sm-4">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("addressing_method")}</h3>
@@ -597,7 +597,7 @@ const EditBranch = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+              <div className="col-xl-8 col-xxl-8 col-lg-8 col-sm-8">
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">{t("images_and_videos")}</h3>

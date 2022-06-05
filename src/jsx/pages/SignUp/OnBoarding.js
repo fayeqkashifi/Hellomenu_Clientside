@@ -39,7 +39,7 @@ const OnBoarding = () => {
         .then((res) => {
           localStorage.setItem("auth_name", btoa(data.name));
           history.push({
-            pathname: `/onboarding/venue`,
+            pathname: `/onboarding/solutions`,
             state: {
               userId: userId,
             },
@@ -63,7 +63,7 @@ const OnBoarding = () => {
   }, []);
   return (
     <>
-      <HeaderWizard first="editable active" second="" thrid="" fourth="" />
+      <HeaderWizard first="editable active" second="" thrid="" />
       <div className="row justify-content-center">
         <div className="col-md-5">
           <div className="authincation-content">

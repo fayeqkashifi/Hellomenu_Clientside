@@ -25,7 +25,7 @@ import DefaultPic from "../../../../images/hellomenu/logo.svg";
 import { localization as t } from "../../Localization";
 import ipapi from "ipapi.co";
 import { Link, useRouteMatch } from "react-router-dom";
-// import ScrollContainer from "react-indiana-drag-scroll";
+import { Locale } from "../../../components/DefaultLanguage";
 
 const CreateUser = () => {
   const { url } = useRouteMatch();
@@ -147,6 +147,7 @@ const CreateUser = () => {
       formData.append("password", data.password);
       formData.append("phone_number", value);
       formData.append("role_id", data.role_id);
+      formData.append("locale", JSON.stringify(Locale));
 
       axios
         .post(`/api/register`, formData)
@@ -276,7 +277,11 @@ const CreateUser = () => {
                     <div className="row">
                       <div className="col-6">
                         <div className="form-group">
-                          <label> {t("name")}</label>
+                          <label>
+                            {" "}
+                            {t("name")}
+                            <span className="text-danger"> * </span>
+                          </label>
                           <Field
                             name="name"
                             type="text"
@@ -295,7 +300,11 @@ const CreateUser = () => {
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          <label> {t("email")}</label>
+                          <label>
+                            {" "}
+                            {t("email")}
+                            <span className="text-danger"> * </span>
+                          </label>
                           <Field
                             name="email"
                             type="email"
@@ -317,7 +326,11 @@ const CreateUser = () => {
 
                       <div className="col-6">
                         <div className="form-group">
-                          <label> {t("password")}</label>
+                          <label>
+                            {" "}
+                            {t("password")}
+                            <span className="text-danger"> * </span>
+                          </label>
                           <Field
                             name="password"
                             type="password"
@@ -338,7 +351,11 @@ const CreateUser = () => {
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          <label> {t("confirm_new_password")}</label>
+                          <label>
+                            {" "}
+                            {t("confirm_new_password")}
+                            <span className="text-danger"> * </span>
+                          </label>
                           <Field
                             name="confirm_new_password"
                             type="password"
@@ -361,8 +378,8 @@ const CreateUser = () => {
                       <div className="col-6">
                         <div className="form-group">
                           <label>
-                            <span className="text-danger"> * </span>
                             What is your Role?
+                            <span className="text-danger"> * </span>
                           </label>
 
                           <Select
@@ -390,7 +407,11 @@ const CreateUser = () => {
                       </div>
                       <div className="col-6">
                         <div className="form-group">
-                          <label> {t("phone_number")}</label>
+                          <label>
+                            {" "}
+                            {t("phone_number")}
+                            <span className="text-danger"> * </span>
+                          </label>
                           <PhoneInput
                             placeholder="Enter phone number"
                             defaultCountry={ipApi?.country_code}

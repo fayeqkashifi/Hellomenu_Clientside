@@ -149,7 +149,7 @@ const Login = () => {
                                 ? " is-invalid"
                                 : "")
                             }
-                            placeholder="*******"
+                            placeholder="********"
                           />
                           <ErrorMessage
                             name="password"

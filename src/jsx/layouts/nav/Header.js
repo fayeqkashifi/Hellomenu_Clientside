@@ -145,7 +145,12 @@ const Header = ({ toggle, onProfile, onNotification, setCheck, check }) => {
                 >
                   <div className="header-info">
                     <small>{t("hello_menu")}</small>
-                    <span> {atob(localStorage.getItem("auth_name"))} </span>
+                    <span>
+                      {" "}
+                      {atob(localStorage.getItem("auth_name")) == "null"
+                        ? "HELLO MENU"
+                        : atob(localStorage.getItem("auth_name"))}{" "}
+                    </span>
                   </div>
                   <img
                     src={
