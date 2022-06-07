@@ -26,7 +26,6 @@ const OrderDetails = (props) => {
   let [sum, setSum] = useState(0);
   const [check, setCheck] = useState(false);
   const [modalCentered, setModalCentered] = useState(false);
-  const [jsonData, setJsonData] = useState([]);
   const dataLoad = async () => {
     try {
       const items = await axios.get(`/api/getOrderItem/${id}`);

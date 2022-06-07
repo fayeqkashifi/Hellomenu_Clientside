@@ -8,7 +8,6 @@ const OrderStatus = (props) => {
   const { item } = props;
   const [modalShow, setModalShow] = useState(false);
   const [data, setData] = useState([]);
-
   const dataLoad = async () => {
     try {
       const result = await axios.get(`/api/getOrderStatus`);
@@ -62,6 +61,8 @@ const OrderStatus = (props) => {
 };
 function MyVerticallyCenteredModal(props) {
   const { data, item } = props;
+  const [check, setCheck] = useState(false);
+
   const ChangeStatus = (statusId, itemId, label) => {
     const formData = new FormData();
     formData.append("order_status_id", statusId);
@@ -72,6 +73,7 @@ function MyVerticallyCenteredModal(props) {
         if (res.data.status === 200) {
           item.status_id = statusId;
           item.status = label;
+          setCheck(!check);
         }
       })
       .catch((err) => {
@@ -91,7 +93,10 @@ function MyVerticallyCenteredModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div className="col-xl-12 col-xxl-12 col-lg-12col-sm-12 d-flex align-items-center justify-content-center">
+        <div
+          className="col-xl-12 col-xxl-12 col-lg-12col-sm-12 d-flex align-items-center justify-content-center"
+          key={check}
+        >
           {data?.map((itemMap) => {
             return (
               <Chip
