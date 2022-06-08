@@ -28,7 +28,7 @@ const Header = ({ toggle, onProfile, onNotification, setCheck, check }) => {
           localStorage.removeItem("auth_company_id");
           localStorage.removeItem("auth_id");
           localStorage.removeItem("role");
-          localStorage.removeItem("locale");
+          // localStorage.removeItem("locale");
           window.location = "/login";
         }
       })

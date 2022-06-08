@@ -7,18 +7,37 @@ function Paginate(props) {
   const { setFetchData, url, fetchData } = props;
   const [pageCount, setpageCount] = useState(0);
   const [total, setTotal] = useState(0);
+  const getComments = async () => {
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `${url}`,
+        cancelToken: source.token,
+      });
+      if (res != undefined) {
+        // setFetchData(res.data.fetchData.data);
+        setpageCount(res.data.fetchData.last_page);
+        setTotal(res.data.fetchData.total);
+      }
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log("cancelled");
+      } else {
+        throw err;
+      }
+    }
+    // const res = await axios.get(`${url}`, cancelToken: source.token);
+  };
+  let source = axios.CancelToken.source();
+
   useEffect(() => {
-    const getComments = async () => {
-      const res = await axios.get(`${url}`);
-      // setFetchData(res.data.fetchData.data);
-      setpageCount(res.data.fetchData.last_page);
-      setTotal(res.data.fetchData.total);
-    };
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
     getComments();
     return () => {
-      // setFetchData([]);
-      // setpageCount(0);
-      // setTotal(0);
+      source.cancel();
     };
   }, [fetchData]);
 

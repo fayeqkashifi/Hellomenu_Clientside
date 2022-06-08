@@ -1,35 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./TrackStyle.css";
 import axios from "axios";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { Button } from "react-bootstrap";
 
 const OrderSearch = (props) => {
-  const { setOrder } = props;
-  const [value, setValue] = useState();
-
-  const onChange = (e) => {
-    setValue(e.target.value);
+  const { setOrder, setShowDetails, setError } = props;
+  const initialValues = {
+    value: "",
   };
-  const Search = () => {
-    if (value != undefined) {
-      console.log(value);
-      axios.get(`/api/findOrder/${value}`).then((result) => {
-        console.log(result);
-        if (result.data.status === 200) {
-          setOrder(result.data.fetchData);
-          console.log(result.data.fetchData);
-        } else {
-          throw Error("Due to an error, the data cannot be retrieved.");
+  const validationSchema = () => {
+    return Yup.object().shape({
+      value: Yup.string().required("Order ID is required"),
+    });
+  };
+
+  const search = (data) => {
+    setShowDetails(false);
+    axios.post(`/api/findOrder`, data).then((result) => {
+      if (result.data.status === 200) {
+        if (result.data.fetchData == null) {
+          setError("Order Not Found");
         }
-      });
-    } else {
-      console.log("test");
-    }
+        setOrder(result.data.fetchData);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
+    });
   };
 
   return (
-    <div className="py-5 text-center">
-      <input onChange={onChange} value={value} />
-      <button onClick={Search}>Search</button>
+    <div className="container py-5">
+      <div className="row">
+        <div className="col align-self-center">
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={search}
+          >
+            {({ errors, status, touched, values }) => (
+              <Form>
+                <div className="form-group ">
+                  <Field
+                    name="value"
+                    type="text"
+                    className={
+                      "form-control" +
+                      (errors.value && touched.value ? " is-invalid" : "")
+                    }
+                    placeholder="Please Enter Tracking Id...."
+                  />
+                  <ErrorMessage
+                    name="value"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="text-left text-sm-right">
+                  <Button variant="primary" type="submit" className="">
+                    Search
+                  </Button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
     </div>
   );
 };

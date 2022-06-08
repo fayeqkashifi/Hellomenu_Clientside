@@ -31,7 +31,7 @@ const OrderStatus = (props) => {
       <Chip
         onClick={() => setModalShow(true)}
         key={item.status_id}
-        label={item.status}
+        label={item.label}
         color={
           item.status_id === 1
             ? "default"

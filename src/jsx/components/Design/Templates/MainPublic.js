@@ -41,29 +41,31 @@ const MainPublic = (props) => {
     JSON.parse(sessionStorage.getItem("locale")) || []
   );
   const dataLoad = async (input) => {
-    if (source) {
-      source.cancel("Operations cancelled due to new request");
-    }
-    source = axios.CancelToken.source();
     setActiveCategory("All~~~1");
     let defaultLang;
     if (input === undefined) {
       if (languages.length === 0) {
-        const res = await axios.get(`/api/getBranchLangs/${branchId}`);
-        if (res.data.status === 200) {
-          setLanguages(res.data.fetchData);
-          sessionStorage.setItem(
-            "languages",
-            JSON.stringify(res.data.fetchData)
-          );
-        }
-        defaultLang = res?.data?.fetchData?.filter((item) => {
-          if (item.default == 1) {
-            setLocale(JSON.parse(item.locale));
-            sessionStorage.setItem("locale", item.locale);
-            return item;
+        const res = await axios({
+          method: "GET",
+          url: `/api/getBranchLangs/${branchId}`,
+          cancelToken: source.token,
+        });
+        if (res != undefined) {
+          if (res.data.status === 200) {
+            setLanguages(res.data.fetchData);
+            sessionStorage.setItem(
+              "languages",
+              JSON.stringify(res.data.fetchData)
+            );
           }
-        })[0];
+          defaultLang = res?.data?.fetchData?.filter((item) => {
+            if (item.default == 1) {
+              setLocale(JSON.parse(item.locale));
+              sessionStorage.setItem("locale", item.locale);
+              return item;
+            }
+          })[0];
+        }
       } else {
         defaultLang = JSON.parse(sessionStorage.getItem("selectedLang"));
       }
@@ -71,7 +73,8 @@ const MainPublic = (props) => {
     let page = 1;
     await getCategoriesBasedProduct(
       branchId,
-      input === undefined ? defaultLang?.id : input.id
+      input === undefined ? defaultLang?.id : input.id,
+      source
     ).then((data) => {
       setCategories(data);
     });
@@ -90,18 +93,9 @@ const MainPublic = (props) => {
     });
   };
 
-  useEffect(() => {
-    dataLoad();
-    return () => {
-      source.cancel();
-      setLoading(true);
-      setCategories([]);
-      setProducts([]);
-      setActiveCategory("All~~~1");
-      setPage(1);
-      setLastPage(0);
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {};
+  // }, []);
   let source = axios.CancelToken.source();
 
   useEffect(() => {
@@ -119,9 +113,16 @@ const MainPublic = (props) => {
         setTheme(data);
       }
     });
+    dataLoad();
 
     return () => {
       source.cancel();
+      setLoading(true);
+      setCategories([]);
+      setProducts([]);
+      setActiveCategory("All~~~1");
+      setPage(1);
+      setLastPage(0);
     };
   }, []);
   var view = "";

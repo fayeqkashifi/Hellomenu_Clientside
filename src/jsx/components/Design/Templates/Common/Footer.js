@@ -14,38 +14,23 @@ function Footer(props) {
     useContext(TemplateContext);
   const { title, url, stock } = props;
   let [sum, setSum] = useState(0);
-  const [fetchData, setFetchData] = useState([]);
 
   const dataLoad = async () => {
-    let total = 0;
-    let newArray = [];
+    var total = 0;
     if (cart.length != 0) {
       await cart.map((item) => {
         getProduct(item.id, selectedLang.id, source).then((result) => {
           if (result !== undefined) {
-            let ingredientArray = [];
-            result.data.ingredients.map((ingredient) => {
-              if (item.ingredients.includes(ingredient.value)) {
-                ingredientArray.push(ingredient.label);
-              }
-            });
-            let extraArray = [];
             let extraTotal = 0;
             result.data.extras.map((extra) => {
               if (item.extras.includes(extra.value)) {
-                extraArray.push(extra);
                 extraTotal += extra.price;
               }
             });
-            let recommendArray = [];
             let recomendTotal = 0;
             result.data.recommend.map((recom) => {
               item.recommendations.filter((recommend) => {
                 if (recommend.value === recom.value) {
-                  recommendArray.push({
-                    ...recom,
-                    qty: recommend.qty,
-                  });
                   recomendTotal += recom.price * recommend.qty;
                 }
               });
@@ -60,60 +45,27 @@ function Footer(props) {
                       let varData = JSON.parse(res.variants).filter(
                         (variant) => variant.sku === item.checkSKU
                       );
-                      newArray.push({
-                        ...itemFetchData,
-                        ...item,
-                        price: parseInt(varData[0].price),
-                        stock: parseInt(varData[0].stock),
-                        ingredients: ingredientArray,
-                        totalPrice:
-                          parseInt(varData[0].price) * item.qty +
-                          extraTotal +
-                          recomendTotal,
-                        extras: extraArray,
-                        recommendations: recommendArray,
-                      });
                       total +=
                         parseInt(varData[0].price) * item.qty +
                         extraTotal +
                         recomendTotal;
-                      setSum(total);
                     }
                   }
                 });
               } else {
-                newArray.push({
-                  ...itemFetchData,
-                  ...item,
-                  ingredients: ingredientArray,
-                  totalPrice:
-                    itemFetchData.price * item.qty + extraTotal + recomendTotal,
-                  extras: extraArray,
-                  recommendations: recommendArray,
-                });
                 total +=
                   itemFetchData.price * item.qty + extraTotal + recomendTotal;
-                setSum(total);
               }
             } else {
-              newArray.push({
-                ...itemFetchData,
-                ...item,
-                // totalPrice: 0,
-                ingredients: ingredientArray,
-                extras: extraArray,
-                recommendations: recommendArray,
-              });
               total += item.qty * itemFetchData.price;
-              setSum(total);
             }
+            setSum(total);
           }
         });
       });
     } else {
       setSum(total);
     }
-    await setFetchData(newArray);
   };
   let source = axios.CancelToken.source();
   useEffect(() => {
@@ -126,34 +78,12 @@ function Footer(props) {
       source.cancel();
     };
   }, [cart]);
-  // useEffect(() => {
-  //   let count = 0;
-  //   cart.map(
-  //     (item) =>
-  //       (count +=
-  //         item.totalPrice === undefined
-  //           ? item.price * item.qty
-  //           : parseInt(item.totalPrice) + item.price * (item.qty - 1))
-  //   );
-  //   setSum(count);
-  //   return () => {
-  //     setSum(0);
-  //   };
-  // }, [cart]);
+
   const [modalCentered, setModalCentered] = useState(false);
   return (
     <>
       <Box component="footer" sx={style?.footerStyle} className="bottom-0 mt-5">
         <Grid container spacing={2}>
-          <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
-            <Link
-              className={`col-12 btn border-1 border-solid border-white text-white`}
-              // style={style?.buttonStyle}
-              to="/track-order"
-            >
-              Track Order
-            </Link>
-          </Grid>
           <Grid
             item
             xs={4}
@@ -212,6 +142,15 @@ function Footer(props) {
                 {title}
               </button>
             )}
+          </Grid>
+          <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
+            <Link
+              className={`col-12 btn`}
+              style={style?.buttonStyle}
+              to="/track-order"
+            >
+              Track Order
+            </Link>
           </Grid>
         </Grid>
       </Box>

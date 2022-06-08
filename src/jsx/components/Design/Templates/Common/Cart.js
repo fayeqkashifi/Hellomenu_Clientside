@@ -36,6 +36,7 @@ import ipapi from "ipapi.co";
 import Counter from "../Common/Counter";
 import { TemplateContext } from "../TemplateContext";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Cart = (props) => {
   let message = "";
@@ -92,7 +93,6 @@ const Cart = (props) => {
             });
           });
           const itemFetchData = result.data.fetchData[0];
-
           if (item.checkSKU) {
             if (item.checkSKU.length != 0) {
               getVariations(item.id, source).then((res) => {
@@ -118,7 +118,7 @@ const Cart = (props) => {
                       parseInt(varData[0].price) * item.qty +
                       extraTotal +
                       recomendTotal;
-                    setSum(total);
+                    // setSum(total);
                   }
                 }
               });
@@ -134,7 +134,7 @@ const Cart = (props) => {
               });
               total +=
                 itemFetchData.price * item.qty + extraTotal + recomendTotal;
-              setSum(total);
+              // setSum(total);
             }
           } else {
             newArray.push({
@@ -146,8 +146,8 @@ const Cart = (props) => {
               recommendations: recommendArray,
             });
             total += item.qty * itemFetchData.price;
-            setSum(total);
           }
+          setSum(total);
         }
       });
     });
@@ -291,12 +291,24 @@ const Cart = (props) => {
       formData.append("otherAddressFields", JSON.stringify(otherAddress));
       formData.append("deliveryFees", deliveryFees);
       formData.append("branch_id", branchId);
-      insertOrder(formData).then((msg) => {
-        setAlerts(true, "success", msg);
-        setTable([]);
-        setUserData([]);
-        setCart([]);
-        localStorage.removeItem("cart");
+      insertOrder(formData).then((res) => {
+        Swal.fire({
+          title: "Thank You For Your Order!",
+          html:
+            "Please have this number on hand in case you need to track your order: " +
+            res.orderId,
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#93de8b",
+        }).then((check) => {
+          if (check) {
+            setTable([]);
+            setUserData([]);
+            setCart([]);
+            localStorage.removeItem("cart");
+          }
+        });
+        // setAlerts(true, "success", msg);
       });
     }
   };

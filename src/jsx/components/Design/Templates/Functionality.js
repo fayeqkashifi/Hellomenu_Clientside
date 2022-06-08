@@ -2,11 +2,18 @@ import axios from "axios";
 
 export const getThemplate = async (branchId, config) => {
   try {
-    const result = await axios.get(`/api/getTempBasedOnBranch/${branchId}`, {
+    // const result = await axios.get(, {
+    //   cancelToken: config.token,
+    // });
+    const result = await axios({
+      method: "GET",
+      url: `/api/getTempBasedOnBranch/${branchId}`,
       cancelToken: config.token,
     });
-    if (result?.data?.status === 200) {
-      return result?.data?.fetchData;
+    if (result !== undefined) {
+      if (result?.data?.status === 200) {
+        return result?.data?.fetchData;
+      }
     }
   } catch (error) {
     if (axios.isCancel(error)) {
@@ -18,11 +25,18 @@ export const getThemplate = async (branchId, config) => {
 };
 export const getThemes = async (branchId, config) => {
   try {
-    const result = await axios.get(`/api/activeTheme/${branchId}`, {
+    // const result = await axios.get(`/api/activeTheme/${branchId}`, {
+    //   cancelToken: config.token,
+    // });
+    const result = await axios({
+      method: "GET",
+      url: `/api/activeTheme/${branchId}`,
       cancelToken: config.token,
     });
-    if (result?.data?.status === 200) {
-      return result?.data?.fetchData;
+    if (result !== undefined) {
+      if (result?.data?.status === 200) {
+        return result?.data?.fetchData;
+      }
     }
   } catch (error) {
     if (axios.isCancel(error)) {
@@ -69,16 +83,27 @@ export const getProductsBasedOnBranchId = async (
     }
   }
 };
-export const getCategoriesBasedProduct = async (branchId, langId) => {
+export const getCategoriesBasedProduct = async (branchId, langId, config) => {
   try {
-    const result = await axios.get(`/api/getCategoriesBasedProducts`, {
+    // const result = await axios.get(`/api/getCategoriesBasedProducts`, {
+    //   params: {
+    //     branchId: branchId,
+    //     langId: langId,
+    //   },
+    // });
+    const result = await axios({
+      method: "GET",
+      url: `/api/getCategoriesBasedProducts`,
       params: {
         branchId: branchId,
         langId: langId,
       },
+      cancelToken: config.token,
     });
-    if (result.data.status === 200) {
-      return result.data.fetchData;
+    if (result !== undefined) {
+      if (result.data.status === 200) {
+        return result.data.fetchData;
+      }
     }
   } catch (err) {
     if (axios.isCancel(err)) {
@@ -201,7 +226,7 @@ export const insertOrder = async (data) => {
   try {
     const result = await axios.post("/api/insertOrder", data);
     if (result.data.status === 200) {
-      return result.data.message;
+      return result.data;
     }
   } catch (err) {
     console.error(err);
