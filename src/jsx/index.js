@@ -102,7 +102,6 @@ const Markup = () => {
               {checkPermission("settings-view") && (
                 <PrivateRoute path={`/settings`} component={SettingsShow} />
               )}
-
               <Route component={Error404} />
             </Switch>
           </div>
