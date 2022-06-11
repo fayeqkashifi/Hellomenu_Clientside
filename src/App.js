@@ -119,7 +119,7 @@ const App = () => {
         <Markup />
         <Route component={Error404} />
       </Switch>
-      {localStorage.getItem("auth_token") ? null : <Redirect to="/" />}
+      {localStorage.getItem("auth_token") ? null : <Redirect to="/login" />}
     </Router>
   );
 };

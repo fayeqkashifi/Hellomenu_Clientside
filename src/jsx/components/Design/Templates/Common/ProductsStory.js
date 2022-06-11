@@ -299,18 +299,31 @@ function ProductsStory() {
                     {recomandProducts?.map((item, i) => {
                       return (
                         <div style={{ cursor: "pointer" }} key={i}>
-                          <img
-                            src={`http://${base_url}:${port}/images/products/${
-                              JSON.parse(item.image)[0]
-                            }`}
-                            alt="Image"
-                            style={style?.imageVideo}
-                            onClick={() => changeProduct(item.id)}
-                          />
-                          <small className="ml-1" style={{ color: "#fff" }}>
-                            {item.price +
-                              getSymbolFromCurrency(item?.currency_code)}
-                          </small>
+                          <Link
+                            to={{
+                              pathname: `/public/details/${btoa(
+                                btoa(btoa(item.id))
+                              )}`,
+                              state: {
+                                style: style,
+                                deliveryFees: deliveryFees,
+                                branchId: branch.id,
+                              },
+                            }}
+                          >
+                            <img
+                              src={`http://${base_url}:${port}/images/products/${
+                                JSON.parse(item.image)[0]
+                              }`}
+                              alt="Image"
+                              style={style?.imageVideo}
+                              onClick={() => changeProduct(item.id)}
+                            />
+                            <small className="ml-1" style={{ color: "#fff" }}>
+                              {item.price +
+                                getSymbolFromCurrency(item?.currency_code)}
+                            </small>
+                          </Link>
                         </div>
                       );
                     })}
@@ -401,18 +414,31 @@ function ProductsStory() {
                     {recomandProducts?.map((item, i) => {
                       return (
                         <div style={{ cursor: "pointer" }} key={i}>
-                          <img
-                            src={`http://${base_url}:${port}/images/products/${
-                              JSON.parse(item.image)[0]
-                            }`}
-                            alt="Image"
-                            style={style?.imageVideo}
-                            onClick={() => changeProduct(item.id)}
-                          />
-                          <small className="ml-1" style={{ color: "#fff" }}>
-                            {item.price +
-                              getSymbolFromCurrency(item?.currency_code)}
-                          </small>
+                          <Link
+                            to={{
+                              pathname: `/public/details/${btoa(
+                                btoa(btoa(item.id))
+                              )}`,
+                              state: {
+                                style: style,
+                                deliveryFees: deliveryFees,
+                                branchId: branch.id,
+                              },
+                            }}
+                          >
+                            <img
+                              src={`http://${base_url}:${port}/images/products/${
+                                JSON.parse(item.image)[0]
+                              }`}
+                              alt="Image"
+                              style={style?.imageVideo}
+                              onClick={() => changeProduct(item.id)}
+                            />
+                            <small className="ml-1" style={{ color: "#fff" }}>
+                              {item.price +
+                                getSymbolFromCurrency(item?.currency_code)}
+                            </small>
+                          </Link>
                         </div>
                       );
                     })}

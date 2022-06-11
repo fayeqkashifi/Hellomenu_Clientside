@@ -66,14 +66,9 @@ const EditProduct = (props) => {
       } else {
         formData.append("video", null);
       }
-      if (images.length !== 0) {
-        for (let i = 0; i < images.length; i++) {
-          formData.append("image[]", images[i].file);
-        }
-      } else {
-        formData.append("image", "");
+      for (let i = 0; i < images.length; i++) {
+        formData.append("image[]", images[i].file);
       }
-      // formData.append("image", editProduct.image);
       formData.append("ProductName", data.ProductName);
       formData.append("UnitName", data.UnitName);
       formData.append("price", data.price);

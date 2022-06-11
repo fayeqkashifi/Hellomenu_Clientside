@@ -66,15 +66,10 @@ const AddProduct = (props) => {
     setImageValidation();
     if (images.length != 0) {
       setIsSubmitting(true);
-
       const formData = new FormData();
       for (let i = 0; i < images.length; i++) {
         formData.append("image[]", images[i].file);
       }
-      // for (let i = 0; i < data.photo.length; i++) {
-      //   formData.append("image[]", data.photo[i]);
-      // }
-
       productbranches.map((item) => {
         formData.append("branches[]", item.value);
       });
