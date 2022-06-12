@@ -27,7 +27,7 @@ import VideosShow from "./jsx/components/Design/Templates/Common/VideosShow";
 import VideoList from "./jsx/components/Design/Templates/Common/VideoList";
 import VideoDetails from "./jsx/components/Design/Templates/Common/VideoDetails";
 import TrackOrder from "./jsx/components/Design/Templates/Common/TrackOrder";
-import Error404 from "./jsx/pages/Error404";
+// import Error404 from "./jsx/pages/Error404";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
 // axios.defaults.baseURL="http://192.168.1.103/yesilik1/public/";
@@ -117,9 +117,9 @@ const App = () => {
         <PublicRoute exact component={TrackOrder} path="/track-order" />
 
         <Markup />
-        <Route component={Error404} />
+        {/* <Route component={Error404} /> */}
       </Switch>
-      {localStorage.getItem("auth_token") ? null : <Redirect to="/login" />}
+      {/* {localStorage.getItem("auth_token") ? null : <Redirect to="/login" />} */}
     </Router>
   );
 };

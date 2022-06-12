@@ -18,48 +18,53 @@ function Footer(props) {
   const dataLoad = async () => {
     var total = 0;
     if (cart.length != 0) {
+      const arrayCart = [];
       await cart.map((item) => {
         getProduct(item.id, selectedLang.id, source).then((result) => {
           if (result !== undefined) {
-            let extraTotal = 0;
-            result.data.extras.map((extra) => {
-              if (item.extras.includes(extra.value)) {
-                extraTotal += extra.price;
-              }
-            });
-            let recomendTotal = 0;
-            result.data.recommend.map((recom) => {
-              item.recommendations.filter((recommend) => {
-                if (recommend.value === recom.value) {
-                  recomendTotal += recom.price * recommend.qty;
+            if (result.data.fetchData.length !== 0) {
+              let extraTotal = 0;
+              result.data.extras.map((extra) => {
+                if (item.extras.includes(extra.value)) {
+                  extraTotal += extra.price;
                 }
               });
-            });
-            const itemFetchData = result.data.fetchData[0];
-
-            if (item.checkSKU) {
-              if (item.checkSKU.length != 0) {
-                getVariations(item.id, source).then((res) => {
-                  if (res !== undefined) {
-                    if (res !== "") {
-                      let varData = JSON.parse(res.variants).filter(
-                        (variant) => variant.sku === item.checkSKU
-                      );
-                      total +=
-                        parseInt(varData[0].price) * item.qty +
-                        extraTotal +
-                        recomendTotal;
-                    }
+              let recomendTotal = 0;
+              result.data.recommend.map((recom) => {
+                item.recommendations.filter((recommend) => {
+                  if (recommend.value === recom.value) {
+                    recomendTotal += recom.price * recommend.qty;
                   }
                 });
+              });
+              const itemFetchData = result.data.fetchData[0];
+
+              if (item.checkSKU) {
+                if (item.checkSKU.length != 0) {
+                  getVariations(item.id, source).then((res) => {
+                    if (res !== undefined) {
+                      if (res !== "") {
+                        let varData = JSON.parse(res.variants).filter(
+                          (variant) => variant.sku === item.checkSKU
+                        );
+                        total +=
+                          parseInt(varData[0].price) * item.qty +
+                          extraTotal +
+                          recomendTotal;
+                      }
+                    }
+                  });
+                } else {
+                  total +=
+                    itemFetchData.price * item.qty + extraTotal + recomendTotal;
+                }
               } else {
-                total +=
-                  itemFetchData.price * item.qty + extraTotal + recomendTotal;
+                total += item.qty * itemFetchData.price;
               }
-            } else {
-              total += item.qty * itemFetchData.price;
+              setSum(total);
+              arrayCart.push(item);
+              localStorage.setItem("cart", JSON.stringify(arrayCart));
             }
-            setSum(total);
           }
         });
       });

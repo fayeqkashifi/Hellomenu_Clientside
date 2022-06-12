@@ -62,95 +62,102 @@ const Cart = (props) => {
   const dataLoad = async () => {
     let total = 0;
     let newArray = [];
+    const arrayCart = [];
+
     await cart.map((item) => {
       getProduct(item.id, selectedLang.id, source).then((result) => {
         if (result !== undefined) {
-          let ingredientArray = [];
-          result.data.ingredients.map((ingredient) => {
-            if (item.ingredients.includes(ingredient.value)) {
-              ingredientArray.push(ingredient.label);
-            }
-          });
-          let extraArray = [];
-          let extraTotal = 0;
-          result.data.extras.map((extra) => {
-            if (item.extras.includes(extra.value)) {
-              extraArray.push(extra);
-              extraTotal += extra.price;
-            }
-          });
-          let recommendArray = [];
-          let recomendTotal = 0;
-          result.data.recommend.map((recom) => {
-            item.recommendations.filter((recommend) => {
-              if (recommend.value === recom.value) {
-                recommendArray.push({
-                  ...recom,
-                  qty: recommend.qty,
-                });
-                recomendTotal += recom.price * recommend.qty;
+          if (result.data.fetchData.length !== 0) {
+            let ingredientArray = [];
+            result.data.ingredients.map((ingredient) => {
+              if (item.ingredients.includes(ingredient.value)) {
+                ingredientArray.push(ingredient.label);
               }
             });
-          });
-          const itemFetchData = result.data.fetchData[0];
-          if (item.checkSKU) {
-            if (item.checkSKU.length != 0) {
-              getVariations(item.id, source).then((res) => {
-                if (res !== undefined) {
-                  if (res !== "") {
-                    let varData = JSON.parse(res.variants).filter(
-                      (variant) => variant.sku === item.checkSKU
-                    );
-                    newArray.push({
-                      ...itemFetchData,
-                      ...item,
-                      price: parseInt(varData[0].price),
-                      stock: parseInt(varData[0].stock),
-                      ingredients: ingredientArray,
-                      totalPrice:
-                        parseInt(varData[0].price) * item.qty +
-                        extraTotal +
-                        recomendTotal,
-                      extras: extraArray,
-                      recommendations: recommendArray,
-                    });
-                    total +=
-                      parseInt(varData[0].price) * item.qty +
-                      extraTotal +
-                      recomendTotal;
-                    // setSum(total);
-                  }
+            let extraArray = [];
+            let extraTotal = 0;
+            result.data.extras.map((extra) => {
+              if (item.extras.includes(extra.value)) {
+                extraArray.push(extra);
+                extraTotal += extra.price;
+              }
+            });
+            let recommendArray = [];
+            let recomendTotal = 0;
+            result.data.recommend.map((recom) => {
+              item.recommendations.filter((recommend) => {
+                if (recommend.value === recom.value) {
+                  recommendArray.push({
+                    ...recom,
+                    qty: recommend.qty,
+                  });
+                  recomendTotal += recom.price * recommend.qty;
                 }
               });
+            });
+            const itemFetchData = result.data.fetchData[0];
+            if (item.checkSKU) {
+              if (item.checkSKU.length != 0) {
+                getVariations(item.id, source).then((res) => {
+                  if (res !== undefined) {
+                    if (res !== "") {
+                      let varData = JSON.parse(res.variants).filter(
+                        (variant) => variant.sku === item.checkSKU
+                      );
+                      newArray.push({
+                        ...itemFetchData,
+                        ...item,
+                        price: parseInt(varData[0].price),
+                        stock: parseInt(varData[0].stock),
+                        ingredients: ingredientArray,
+                        totalPrice:
+                          parseInt(varData[0].price) * item.qty +
+                          extraTotal +
+                          recomendTotal,
+                        extras: extraArray,
+                        recommendations: recommendArray,
+                      });
+                      total +=
+                        parseInt(varData[0].price) * item.qty +
+                        extraTotal +
+                        recomendTotal;
+                      // setSum(total);
+                    }
+                  }
+                });
+              } else {
+                newArray.push({
+                  ...itemFetchData,
+                  ...item,
+                  ingredients: ingredientArray,
+                  totalPrice:
+                    itemFetchData.price * item.qty + extraTotal + recomendTotal,
+                  extras: extraArray,
+                  recommendations: recommendArray,
+                });
+                total +=
+                  itemFetchData.price * item.qty + extraTotal + recomendTotal;
+                // setSum(total);
+              }
             } else {
               newArray.push({
                 ...itemFetchData,
                 ...item,
+                // totalPrice: 0,
                 ingredients: ingredientArray,
-                totalPrice:
-                  itemFetchData.price * item.qty + extraTotal + recomendTotal,
                 extras: extraArray,
                 recommendations: recommendArray,
               });
-              total +=
-                itemFetchData.price * item.qty + extraTotal + recomendTotal;
-              // setSum(total);
+              total += item.qty * itemFetchData.price;
             }
-          } else {
-            newArray.push({
-              ...itemFetchData,
-              ...item,
-              // totalPrice: 0,
-              ingredients: ingredientArray,
-              extras: extraArray,
-              recommendations: recommendArray,
-            });
-            total += item.qty * itemFetchData.price;
+            setSum(total);
+            arrayCart.push(item);
+            localStorage.setItem("cart", JSON.stringify(arrayCart));
           }
-          setSum(total);
         }
       });
     });
+
     await setFetchData(newArray);
     await getBranch(branchId).then((data) => {
       setBranch(data);
