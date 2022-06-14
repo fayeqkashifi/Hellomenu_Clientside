@@ -79,8 +79,8 @@ function Statusbar() {
           (item) =>
             item?.video !== null || JSON.parse(item.videosUrl).length !== 0
         ).length !== 0 ? (
-          <Container>
-            <div className="d-flex justify-content-between m-1">
+          <div className="px-5">
+            <div className="d-flex justify-content-between my-2">
               <span style={style?.headerVideos}> {locale?.stories}</span>
               <Link
                 to={{
@@ -223,7 +223,7 @@ function Statusbar() {
                 })}
               </Toolbar>
             </ScrollContainer>
-          </Container>
+          </div>
         ) : null}
       </>
     );

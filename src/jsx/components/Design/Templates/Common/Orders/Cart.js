@@ -41,8 +41,16 @@ import Swal from "sweetalert2";
 const Cart = (props) => {
   let message = "";
 
-  let { style, cart, setCart, branchId, deliveryFees, locale, selectedLang } =
-    useContext(TemplateContext);
+  let {
+    style,
+    cart,
+    setCart,
+    branchId,
+    branch,
+    deliveryFees,
+    locale,
+    selectedLang,
+  } = useContext(TemplateContext);
   const { checkBit } = props;
   const initialValues = {
     phoneNumber: "",
@@ -56,7 +64,6 @@ const Cart = (props) => {
   const [loading, setLoading] = useState(true);
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
-  const [branch, setBranch] = useState([]);
   const [fetchData, setFetchData] = useState([]);
   let source = axios.CancelToken.source();
   const dataLoad = async () => {
@@ -155,9 +162,7 @@ const Cart = (props) => {
       });
     });
     await setFetchData(newArray);
-    await getBranch(branchId).then((data) => {
-      setBranch(data);
-    });
+
     await getTables(branchId).then((res) => {
       setTables(res);
     });
@@ -423,7 +428,7 @@ const Cart = (props) => {
               }`
         }\n\n`;
       return (
-        <Card key={i} sx={style?.card} className="m-1">
+        <Card key={i} sx={style?.card} className="mb-1">
           <div className="text-right">
             <IconButton onClick={() => remItem(item.id, item.qty, item.price)}>
               <ClearIcon sx={style.clearIcon} />
@@ -624,7 +629,7 @@ const Cart = (props) => {
     }
   }
   return (
-    <div>
+    <div className="p-5">
       {alert.open && (
         <CustomAlert
           vertical="top"
@@ -635,7 +640,7 @@ const Cart = (props) => {
           setAlert={setAlert}
         />
       )}
-      {checkBit ? "" : <Header subcategories={0} cart={cart.length} />}
+      {/* {checkBit ? "" : <Header subcategories={0} cart={cart.length} />} */}
       {cart.length === 0 ? (
         <Grid container spacing={2} className="text-center">
           <Grid item xs={12} lg={12} xl={12} sm={6} md={6}>
@@ -645,7 +650,7 @@ const Cart = (props) => {
       ) : (
         <>
           {viewImages_HTMLTABLE}
-          <Card sx={style?.card} className="m-1">
+          <Card sx={style?.card} className="my-1">
             <CardContent sx={{ flexGrow: 1 }}>
               <Grid container spacing={2}>
                 <Grid
@@ -724,7 +729,7 @@ const Cart = (props) => {
               </Grid>
             </CardContent>
           </Card>
-          <Card sx={style?.card} className="m-1">
+          <Card sx={style?.card} className="my-1">
             <CardContent sx={{ flexGrow: 1 }}>
               <Grid container spacing={2}>
                 <Grid
@@ -763,7 +768,7 @@ const Cart = (props) => {
             </CardContent>
           </Card>
           {showReservation === "inside" ? (
-            <Card sx={style?.card} className="m-1">
+            <Card sx={style?.card} className="my-1">
               <CardContent sx={{ flexGrow: 1 }}>
                 <div>
                   <QrReader
@@ -781,7 +786,7 @@ const Cart = (props) => {
               </CardContent>
             </Card>
           ) : showReservation === "outside" ? (
-            <Card sx={style?.card} className="m-1">
+            <Card sx={style?.card} className="my-1">
               <CardContent sx={{ flexGrow: 1 }}>
                 <Grid container spacing={1}>
                   <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>
@@ -824,7 +829,7 @@ const Cart = (props) => {
             </Card>
           ) : null}
           {orderingWay === "delivery" ? (
-            <Card sx={style?.card} className="m-1">
+            <Card sx={style?.card} className="my-1">
               <CardContent sx={{ flexGrow: 1 }}>
                 <Grid container spacing={1}>
                   {branch.fullAddress ? (
@@ -867,7 +872,7 @@ const Cart = (props) => {
           >
             {({ errors, touched, values, setFieldValue }) => (
               <Form>
-                <Card sx={style?.card} className="m-1">
+                <Card sx={style?.card} className="my-1">
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Grid container spacing={1}>
                       <Grid item xs={12} lg={12} xl={6} sm={12} md={12}>
@@ -908,7 +913,7 @@ const Cart = (props) => {
                   </CardContent>
                 </Card>
 
-                <Card sx={style?.card} className="m-1">
+                <Card sx={style?.card} className="my-1">
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Grid container spacing={2}>
                       <Grid item xs={12} lg={6} xl={6} sm={6} md={6}>

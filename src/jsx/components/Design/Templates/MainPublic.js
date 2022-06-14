@@ -6,6 +6,7 @@ import {
   getThemplate,
   getCategoriesBasedProduct,
   getThemes,
+  getBranch,
 } from "./Functionality";
 import { SecondStyle } from "./Common/Styles/Second";
 import { DarkStyle } from "./Common/Styles/Dark";
@@ -97,7 +98,7 @@ const MainPublic = (props) => {
   //   return () => {};
   // }, []);
   let source = axios.CancelToken.source();
-
+  const [branch, setBranch] = useState([]);
   useEffect(() => {
     if (source) {
       source.cancel("Operations cancelled due to new request");
@@ -111,6 +112,11 @@ const MainPublic = (props) => {
     getThemes(branchId, source).then((data) => {
       if (data !== undefined) {
         setTheme(data);
+      }
+    });
+    getBranch(branchId, source).then((data) => {
+      if (data !== undefined) {
+        setBranch(data);
       }
     });
     dataLoad();
@@ -159,6 +165,7 @@ const MainPublic = (props) => {
             ? ThridStyle(template?.Customization, theme)
             : console.log("style Error in Mainpublic file"),
         branchId,
+        branch,
         categories,
         activeCategory,
         setActiveCategory,

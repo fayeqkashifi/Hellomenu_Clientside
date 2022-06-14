@@ -45,6 +45,19 @@ export const DarkStyle = (custom, theme) => {
     content: {
       marginLeft: "120px",
     },
+
+    logoText: {
+      display: "block",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
+      paddingTop: "16px",
+      paddingBottom: "16px",
+      borderBottom: "1px solid #fff",
+    },
+
     // Main public
     template: "dark",
     // darkMain file style
@@ -77,7 +90,7 @@ export const DarkStyle = (custom, theme) => {
     },
     inputfield: {
       width: "100%",
-      height: "35px",
+      // height: "45px",
       backgroundColor: custom?.cardBgColor
         ? custom.cardBgColor
         : theme.CardColor

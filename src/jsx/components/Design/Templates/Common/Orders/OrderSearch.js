@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./TrackStyle.css";
 import axios from "axios";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "react-bootstrap";
+import { TemplateContext } from "../../TemplateContext";
 
 const OrderSearch = (props) => {
+  let { style } = useContext(TemplateContext);
   const { setOrder, setShowDetails, setError } = props;
   const initialValues = {
     value: "",
@@ -31,7 +33,7 @@ const OrderSearch = (props) => {
   };
 
   return (
-    <div className="container py-5">
+    <div className="p-5">
       <div className="row">
         <div className="col align-self-center">
           <Formik
@@ -50,6 +52,7 @@ const OrderSearch = (props) => {
                       (errors.value && touched.value ? " is-invalid" : "")
                     }
                     placeholder="Please Enter Tracking Id...."
+                    style={style?.inputfield}
                   />
                   <ErrorMessage
                     name="value"
@@ -58,9 +61,14 @@ const OrderSearch = (props) => {
                   />
                 </div>
                 <div className="text-left text-sm-right">
-                  <Button variant="primary" type="submit" className="">
+                  <button
+                    className="btn"
+                    // variant="primary"
+                    type="submit"
+                    style={style?.buttonStyle}
+                  >
                     Search
-                  </Button>
+                  </button>
                 </div>
               </Form>
             )}

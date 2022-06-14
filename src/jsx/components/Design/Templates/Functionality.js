@@ -46,11 +46,18 @@ export const getThemes = async (branchId, config) => {
     }
   }
 };
-export const getBranch = async (branchId) => {
+export const getBranch = async (branchId, config) => {
   try {
-    const result = await axios.get(`/api/getBranchForShow/${branchId}`);
-    if (result.data.status === 200) {
-      return result.data.data;
+    const result = await axios({
+      method: "GET",
+      url: `/api/getBranchForShow/${branchId}`,
+      cancelToken: config.token,
+    });
+    if (result !== undefined) {
+      // const result = await axios.get(`/api/getBranchForShow/${branchId}`);
+      if (result.data.status === 200) {
+        return result.data.data;
+      }
     }
   } catch (err) {
     console.error(err);

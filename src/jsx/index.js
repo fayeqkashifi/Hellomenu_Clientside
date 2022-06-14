@@ -21,7 +21,7 @@ import Company from "./components/Companies/Company";
 import Profile from "./components/Dashboard/Profile/Profile";
 import Order from "./components/Orders/Order";
 import Attributes from "./components/Attributes/Attributes";
-import Error404 from "./pages/Error404";
+// import Error404 from "./pages/Error404";
 import Ingredients from "./components/Products/Ingredients/Ingredients";
 import Area from "./components/Areas/Area";
 import OrderDetails from "./components/Orders/OrderDetails";
@@ -102,7 +102,7 @@ const Markup = () => {
               {checkPermission("settings-view") && (
                 <PrivateRoute path={`/settings`} component={SettingsShow} />
               )}
-              <Route component={Error404} />
+              {/* <Route component={Error404} /> */}
             </Switch>
           </div>
         </div>
