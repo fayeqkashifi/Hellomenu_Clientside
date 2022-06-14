@@ -1,11 +1,14 @@
 import React, { useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
-import CustomAlert from "../../../CustomAlert";
+import CustomAlert from "../../../../CustomAlert";
 import IconButton from "@mui/material/IconButton";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
-import { recDecrementQuantity, recIncrementQuantity } from "../Functionality";
-import { TemplateContext } from "../TemplateContext";
+import {
+  recDecrementQuantity,
+  recIncrementQuantity,
+} from "../../Functionality";
+import { TemplateContext } from "../../TemplateContext";
 const RecCounter = (props) => {
   const { style, setFetchData, fetchData, locale } =
     useContext(TemplateContext);

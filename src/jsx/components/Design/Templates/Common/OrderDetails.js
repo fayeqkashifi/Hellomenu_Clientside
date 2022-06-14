@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Container from "@mui/material/Container";
-import Header from "./Header";
+import Header from "./Layout/Header";
 import { base_url, port } from "../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -16,7 +16,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import CustomAlert from "../../../CustomAlert";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
-import RecCounter from "./RecCounter";
+import RecCounter from "./Counter/RecCounter";
 import { TemplateContext } from "../TemplateContext";
 const OrderDetails = () => {
   const {

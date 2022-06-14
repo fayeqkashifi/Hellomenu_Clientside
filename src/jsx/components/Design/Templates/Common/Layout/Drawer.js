@@ -7,9 +7,9 @@ import {
   COffcanvasTitle,
 } from "@coreui/react";
 import { Modal } from "react-bootstrap";
-import Cart from "../Common/Cart";
+import Cart from "../Orders/Cart";
 import Typography from "@mui/material/Typography";
-import { TemplateContext } from "../TemplateContext";
+import { TemplateContext } from "../../TemplateContext";
 
 export default function Drawer(props) {
   const { style, locale } = useContext(TemplateContext);

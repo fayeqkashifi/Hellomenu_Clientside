@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import { base_url, port } from "../../../../../Consts";
+import { base_url, port } from "../../../../../../Consts";
 import getSymbolFromCurrency from "currency-symbol-map";
-import { getProduct } from "../Functionality";
+import { getProduct } from "../../Functionality";
 import Stories from "react-insta-stories";
 import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
 import { Link } from "react-router-dom";
-import profile from "../../../../../images/hellomenu/logo.svg";
+import profile from "../../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
-import { TemplateContext } from "../TemplateContext";
+import { TemplateContext } from "../../TemplateContext";
 import axios from "axios";
 
 function BranchStory(props) {

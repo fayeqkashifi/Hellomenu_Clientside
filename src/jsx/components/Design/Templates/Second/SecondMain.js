@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import ShowCards from "../Common/ShowCards";
-import SideBar from "../Common/SideBar";
-import Header from "../Common/Header";
+import SideBar from "../Common/Layout/SideBar";
+import Header from "../Common/Layout/Header";
 import ScrollContainer from "react-indiana-drag-scroll";
 import Toolbar from "@mui/material/Toolbar";
-import Statusbar from "../Common/Statusbar";
+import Statusbar from "../Common/Story/Statusbar";
 import { TemplateContext } from "../TemplateContext";
 
 export default function SecondMain(props) {

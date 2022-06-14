@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import Footer from "../Common/Footer";
+import Footer from "./Layout/Footer";
 import Container from "@mui/material/Container";
-import Header from "../Common/Header";
+import Header from "./Layout/Header";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";

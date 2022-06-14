@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import getSymbolFromCurrency from "currency-symbol-map";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import Counter from "../Common/Counter";
+import Counter from "../Common/Counter/Counter";
 import IconButton from "@mui/material/IconButton";
 import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
 import { TemplateContext } from "../TemplateContext";

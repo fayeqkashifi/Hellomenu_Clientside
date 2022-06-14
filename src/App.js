@@ -23,10 +23,10 @@ import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
 import SignUp from "./jsx/pages/SignUp/SignUp";
 import Show from "./jsx/pages/SignUp/Show";
 import ResetPassword from "./jsx/pages/ResetPassword";
-import VideosShow from "./jsx/components/Design/Templates/Common/VideosShow";
-import VideoList from "./jsx/components/Design/Templates/Common/VideoList";
-import VideoDetails from "./jsx/components/Design/Templates/Common/VideoDetails";
-import TrackOrder from "./jsx/components/Design/Templates/Common/TrackOrder";
+import VideosShow from "./jsx/components/Design/Templates/Common/Story/VideosShow";
+import VideoList from "./jsx/components/Design/Templates/Common/Story/VideoList";
+import VideoDetails from "./jsx/components/Design/Templates/Common/Story/VideoDetails";
+// import TrackOrder from "./jsx/components/Design/Templates/Common/Orders/TrackOrder";
 // import Error404 from "./jsx/pages/Error404";
 
 axios.defaults.baseURL = "http://" + base_url + ":" + port;
@@ -114,7 +114,7 @@ const App = () => {
           component={MainRrecommend}
           path="/public/details/recommend/:id"
         />
-        <PublicRoute exact component={TrackOrder} path="/track-order" />
+        {/* <PublicRoute exact component={TrackOrder} path="/track-order" /> */}
 
         <Markup />
         {/* <Route component={Error404} /> */}

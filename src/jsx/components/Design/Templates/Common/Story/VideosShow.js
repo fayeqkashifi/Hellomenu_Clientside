@@ -1,7 +1,7 @@
 import React from "react";
 import ProductsStory from "./ProductsStory";
 import BranchStory from "./BranchStory";
-import { TemplateContext } from "../TemplateContext";
+import { TemplateContext } from "../../TemplateContext";
 
 function VideosShow(props) {
   const style = props.history.location.state.style;

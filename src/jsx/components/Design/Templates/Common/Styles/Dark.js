@@ -2,6 +2,49 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const DarkStyle = (custom, theme) => {
   return {
+    // SideBar
+    sidebar: {
+      margin: 0,
+      padding: 0,
+      width: "120px",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
+      position: "fixed",
+      height: "100vh",
+      overflow: "auto",
+      textAlign: "center",
+    },
+    sidebarLinks: {
+      display: "block",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
+      padding: "16px",
+      textDecoration: "none",
+    },
+    sidebarActiveLink: {
+      display: "block",
+      padding: "16px",
+      textDecoration: "none",
+      backgroundColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#2d3134",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
+    },
+    content: {
+      marginLeft: "120px",
+    },
     // Main public
     template: "dark",
     // darkMain file style

@@ -1,10 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import Container from "@mui/material/Container";
-import Header from "../Common/Layout/Header";
-import SideBar from "../Common/Layout/SideBar";
+import React, { useEffect, useState, useContext } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Grid from "@mui/material/Grid";
-
 import ShowCards from "../Common/ShowCards";
 import {
   getProductsBasedOnBranchId,
@@ -12,14 +8,16 @@ import {
   getProductBasedOnSubCategory,
 } from "../Functionality";
 import Statusbar from "../Common/Story/Statusbar";
-import { TemplateContext } from "../TemplateContext";
+import Container from "@mui/material/Container";
+import Header from "../Common/Layout/Header";
 import axios from "axios";
+import { TemplateContext } from "../TemplateContext";
 
-export default function ThridMain(props) {
+export default function Home() {
   const {
-    branchId,
     products,
     style,
+    branchId,
     activeCategory,
     setProducts,
     setPage,
@@ -28,8 +26,6 @@ export default function ThridMain(props) {
     selectedLang,
     locale,
   } = useContext(TemplateContext);
-  const [changeState, setChangeState] = useState(true);
-
   const fetchMoreData = () => {
     if (page <= lastPage) {
       if (activeCategory === "All~~~1") {
@@ -65,7 +61,7 @@ export default function ThridMain(props) {
             selectedLang.id,
             source
           ).then((res) => {
-            if (res !== undefined) {
+            if (data !== undefined) {
               setProducts(products.concat(res.data));
               setPage(page + 1);
             }
@@ -76,6 +72,9 @@ export default function ThridMain(props) {
       setChangeState(false);
     }
   };
+
+  const [changeState, setChangeState] = useState(true);
+
   let source = axios.CancelToken.source();
 
   useEffect(() => {
@@ -83,49 +82,46 @@ export default function ThridMain(props) {
       source.cancel("Operations cancelled due to new request");
     }
     source = axios.CancelToken.source();
+    setChangeState(true);
+
     return () => {
       source.cancel();
     };
-  }, []);
-  var viewShow_HTMLTABLE = (
-    <Grid container spacing={2} className="d-flex justify-content-center">
-      <ShowCards />
-    </Grid>
-  );
+  }, [selectedLang]);
 
   return (
-    <div style={style?.background}>
-      <Container maxWidth="lg">
-        <Header search={true} setChangeState={setChangeState} />
-        <SideBar />
-        <Statusbar />
-        <Container
-          className="mt-3 d-flex justify-content-center"
-          style={style?.varaintContainer}
-        >
-          {viewShow_HTMLTABLE}
-        </Container>
-        {products.length >= 10 && (
-          <InfiniteScroll
-            dataLength={products.length} //This is important field to render the next data
-            next={fetchMoreData}
-            hasMore={changeState}
-            loader={
-              <p className="text-center py-4" style={{ marginBottom: "100px" }}>
-                <b>{locale?.loading}</b>
-              </p>
-            }
-            endMessage={
-              <p
-                style={{ textAlign: "center", marginBottom: "100px" }}
-                className="py-4"
-              >
-                <b>{locale?.yay_you_have_seen_it_all}</b>
-              </p>
-            }
-          ></InfiniteScroll>
-        )}
+    <div>
+      {" "}
+      <Header search={true} setChangeState={setChangeState} />
+      <Statusbar />
+      <Container
+        className="mt-3 d-flex justify-content-center"
+        style={style?.varaintContainer}
+      >
+        <Grid container spacing={2} className="d-flex justify-content-center">
+          <ShowCards />
+        </Grid>
       </Container>
+      {products.length >= 10 && (
+        <InfiniteScroll
+          dataLength={products.length}
+          next={fetchMoreData}
+          hasMore={changeState}
+          loader={
+            <p className="text-center py-4" style={{ marginBottom: "100px" }}>
+              <b>{locale?.loading}</b>
+            </p>
+          }
+          endMessage={
+            <p
+              style={{ textAlign: "center", marginBottom: "100px" }}
+              className="py-4"
+            >
+              <b>{locale?.yay_you_have_seen_it_all}</b>
+            </p>
+          }
+        ></InfiniteScroll>
+      )}
     </div>
   );
 }

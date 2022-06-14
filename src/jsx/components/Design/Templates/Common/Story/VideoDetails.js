@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player/lazy";
-import { base_url, port } from "../../../../../Consts";
+import { base_url, port } from "../../../../../../Consts";
 import {
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
-} from "../Functionality";
+} from "../../Functionality";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Grid from "@mui/material/Grid";
-import ShowCards from "./ShowCards";
-import { TemplateContext } from "../TemplateContext";
+import ShowCards from "../ShowCards";
+import { TemplateContext } from "../../TemplateContext";
 import axios from "axios";
 
 function VideoDetails(props) {

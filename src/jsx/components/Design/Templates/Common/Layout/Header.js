@@ -7,18 +7,19 @@ import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Badge from "@mui/material/Badge";
 import FunctionsIcon from "@mui/icons-material/Functions";
-import {
-  getProductsBasedOnBranchId,
-  getProductBasedOnCategory,
-  getProductBasedOnSubCategory,
-} from "../Functionality";
 import Drawer from "./Drawer";
 import getSymbolFromCurrency from "currency-symbol-map";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
-import LanguageLocalization from "./Localization";
-import { TemplateContext } from "../TemplateContext";
-import { getProduct, getVariations } from "../Functionality";
+import LanguageLocalization from "../Localization";
+import { TemplateContext } from "../../TemplateContext";
+import {
+  getProduct,
+  getVariations,
+  getProductsBasedOnBranchId,
+  getProductBasedOnCategory,
+  getProductBasedOnSubCategory,
+} from "../../Functionality";
 
 function Header(props) {
   const {
@@ -33,6 +34,7 @@ function Header(props) {
     setPage,
     selectedLang,
     locale,
+    setCart,
   } = useContext(TemplateContext);
   const { search, details, setChangeState } = props;
 
@@ -94,7 +96,6 @@ function Header(props) {
   const dataLoading = async () => {
     var total = 0;
     if (cart.length != 0) {
-      const arrayCart = [];
       await cart.map((item) => {
         getProduct(item.id, selectedLang.id, source).then((result) => {
           if (result !== undefined) {
@@ -123,10 +124,22 @@ function Header(props) {
                         let varData = JSON.parse(res.variants).filter(
                           (variant) => variant.sku === item.checkSKU
                         );
-                        total +=
-                          parseInt(varData[0].price) * item.qty +
-                          extraTotal +
-                          recomendTotal;
+                        if (varData.length !== 0) {
+                          total +=
+                            parseInt(varData[0].price) * item.qty +
+                            extraTotal +
+                            recomendTotal;
+                          setSum(total);
+                        } else {
+                          const filterData = cart.filter(
+                            (check) => check.id != item.id
+                          );
+                          setCart(filterData);
+                          localStorage.setItem(
+                            "cart",
+                            JSON.stringify(filterData)
+                          );
+                        }
                       }
                     }
                   });
@@ -138,8 +151,10 @@ function Header(props) {
                 total += item.qty * itemFetchData.price;
               }
               setSum(total);
-              arrayCart.push(item);
-              localStorage.setItem("cart", JSON.stringify(arrayCart));
+            } else {
+              const filterData = cart.filter((check) => check.id != item.id);
+              setCart(filterData);
+              localStorage.setItem("cart", JSON.stringify(filterData));
             }
           }
         });
@@ -147,7 +162,6 @@ function Header(props) {
     } else {
       setSum(total);
     }
-    console.log("t");
   };
   let source = axios.CancelToken.source();
 

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
-import CustomAlert from "../../../CustomAlert";
+import CustomAlert from "../../../../CustomAlert";
 import IconButton from "@mui/material/IconButton";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -12,8 +12,8 @@ import {
   remCartItem,
   handleDecrementQuantity,
   handelIncrementQuantity,
-} from "../Functionality";
-import { TemplateContext } from "../TemplateContext";
+} from "../../Functionality";
+import { TemplateContext } from "../../TemplateContext";
 const Counter = (props) => {
   const { style, products, cart, setCart, locale } =
     useContext(TemplateContext);

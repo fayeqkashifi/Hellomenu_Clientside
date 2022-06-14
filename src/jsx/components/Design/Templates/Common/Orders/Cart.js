@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import Header from "./Header";
-import { base_url, port } from "../../../../../Consts";
+import Header from "../Layout/Header";
+import { base_url, port } from "../../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
@@ -13,7 +13,7 @@ import TextareaAutosize from "@mui/base/TextareaAutosize";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import QrReader from "react-qr-reader";
 import SendIcon from "@mui/icons-material/Send";
-import CustomAlert from "../../../CustomAlert";
+import CustomAlert from "../../../../CustomAlert";
 import * as Yup from "yup";
 import "yup-phone";
 import { Formik, Form, ErrorMessage } from "formik";
@@ -26,15 +26,15 @@ import {
   getBranch,
   getProduct,
   getVariations,
-} from "../Functionality";
+} from "../../Functionality";
 import PhoneInput, {
   isValidPhoneNumber,
   // isPossiblePhoneNumber,
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import ipapi from "ipapi.co";
-import Counter from "../Common/Counter";
-import { TemplateContext } from "../TemplateContext";
+import Counter from "../Counter/Counter";
+import { TemplateContext } from "../../TemplateContext";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -62,8 +62,6 @@ const Cart = (props) => {
   const dataLoad = async () => {
     let total = 0;
     let newArray = [];
-    const arrayCart = [];
-
     await cart.map((item) => {
       getProduct(item.id, selectedLang.id, source).then((result) => {
         if (result !== undefined) {
@@ -104,24 +102,26 @@ const Cart = (props) => {
                       let varData = JSON.parse(res.variants).filter(
                         (variant) => variant.sku === item.checkSKU
                       );
-                      newArray.push({
-                        ...itemFetchData,
-                        ...item,
-                        price: parseInt(varData[0].price),
-                        stock: parseInt(varData[0].stock),
-                        ingredients: ingredientArray,
-                        totalPrice:
+                      if (varData.length !== 0) {
+                        newArray.push({
+                          ...itemFetchData,
+                          ...item,
+                          price: parseInt(varData[0].price),
+                          stock: parseInt(varData[0].stock),
+                          ingredients: ingredientArray,
+                          totalPrice:
+                            parseInt(varData[0].price) * item.qty +
+                            extraTotal +
+                            recomendTotal,
+                          extras: extraArray,
+                          recommendations: recommendArray,
+                        });
+                        total +=
                           parseInt(varData[0].price) * item.qty +
                           extraTotal +
-                          recomendTotal,
-                        extras: extraArray,
-                        recommendations: recommendArray,
-                      });
-                      total +=
-                        parseInt(varData[0].price) * item.qty +
-                        extraTotal +
-                        recomendTotal;
-                      // setSum(total);
+                          recomendTotal;
+                        setSum(total);
+                      }
                     }
                   }
                 });
@@ -137,7 +137,6 @@ const Cart = (props) => {
                 });
                 total +=
                   itemFetchData.price * item.qty + extraTotal + recomendTotal;
-                // setSum(total);
               }
             } else {
               newArray.push({
@@ -151,13 +150,10 @@ const Cart = (props) => {
               total += item.qty * itemFetchData.price;
             }
             setSum(total);
-            arrayCart.push(item);
-            localStorage.setItem("cart", JSON.stringify(arrayCart));
           }
         }
       });
     });
-
     await setFetchData(newArray);
     await getBranch(branchId).then((data) => {
       setBranch(data);

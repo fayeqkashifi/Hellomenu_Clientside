@@ -5,21 +5,21 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import getSymbolFromCurrency from "currency-symbol-map";
 import Drawer from "./Drawer";
-import { TemplateContext } from "../TemplateContext";
-import { getProduct, getVariations } from "../Functionality";
+import { TemplateContext } from "../../TemplateContext";
+import { getProduct, getVariations } from "../../Functionality";
 import axios from "axios";
 
 function Footer(props) {
-  const { style, cart, deliveryFees, locale, selectedLang } =
+  const { style, cart, setCart, deliveryFees, locale, selectedLang } =
     useContext(TemplateContext);
   const { title, url, stock } = props;
   let [sum, setSum] = useState(0);
-
+  const [check, setCheck] = useState(false);
   const dataLoad = async () => {
     var total = 0;
     if (cart.length != 0) {
-      const arrayCart = [];
       await cart.map((item) => {
+        setCheck(false);
         getProduct(item.id, selectedLang.id, source).then((result) => {
           if (result !== undefined) {
             if (result.data.fetchData.length !== 0) {
@@ -47,10 +47,22 @@ function Footer(props) {
                         let varData = JSON.parse(res.variants).filter(
                           (variant) => variant.sku === item.checkSKU
                         );
-                        total +=
-                          parseInt(varData[0].price) * item.qty +
-                          extraTotal +
-                          recomendTotal;
+                        if (varData.length !== 0) {
+                          total +=
+                            parseInt(varData[0].price) * item.qty +
+                            extraTotal +
+                            recomendTotal;
+                          setSum(total);
+                        } else {
+                          const filterData = cart.filter(
+                            (check) => check.id != item.id
+                          );
+                          setCart(filterData);
+                          localStorage.setItem(
+                            "cart",
+                            JSON.stringify(filterData)
+                          );
+                        }
                       }
                     }
                   });
@@ -62,8 +74,10 @@ function Footer(props) {
                 total += item.qty * itemFetchData.price;
               }
               setSum(total);
-              arrayCart.push(item);
-              localStorage.setItem("cart", JSON.stringify(arrayCart));
+            } else {
+              const filterData = cart.filter((check) => check.id != item.id);
+              setCart(filterData);
+              localStorage.setItem("cart", JSON.stringify(filterData));
             }
           }
         });
@@ -87,14 +101,14 @@ function Footer(props) {
   const [modalCentered, setModalCentered] = useState(false);
   return (
     <>
-      <Box component="footer" sx={style?.footerStyle} className="bottom-0 mt-5">
+      <Box component="footer" sx={style?.footerStyle} className=" mt-5">
         <Grid container spacing={2}>
           <Grid
             item
-            xs={4}
+            xs={6}
             lg={4}
             xl={4}
-            sm={4}
+            sm={6}
             md={4}
             className="d-flex align-items-center justify-content-center"
           >
@@ -110,10 +124,10 @@ function Footer(props) {
           </Grid>
           <Grid
             item
-            xs={4}
+            xs={6}
             lg={4}
             xl={4}
-            sm={4}
+            sm={6}
             md={4}
             className="d-flex align-items-center justify-content-center"
           >
@@ -127,7 +141,7 @@ function Footer(props) {
                   : getSymbolFromCurrency(cart[0]?.currency_code))}
             </Typography>
           </Grid>
-          <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
+          <Grid item xs={12} lg={4} xl={4} sm={12} md={4}>
             {url !== undefined ? (
               <Link
                 className={`col-12 btn ${
@@ -148,7 +162,7 @@ function Footer(props) {
               </button>
             )}
           </Grid>
-          <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
+          {/* <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
             <Link
               className={`col-12 btn`}
               style={style?.buttonStyle}
@@ -156,7 +170,7 @@ function Footer(props) {
             >
               Track Order
             </Link>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Box>
 

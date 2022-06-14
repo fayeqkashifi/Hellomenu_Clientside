@@ -2,16 +2,16 @@ import React, { useState, useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { base_url, port } from "../../../../../Consts";
+import { base_url, port } from "../../../../../../Consts";
 import Typography from "@mui/material/Typography";
-import DefaultPic from "../../../../../images/hellomenu/category.svg";
+import DefaultPic from "../../../../../../images/hellomenu/category.svg";
 import {
   getProductsBasedOnBranchId,
   getProductBasedOnCategory,
   getProductBasedOnSubCategory,
-} from "../Functionality";
+} from "../../Functionality";
 import AllOutIcon from "@mui/icons-material/AllOut";
-import { TemplateContext } from "../TemplateContext";
+import { TemplateContext } from "../../TemplateContext";
 import axios from "axios";
 
 const SideBar = () => {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player/lazy";
-import { base_url, port } from "../../../../../Consts";
+import { base_url, port } from "../../../../../../Consts";
 import { Link } from "react-router-dom";
-import { getProductsBasedOnBranchId } from "../Functionality";
+import { getProductsBasedOnBranchId } from "../../Functionality";
 import InfiniteScroll from "react-infinite-scroll-component";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
