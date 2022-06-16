@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import ProductDetails from "./Common/ProductDetails";
 import { TemplateContext } from "./TemplateContext";
+import { LanguagesContext } from "./LanguagesContext";
 import { getProduct } from "./Functionality";
 import axios from "axios";
 
@@ -67,19 +68,19 @@ const MainDetails = (props) => {
     );
   } else {
     return (
-      // <TemplateContext.Provider
-      //   value={{
-      //     dataLoad,
-      //   }}
-      // >
-      <ProductDetails
-        id={id}
-        fetchData={fetchData}
-        setFetchData={setFetchData}
-        extra={extra}
-        productIngredients={productIngredients}
-      />
-      // </TemplateContext.Provider>
+      <LanguagesContext.Provider
+        value={{
+          dataLoad,
+        }}
+      >
+        <ProductDetails
+          id={id}
+          fetchData={fetchData}
+          setFetchData={setFetchData}
+          extra={extra}
+          productIngredients={productIngredients}
+        />
+      </LanguagesContext.Provider>
     );
   }
 };

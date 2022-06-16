@@ -18,14 +18,10 @@ import { base_url, port } from "./Consts";
 import ForgotPassword from "./jsx/pages/ForgotPassword";
 import FilterSelection from "./jsx/components/Design/Templates/FilterSelection";
 import MainPublic from "./jsx/components/Design/Templates/MainPublic";
-import MainDetails from "./jsx/components/Design/Templates/MainDetails";
 import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
 import SignUp from "./jsx/pages/SignUp/SignUp";
 import Show from "./jsx/pages/SignUp/Show";
 import ResetPassword from "./jsx/pages/ResetPassword";
-import VideosShow from "./jsx/components/Design/Templates/Common/Story/VideosShow";
-import VideoList from "./jsx/components/Design/Templates/Common/Story/VideoList";
-import VideoDetails from "./jsx/components/Design/Templates/Common/Story/VideoDetails";
 // import TrackOrder from "./jsx/components/Design/Templates/Common/Orders/TrackOrder";
 // import Error404 from "./jsx/pages/Error404";
 

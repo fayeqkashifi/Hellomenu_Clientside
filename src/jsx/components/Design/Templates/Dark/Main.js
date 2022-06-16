@@ -31,7 +31,9 @@ export default function Main() {
 
   const [urlCheck, setUrlCheck] = useState(
     geturl[5] !== undefined
-      ? geturl[5] == "profile" || "track-order" || "cart"
+      ? geturl[5] == "profile" ||
+        geturl[5] == "track-order" ||
+        geturl[5] == "cart"
         ? geturl[5]
         : "home"
       : "home"
@@ -107,7 +109,6 @@ export default function Main() {
             <PublicRoute path={`${path}/track-order`} component={TrackOrder} />
             <PublicRoute path={`${path}/cart`} component={Cart} />
             <PublicRoute path={`${path}/profile`} component={Profile} />
-            <PublicRoute path={`${path}/details/:id`} component={MainDetails} />
             <PublicRoute path={`${path}/details/:id`} component={MainDetails} />
             <PublicRoute path={`${path}/video-list`} component={VideoList} />
             <PublicRoute

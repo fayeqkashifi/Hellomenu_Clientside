@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import OrderDetails from "./Common/OrderDetails";
+import Recommend from "./Common/Recommend";
 import { TemplateContext } from "./TemplateContext";
 import { getProduct } from "./Functionality";
 import axios from "axios";
@@ -91,7 +91,7 @@ const MainRrecommend = (props) => {
         id,
       }}
     >
-      <OrderDetails />
+      <Recommend />
     </TemplateContext.Provider>
   );
 };

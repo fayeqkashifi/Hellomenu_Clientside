@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Header from "./Layout/Header";
 import { base_url, port } from "../../../../../Consts";
@@ -18,29 +18,27 @@ import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import RecCounter from "./Counter/RecCounter";
 import { TemplateContext } from "../TemplateContext";
-const OrderDetails = () => {
+import { getProduct } from "../Functionality";
+import axios from "axios";
+const Recommend = (props) => {
+  const { id } = props;
   const {
-    fetchData,
-    setFetchData,
+    // ,
     locale,
+    selectedLang,
     cart,
     setCart,
-    item,
     // setItem,
     style,
-    orignalPrice,
-    orignalStock,
     extraValue,
     ingredients,
-    price,
-    stock,
-    productName,
     countryCode,
-    picture,
     skuarray,
     activeSKU,
     loading,
   } = useContext(TemplateContext);
+  const [fetchData, setFetchData] = useState([]);
+  const [item, setItem] = useState([]);
 
   let [sum, setSum] = useState(0);
 
@@ -78,6 +76,33 @@ const OrderDetails = () => {
       message: message,
     });
   };
+  let source = axios.CancelToken.source();
+
+  const dataLoad = (input) => {
+    var data = [];
+    getProduct(id, input.id, source).then((result) => {
+      if (result !== undefined) {
+        data = result.data.fetchData;
+        setItem(data);
+
+        setFetchData(result.data.recommend);
+      }
+    });
+  };
+  useEffect(() => {
+    if (source) {
+      source.cancel("Operations cancelled due to new request");
+    }
+    source = axios.CancelToken.source();
+    dataLoad(selectedLang);
+    console.log(id);
+    console.log(selectedLang);
+    return () => {
+      source.cancel();
+      setItem([]);
+      setFetchData([]);
+    };
+  }, [id]);
   // const history = useHistory();
 
   const addItem = (e) => {
@@ -191,7 +216,7 @@ const OrderDetails = () => {
     });
   }
   return (
-    <div style={style?.background}>
+    <div className="my-2">
       {alert.open && (
         <CustomAlert
           vertical="top"
@@ -202,84 +227,35 @@ const OrderDetails = () => {
           setAlert={setAlert}
         />
       )}
-      <Container maxWidth="lg">
-        <Header details={true} search={false} />
-        <Container
-          className="d-flex justify-content-center "
-          style={style?.varaintContainer}
-        >
-          <Grid container spacing={2} className="d-flex justify-content-center">
-            <Grid item xs={12} sm={8} md={8}>
-              <Card sx={style?.card}>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <Swiper
-                    speed={2500}
-                    className="mySwiper2 m-2"
-                    spaceBetween={1}
-                  >
-                    {JSON.parse(picture)?.map((image, i) => {
-                      return (
-                        <SwiperSlide key={i}>
-                          <img
-                            src={
-                              stock === "No Stock" || stock === 0
-                                ? `http://${base_url}:${port}/images/products/${image}`
-                                : `http://${base_url}:${port}/images/products/${image}`
-                            }
-                            alt=""
-                            style={{
-                              height: "300px",
-                              width: "100%",
-                              borderRadius: "10px",
-                              objectFit: "contain",
-                            }}
-                          />
-                        </SwiperSlide>
-                      );
-                    })}
-                  </Swiper>
-                </Grid>
-                <FavoriteIcon
-                  className="my-4 mx-3"
-                  style={style?.favIconActive}
-                />
+      {/* <Header details={true} search={false} /> */}
 
-                <div className="row mx-3">
-                  <Typography style={style?.cartPrice}>
+      {/* <Typography style={style?.cartPrice}>
                     {productName}{" "}
                     {orignalPrice +
                       ".00" +
                       " " +
                       getSymbolFromCurrency(countryCode)}
-                  </Typography>
-                  {style?.show_recommendation == 0 || fetchData.length === 0 ? (
-                    ""
-                  ) : (
-                    <>
-                      <Typography style={style?.productName}>
-                        {locale?.recommendation}
-                      </Typography>
-                      <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
-                    </>
-                  )}
-                </div>
-                <div className="row mx-3">
-                  <TextareaAutosize
-                    // aria-label="empty textarea"
-                    onChange={(e) => changeHandle(e)}
-                    name="itemNote"
-                    className="my-3"
-                    minRows={3}
-                    placeholder="Note"
-                    style={style?.inputfieldDetails}
-                  />
-                </div>
-              </Card>
-            </Grid>
-          </Grid>
-        </Container>
-      </Container>
-      <Box style={style?.footerStyle} className="bottom-0 text-center p-1">
+                  </Typography> */}
+      {style?.show_recommendation == 0 || fetchData.length === 0 ? (
+        ""
+      ) : (
+        <>
+          <Typography style={style?.productName}>
+            {locale?.recommendation}
+          </Typography>
+          <FormGroup>{viewImages_HTMLTABLE}</FormGroup>
+        </>
+      )}
+      <TextareaAutosize
+        // aria-label="empty textarea"
+        onChange={(e) => changeHandle(e)}
+        name="itemNote"
+        className="my-3"
+        minRows={3}
+        placeholder="Note"
+        style={style?.inputfieldDetails}
+      />
+      {/* <Box style={style?.footerStyle} className="bottom-0 text-center p-1">
         <Grid container spacing={2}>
           <Grid item xs={7}>
             <Typography
@@ -301,9 +277,9 @@ const OrderDetails = () => {
             </button>
           </Grid>
         </Grid>
-      </Box>
+      </Box> */}
     </div>
   );
 };
 
-export default OrderDetails;
+export default Recommend;

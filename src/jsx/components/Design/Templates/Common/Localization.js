@@ -5,16 +5,13 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { TemplateContext } from "../TemplateContext";
+import { LanguagesContext } from "../LanguagesContext";
 
 export default function LanguageLocalization() {
-  const {
-    languages,
-    dataLoad,
-    selectedLang,
-    setSelectedLang,
-    setLocale,
-    style,
-  } = useContext(TemplateContext);
+  const { languages, selectedLang, setSelectedLang, setLocale, style } =
+    useContext(TemplateContext);
+  const { dataLoad } = useContext(LanguagesContext);
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClickListItem = (event) => {

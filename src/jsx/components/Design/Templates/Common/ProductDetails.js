@@ -19,6 +19,7 @@ import ImageSlider from "./ImageSilder";
 import "./imageSilder.css";
 import { TemplateContext } from "../TemplateContext";
 import axios from "axios";
+import Recommend from "./Recommend";
 
 const ProductDetails = (props) => {
   const {
@@ -508,6 +509,8 @@ const ProductDetails = (props) => {
                   })}
                 </div>
               )}
+
+              <Recommend id={id} />
             </div>
           </Grid>
         </Grid>
@@ -515,7 +518,7 @@ const ProductDetails = (props) => {
     );
   }
   return (
-    <div style={style?.background}>
+    <div>
       <div style={{ zIndex: 99999999 }}>
         {alert.open && (
           <CustomAlert
@@ -532,7 +535,7 @@ const ProductDetails = (props) => {
         <Header details={true} search={false} />
         {viewImages_HTMLTABLE}
       </Container>
-      <Footer
+      {/* <Footer
         title={locale?.checkout}
         stock={
           productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
@@ -564,7 +567,7 @@ const ProductDetails = (props) => {
             deliveryFees: deliveryFees,
           },
         }}
-      />
+      /> */}
     </div>
   );
 };

@@ -14,6 +14,7 @@ import { ThridStyle } from "./Common/Styles/Thrid";
 import ThridMain from "./Thrid/Main";
 import axios from "axios";
 import { TemplateContext } from "./TemplateContext";
+import { LanguagesContext } from "./LanguagesContext";
 import uuid from "react-uuid";
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
@@ -183,7 +184,6 @@ const MainPublic = (props) => {
         selectedLang,
         cart,
         setCart,
-        dataLoad,
         deliveryFees,
         languages,
         setSelectedLang,
@@ -193,7 +193,13 @@ const MainPublic = (props) => {
         setWishList,
       }}
     >
-      {view}
+      <LanguagesContext.Provider
+        value={{
+          dataLoad,
+        }}
+      >
+        {view}
+      </LanguagesContext.Provider>
     </TemplateContext.Provider>
   );
 };
