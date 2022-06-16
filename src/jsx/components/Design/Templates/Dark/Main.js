@@ -1,11 +1,8 @@
 import React, { useContext, useState } from "react";
-
 import Footer from "../Common/Layout/Footer";
-
 import { TemplateContext } from "../TemplateContext";
 import Menubar from "../Common/Layout/Menubar/Menubar";
 import "./style.css";
-
 import {
   Link,
   BrowserRouter as Router,
@@ -21,13 +18,23 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import Cart from "../Common/Orders/Cart";
 import Profile from "../Common/Profile/Profile";
+import MainDetails from "../MainDetails";
+import Badge from "@mui/material/Badge";
+import VideoList from "../Common/Story/VideoList";
+import VideoDetails from "../Common/Story/VideoDetails";
+import VideosShow from "../Common/Story/VideosShow";
+
 export default function Main() {
   const { path, url } = useRouteMatch();
-  const { style, locale, branch } = useContext(TemplateContext);
+  const { style, locale, branch, cart } = useContext(TemplateContext);
   const geturl = document.location.href.split("/");
 
   const [urlCheck, setUrlCheck] = useState(
-    geturl[5] !== undefined ? geturl[5] : "home"
+    geturl[5] !== undefined
+      ? geturl[5] == "profile" || "track-order" || "cart"
+        ? geturl[5]
+        : "home"
+      : "home"
   );
   return (
     <Router>
@@ -65,7 +72,17 @@ export default function Main() {
           }
           onClick={() => setUrlCheck("cart")}
         >
-          <ShoppingCartIcon className="my-2" />
+          <Badge
+            badgeContent={cart.length}
+            sx={style?.BadgeStyle}
+            overlap="circular"
+          >
+            <ShoppingCartIcon
+              className="my-2"
+              // fontSize="small"
+              sx={style?.cartIcon}
+            />
+          </Badge>
           <br></br>
           Cart
         </Link>
@@ -90,6 +107,14 @@ export default function Main() {
             <PublicRoute path={`${path}/track-order`} component={TrackOrder} />
             <PublicRoute path={`${path}/cart`} component={Cart} />
             <PublicRoute path={`${path}/profile`} component={Profile} />
+            <PublicRoute path={`${path}/details/:id`} component={MainDetails} />
+            <PublicRoute path={`${path}/details/:id`} component={MainDetails} />
+            <PublicRoute path={`${path}/video-list`} component={VideoList} />
+            <PublicRoute
+              path={`${path}/video-details"`}
+              component={VideoDetails}
+            />
+            <PublicRoute path={`${path}/video`} component={VideosShow} />
           </Switch>
         </div>
       </div>

@@ -79,11 +79,7 @@ const Markup = () => {
   return (
     <Router>
       <div id="main-wrapper" className="show">
-        {localStorage.getItem("auth_token") ? (
-          <Nav />
-        ) : (
-          <Redirect to="/login" />
-        )}
+        {localStorage.getItem("auth_token") ? <Nav /> : <Redirect to="/" />}
 
         <div className="content-body" style={{ marginBottom: "50px" }}>
           <div className="container-fluid">
@@ -106,11 +102,7 @@ const Markup = () => {
             </Switch>
           </div>
         </div>
-        {localStorage.getItem("auth_token") ? (
-          <Footer />
-        ) : (
-          <Redirect to="/login" />
-        )}
+        {localStorage.getItem("auth_token") ? <Footer /> : <Redirect to="/" />}
       </div>
     </Router>
   );

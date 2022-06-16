@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+// import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useHistory } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Badge from "@mui/material/Badge";
@@ -226,9 +226,9 @@ function Header(props) {
         }}
         className="top-0"
       >
-        <IconButton onClick={() => history.goBack()} sx={style?.backIcon}>
+        {/* <IconButton onClick={() => history.goBack()} sx={style?.backIcon}>
           <KeyboardBackspaceIcon fontSize="small" />
-        </IconButton>
+        </IconButton> */}
         <Typography align="left" style={style?.title} noWrap>
           {activeCategory?.split("~~~")[0] === "All"
             ? locale?.all
@@ -256,7 +256,7 @@ function Header(props) {
           </div>
         )}
         <LanguageLocalization />
-        <IconButton onClick={() => setModalCentered(true)}>
+        {/* <IconButton onClick={() => setModalCentered(true)}>
           <Badge
             badgeContent={cart.length}
             sx={style?.BadgeStyle}
@@ -264,7 +264,7 @@ function Header(props) {
           >
             <AddShoppingCartIcon fontSize="small" sx={style?.cartIcon} />
           </Badge>
-        </IconButton>
+        </IconButton> */}
         <div style={style?.headerTotalDiv}>
           <IconButton sx={style?.totalPriceIcon}>
             <FunctionsIcon fontSize="small" />

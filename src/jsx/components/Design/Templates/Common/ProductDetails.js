@@ -10,7 +10,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import getSymbolFromCurrency from "currency-symbol-map";
-
+import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import IconButton from "@mui/material/IconButton";
 import { getVariations } from "../Functionality";
 import CustomAlert from "../../../CustomAlert";
 import ImageSlider from "./ImageSilder";
@@ -18,20 +20,19 @@ import "./imageSilder.css";
 import { TemplateContext } from "../TemplateContext";
 import axios from "axios";
 
-const ProductDetails = () => {
+const ProductDetails = (props) => {
   const {
-    id,
     style,
     cart,
     setCart,
     locale,
     loading,
-    fetchData,
-    extra,
-    productIngredients,
     deliveryFees,
     branchId,
+    wishlist,
+    setWishList,
   } = useContext(TemplateContext);
+  const { id, fetchData, extra, productIngredients } = props;
   const [swiper, setSwiper] = useState(null);
 
   let varData = [];
@@ -171,14 +172,12 @@ const ProductDetails = () => {
     } else {
       setIntgredients([...ingredients, value]);
     }
-    // console.log(ingredients);
   };
   let [sum, setSum] = useState(0);
   const [extraValue, setExtraValue] = useState([]);
 
   const extraHandlers = (e, price, value) => {
     if (e.target.checked) {
-      // console.log((sum += parseInt(price)));
       setSum((sum += parseInt(price)));
       setExtraValue([...extraValue, value]);
     } else {
@@ -255,6 +254,19 @@ const ProductDetails = () => {
       message: message,
     });
   };
+
+  const addWishList = (id) => {
+    const checkData = JSON.parse(localStorage.getItem("wishlist")) || [];
+    if (!checkData.includes(id)) {
+      checkData.push(id);
+      localStorage.setItem("wishlist", JSON.stringify(checkData));
+      setWishList(checkData);
+    } else {
+      const data = checkData.filter((item) => item != id);
+      localStorage.setItem("wishlist", JSON.stringify(data));
+      setWishList(data);
+    }
+  };
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
@@ -321,7 +333,18 @@ const ProductDetails = () => {
                   xs={2}
                   className="d-flex align-items-center justify-content-right"
                 >
-                  <FavoriteIcon style={style?.favIconActive} />
+                  <IconButton
+                    style={style?.cardIconButton}
+                    onClick={() => addWishList(fetchData.id)}
+                  >
+                    {style.template === "thrid" ? (
+                      <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
+                    ) : !wishlist.includes(fetchData.id) ? (
+                      <FavoriteBorderIcon sx={style?.favIconDeactive} />
+                    ) : (
+                      <FavoriteIcon sx={style?.favIconActive} />
+                    )}
+                  </IconButton>
                 </Grid>
                 <Grid
                   item
@@ -459,7 +482,6 @@ const ProductDetails = () => {
                   </Typography>
                   {/* <FormGroup> */}
                   {extra?.map((item, i) => {
-                    // console.log(item);
                     return (
                       <FormControlLabel
                         key={i}

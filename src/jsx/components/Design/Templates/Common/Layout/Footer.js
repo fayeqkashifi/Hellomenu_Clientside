@@ -106,10 +106,10 @@ function Footer(props) {
           <Grid
             item
             xs={6}
-            lg={4}
-            xl={4}
+            lg={6}
+            xl={6}
             sm={6}
-            md={4}
+            md={6}
             className="d-flex align-items-center justify-content-center"
           >
             <Typography style={style?.cartDescription}>
@@ -125,10 +125,10 @@ function Footer(props) {
           <Grid
             item
             xs={6}
-            lg={4}
-            xl={4}
+            lg={6}
+            xl={6}
             sm={6}
-            md={4}
+            md={6}
             className="d-flex align-items-center justify-content-center"
           >
             <Typography style={style?.cartDescription}>
@@ -141,36 +141,6 @@ function Footer(props) {
                   : getSymbolFromCurrency(cart[0]?.currency_code))}
             </Typography>
           </Grid>
-          <Grid item xs={12} lg={4} xl={4} sm={12} md={4}>
-            {url !== undefined ? (
-              <Link
-                className={`col-12 btn ${
-                  stock == "No Stock" || stock == 0 ? "disabled" : ""
-                } `}
-                style={style?.buttonStyle}
-                to={url}
-              >
-                {title}
-              </Link>
-            ) : (
-              <button
-                className="col-12 btn"
-                onClick={() => setModalCentered(true)}
-                style={style?.buttonStyle}
-              >
-                {title}
-              </button>
-            )}
-          </Grid>
-          {/* <Grid item xs={2} lg={2} xl={2} sm={2} md={2}>
-            <Link
-              className={`col-12 btn`}
-              style={style?.buttonStyle}
-              to="/track-order"
-            >
-              Track Order
-            </Link>
-          </Grid> */}
         </Grid>
       </Box>
 

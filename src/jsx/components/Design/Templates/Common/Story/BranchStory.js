@@ -10,8 +10,10 @@ import profile from "../../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
 import { TemplateContext } from "../../TemplateContext";
 import axios from "axios";
-
+import { useRouteMatch } from "react-router-dom";
 function BranchStory(props) {
+  const { url } = useRouteMatch();
+
   const { style, branch, deliveryFees, branchStory, selectedLang } =
     useContext(TemplateContext);
   const [loading, setLoading] = useState(true);
@@ -78,7 +80,7 @@ function BranchStory(props) {
                       return (
                         <Link
                           to={{
-                            pathname: `/public/details/${btoa(
+                            pathname: `${url}/details/${btoa(
                               btoa(btoa(item.id))
                             )}`,
                             state: {
@@ -174,7 +176,7 @@ function BranchStory(props) {
                       return (
                         <Link
                           to={{
-                            pathname: `/public/details/${btoa(
+                            pathname: `${url}/details/${btoa(
                               btoa(btoa(item.id))
                             )}`,
                             state: {

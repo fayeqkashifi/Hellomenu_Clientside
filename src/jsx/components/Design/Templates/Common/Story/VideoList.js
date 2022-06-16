@@ -7,7 +7,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import axios from "axios";
+import { useRouteMatch } from "react-router-dom";
+
 function VideoList(props) {
+  const { url } = useRouteMatch();
+
   const style = props.history.location.state.style;
   const branch = props.history.location.state.branch;
   const deliveryFees = props.history.location.state.deliveryFees;
@@ -78,7 +82,7 @@ function VideoList(props) {
                 <div className="col" key={item.id}>
                   <Link
                     to={{
-                      pathname: `/public/video`,
+                      pathname: `${url}/video`,
                       state: {
                         style: style,
                         branch: branch,
@@ -141,7 +145,7 @@ function VideoList(props) {
                 <div className={`col`} key={item.id}>
                   <Link
                     to={{
-                      pathname: `/public/video`,
+                      pathname: `${url}/video`,
                       state: {
                         style: style,
                         branch: branch,
@@ -168,7 +172,7 @@ function VideoList(props) {
                   <div className={`col`} key={item.id}>
                     <Link
                       to={{
-                        pathname: `/public/video`,
+                        pathname: `${url}/video`,
                         state: {
                           style: style,
                           branch: branch,

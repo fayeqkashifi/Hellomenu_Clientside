@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -12,10 +12,34 @@ import Counter from "../Common/Counter/Counter";
 import IconButton from "@mui/material/IconButton";
 import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
 import { TemplateContext } from "../TemplateContext";
+import { useRouteMatch } from "react-router-dom";
 export default function ShowCards(props) {
-  const { style, cart, products, branchId, deliveryFees, locale } =
-    useContext(TemplateContext);
+  const { url } = useRouteMatch();
+
+  const {
+    style,
+    cart,
+    wishlist,
+    setWishList,
+    products,
+    branchId,
+    deliveryFees,
+    locale,
+  } = useContext(TemplateContext);
   const { check } = props;
+
+  const addWishList = (id) => {
+    const checkData = JSON.parse(localStorage.getItem("wishlist")) || [];
+    if (!checkData.includes(id)) {
+      checkData.push(id);
+      localStorage.setItem("wishlist", JSON.stringify(checkData));
+      setWishList(checkData);
+    } else {
+      const data = checkData.filter((item) => item != id);
+      localStorage.setItem("wishlist", JSON.stringify(data));
+      setWishList(data);
+    }
+  };
   var viewShow_HTMLTABLE = "";
   if (products.length != 0) {
     viewShow_HTMLTABLE = products?.map((item, i) => {
@@ -40,12 +64,13 @@ export default function ShowCards(props) {
         >
           <Card sx={style?.cardStyle}>
             <div className="px-2 pt-2">
-              <IconButton style={style?.cardIconButton}>
+              <IconButton
+                style={style?.cardIconButton}
+                onClick={() => addWishList(item.id)}
+              >
                 {style.template === "thrid" ? (
                   <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
-                ) : cart.every((val) => {
-                    return val.id !== item.id;
-                  }) ? (
+                ) : !wishlist.includes(item.id) ? (
                   <FavoriteBorderIcon sx={style?.favIconDeactive} />
                 ) : (
                   <FavoriteIcon sx={style?.favIconActive} />
@@ -56,7 +81,7 @@ export default function ShowCards(props) {
             <CardContent sx={{ flexGrow: 1 }}>
               <Link
                 to={{
-                  pathname: `/public/details/${btoa(btoa(btoa(item.id)))}`,
+                  pathname: `${url}/details/${btoa(btoa(btoa(item.id)))}`,
                   state: {
                     style: style,
                     deliveryFees: deliveryFees,

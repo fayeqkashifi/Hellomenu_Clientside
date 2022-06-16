@@ -291,6 +291,10 @@ const Cart = (props) => {
         "table_id",
         table.id === undefined ? userData.table_id : table.id
       );
+      formData.append(
+        "browserUniqueId",
+        atob(localStorage.getItem("uniqueId"))
+      );
       formData.append("dateAndTime", userData.dateAndTime);
       formData.append("orderingMethod", orderingWay);
       formData.append("generalNote", userData.generalNote);
@@ -615,7 +619,7 @@ const Cart = (props) => {
         sum.toFixed(2) + "  " + currency
       }\n *${locale?.delivery_fee}*: ${
         deliveryFees.toFixed(2) + "  " + currency
-      }\n *${locale?.grand_total}: ${
+      }\n *${locale?.grand_total}*: ${
         (sum + deliveryFees).toFixed(2) + "  " + currency
       }${
         userData?.generalNote === undefined || userData?.generalNote === ""
@@ -642,11 +646,13 @@ const Cart = (props) => {
       )}
       {/* {checkBit ? "" : <Header subcategories={0} cart={cart.length} />} */}
       {cart.length === 0 ? (
-        <Grid container spacing={2} className="text-center">
-          <Grid item xs={12} lg={12} xl={12} sm={6} md={6}>
-            {locale?.no_item_available}
-          </Grid>
-        </Grid>
+        <div className="card" style={style?.cardStyle}>
+          <div className="card-body">
+            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+              {locale?.no_item_available}
+            </div>
+          </div>
+        </div>
       ) : (
         <>
           {viewImages_HTMLTABLE}

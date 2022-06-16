@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./TrackStyle.css";
 import axios from "axios";
 import OrderSearch from "./OrderSearch";
 import ItemCard from "../../../../Orders/Card";
+import { TemplateContext } from "../../TemplateContext";
 
 const TrackOrder = () => {
+  let { style } = useContext(TemplateContext);
+
   const [data, setData] = useState([]);
   const [order, setOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
@@ -32,18 +35,26 @@ const TrackOrder = () => {
   const [error, setError] = useState();
 
   return (
-    <>
+    <div className="p-5">
       <OrderSearch
         setOrder={setOrder}
         setShowDetails={setShowDetails}
         setError={setError}
       />
       {order == null ? (
-        <div className="container padding-bottom-3x mb-1 text-center sdd">
-          {error}
-        </div>
+        error == null ? (
+          ""
+        ) : (
+          <div className="card" style={style?.cardStyle}>
+            <div className="card-body">
+              <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+                {error}
+              </div>
+            </div>
+          </div>
+        )
       ) : (
-        <div className="container padding-bottom-3x mb-1 " key={order}>
+        <div className="padding-bottom-3x mb-1 " key={order}>
           <div className="card mb-3">
             <div className="p-4 text-center text-white text-lg bg-dark rounded-top">
               <span className="text-uppercase">Tracking Order No - </span>
@@ -119,7 +130,7 @@ const TrackOrder = () => {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

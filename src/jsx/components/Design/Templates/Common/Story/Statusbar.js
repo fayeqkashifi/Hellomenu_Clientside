@@ -2,14 +2,17 @@ import React, { useState, useEffect, useContext } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import { base_url, port } from "../../../../../../Consts";
 import { Link } from "react-router-dom";
-import Container from "@mui/material/Container";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
 import ReactPlayer from "react-player/lazy";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { TemplateContext } from "../../TemplateContext";
+import { useRouteMatch } from "react-router-dom";
+
 function Statusbar() {
+  const { url } = useRouteMatch();
+
   const { products, style, branchId, categories, deliveryFees, locale } =
     useContext(TemplateContext);
 
@@ -84,7 +87,7 @@ function Statusbar() {
               <span style={style?.headerVideos}> {locale?.stories}</span>
               <Link
                 to={{
-                  pathname: `/public/video-list`,
+                  pathname: `${url}/video-list`,
                   state: {
                     style: style,
                     products: products,
@@ -167,7 +170,7 @@ function Statusbar() {
                     JSON.parse(item.videosUrl).length !== 0 ? (
                     <Link
                       to={{
-                        pathname: `/public/video`,
+                        pathname: `${url}/video`,
                         state: {
                           style: style,
                           branch: branch,

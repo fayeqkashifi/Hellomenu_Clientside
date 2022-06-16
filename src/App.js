@@ -94,28 +94,17 @@ const App = () => {
           path="/reset-password/:id"
           exact
         />
-
         <PublicRoute
           exact
           component={FilterSelection}
           path="/filterSelection"
         />
-        <PublicRoute exact component={VideoList} path="/public/video-list" />
-        <PublicRoute
-          exact
-          component={VideoDetails}
-          path="/public/video-details"
-        />
-        <PublicRoute exact component={VideosShow} path="/public/video" />
-        <PublicRoute exact component={MainPublic} path="/public/:id" />
-        <PublicRoute exact component={MainDetails} path="/public/details/:id" />
+        <PublicRoute component={MainPublic} path="/public/:id" />
         <PublicRoute
           exact
           component={MainRrecommend}
           path="/public/details/recommend/:id"
         />
-        {/* <PublicRoute exact component={TrackOrder} path="/track-order" /> */}
-
         <Markup />
         {/* <Route component={Error404} /> */}
       </Switch>

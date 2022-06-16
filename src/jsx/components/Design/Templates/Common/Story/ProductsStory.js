@@ -14,8 +14,11 @@ import Toolbar from "@mui/material/Toolbar";
 import profile from "../../../../../../images/hellomenu/logo.svg";
 import ReactPlayer from "react-player/lazy";
 import { TemplateContext } from "../../TemplateContext";
+import { useRouteMatch } from "react-router-dom";
 
 function ProductsStory() {
+  const { url } = useRouteMatch();
+
   const { style, branch, product_id, deliveryFees, categories, selectedLang } =
     useContext(TemplateContext);
 
@@ -279,7 +282,7 @@ function ProductsStory() {
                 <div className="d-flex align-items-center justify-content-center">
                   <Link
                     to={{
-                      pathname: `/public/video-details`,
+                      pathname: `${url}/video-details`,
                       state: {
                         style: style,
                         product: data,
@@ -301,7 +304,7 @@ function ProductsStory() {
                         <div style={{ cursor: "pointer" }} key={i}>
                           <Link
                             to={{
-                              pathname: `/public/details/${btoa(
+                              pathname: `${url}/details/${btoa(
                                 btoa(btoa(item.id))
                               )}`,
                               state: {
@@ -394,7 +397,7 @@ function ProductsStory() {
                 <div className="d-flex align-items-center justify-content-center">
                   <Link
                     to={{
-                      pathname: `/public/video-details`,
+                      pathname: `${url}/video-details`,
                       state: {
                         style: style,
                         product: data,
@@ -416,7 +419,7 @@ function ProductsStory() {
                         <div style={{ cursor: "pointer" }} key={i}>
                           <Link
                             to={{
-                              pathname: `/public/details/${btoa(
+                              pathname: `${url}/details/${btoa(
                                 btoa(btoa(item.id))
                               )}`,
                               state: {

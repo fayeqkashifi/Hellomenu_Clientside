@@ -2,6 +2,30 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const DarkStyle = (custom, theme) => {
   return {
+    // profile
+    activeMenu: {
+      cursor: "pointer",
+      border: "1px solid",
+      margin: "10px",
+      borderRadius: "10px",
+      borderColor: "#f27d1e",
+      boxShadow:
+        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      backgroundColor: "#f27d1e",
+      color: "#fff",
+    },
+    DeActiveMenu: {
+      height: "50px",
+      cursor: "pointer",
+      border: "1px solid",
+      borderRadius: "10px",
+      margin: "10px",
+      boxShadow:
+        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      borderColor: "#ffffff",
+      backgroundColor: "#ffffff",
+      color: "#f27d1e",
+    },
     // SideBar
     sidebar: {
       margin: 0,

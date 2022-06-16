@@ -14,7 +14,7 @@ import { ThridStyle } from "./Common/Styles/Thrid";
 import ThridMain from "./Thrid/Main";
 import axios from "axios";
 import { TemplateContext } from "./TemplateContext";
-
+import uuid from "react-uuid";
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
   const branchId = atob(atob(atob(props.match.params.id)));
@@ -40,6 +40,9 @@ const MainPublic = (props) => {
   );
   const [locale, setLocale] = useState(
     JSON.parse(sessionStorage.getItem("locale")) || []
+  );
+  const [wishlist, setWishList] = useState(
+    JSON.parse(localStorage.getItem("wishlist")) || []
   );
   const dataLoad = async (input) => {
     setActiveCategory("All~~~1");
@@ -119,6 +122,9 @@ const MainPublic = (props) => {
         setBranch(data);
       }
     });
+    if (localStorage.getItem("uniqueId") === null) {
+      localStorage.setItem("uniqueId", btoa(uuid()));
+    }
     dataLoad();
 
     return () => {
@@ -183,6 +189,8 @@ const MainPublic = (props) => {
         setSelectedLang,
         locale,
         setLocale,
+        wishlist,
+        setWishList,
       }}
     >
       {view}
