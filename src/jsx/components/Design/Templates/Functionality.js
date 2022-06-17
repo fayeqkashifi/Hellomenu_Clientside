@@ -240,7 +240,7 @@ export const insertOrder = async (data) => {
   }
 };
 
-export const addItemWithdoutDetails = async (id, cart, products) => {
+export const addItemWithdoutDetails = async (id, cart, products, name) => {
   try {
     const check = cart.every((item) => {
       return item.id !== id;
@@ -262,12 +262,12 @@ export const addItemWithdoutDetails = async (id, cart, products) => {
           qty: data[0].qty,
           // stock: data[0].stock,
           // price: data[0].price,
-          currency_code: data[0].currency_code,
+          // currency_code: data[0].currency_code,
           ingredients: [],
           extras: [],
           recommendations: [],
         });
-        localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
+        localStorage.setItem(name, JSON.stringify(cart.concat(array)));
       }
       return cart.concat(array);
     }

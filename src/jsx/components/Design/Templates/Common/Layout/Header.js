@@ -29,12 +29,12 @@ function Header(props) {
     setProducts,
     setActiveCategory,
     cart,
-    branchId,
     setLastPage,
     setPage,
     selectedLang,
     locale,
     setCart,
+    branch,
   } = useContext(TemplateContext);
   const { search, details, setChangeState } = props;
 
@@ -79,7 +79,7 @@ function Header(props) {
         });
       }
     } else {
-      getProductsBasedOnBranchId(branchId, 1, selectedLang.id, source).then(
+      getProductsBasedOnBranchId(branch.id, 1, selectedLang.id, source).then(
         (data) => {
           if (data !== undefined) {
             setProducts(data.data);
@@ -181,7 +181,7 @@ function Header(props) {
   let cancelToken;
   const searchItem = async (e) => {
     if (e.target.value === "") {
-      getProductsBasedOnBranchId(branchId, 1, selectedLang.id, source).then(
+      getProductsBasedOnBranchId(branch.id, 1, selectedLang.id, source).then(
         (data) => {
           if (data !== undefined) {
             setProducts(data.data);
@@ -202,7 +202,7 @@ function Header(props) {
         results = await axios.get(`/api/findProduct/${e.target.value}`, {
           cancelToken: cancelToken.token,
           params: {
-            branchId: branchId,
+            branchId: branch.id,
             langId: selectedLang.id,
           },
         });
@@ -269,11 +269,7 @@ function Header(props) {
           <IconButton sx={style?.totalPriceIcon}>
             <FunctionsIcon fontSize="small" />
           </IconButton>
-          {sum.toFixed(2) +
-            "  " +
-            (getSymbolFromCurrency(cart[0]?.currency_code) === undefined
-              ? " "
-              : getSymbolFromCurrency(cart[0]?.currency_code))}{" "}
+          {sum.toFixed(2) + "  " + getSymbolFromCurrency(branch?.currency_code)}
           &nbsp;
         </div>
       </Toolbar>

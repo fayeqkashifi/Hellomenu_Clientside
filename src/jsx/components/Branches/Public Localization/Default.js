@@ -9,6 +9,7 @@ export const PublicLocale = {
   please_select_product_variantion: "Please select product variantion",
   see_more: "See More",
   add_to_cart: "Add to Cart",
+  add_to_wishlist: "Add to WishList",
   preparation_time: "Preparation Time",
   price: "Price",
   stock: "Stock",
@@ -55,8 +56,9 @@ export const PublicLocale = {
     "Please choose at least one way of ordering.",
   please_scan_the_table_QR_code: "Please Scan The Table QR-Code",
   please_select_table_reservation: "Please Select Table Reservation",
-  successfully_added_to_cart: "Successfully added to cart",
-  cart_updated: "Cart Updated",
+  successfully_added: "Successfully added",
+  updated: "Updated",
   please_select_the_ingredients_you_want_to_remove:
     "Please select the ingredients you want to remove.",
+  item_is_already_in_cart: "Item is Already in cart",
 };

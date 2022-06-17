@@ -10,7 +10,7 @@ import { getProduct, getVariations } from "../../Functionality";
 import axios from "axios";
 
 function Footer(props) {
-  const { style, cart, setCart, deliveryFees, locale, selectedLang } =
+  const { style, cart, setCart, deliveryFees, branch, locale, selectedLang } =
     useContext(TemplateContext);
   const { title, url, stock } = props;
   let [sum, setSum] = useState(0);
@@ -117,9 +117,7 @@ function Footer(props) {
               <br></br>
               {sum.toFixed(2) +
                 "  " +
-                (getSymbolFromCurrency(cart[0]?.currency_code) === undefined
-                  ? " "
-                  : getSymbolFromCurrency(cart[0]?.currency_code))}
+                getSymbolFromCurrency(branch?.currency_code)}
             </Typography>
           </Grid>
           <Grid
@@ -136,9 +134,7 @@ function Footer(props) {
               <br></br>
               {deliveryFees.toFixed(2) +
                 "  " +
-                (getSymbolFromCurrency(cart[0]?.currency_code) === undefined
-                  ? " "
-                  : getSymbolFromCurrency(cart[0]?.currency_code))}
+                getSymbolFromCurrency(branch?.currency_code)}
             </Typography>
           </Grid>
         </Grid>

@@ -16,6 +16,8 @@ import axios from "axios";
 import { TemplateContext } from "./TemplateContext";
 import { LanguagesContext } from "./LanguagesContext";
 import uuid from "react-uuid";
+import CustomAlert from "../../CustomAlert";
+
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
   const branchId = atob(atob(atob(props.match.params.id)));
@@ -138,6 +140,19 @@ const MainPublic = (props) => {
       setLastPage(0);
     };
   }, []);
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+
+  const setAlerts = (open, severity, message) => {
+    setAlert({
+      open: open,
+      severity: severity,
+      message: message,
+    });
+  };
   var view = "";
   if (loading) {
     return (
@@ -191,6 +206,7 @@ const MainPublic = (props) => {
         setLocale,
         wishlist,
         setWishList,
+        setAlerts,
       }}
     >
       <LanguagesContext.Provider
@@ -198,6 +214,16 @@ const MainPublic = (props) => {
           dataLoad,
         }}
       >
+        {alert.open && (
+          <CustomAlert
+            vertical="top"
+            horizontal="right"
+            open={alert.open}
+            severity={alert.severity}
+            message={alert.message}
+            setAlert={setAlert}
+          />
+        )}
         {view}
       </LanguagesContext.Provider>
     </TemplateContext.Provider>

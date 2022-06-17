@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
-import CustomAlert from "../../../../CustomAlert";
 import IconButton from "@mui/material/IconButton";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -15,22 +14,17 @@ import {
 } from "../../Functionality";
 import { TemplateContext } from "../../TemplateContext";
 const Counter = (props) => {
-  const { style, products, cart, setCart, locale } =
-    useContext(TemplateContext);
+  const {
+    style,
+    products,
+    cart,
+    wishlist,
+    setWishList,
+    setCart,
+    locale,
+    setAlerts,
+  } = useContext(TemplateContext);
   const { item, setFetchData, fetchData } = props;
-  const [alert, setAlert] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
-
-  const setAlerts = (open, severity, message) => {
-    setAlert({
-      open: open,
-      severity: severity,
-      message: message,
-    });
-  };
   const handleDecrement = (qty, id) => {
     handleDecrementQuantity(qty, id, cart).then((data) => {
       setCart((cart) => data);
@@ -53,13 +47,22 @@ const Counter = (props) => {
   };
 
   const addItem = (id) => {
-    addItemWithdoutDetails(id, cart, products).then((data) => {
+   
+    addItemWithdoutDetails(id, cart, products, "cart").then((data) => {
       if (data === "") {
         setAlerts(true, "warning", locale?.please_select_product_variantion);
       } else {
         setCart(data);
       }
     });
+     const wishCheck = wishlist.every((item) => {
+       return item.id !== id;
+     });
+    if (!wishCheck) {
+      const filterData = wishlist.filter((item) => item.id !== id);
+      setWishList(filterData);
+      localStorage.setItem("wishlist", JSON.stringify(filterData));
+    }
   };
   const remItem = (id) => {
     remCartItem(id, cart).then((data) => {
@@ -79,18 +82,6 @@ const Counter = (props) => {
 
   return (
     <div style={style?.divCounter}>
-      {alert.open ? (
-        <CustomAlert
-          vertical="top"
-          horizontal="right"
-          open={alert.open}
-          severity={alert.severity}
-          message={alert.message}
-          setAlert={setAlert}
-        />
-      ) : (
-        ""
-      )}
       <div
         className={`row justify-content-center ${
           cartItem.length === 0 ? " " : "d-none"

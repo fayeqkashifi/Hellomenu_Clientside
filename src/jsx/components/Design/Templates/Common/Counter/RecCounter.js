@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import Typography from "@mui/material/Typography";
-import CustomAlert from "../../../../CustomAlert";
+
 import IconButton from "@mui/material/IconButton";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
@@ -9,36 +9,25 @@ import {
   recIncrementQuantity,
 } from "../../Functionality";
 import { TemplateContext } from "../../TemplateContext";
+import { LanguagesContext } from "../../LanguagesContext";
 const RecCounter = (props) => {
-  const { style, setFetchData, fetchData, locale } =
-    useContext(TemplateContext);
+  const { style, locale, setAlerts } = useContext(TemplateContext);
+  const { recommend, setRecommend } = useContext(LanguagesContext);
   let { item, sum, setSum } = props;
-  const [alert, setAlert] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
 
-  const setAlerts = (open, severity, message) => {
-    setAlert({
-      open: open,
-      severity: severity,
-      message: message,
-    });
-  };
   const handleDecrement = (qty, id, price) => {
-    recDecrementQuantity(qty, id, fetchData).then((data) => {
+    recDecrementQuantity(qty, id, recommend).then((data) => {
       if (data !== null) {
-        setFetchData(data);
+        setRecommend(data);
         item.qty = qty - 1;
         setSum((sum -= parseInt(price)));
       }
     });
   };
   const handelIncrement = (qty, id, price, stock) => {
-    recIncrementQuantity(qty, id, stock, fetchData).then((data) => {
+    recIncrementQuantity(qty, id, stock, recommend).then((data) => {
       if (data !== null) {
-        setFetchData(data);
+        setRecommend(data);
         item.qty = qty + 1;
         setSum((sum += parseInt(price)));
       } else {
@@ -53,19 +42,6 @@ const RecCounter = (props) => {
 
   return (
     <div className="row">
-      {alert.open ? (
-        <CustomAlert
-          vertical="top"
-          horizontal="right"
-          open={alert.open}
-          severity={alert.severity}
-          message={alert.message}
-          setAlert={setAlert}
-        />
-      ) : (
-        ""
-      )}
-
       <div className={`row`}>
         <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
           <Typography variant="h6" gutterBottom>

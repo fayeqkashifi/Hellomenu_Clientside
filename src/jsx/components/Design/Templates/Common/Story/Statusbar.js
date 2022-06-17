@@ -13,30 +13,18 @@ import { useRouteMatch } from "react-router-dom";
 function Statusbar() {
   const { url } = useRouteMatch();
 
-  const { products, style, branchId, categories, deliveryFees, locale } =
+  const { products, style, categories, branch, deliveryFees, locale } =
     useContext(TemplateContext);
 
   // const checkProduct = products.filter((item) => item.video !== null);
-  const [branch, setBranch] = useState([]);
+  // const [branch, setBranch] = useState([]);
   const [branchStories, setBranchStories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const dataload = () => {
     try {
       axios
-        .get(`/api/editBranches/${branchId}`, {
-          cancelToken: source.token,
-        })
-        .then((res) => {
-          if (res?.data?.status === 200) {
-            setBranch(res?.data?.branch);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      axios
-        .get(`/api/getStories/${branchId}`, {
+        .get(`/api/getStories/${branch.id}`, {
           cancelToken: source.token,
         })
         .then((res) => {
@@ -62,7 +50,6 @@ function Statusbar() {
     dataload();
     return () => {
       source.cancel();
-      setBranch([]);
       setBranchStories([]);
       setLoading(true);
     };

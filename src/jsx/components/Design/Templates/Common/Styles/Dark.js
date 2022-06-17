@@ -787,8 +787,8 @@ export const DarkStyle = (custom, theme) => {
         : "#f27d1e",
     },
     cartImage: {
-      height: "100%",
-      width: "100%",
+      height: "200px",
+      width: "150px",
       borderRadius: "15px",
       objectFit: "contain",
     },

@@ -21,9 +21,9 @@ const SideBar = () => {
     activeCategory,
     setProducts,
     setActiveCategory,
-    branchId,
     selectedLang,
     locale,
+    branch,
   } = useContext(TemplateContext);
 
   const [value, setValue] = useState(0);
@@ -70,7 +70,7 @@ const SideBar = () => {
         });
       }
     } else {
-      getProductsBasedOnBranchId(branchId, 1, selectedLang.id, source).then(
+      getProductsBasedOnBranchId(branch.id, 1, selectedLang.id, source).then(
         (data) => {
           if (data !== undefined) {
             setProducts(data.data);

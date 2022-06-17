@@ -13,7 +13,6 @@ import TextareaAutosize from "@mui/base/TextareaAutosize";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import QrReader from "react-qr-reader";
 import SendIcon from "@mui/icons-material/Send";
-import CustomAlert from "../../../../CustomAlert";
 import * as Yup from "yup";
 import "yup-phone";
 import { Formik, Form, ErrorMessage } from "formik";
@@ -23,7 +22,6 @@ import {
   insertOrder,
   remCartItem,
   emptyCart,
-  getBranch,
   getProduct,
   getVariations,
 } from "../../Functionality";
@@ -45,13 +43,12 @@ const Cart = (props) => {
     style,
     cart,
     setCart,
-    branchId,
     branch,
     deliveryFees,
     locale,
     selectedLang,
+    setAlerts,
   } = useContext(TemplateContext);
-  const { checkBit } = props;
   const initialValues = {
     phoneNumber: "",
   };
@@ -60,7 +57,7 @@ const Cart = (props) => {
       phoneNumber: Yup.string().required("Phone Number is required"),
     });
   };
-  const currency = getSymbolFromCurrency(cart[0]?.currency_code);
+  const currency = getSymbolFromCurrency(branch?.currency_code);
   const [loading, setLoading] = useState(true);
   let [sum, setSum] = useState(0);
   const [tables, setTables] = useState([]);
@@ -163,7 +160,7 @@ const Cart = (props) => {
     });
     await setFetchData(newArray);
 
-    await getTables(branchId).then((res) => {
+    await getTables(branch.id).then((res) => {
       setTables(res);
     });
     setLoading(false);
@@ -240,18 +237,6 @@ const Cart = (props) => {
   const handleError = (err) => {
     console.error(err);
   };
-  const [alert, setAlert] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
-  const setAlerts = (open, severity, message) => {
-    setAlert({
-      open: open,
-      severity: severity,
-      message: message,
-    });
-  };
   const [error, setError] = useState(false);
   const saveOrder = (data) => {
     if (orderingWay !== undefined) {
@@ -302,7 +287,7 @@ const Cart = (props) => {
       formData.append("fullAddress", userData.address);
       formData.append("otherAddressFields", JSON.stringify(otherAddress));
       formData.append("deliveryFees", deliveryFees);
-      formData.append("branch_id", branchId);
+      formData.append("branch_id", branch.id);
       insertOrder(formData).then((res) => {
         Swal.fire({
           title: "Thank You For Your Order!",
@@ -634,17 +619,6 @@ const Cart = (props) => {
   }
   return (
     <div className="p-5">
-      {alert.open && (
-        <CustomAlert
-          vertical="top"
-          horizontal="right"
-          open={alert.open}
-          severity={alert.severity}
-          message={alert.message}
-          setAlert={setAlert}
-        />
-      )}
-      {/* {checkBit ? "" : <Header subcategories={0} cart={cart.length} />} */}
       {cart.length === 0 ? (
         <div className="card" style={style?.cardStyle}>
           <div className="card-body">

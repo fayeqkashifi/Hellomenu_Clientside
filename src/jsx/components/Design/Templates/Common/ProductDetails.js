@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import Footer from "./Layout/Footer";
 import Container from "@mui/material/Container";
 import Header from "./Layout/Header";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
-
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -14,26 +12,20 @@ import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlin
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import IconButton from "@mui/material/IconButton";
 import { getVariations } from "../Functionality";
-import CustomAlert from "../../../CustomAlert";
 import ImageSlider from "./ImageSilder";
 import "./imageSilder.css";
 import { TemplateContext } from "../TemplateContext";
+import { LanguagesContext } from "../LanguagesContext";
 import axios from "axios";
 import Recommend from "./Recommend";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import Tooltip from "@mui/material/Tooltip";
 
 const ProductDetails = (props) => {
-  const {
-    style,
-    cart,
-    setCart,
-    locale,
-    loading,
-    deliveryFees,
-    branchId,
-    wishlist,
-    setWishList,
-  } = useContext(TemplateContext);
-  const { id, fetchData, extra, productIngredients } = props;
+  const { style, cart, setCart, locale, wishlist, setWishList, setAlerts } =
+    useContext(TemplateContext);
+  const { fetchData, recommend } = useContext(LanguagesContext);
+  const { id, extra, productIngredients } = props;
   const [swiper, setSwiper] = useState(null);
 
   let varData = [];
@@ -48,6 +40,8 @@ const ProductDetails = (props) => {
     stock: 0,
     image: fetchData?.image,
   });
+  const [note, setNote] = useState([]);
+
   const getdata = () => {
     getVariations(id, source).then((res) => {
       if (res !== undefined) {
@@ -69,11 +63,8 @@ const ProductDetails = (props) => {
     getdata();
     return () => {
       source.cancel();
-
-      // parseVariants([]);
-      // setVarPics([]);
     };
-  }, [id]);
+  }, []);
   const changePrice = (varName, variant) => {
     const keys = Object.keys(showVaralint);
     const varlineindex = keys.indexOf(varName);
@@ -188,7 +179,29 @@ const ProductDetails = (props) => {
   };
 
   const addItem = () => {
-    const check = cart.every((val) => {
+    added(cart, setCart, "cart");
+    // remove from wishlist
+    const wishCheck = wishlist.every((item) => {
+      return item.id !== fetchData.id;
+    });
+    if (!wishCheck) {
+      const filterData = wishlist.filter((item) => item.id !== fetchData.id);
+      setWishList(filterData);
+      localStorage.setItem("wishlist", JSON.stringify(filterData));
+    }
+  };
+
+  const added = (stateName, setStateName, name) => {
+    const recom = recommend.map((item) => {
+      if (item.show) {
+        const array = {
+          value: item.value,
+          qty: item.qty,
+        };
+        return array;
+      }
+    });
+    const check = stateName.every((val) => {
       return val.id !== fetchData.id;
     });
     let array = [];
@@ -196,378 +209,291 @@ const ProductDetails = (props) => {
       array.push({
         id: fetchData.id,
         qty: fetchData.qty,
-        // price: parseInt(
-        //   productDetails.price == 0 ? fetchData?.price : productDetails.price
-        // ),
-        // stock: parseInt(
-        //   productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
-        // ),
-        currency_code: fetchData.currency_code,
+        itemNote: note.itemNote,
+        recommendations: recom.filter((item) => item !== undefined),
         ingredients: ingredients,
         extras: extraValue,
-        recommendations: [],
-        // totalPrice: parseInt(fetchData.price) + sum,
+        // totalPrice: parseInt(price) + sum,
         variantSKU: skuarray,
         checkSKU: activeSKU,
       });
-      // setFetchData(fetchData);
-      localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
-      setCart(cart.concat(array));
-      setAlerts(true, "success", locale?.successfully_added_to_cart);
+      localStorage.setItem(name, JSON.stringify(stateName.concat(array)));
+      setStateName(stateName.concat(array));
+      setAlerts(true, "success", locale?.successfully_added);
     } else {
-      let data = cart.filter((val) => {
+      let data = stateName.filter((val) => {
         return val.id === fetchData.id;
       });
       array.push({
         id: data[0].id,
         qty: data[0].qty,
-        // price: parseInt(
-        //   productDetails.price == 0 ? fetchData?.price : productDetails.price
-        // ),
-        // stock: parseInt(
-        //   productDetails.stock == 0 ? fetchData?.stock : productDetails.stock
-        // ),
-        currency_code: data[0].currency_code,
+        itemNote: note.itemNote,
+        recommendations: recom.filter((item) => item !== undefined),
         ingredients: ingredients,
         extras: extraValue,
-        recommendations: [],
-        // totalPrice: parseInt(parseInt(fetchData.price) + sum),
+        // totalPrice: parseInt(price) + sum,
         variantSKU: skuarray,
         checkSKU: activeSKU,
       });
-      const otherData = cart.filter((val) => {
+      const otherData = stateName.filter((val) => {
         return val.id !== fetchData.id;
       });
-      localStorage.setItem("cart", JSON.stringify(otherData.concat(array)));
-      setCart(otherData.concat(array));
-      setAlerts(true, "success", locale?.cart_updated);
+      localStorage.setItem(name, JSON.stringify(otherData.concat(array)));
+      setStateName(otherData.concat(array));
+      setAlerts(true, "success", locale?.updated);
     }
   };
-  const [alert, setAlert] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
-  const setAlerts = (open, severity, message) => {
-    setAlert({
-      open: open,
-      severity: severity,
-      message: message,
-    });
-  };
-
   const addWishList = (id) => {
-    const checkData = JSON.parse(localStorage.getItem("wishlist")) || [];
-    if (!checkData.includes(id)) {
-      checkData.push(id);
-      localStorage.setItem("wishlist", JSON.stringify(checkData));
-      setWishList(checkData);
+    const check = cart.every((item) => {
+      return item.id !== id;
+    });
+    if (check) {
+      added(wishlist, setWishList, "wishlist");
     } else {
-      const data = checkData.filter((item) => item != id);
-      localStorage.setItem("wishlist", JSON.stringify(data));
-      setWishList(data);
+      setAlerts(true, "warning", locale?.item_is_already_in_cart);
     }
   };
-  var viewImages_HTMLTABLE = "";
-  if (loading) {
-    return (
-      <div className="container">
-        <div
-          className="spinner-border text-primary "
-          role="status"
-          style={{ position: "fixed", top: "50%", left: "50%" }}
-        >
-          <span className="sr-only"></span>
-        </div>
-      </div>
-    );
-  } else {
-    viewImages_HTMLTABLE = (
-      <Card sx={style?.cardStyleDetails}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
-            <ImageSlider
-              varPics={varPics}
-              setSwiper={setSwiper}
-              style={style}
-              fetchData={fetchData}
-              {...{
-                rimProps: {
-                  enlargedImagePortalId: "portal",
-                  enlargedImageContainerDimensions: {
-                    width: "150%",
-                    height: "100%",
-                  },
-                },
-              }}
-            />
-          </Grid>
 
-          <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
-            <div className="ml-3">
-              <div
-                className="fluid__instructions "
-                style={{ position: "relative", zIndex: 999999 }}
-              >
-                <div id="portal" className="portal" />
-              </div>
-              <Grid container spacing={1}>
-                <Grid
-                  item
-                  sm={8}
-                  md={8}
-                  lg={8}
-                  xl={8}
-                  xs={12}
-                  className="d-flex align-items-center justify-content-left"
+  return (
+    <div>
+      <Container maxWidth="lg" style={style?.varaintContainer}>
+        <Header details={true} search={false} />
+        <Card sx={style?.cardStyleDetails}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
+              <ImageSlider
+                varPics={varPics}
+                setSwiper={setSwiper}
+                style={style}
+                fetchData={fetchData}
+                {...{
+                  rimProps: {
+                    enlargedImagePortalId: "portal",
+                    enlargedImageContainerDimensions: {
+                      width: "150%",
+                      height: "100%",
+                    },
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
+              <div className="ml-2">
+                <div
+                  className="fluid__instructions "
+                  style={{ position: "relative", zIndex: 999999 }}
                 >
-                  <Typography style={style?.price}>
-                    {fetchData.ProductName}
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  sm={1}
-                  md={1}
-                  lg={1}
-                  xl={1}
-                  xs={2}
-                  className="d-flex align-items-center justify-content-right"
-                >
-                  <IconButton
-                    style={style?.cardIconButton}
-                    onClick={() => addWishList(fetchData.id)}
+                  <div id="portal" className="portal" />
+                </div>
+                <Grid container spacing={1}>
+                  <Grid
+                    item
+                    sm={10}
+                    md={10}
+                    lg={10}
+                    xl={12}
+                    xs={12}
+                    className="d-flex align-items-center justify-content-left"
                   >
-                    {style.template === "thrid" ? (
-                      <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
-                    ) : !wishlist.includes(fetchData.id) ? (
-                      <FavoriteBorderIcon sx={style?.favIconDeactive} />
-                    ) : (
-                      <FavoriteIcon sx={style?.favIconActive} />
-                    )}
-                  </IconButton>
-                </Grid>
-                <Grid
-                  item
-                  sm={3}
-                  md={3}
-                  lg={3}
-                  xl={3}
-                  xs={10}
-                  className="d-flex align-items-center justify-content-end "
-                >
-                  <button
-                    className={`btn btn-sm mr-2 ${
-                      skuarray.length != 0
-                        ? productDetails.stock == "No Stock" ||
-                          productDetails.stock == 0
-                          ? "disabled"
-                          : ""
-                        : ""
-                    } `}
-                    onClick={addItem}
-                    style={style?.buttonStyle}
+                    <Typography style={style?.price}>
+                      {fetchData.ProductName}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    sm={2}
+                    md={2}
+                    lg={2}
+                    xl={12}
+                    xs={12}
+                    className="d-flex align-items-center justify-content-end"
                   >
-                    {locale?.add_to_cart}
-                  </button>
+                    <Tooltip title={locale?.add_to_wishlist}>
+                      <IconButton
+                        style={style?.cardIconButton}
+                        onClick={() => addWishList(fetchData.id)}
+                      >
+                        {style.template === "thrid" ? (
+                          <ShoppingBasketOutlinedIcon
+                            sx={style?.shoppingIcon}
+                          />
+                        ) : wishlist.every(
+                            (value) => value.id !== fetchData.id
+                          ) ? (
+                          <FavoriteBorderIcon sx={style?.favIconDeactive} />
+                        ) : (
+                          <FavoriteIcon sx={style?.favIconActive} />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title={locale?.add_to_cart}>
+                      <IconButton
+                        // style={style?.cardIconButton}
+                        className={`${
+                          skuarray.length != 0
+                            ? productDetails.stock == "No Stock" ||
+                              productDetails.stock == 0
+                              ? "disabled"
+                              : ""
+                            : ""
+                        } `}
+                        onClick={addItem}
+                      >
+                        {cart.every((value) => value.id !== fetchData.id) ? (
+                          <AddShoppingCartIcon sx={style?.favIconDeactive} />
+                        ) : (
+                          <AddShoppingCartIcon sx={style?.favIconActive} />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Typography style={style?.cartDescription}>
-                {style?.preparation_time === 0 ||
-                fetchData?.preparationTime == null ? (
+                <Typography style={style?.cartDescription}>
+                  {style?.preparation_time === 0 ||
+                  fetchData?.preparationTime == null ? (
+                    ""
+                  ) : (
+                    <>
+                      {locale?.preparation_time}: {fetchData?.preparationTime}{" "}
+                      {locale?.minutes}
+                    </>
+                  )}
+                </Typography>
+                <Typography style={style?.cartPrice}>
+                  {locale?.price} :{" "}
+                  {productDetails.price === 0
+                    ? (fetchData?.price + sum).toFixed(2)
+                    : (parseInt(productDetails.price) + sum).toFixed(2)}
+                  {"  " + getSymbolFromCurrency(fetchData.currency_code)}
+                </Typography>
+                <Typography style={style?.cartPrice}>
+                  {locale?.stock}:{" "}
+                  {productDetails.stock === 0
+                    ? fetchData?.stock
+                    : productDetails.stock}
+                </Typography>
+                {style?.show_variants === 0 ||
+                Object.keys(showVaralint).length === 0 ? (
                   ""
                 ) : (
                   <>
-                    {locale?.preparation_time}: {fetchData?.preparationTime}{" "}
-                    {locale?.minutes}
+                    <div>
+                      <Typography style={style?.cartPrice}>
+                        {locale?.variants}
+                      </Typography>
+                    </div>
+
+                    <div>
+                      {Object.keys(showVaralint).map((list, i) => {
+                        return (
+                          <div className="row m-1" key={i}>
+                            <div
+                              className="row d-flex justify-content-around"
+                              style={style?.variantsDiv}
+                            >
+                              {showVaralint[list].map((variant, z) => {
+                                return (
+                                  <div
+                                    className="col"
+                                    key={z}
+                                    onClick={() => {
+                                      changePrice(list, variant);
+                                    }}
+                                    style={
+                                      skuarray[i] == variant
+                                        ? style?.variantActive
+                                        : style?.variantDeActive
+                                    }
+                                  >
+                                    {variant}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </>
                 )}
-              </Typography>
-              <Typography style={style?.cartPrice}>
-                {locale?.price} :{" "}
-                {productDetails.price === 0
-                  ? (fetchData?.price + sum).toFixed(2)
-                  : (parseInt(productDetails.price) + sum).toFixed(2)}
-                {"  " + getSymbolFromCurrency(fetchData.currency_code)}
-              </Typography>
-              <Typography style={style?.cartPrice}>
-                {locale?.stock}:{" "}
-                {productDetails.stock === 0
-                  ? fetchData?.stock
-                  : productDetails.stock}
-              </Typography>
-              {style?.show_variants === 0 ||
-              Object.keys(showVaralint).length === 0 ? (
-                ""
-              ) : (
-                <>
-                  <div>
-                    <Typography style={style?.cartPrice}>
-                      {locale?.variants}
-                    </Typography>
-                  </div>
-
-                  <div>
-                    {Object.keys(showVaralint).map((list, i) => {
-                      return (
-                        <div className="row m-1" key={i}>
+                {style?.show_ingredients === 0 ||
+                productIngredients.length === 0 ? (
+                  ""
+                ) : (
+                  <>
+                    <>
+                      <Typography style={style?.cartPrice}>
+                        {locale?.ingredients}
+                      </Typography>
+                      <Typography style={style?.cartDescription}>
+                        {
+                          locale?.please_select_the_ingredients_you_want_to_remove
+                        }
+                      </Typography>
+                    </>
+                    <div>
+                      {productIngredients?.map((item, i) => {
+                        return (
                           <div
-                            className="row d-flex justify-content-around"
-                            style={style?.variantsDiv}
+                            key={i}
+                            onClick={() => {
+                              changeIngredients(item.value);
+                            }}
+                            style={
+                              ingredients.includes(item.value)
+                                ? style?.ingredientsActive
+                                : style?.ingredientsDeActive
+                            }
                           >
-                            {showVaralint[list].map((variant, z) => {
-                              return (
-                                <div
-                                  className="col"
-                                  key={z}
-                                  onClick={() => {
-                                    changePrice(list, variant);
-                                  }}
-                                  style={
-                                    skuarray[i] == variant
-                                      ? style?.variantActive
-                                      : style?.variantDeActive
-                                  }
-                                >
-                                  {variant}
-                                </div>
-                              );
-                            })}
+                            {item.label}
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-              {style?.show_ingredients === 0 ||
-              productIngredients.length === 0 ? (
-                ""
-              ) : (
-                <>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+                {style?.show_extras === 0 || extra.length === 0 ? (
+                  ""
+                ) : (
                   <div>
                     <Typography style={style?.cartPrice}>
-                      {locale?.ingredients}
+                      {locale?.extras}
                     </Typography>
-                    <Typography style={style?.cartDescription}>
-                      {locale?.please_select_the_ingredients_you_want_to_remove}
-                    </Typography>
-                  </div>
-                  <div>
-                    {productIngredients?.map((item, i) => {
+                    {/* <FormGroup> */}
+                    {extra?.map((item, i) => {
                       return (
-                        <div
+                        <FormControlLabel
                           key={i}
-                          onClick={() => {
-                            changeIngredients(item.value);
-                          }}
-                          style={
-                            ingredients.includes(item.value)
-                              ? style?.ingredientsActive
-                              : style?.ingredientsDeActive
+                          control={
+                            <Checkbox
+                              onChange={(e) => {
+                                extraHandlers(e, item.price, item.value);
+                              }}
+                              color="default"
+                              // size="small"
+                              sx={style?.checkbox}
+                              value={
+                                item.label + " ( +" + item.price + ".00" + " )"
+                              }
+                            />
                           }
-                        >
-                          {item.label}
-                        </div>
+                          label={
+                            <Typography style={style?.cartDescription}>
+                              {item.label + " ( +" + item.price + ".00" + " )"}
+                            </Typography>
+                          }
+                        />
                       );
                     })}
                   </div>
-                </>
-              )}
-              {style?.show_extras === 0 || extra.length === 0 ? (
-                ""
-              ) : (
-                <div>
-                  <Typography style={style?.cartPrice}>
-                    {locale?.extras}
-                  </Typography>
-                  {/* <FormGroup> */}
-                  {extra?.map((item, i) => {
-                    return (
-                      <FormControlLabel
-                        key={i}
-                        control={
-                          <Checkbox
-                            onChange={(e) => {
-                              extraHandlers(e, item.price, item.value);
-                            }}
-                            color="default"
-                            // size="small"
-                            sx={style?.checkbox}
-                            value={
-                              item.label + " ( +" + item.price + ".00" + " )"
-                            }
-                          />
-                        }
-                        label={
-                          <Typography style={style?.cartDescription}>
-                            {item.label + " ( +" + item.price + ".00" + " )"}
-                          </Typography>
-                        }
-                      />
-                    );
-                  })}
-                </div>
-              )}
-
-              <Recommend id={id} />
-            </div>
+                )}
+                <Recommend note={note} setNote={setNote} />
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
-      </Card>
-    );
-  }
-  return (
-    <div>
-      <div style={{ zIndex: 99999999 }}>
-        {alert.open && (
-          <CustomAlert
-            vertical="top"
-            horizontal="right"
-            open={alert.open}
-            severity={alert.severity}
-            message={alert.message}
-            setAlert={setAlert}
-          />
-        )}
-      </div>
-      <Container maxWidth="lg" style={style?.varaintContainer}>
-        <Header details={true} search={false} />
-        {viewImages_HTMLTABLE}
+        </Card>
       </Container>
-      {/* <Footer
-        title={locale?.checkout}
-        stock={
-          productDetails.stock === 0 ? fetchData?.stock : productDetails.stock
-        }
-        url={{
-          pathname: `/public/details/recommend/${btoa(btoa(btoa(id)))}`,
-          state: {
-            productName: fetchData.ProductName,
-            picture: productDetails.image
-              ? JSON.stringify(productDetails?.image)
-              : fetchData?.image,
-
-            price:
-              productDetails.price === 0
-                ? fetchData?.price + sum
-                : parseInt(productDetails.price) + sum,
-            countryCode: fetchData.currency_code,
-            extraValue: extraValue,
-            orignalPrice:
-              productDetails.price === 0
-                ? fetchData?.price
-                : productDetails.price,
-            ingredients: ingredients,
-            style: style,
-            skuarray: skuarray,
-            activeSKU: activeSKU,
-            orignalStock: productDetails.stock,
-            branchId: branchId,
-            deliveryFees: deliveryFees,
-          },
-        }}
-      /> */}
     </div>
   );
 };

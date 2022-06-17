@@ -28,14 +28,17 @@ const MainDetails = (props) => {
   // );
   const [productIngredients, setProductIntgredients] = useState([]);
   const [extra, setExtra] = useState([]);
+  const [recommend, setRecommend] = useState([]);
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
+
   let source = axios.CancelToken.source();
   const dataLoad = (input) => {
     getProduct(id, input.id, source).then((result) => {
       if (result !== undefined) {
         setFetchData(result.data.fetchData[0]);
         setProductIntgredients(result.data.ingredients);
+        setRecommend(result.data.recommend);
         setExtra(result.data.extras);
         setLoading(false);
       }
@@ -52,6 +55,7 @@ const MainDetails = (props) => {
       source.cancel();
       setProductIntgredients([]);
       setExtra([]);
+      setRecommend([]);
       setFetchData([]);
       setLoading(true);
     };
@@ -71,12 +75,14 @@ const MainDetails = (props) => {
       <LanguagesContext.Provider
         value={{
           dataLoad,
+          fetchData,
+          setFetchData,
+          recommend,
+          setRecommend,
         }}
       >
         <ProductDetails
           id={id}
-          fetchData={fetchData}
-          setFetchData={setFetchData}
           extra={extra}
           productIngredients={productIngredients}
         />

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -13,31 +13,52 @@ import IconButton from "@mui/material/IconButton";
 import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
 import { TemplateContext } from "../TemplateContext";
 import { useRouteMatch } from "react-router-dom";
+import { addItemWithdoutDetails } from "../Functionality";
 export default function ShowCards(props) {
   const { url } = useRouteMatch();
 
   const {
     style,
-    cart,
     wishlist,
     setWishList,
     products,
-    branchId,
+    branch,
     deliveryFees,
     locale,
+    setAlerts,
+    cart,
   } = useContext(TemplateContext);
   const { check } = props;
 
   const addWishList = (id) => {
-    const checkData = JSON.parse(localStorage.getItem("wishlist")) || [];
-    if (!checkData.includes(id)) {
-      checkData.push(id);
-      localStorage.setItem("wishlist", JSON.stringify(checkData));
-      setWishList(checkData);
+    const wishCheck = wishlist.every((item) => {
+      return item.id !== id;
+    });
+    if (wishCheck) {
+      const check = cart.every((item) => {
+        return item.id !== id;
+      });
+      if (check) {
+        addItemWithdoutDetails(id, wishlist, products, "wishlist").then(
+          (data) => {
+            if (data === "") {
+              setAlerts(
+                true,
+                "warning",
+                locale?.please_select_product_variantion
+              );
+            } else {
+              setWishList(data);
+            }
+          }
+        );
+      } else {
+        setAlerts(true, "warning", locale?.item_is_already_in_cart);
+      }
     } else {
-      const data = checkData.filter((item) => item != id);
-      localStorage.setItem("wishlist", JSON.stringify(data));
-      setWishList(data);
+      const filterData = wishlist.filter((item) => item.id !== id);
+      setWishList(filterData);
+      localStorage.setItem("wishlist", JSON.stringify(filterData));
     }
   };
   var viewShow_HTMLTABLE = "";
@@ -70,7 +91,7 @@ export default function ShowCards(props) {
               >
                 {style.template === "thrid" ? (
                   <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
-                ) : !wishlist.includes(item.id) ? (
+                ) : wishlist.every((value) => value.id !== item.id) ? (
                   <FavoriteBorderIcon sx={style?.favIconDeactive} />
                 ) : (
                   <FavoriteIcon sx={style?.favIconActive} />
@@ -85,7 +106,7 @@ export default function ShowCards(props) {
                   state: {
                     style: style,
                     deliveryFees: deliveryFees,
-                    branchId: branchId,
+                    branchId: branch.id,
                   },
                 }}
               >
