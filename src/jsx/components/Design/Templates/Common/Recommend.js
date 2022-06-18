@@ -10,20 +10,8 @@ import RecCounter from "./Counter/RecCounter";
 import { TemplateContext } from "../TemplateContext";
 import { LanguagesContext } from "../LanguagesContext";
 const Recommend = (props) => {
-  const {
-    // ,
-    locale,
-    cart,
-    setCart,
-    setAlerts,
-    style,
-    extraValue,
-    ingredients,
-    branch,
-    skuarray,
-    activeSKU,
-  } = useContext(TemplateContext);
-  const { fetchData, recommend, setRecommend } = useContext(LanguagesContext);
+  const { locale, style, branch } = useContext(TemplateContext);
+  const { recommend, setRecommend } = useContext(LanguagesContext);
   const { note, setNote } = props;
   let [sum, setSum] = useState(0);
 
@@ -48,66 +36,6 @@ const Recommend = (props) => {
   const changeHandle = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
-
-  const addItem = (e) => {
-    const recom = recommend.map((item) => {
-      if (item.show) {
-        const array = {
-          value: item.value,
-          qty: item.qty,
-        };
-        return array;
-      }
-    });
-    const check = cart.every((val) => {
-      return val.id !== fetchData.id;
-    });
-    let array = [];
-    if (check) {
-      array.push({
-        id: fetchData.id,
-        qty: fetchData.qty,
-        // currency_code: item[0].currency_code,
-        // price: orignalPrice,
-        // stock: orignalStock,
-        itemNote: note.itemNote,
-        recommendations: recom.filter((item) => item !== undefined),
-        ingredients: ingredients,
-        extras: extraValue,
-        // totalPrice: parseInt(price) + sum,
-        variantSKU: skuarray,
-        checkSKU: activeSKU,
-      });
-      localStorage.setItem("cart", JSON.stringify(cart.concat(array)));
-      setCart(cart.concat(array));
-      setAlerts(true, "success", "Successfully added to cart");
-    } else {
-      let data = cart.filter((val) => {
-        return val.id === fetchData.id;
-      });
-      array.push({
-        id: data[0].id,
-        qty: data[0].qty,
-        // currency_code: data[0].currency_code,
-        // price: orignalPrice,
-        // stock: orignalStock,
-        itemNote: note.itemNote,
-        recommendations: recom.filter((item) => item !== undefined),
-        ingredients: ingredients,
-        extras: extraValue,
-        // totalPrice: parseInt(price) + sum,
-        variantSKU: skuarray,
-        checkSKU: activeSKU,
-      });
-      const otherData = cart.filter((val) => {
-        return val.id !== fetchData.id;
-      });
-      localStorage.setItem("cart", JSON.stringify(otherData.concat(array)));
-      setCart(otherData.concat(array));
-      setAlerts(true, "success", "Cart Updated");
-    }
-  };
-
   return (
     <div>
       {style?.show_recommendation == 0 || recommend.length === 0 ? (

@@ -8,24 +8,7 @@ import axios from "axios";
 const MainDetails = (props) => {
   const { selectedLang } = useContext(TemplateContext);
 
-  // const style = props.history.location.state.style;
   const id = atob(atob(atob(props.match.params.id)));
-
-  // const deliveryFees = parseInt(props.history.location.state.deliveryFees);
-  // const branchId = props.history.location.state.branchId;
-  // const languages = JSON.parse(sessionStorage.getItem("languages"));
-  // const [selectedLang, setSelectedLang] = useState(
-  //   JSON.parse(sessionStorage.getItem("selectedLang")) || {}
-  // );
-  // const [cart, setCart] = useState(
-  //   JSON.parse(localStorage.getItem("cart")) || []
-  // );
-  // const [locale, setLocale] = useState(
-  //   JSON.parse(sessionStorage.getItem("locale")) || []
-  // );
-  // const [wishlist, setWishList] = useState(
-  //   JSON.parse(localStorage.getItem("wishlist")) || []
-  // );
   const [productIngredients, setProductIntgredients] = useState([]);
   const [extra, setExtra] = useState([]);
   const [recommend, setRecommend] = useState([]);

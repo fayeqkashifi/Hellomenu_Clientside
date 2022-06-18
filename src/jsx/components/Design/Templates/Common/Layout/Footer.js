@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import getSymbolFromCurrency from "currency-symbol-map";
@@ -12,14 +11,11 @@ import axios from "axios";
 function Footer(props) {
   const { style, cart, setCart, deliveryFees, branch, locale, selectedLang } =
     useContext(TemplateContext);
-  const { title, url, stock } = props;
   let [sum, setSum] = useState(0);
-  const [check, setCheck] = useState(false);
   const dataLoad = async () => {
     var total = 0;
     if (cart.length != 0) {
       await cart.map((item) => {
-        setCheck(false);
         getProduct(item.id, selectedLang.id, source).then((result) => {
           if (result !== undefined) {
             if (result.data.fetchData.length !== 0) {

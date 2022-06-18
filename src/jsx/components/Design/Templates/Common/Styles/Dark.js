@@ -30,7 +30,7 @@ export const DarkStyle = (custom, theme) => {
     sidebar: {
       margin: 0,
       padding: 0,
-      width: "120px",
+      width: "4%",
       backgroundColor: custom?.cardBgColor
         ? custom.cardBgColor
         : theme.CardColor
@@ -48,12 +48,12 @@ export const DarkStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
-      padding: "16px",
+      padding: "20%",
       textDecoration: "none",
     },
     sidebarActiveLink: {
       display: "block",
-      padding: "16px",
+      padding: "20%",
       textDecoration: "none",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
@@ -67,7 +67,7 @@ export const DarkStyle = (custom, theme) => {
         : "#f27d1e",
     },
     content: {
-      marginLeft: "120px",
+      marginLeft: "4%",
     },
 
     logoText: {
@@ -79,7 +79,17 @@ export const DarkStyle = (custom, theme) => {
         : "#fff",
       paddingTop: "16px",
       paddingBottom: "16px",
-      borderBottom: "1px solid #fff",
+      borderBottom: "1px solid",
+      borderColor: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
+    },
+    logoImage: {
+      width: "50px",
+      width: "50px",
+      objectFit: "contain",
     },
 
     // Main public

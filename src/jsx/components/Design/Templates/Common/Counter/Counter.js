@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
@@ -13,6 +13,8 @@ import {
   handelIncrementQuantity,
 } from "../../Functionality";
 import { TemplateContext } from "../../TemplateContext";
+import Tooltip from "@mui/material/Tooltip";
+
 const Counter = (props) => {
   const {
     style,
@@ -47,7 +49,6 @@ const Counter = (props) => {
   };
 
   const addItem = (id) => {
-   
     addItemWithdoutDetails(id, cart, products, "cart").then((data) => {
       if (data === "") {
         setAlerts(true, "warning", locale?.please_select_product_variantion);
@@ -55,9 +56,9 @@ const Counter = (props) => {
         setCart(data);
       }
     });
-     const wishCheck = wishlist.every((item) => {
-       return item.id !== id;
-     });
+    const wishCheck = wishlist.every((item) => {
+      return item.id !== id;
+    });
     if (!wishCheck) {
       const filterData = wishlist.filter((item) => item.id !== id);
       setWishList(filterData);
@@ -88,13 +89,15 @@ const Counter = (props) => {
         } `}
       >
         <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
-          <IconButton onClick={(e) => [addItem(item.id)]}>
-            {style?.template === "second" ? (
-              <AddBoxIcon style={style?.addToCartIcon} />
-            ) : (
-              <AddBoxOutlinedIcon style={style?.addToCartIcon} />
-            )}
-          </IconButton>
+          <Tooltip title={locale?.add_to_cart}>
+            <IconButton onClick={(e) => [addItem(item.id)]}>
+              {style?.template === "second" ? (
+                <AddBoxIcon style={style?.addToCartIcon} />
+              ) : (
+                <AddBoxOutlinedIcon style={style?.addToCartIcon} />
+              )}
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
       <div

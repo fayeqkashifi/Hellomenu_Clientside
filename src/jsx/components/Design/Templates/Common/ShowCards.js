@@ -14,6 +14,8 @@ import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlin
 import { TemplateContext } from "../TemplateContext";
 import { useRouteMatch } from "react-router-dom";
 import { addItemWithdoutDetails } from "../Functionality";
+import Tooltip from "@mui/material/Tooltip";
+
 export default function ShowCards(props) {
   const { url } = useRouteMatch();
 
@@ -85,18 +87,20 @@ export default function ShowCards(props) {
         >
           <Card sx={style?.cardStyle}>
             <div className="px-2 pt-2">
-              <IconButton
-                style={style?.cardIconButton}
-                onClick={() => addWishList(item.id)}
-              >
-                {style.template === "thrid" ? (
-                  <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
-                ) : wishlist.every((value) => value.id !== item.id) ? (
-                  <FavoriteBorderIcon sx={style?.favIconDeactive} />
-                ) : (
-                  <FavoriteIcon sx={style?.favIconActive} />
-                )}
-              </IconButton>
+              <Tooltip title={locale?.add_to_wishlist}>
+                <IconButton
+                  style={style?.cardIconButton}
+                  onClick={() => addWishList(item.id)}
+                >
+                  {style.template === "thrid" ? (
+                    <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
+                  ) : wishlist.every((value) => value.id !== item.id) ? (
+                    <FavoriteBorderIcon sx={style?.favIconDeactive} />
+                  ) : (
+                    <FavoriteIcon sx={style?.favIconActive} />
+                  )}
+                </IconButton>
+              </Tooltip>
             </div>
 
             <CardContent sx={{ flexGrow: 1 }}>

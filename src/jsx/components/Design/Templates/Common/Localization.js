@@ -11,7 +11,7 @@ export default function LanguageLocalization() {
   const { languages, selectedLang, setSelectedLang, setLocale, style } =
     useContext(TemplateContext);
   const { dataLoad } = useContext(LanguagesContext);
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClickListItem = (event) => {

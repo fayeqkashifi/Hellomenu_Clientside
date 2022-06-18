@@ -140,6 +140,9 @@ const MainPublic = (props) => {
       setLastPage(0);
     };
   }, []);
+  useEffect(() => {
+    dataLoad();
+  }, [selectedLang]);
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",

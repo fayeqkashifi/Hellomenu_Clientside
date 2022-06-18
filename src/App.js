@@ -18,7 +18,6 @@ import { base_url, port } from "./Consts";
 import ForgotPassword from "./jsx/pages/ForgotPassword";
 import FilterSelection from "./jsx/components/Design/Templates/FilterSelection";
 import MainPublic from "./jsx/components/Design/Templates/MainPublic";
-import MainRrecommend from "./jsx/components/Design/Templates/MainRrecommend";
 import SignUp from "./jsx/pages/SignUp/SignUp";
 import Show from "./jsx/pages/SignUp/Show";
 import ResetPassword from "./jsx/pages/ResetPassword";
@@ -96,11 +95,6 @@ const App = () => {
           path="/filterSelection"
         />
         <PublicRoute component={MainPublic} path="/public/:id" />
-        <PublicRoute
-          exact
-          component={MainRrecommend}
-          path="/public/details/recommend/:id"
-        />
         <Markup />
         {/* <Route component={Error404} /> */}
       </Switch>

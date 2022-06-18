@@ -35,6 +35,7 @@ import Counter from "../Counter/Counter";
 import { TemplateContext } from "../../TemplateContext";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Tooltip from "@mui/material/Tooltip";
 
 const Cart = (props) => {
   let message = "";
@@ -314,14 +315,12 @@ const Cart = (props) => {
   var viewImages_HTMLTABLE = "";
   if (loading) {
     return (
-      <div className="container ">
-        <div
-          className="spinner-border text-primary "
-          role="status"
-          style={{ position: "fixed", top: "50%", left: "50%" }}
-        >
-          <span className="sr-only"></span>
-        </div>
+      <div
+        className="spinner-border text-primary "
+        role="status"
+        style={{ position: "fixed", top: "50%", left: "50%" }}
+      >
+        <span className="sr-only"></span>
       </div>
     );
   } else {
@@ -419,9 +418,13 @@ const Cart = (props) => {
       return (
         <Card key={i} sx={style?.card} className="mb-1">
           <div className="text-right">
-            <IconButton onClick={() => remItem(item.id, item.qty, item.price)}>
-              <ClearIcon sx={style.clearIcon} />
-            </IconButton>
+            <Tooltip title={locale?.close}>
+              <IconButton
+                onClick={() => remItem(item.id, item.qty, item.price)}
+              >
+                <ClearIcon sx={style.clearIcon} />
+              </IconButton>
+            </Tooltip>
           </div>
 
           <CardContent>

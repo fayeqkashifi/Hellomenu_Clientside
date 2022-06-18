@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import "./TrackStyle.css";
 import axios from "axios";
 import OrderSearch from "./OrderSearch";
-import ItemCard from "../../../../Orders/Card";
 import { TemplateContext } from "../../TemplateContext";
+import CardOrder from "./Card";
 
 const TrackOrder = () => {
   let { style } = useContext(TemplateContext);
@@ -55,13 +55,13 @@ const TrackOrder = () => {
         )
       ) : (
         <div className="padding-bottom-3x mb-1 " key={order}>
-          <div className="card mb-3">
-            <div className="p-4 text-center text-white text-lg bg-dark rounded-top">
+          <div className="card mb-3" style={style?.cardStyle}>
+            <div className="p-4 text-center text-white text-lg ">
               <span className="text-uppercase">Tracking Order No - </span>
               <span className="text-medium">{order.orderId}</span>
             </div>
-            <div className="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary">
-              <div className="w-100 text-center py-1 px-2">
+            <div className="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 text-white text-lg">
+              <div className="w-100 text-center py-1 px-2 ">
                 <span className="text-medium">Status:</span>
                 {order.label}
               </div>
@@ -70,8 +70,8 @@ const TrackOrder = () => {
                 {order.created_at}
               </div>
             </div>
-            <div className="card-body">
-              <div className="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+            <div className="card-body ">
+              <div className="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x ">
                 {data?.map((itemMap, i) => {
                   return (
                     <div
@@ -105,28 +105,28 @@ const TrackOrder = () => {
                           ></i>
                         </div>
                       </div>
-                      <h4 className="step-title">{itemMap.label}</h4>
+                      <h4 className="step-title text-white">{itemMap.label}</h4>
                     </div>
                   );
                 })}
               </div>
             </div>
           </div>
-          <div className="d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-sm-between align-items-center">
-            <div className="custom-control custom-checkbox mr-3"></div>
-            <div className="text-left text-sm-right">
-              <button
-                className="btn btn-outline-primary btn-rounded btn-sm"
-                onClick={() => setShowDetails(true)}
-              >
-                View Order Details
-              </button>
+
+          {showDetails ? (
+            <CardOrder id={order.id} setOrder={setOrder} order={order} />
+          ) : (
+            <div className="d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-sm-between align-items-center">
+              <div className="custom-control custom-checkbox mr-3"></div>
+              <div className="text-left text-sm-right">
+                <button
+                  className="btn btn-outline-primary btn-rounded btn-sm"
+                  onClick={() => setShowDetails(true)}
+                >
+                  View Order Details
+                </button>
+              </div>
             </div>
-          </div>
-          {showDetails && (
-            <>
-              <ItemCard id={order.id} setOrder={setOrder} order={order} />
-            </>
           )}
         </div>
       )}
