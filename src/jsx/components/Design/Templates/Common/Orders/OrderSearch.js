@@ -31,49 +31,46 @@ const OrderSearch = (props) => {
   };
 
   return (
-    <div>
-      <div className="card" style={style?.cardStyle}>
-        <div className="card-body">
-          <div className="row">
-            <div className="col align-self-center">
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={search}
-              >
-                {({ errors, status, touched, values }) => (
-                  <Form>
-                    <div className="form-group ">
-                      <Field
-                        name="value"
-                        type="text"
-                        className={
-                          "form-control" +
-                          (errors.value && touched.value ? " is-invalid" : "")
-                        }
-                        placeholder="Please Enter Tracking Id...."
-                        style={style?.inputfield}
-                      />
-                      <ErrorMessage
-                        name="value"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                    <div className="text-left text-sm-right">
-                      <button
-                        className="btn"
-                        // variant="primary"
-                        type="submit"
-                        style={style?.buttonStyle}
-                      >
-                        Search
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+    <div className="card" style={style?.cardStyle}>
+      <div className="card-body">
+        <div className="row">
+          <div className="col align-self-center">
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={search}
+            >
+              {({ errors, touched }) => (
+                <Form>
+                  <div className="form-group ">
+                    <Field
+                      name="value"
+                      type="text"
+                      className={
+                        "form-control" +
+                        (errors.value && touched.value ? " is-invalid" : "")
+                      }
+                      placeholder="Please Enter Tracking Id...."
+                      style={style?.inputfield}
+                    />
+                    <ErrorMessage
+                      name="value"
+                      component="div"
+                      className="invalid-feedback"
+                    />
+                  </div>
+                  <div className="text-left text-sm-right">
+                    <button
+                      className="btn"
+                      type="submit"
+                      style={style?.buttonStyle}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       </div>

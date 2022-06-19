@@ -20,34 +20,34 @@ const ItemCard = (props) => {
       let newArray = [];
       if (items.data.status === 200) {
         const data = items.data.fetchData;
-        let TotalSum = 0;
-        await data.map(
-          (item) =>
-            (TotalSum +=
-              item.total_price === null
-                ? item.price * item.qty
-                : item.total_price)
-        );
-        setSum(TotalSum);
-        let ingredients;
-        let extras;
-        let recommends;
+        let grandTotal = 0;
         for (var i = 0; i < data.length; i++) {
-          ingredients = await axios.get(
+          let TotalSum = 0;
+          const ingredients = await axios.get(
             `/api/getItemIngredients/${data[i].itemId}`
           );
-          extras = await axios.get(`/api/getItemExtras/${data[i].itemId}`);
-          recommends = await axios.get(
+          const extras = await axios.get(
+            `/api/getItemExtras/${data[i].itemId}`
+          );
+          extras.data.fetchData.map((extra) => {
+            TotalSum += extra.extra_price;
+          });
+          const recommends = await axios.get(
             `/api/getItemRecommends/${data[i].itemId}`
           );
-          // console.log(recommends);
+          recommends.data.fetchData.map((recom) => {
+            TotalSum += recom.price * recom.qty;
+          });
           newArray.push({
             ...data[i],
+            totalPrice: parseInt(data[i].price) * data[i].qty + TotalSum,
             ingredients: ingredients.data.fetchData,
             extras: extras.data.fetchData,
             recommendations: recommends.data.fetchData,
           });
+          grandTotal += parseInt(data[i].price) * data[i].qty + TotalSum;
         }
+        setSum(grandTotal);
         setFetchData(newArray);
       }
       const result = await axios.get(`/api/getOrder/${id}`);
@@ -182,10 +182,7 @@ const ItemCard = (props) => {
                   gutterBottom
                   className="text-right mx-5"
                 >
-                  {t("total_price")}:
-                  {item.total_price === null
-                    ? (item.price * item.qty).toFixed(2)
-                    : item.total_price.toFixed(2)}
+                  {t("total_price")}:{item.totalPrice.toFixed(2)}
                   {" " + currency}
                 </Typography>
               </Grid>

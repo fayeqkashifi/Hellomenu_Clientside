@@ -26,11 +26,6 @@ const TrackOrder = () => {
   };
   useEffect(() => {
     dataLoad();
-    return () => {
-      setData([]);
-      setOrder(null);
-      setShowDetails(false);
-    };
   }, []);
   const [error, setError] = useState();
 
@@ -112,9 +107,12 @@ const TrackOrder = () => {
               </div>
             </div>
           </div>
-
           {showDetails ? (
-            <CardOrder id={order.id} setOrder={setOrder} order={order} />
+            order.length != 0 ? (
+              <CardOrder id={order.id} setOrder={setOrder} order={order} />
+            ) : (
+              ""
+            )
           ) : (
             <div className="d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-sm-between align-items-center">
               <div className="custom-control custom-checkbox mr-3"></div>
