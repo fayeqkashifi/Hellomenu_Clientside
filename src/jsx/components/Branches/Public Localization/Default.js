@@ -25,6 +25,8 @@ export const PublicLocale = {
   order_details: "Order Details",
   cart: "Cart",
   table_number: "Table Reservation",
+  phone_number: "Phone number",
+  status: "Status",
   reservation_date_and_time: "Reservation Date and Time",
   discard_reason: "Discard Reason",
   table_reservation: "Table Reservation",

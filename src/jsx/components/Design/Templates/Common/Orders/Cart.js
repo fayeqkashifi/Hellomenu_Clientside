@@ -487,7 +487,7 @@ const Cart = (props) => {
               <div
                 className={
                   style.template === "dark" &&
-                  `col-xl-4 col-md-10 col-lg-10 col-sm-10 col-12`
+                  `col-xl-3 col-md-10 col-lg-10 col-sm-10 col-12`
                 }
                 style={style?.cartVariantDiv}
               >
@@ -549,7 +549,7 @@ const Cart = (props) => {
               <div
                 className={
                   style.template === "dark" &&
-                  `col-xl-1 col-md-2 col-lg-2 col-sm-2 col-12`
+                  `col-xl-2 col-md-2 col-lg-2 col-sm-2 col-12`
                 }
                 style={style?.cartCounterDiv}
               >

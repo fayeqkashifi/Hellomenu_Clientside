@@ -44,7 +44,6 @@ export default function Main() {
   return (
     <Router>
       <div style={style?.sidebar}>
-        {console.log(branch)}
         <div style={style?.logoText}>
           <img
             src={
@@ -58,7 +57,7 @@ export default function Main() {
             style={style?.logoImage}
           />
         </div>
-        <Tooltip title={locale?.home}>
+        <Tooltip title={locale?.home} placement="right">
           <Link
             to={`${url}`}
             style={
@@ -71,7 +70,7 @@ export default function Main() {
             <HomeIcon fontSize="large" />
           </Link>
         </Tooltip>
-        <Tooltip title={locale?.profile}>
+        <Tooltip title={locale?.profile} placement="right">
           <Link
             to={`${url}/profile`}
             // style={style?.sidebarLinks}
@@ -85,7 +84,7 @@ export default function Main() {
             <PersonIcon fontSize="large" />
           </Link>
         </Tooltip>
-        <Tooltip title={locale?.cart}>
+        <Tooltip title={locale?.cart} placement="right">
           <Link
             to={`${url}/cart`}
             style={
@@ -104,7 +103,7 @@ export default function Main() {
             </Badge>
           </Link>
         </Tooltip>
-        <Tooltip title={locale?.track_order}>
+        <Tooltip title={locale?.track_order} placement="right">
           <Link
             to={`${url}/track-order`}
             style={

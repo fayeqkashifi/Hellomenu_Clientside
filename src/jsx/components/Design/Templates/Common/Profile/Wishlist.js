@@ -121,6 +121,11 @@ const WishList = () => {
               total += item.qty * itemFetchData.price;
             }
             setSum(total);
+          } else {
+            const filterData = wishlist.filter((check) => check.id != item.id);
+            setWishList(filterData);
+            localStorage.setItem("wishlist", JSON.stringify(filterData));
+            console.log(filterData);
           }
         }
       });

@@ -8,8 +8,8 @@ import { base_url, port } from "../../../../../../Consts";
 import { TemplateContext } from "../../TemplateContext";
 
 const CardOrder = (props) => {
-  const { setOrder, order, id, locale } = props;
-  let { style } = useContext(TemplateContext);
+  const { setOrder, order, id } = props;
+  let { style, locale } = useContext(TemplateContext);
 
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -229,10 +229,10 @@ const CardOrder = (props) => {
               )}
 
               <Typography style={style?.cartDescription}>
-                {locale?.phone_number}:{order.phoneNumber}
+                {locale?.phone_number} Phone Number:{order.phoneNumber}
               </Typography>
               <Typography style={style?.cartDescription}>
-                {locale?.status}:
+                {locale?.status} Status:
                 <Chip
                   label={order.label}
                   color={
@@ -294,7 +294,7 @@ const CardOrder = (props) => {
                 gutterBottom
                 className="font-weight-bold"
               >
-                {locale?.delivery_fees}:{order.deliveryFees + "  " + currency}
+                {locale?.delivery_fee}:{order.deliveryFees + "  " + currency}
               </Typography>
             </Grid>
             <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
