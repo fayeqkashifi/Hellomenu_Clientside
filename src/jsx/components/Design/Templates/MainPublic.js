@@ -100,9 +100,6 @@ const MainPublic = (props) => {
     });
   };
 
-  // useEffect(() => {
-  //   return () => {};
-  // }, []);
   let source = axios.CancelToken.source();
   const [branch, setBranch] = useState([]);
   useEffect(() => {

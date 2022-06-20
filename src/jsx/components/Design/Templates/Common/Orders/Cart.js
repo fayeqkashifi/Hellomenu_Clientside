@@ -37,7 +37,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Tooltip from "@mui/material/Tooltip";
 
-const Cart = (props) => {
+const Cart = () => {
   let message = "";
 
   let {
@@ -126,6 +126,15 @@ const Cart = (props) => {
                           extraTotal +
                           recomendTotal;
                         setSum(total);
+                      } else {
+                        const filterData = cart.filter(
+                          (check) => check.id != item.id
+                        );
+                        setCart(filterData);
+                        localStorage.setItem(
+                          "cart",
+                          JSON.stringify(filterData)
+                        );
                       }
                     }
                   }
@@ -155,6 +164,10 @@ const Cart = (props) => {
               total += item.qty * itemFetchData.price;
             }
             setSum(total);
+          } else {
+            const filterData = cart.filter((check) => check.id != item.id);
+            setCart(filterData);
+            localStorage.setItem("cart", JSON.stringify(filterData));
           }
         }
       });
