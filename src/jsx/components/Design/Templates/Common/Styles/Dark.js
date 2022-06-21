@@ -403,7 +403,7 @@ export const DarkStyle = (custom, theme) => {
       borderRadius: "20px",
       backgroundColor: custom?.cardBgColor
         ? custom.cardBgColor
-        : theme.CardColor
+        : theme.CardColorz
         ? theme.CardColor
         : "#2d3134",
     },

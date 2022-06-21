@@ -2,6 +2,30 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const ThridStyle = (custom, theme) => {
   return {
+    // profile
+    activeMenu: {
+      cursor: "pointer",
+      border: "1px solid",
+      margin: "10px",
+      borderRadius: "10px",
+      borderColor: "#503e9d",
+      boxShadow:
+        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      backgroundColor: "#503e9d",
+      color: "#fff",
+    },
+    DeActiveMenu: {
+      height: "50px",
+      cursor: "pointer",
+      border: "1px solid",
+      borderRadius: "10px",
+      margin: "10px",
+      boxShadow:
+        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      borderColor: "#ffffff",
+      backgroundColor: "#ffffff",
+      color: "#503e9d",
+    },
     // footer home
     sidebarLinks: {
       // display: "inline-block",
@@ -288,19 +312,19 @@ export const ThridStyle = (custom, theme) => {
         ? theme.CardColor
         : "#fff",
     },
-    cardIconButton: {
-      backgroundColor: "#fbd460",
+    favIconDeactive: {
       color: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
     },
-    favIconDeactive: {
-      display: "none",
-    },
     favIconActive: {
-      display: "none",
+      color: custom?.menusActiveColor
+        ? custom.menusActiveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#fbd460",
     },
     shoppingIcon: {
       color: custom?.menusDeactiveColor

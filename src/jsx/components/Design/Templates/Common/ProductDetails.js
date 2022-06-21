@@ -310,13 +310,16 @@ const ProductDetails = (props) => {
                     className="d-flex align-items-center justify-content-end"
                   >
                     <Tooltip title={locale?.add_to_wishlist}>
-                      <IconButton
-                        style={style?.cardIconButton}
-                        onClick={() => addWishList(fetchData.id)}
-                      >
+                      <IconButton onClick={() => addWishList(fetchData.id)}>
                         {style.template === "thrid" ? (
                           <ShoppingBasketOutlinedIcon
-                            sx={style?.shoppingIcon}
+                            sx={
+                              wishlist.every(
+                                (value) => value.id !== fetchData.id
+                              )
+                                ? style?.favIconDeactive
+                                : style?.favIconActive
+                            }
                           />
                         ) : wishlist.every(
                             (value) => value.id !== fetchData.id

@@ -88,12 +88,15 @@ export default function ShowCards(props) {
           <Card sx={style?.cardStyle}>
             <div className="px-2 pt-2">
               <Tooltip title={locale?.add_to_wishlist}>
-                <IconButton
-                  style={style?.cardIconButton}
-                  onClick={() => addWishList(item.id)}
-                >
+                <IconButton onClick={() => addWishList(item.id)}>
                   {style.template === "thrid" ? (
-                    <ShoppingBasketOutlinedIcon sx={style?.shoppingIcon} />
+                    <ShoppingBasketOutlinedIcon
+                      sx={
+                        wishlist.every((value) => value.id !== item.id)
+                          ? style?.favIconDeactive
+                          : style?.favIconActive
+                      }
+                    />
                   ) : wishlist.every((value) => value.id !== item.id) ? (
                     <FavoriteBorderIcon sx={style?.favIconDeactive} />
                   ) : (
