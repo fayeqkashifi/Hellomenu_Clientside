@@ -2,10 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-// import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useHistory } from "react-router-dom";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import Badge from "@mui/material/Badge";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import Drawer from "./Drawer";
 import getSymbolFromCurrency from "currency-symbol-map";
@@ -38,7 +35,6 @@ function Header(props) {
   } = useContext(TemplateContext);
   const { search, details, setChangeState } = props;
 
-  const history = useHistory();
   const [modalCentered, setModalCentered] = useState(false);
 
   const filterProducts = async (menu) => {
@@ -317,11 +313,6 @@ function Header(props) {
           </Toolbar>
         </ScrollContainer>
       )}
-      <Drawer
-        modalCentered={modalCentered}
-        setModalCentered={setModalCentered}
-        checkBit={true}
-      />
     </React.Fragment>
   );
 }

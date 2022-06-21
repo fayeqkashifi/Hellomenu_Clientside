@@ -2,6 +2,25 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const ThridStyle = (custom, theme) => {
   return {
+    // footer home
+    sidebarLinks: {
+      // display: "inline-block",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      padding: "20px",
+    },
+    sidebarActiveLink: {
+      // display: "inline",
+      padding: "20px",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#503e9d",
+    },
     // main public
     template: "thrid",
     // thrid main

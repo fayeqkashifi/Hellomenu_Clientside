@@ -1,11 +1,6 @@
 import React from "react";
 /// React router dom
-import {
-  BrowserRouter as Router,
-  Switch,
-  Redirect,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 /// Css
 import "./index.css";

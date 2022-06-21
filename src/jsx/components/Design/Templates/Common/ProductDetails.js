@@ -255,9 +255,9 @@ const ProductDetails = (props) => {
   };
 
   return (
-    <div>
-      <Container maxWidth="lg" style={style?.varaintContainer}>
-        <Header details={true} search={false} />
+    <div className="py-3">
+      <Container maxWidth="lg " style={style?.varaintContainer}>
+        {/* <Header details={true} search={false} /> */}
         <Card sx={style?.cardStyleDetails}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>

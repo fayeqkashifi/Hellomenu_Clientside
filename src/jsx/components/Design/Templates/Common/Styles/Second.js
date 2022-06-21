@@ -2,6 +2,25 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const SecondStyle = (custom, theme) => {
   return {
+    // footer home
+    sidebarLinks: {
+      // display: "inline-block",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      padding: "20px",
+    },
+    sidebarActiveLink: {
+      // display: "inline",
+      padding: "20px",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+    },
     // main public
     template: "second",
     // second main
