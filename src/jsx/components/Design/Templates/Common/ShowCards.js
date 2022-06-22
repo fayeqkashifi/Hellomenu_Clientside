@@ -41,26 +41,32 @@ export default function ShowCards(props) {
         return item.id !== id;
       });
       if (check) {
-        addItemWithdoutDetails(id, wishlist, products, "wishlist").then(
-          (data) => {
-            if (data === "") {
-              setAlerts(
-                true,
-                "warning",
-                locale?.please_select_product_variantion
-              );
-            } else {
-              setWishList(data);
-            }
+        addItemWithdoutDetails(
+          id,
+          wishlist,
+          products,
+          btoa("wishlist" + branch.id)
+        ).then((data) => {
+          if (data === "") {
+            setAlerts(
+              true,
+              "warning",
+              locale?.please_select_product_variantion
+            );
+          } else {
+            setWishList(data);
           }
-        );
+        });
       } else {
         setAlerts(true, "warning", locale?.item_is_already_in_cart);
       }
     } else {
       const filterData = wishlist.filter((item) => item.id !== id);
       setWishList(filterData);
-      localStorage.setItem("wishlist", JSON.stringify(filterData));
+      localStorage.setItem(
+        btoa("wishlist" + branch.id),
+        JSON.stringify(filterData)
+      );
     }
   };
   var viewShow_HTMLTABLE = "";

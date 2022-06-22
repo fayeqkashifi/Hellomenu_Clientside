@@ -82,7 +82,7 @@ const CardOrder = (props) => {
   } else {
     viewOrders_HTMLTABLE = fetchData.map((item, i) => {
       return (
-        <div key={i} className="card my-2" style={style?.cardStyle}>
+        <div key={i} className="card my-2" style={style?.card}>
           <div className="card-body">
             <Grid container spacing={2}>
               <Grid item xs={12} lg={2} xl={3} sm={6} md={6}>
@@ -202,7 +202,7 @@ const CardOrder = (props) => {
   return (
     <div>
       {viewOrders_HTMLTABLE}
-      <div className="card my-1" style={style?.cardStyle}>
+      <div className="card my-1" style={style?.card}>
         <div className="card-body">
           <Grid container spacing={2}>
             <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>
@@ -288,7 +288,7 @@ const CardOrder = (props) => {
           </Grid>
         </div>
       </div>
-      <div className="card my-1" style={style?.cardStyle}>
+      <div className="card my-1" style={style?.card}>
         <div className="card-body">
           <Grid container spacing={2} className="text-center ">
             <Grid item xs={12} lg={6} xl={6} sm={12} md={6}>

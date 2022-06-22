@@ -732,37 +732,15 @@ export const ThridStyle = (custom, theme) => {
         : "rgb(223, 71, 89)",
     },
     cartImage: {
-      height: "100px",
-      width: "100%",
-      borderRadius: "15%",
+      height: "200px",
+      width: "150px",
+      borderRadius: "15px",
       objectFit: "contain",
     },
 
-    cartImageDiv: {
-      width: "100%",
-    },
-    cartProductDiv: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      flexWrap: "wrap",
-    },
-    cartVariantDiv: {
-      width: "100%",
-    },
-    cartCounterDiv: {
-      width: "100%",
-    },
-    cartNoteDiv: {
-      width: "100%",
-    },
-    cartTotalDiv: {
-      width: "100%",
-      textAlign: "right",
-    },
     cartProductName: {
       textTransform: "capitalize",
-      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "0.75rem",
+      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor

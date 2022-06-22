@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
+import { TemplateContext } from "../../TemplateContext";
 
 export default function Info() {
+  const { style, branch } = useContext(TemplateContext);
+
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const dataLoad = async () => {
     try {
-      const data = atob(localStorage.getItem("uniqueId"));
+      const data = atob(localStorage.getItem(btoa("uniqueId" + branch.id)));
       if (data !== null) {
         const result = await axios.get(`/api/getOrderBasedOnBroswerId/${data}`);
         if (result.data.status === 200) {
@@ -45,7 +48,11 @@ export default function Info() {
     return (
       <div>
         {fetchData.length !== 0 ? (
-          <table className="table table-dark table-hover table-bordered">
+          <table
+            className={`table table-hover table-bordered ${
+              style.template === "dark" && "table-dark"
+            }`}
+          >
             <tbody>
               <tr>
                 <th scope="row">Phone Number</th>

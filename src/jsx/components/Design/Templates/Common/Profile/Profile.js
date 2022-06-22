@@ -23,7 +23,7 @@ const Profile = () => {
   return (
     <div className="p-5">
       <Router>
-        <div className="card" style={style?.cardStyle}>
+        <div className="card" style={style?.card}>
           <div className="card-body">
             <div className="row mb-4">
               <Link

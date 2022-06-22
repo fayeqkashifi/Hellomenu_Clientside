@@ -3,14 +3,22 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import getSymbolFromCurrency from "currency-symbol-map";
-import Drawer from "./Drawer";
 import { TemplateContext } from "../../TemplateContext";
 import { getProduct, getVariations } from "../../Functionality";
 import axios from "axios";
 
-function Footer(props) {
-  const { style, cart, setCart, deliveryFees, branch, locale, selectedLang } =
-    useContext(TemplateContext);
+function Footer() {
+  const {
+    style,
+    cart,
+    setCart,
+    deliveryFees,
+    branch,
+    locale,
+    selectedLang,
+    products,
+    setProducts,
+  } = useContext(TemplateContext);
   let [sum, setSum] = useState(0);
   const dataLoad = async () => {
     var total = 0;
@@ -34,7 +42,6 @@ function Footer(props) {
                 });
               });
               const itemFetchData = result.data.fetchData[0];
-
               if (item.checkSKU) {
                 if (item.checkSKU.length != 0) {
                   getVariations(item.id, source).then((res) => {
@@ -55,7 +62,7 @@ function Footer(props) {
                           );
                           setCart(filterData);
                           localStorage.setItem(
-                            "cart",
+                            btoa("cart" + branch.id),
                             JSON.stringify(filterData)
                           );
                         }
@@ -73,7 +80,14 @@ function Footer(props) {
             } else {
               const filterData = cart.filter((check) => check.id != item.id);
               setCart(filterData);
-              localStorage.setItem("cart", JSON.stringify(filterData));
+              const filterProducts = products.filter(
+                (check) => check.id != item.id
+              );
+              setProducts(filterProducts);
+              localStorage.setItem(
+                btoa("cart" + branch.id),
+                JSON.stringify(filterData)
+              );
             }
           }
         });
@@ -94,54 +108,45 @@ function Footer(props) {
     };
   }, [cart]);
 
-  const [modalCentered, setModalCentered] = useState(false);
   return (
-    <>
-      <Box component="footer" sx={style?.footerStyle} className=" mt-5">
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={6}
-            lg={6}
-            xl={6}
-            sm={6}
-            md={6}
-            className="d-flex align-items-center justify-content-center"
-          >
-            <Typography style={style?.cartDescription}>
-              {locale?.sub_total}
-              <br></br>
-              {sum.toFixed(2) +
-                "  " +
-                getSymbolFromCurrency(branch?.currency_code)}
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            xs={6}
-            lg={6}
-            xl={6}
-            sm={6}
-            md={6}
-            className="d-flex align-items-center justify-content-center"
-          >
-            <Typography style={style?.cartDescription}>
-              {locale?.delivery_fee}
-              <br></br>
-              {deliveryFees.toFixed(2) +
-                "  " +
-                getSymbolFromCurrency(branch?.currency_code)}
-            </Typography>
-          </Grid>
+    <Box component="footer" sx={style?.footerStyle} className=" mt-5">
+      <Grid container spacing={2}>
+        <Grid
+          item
+          xs={6}
+          lg={6}
+          xl={6}
+          sm={6}
+          md={6}
+          className="d-flex align-items-center justify-content-center"
+        >
+          <Typography style={style?.cartDescription}>
+            {locale?.sub_total}
+            <br></br>
+            {sum.toFixed(2) +
+              "  " +
+              getSymbolFromCurrency(branch?.currency_code)}
+          </Typography>
         </Grid>
-      </Box>
-
-      <Drawer
-        modalCentered={modalCentered}
-        setModalCentered={setModalCentered}
-        checkBit={true}
-      />
-    </>
+        <Grid
+          item
+          xs={6}
+          lg={6}
+          xl={6}
+          sm={6}
+          md={6}
+          className="d-flex align-items-center justify-content-center"
+        >
+          <Typography style={style?.cartDescription}>
+            {locale?.delivery_fee}
+            <br></br>
+            {deliveryFees.toFixed(2) +
+              "  " +
+              getSymbolFromCurrency(branch?.currency_code)}
+          </Typography>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 

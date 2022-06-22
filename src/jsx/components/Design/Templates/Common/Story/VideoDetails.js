@@ -17,8 +17,10 @@ function VideoDetails(props) {
   const deliveryFees = props.history.location.state.deliveryFees;
   const product = props.history.location.state.product;
   const [products, setProducts] = useState([]);
-  const selectedLang = JSON.parse(sessionStorage.getItem("selectedLang")) || {};
-  const locale = JSON.parse(sessionStorage.getItem("locale")) || [];
+  const selectedLang =
+    JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branch.id))) || {};
+  const locale =
+    JSON.parse(sessionStorage.getItem(btoa("locale" + branch.id))) || [];
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [changeState, setChangeState] = useState(true);
@@ -100,7 +102,7 @@ function VideoDetails(props) {
     }
   };
   const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
+    JSON.parse(localStorage.getItem(btoa("cart" + branch.id))) || []
   );
   const properties = {
     branchId: branch.id,

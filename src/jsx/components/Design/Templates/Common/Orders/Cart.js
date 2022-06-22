@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import Header from "../Layout/Header";
 import { base_url, port } from "../../../../../../Consts";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -39,8 +38,9 @@ import Tooltip from "@mui/material/Tooltip";
 
 const Cart = () => {
   let message = "";
-
   let {
+    products,
+    setProducts,
     style,
     cart,
     setCart,
@@ -132,7 +132,7 @@ const Cart = () => {
                         );
                         setCart(filterData);
                         localStorage.setItem(
-                          "cart",
+                          btoa("cart" + branch.id),
                           JSON.stringify(filterData)
                         );
                       }
@@ -167,7 +167,14 @@ const Cart = () => {
           } else {
             const filterData = cart.filter((check) => check.id != item.id);
             setCart(filterData);
-            localStorage.setItem("cart", JSON.stringify(filterData));
+            const filterProducts = products.filter(
+              (check) => check.id != item.id
+            );
+            setProducts(filterProducts);
+            localStorage.setItem(
+              btoa("cart" + branch.id),
+              JSON.stringify(filterData)
+            );
           }
         }
       });
@@ -217,7 +224,7 @@ const Cart = () => {
   }, [cart, fetchData]);
   const remItem = (id, qty, price) => {
     setSum((sum -= price * qty));
-    remCartItem(id, cart).then((data) => {
+    remCartItem(id, cart, branch).then((data) => {
       setCart(data);
       setFetchData(fetchData.filter((item) => item.id !== id));
     });
@@ -285,14 +292,17 @@ const Cart = () => {
   const save = (data) => {
     if (data !== undefined) {
       const formData = new FormData();
-      formData.append("orderingItems", localStorage.getItem("cart"));
+      formData.append(
+        "orderingItems",
+        localStorage.getItem(btoa("cart" + branch.id))
+      );
       formData.append(
         "table_id",
         table.id === undefined ? userData.table_id : table.id
       );
       formData.append(
         "browserUniqueId",
-        atob(localStorage.getItem("uniqueId"))
+        atob(localStorage.getItem(btoa("uniqueId" + branch.id)))
       );
       formData.append("dateAndTime", userData.dateAndTime);
       formData.append("orderingMethod", orderingWay);
@@ -316,7 +326,7 @@ const Cart = () => {
             setTable([]);
             setUserData([]);
             setCart([]);
-            localStorage.removeItem("cart");
+            localStorage.removeItem(btoa("cart" + branch.id));
           }
         });
         // setAlerts(true, "success", msg);
@@ -443,12 +453,9 @@ const Cart = () => {
           <CardContent>
             <div className="row">
               <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12`
-                }
+                className={`col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12`}
                 // className="col border"
-                style={style?.cartImageDiv}
+                // style={style?.cartImageDiv}
               >
                 <img
                   style={style?.cartImage}
@@ -458,14 +465,7 @@ const Cart = () => {
                   alt="Image"
                 />
               </div>
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-4 col-md-6 col-lg-6 col-sm-6 col-12`
-                }
-                // className="col border"
-                sx={style?.cartProductDiv}
-              >
+              <div className={`col-xl-4 col-md-6 col-lg-6 col-sm-6 col-12`}>
                 <Typography style={style?.cartProductName}>
                   {item.ProductName}
                 </Typography>
@@ -497,13 +497,7 @@ const Cart = () => {
                   </Typography>
                 )}
               </div>
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-3 col-md-10 col-lg-10 col-sm-10 col-12`
-                }
-                style={style?.cartVariantDiv}
-              >
+              <div className={`col-xl-3 col-md-10 col-lg-10 col-sm-10 col-12`}>
                 {" "}
                 {item.ingredients === undefined
                   ? ""
@@ -559,13 +553,7 @@ const Cart = () => {
                       </Typography>
                     )}
               </div>
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-2 col-md-2 col-lg-2 col-sm-2 col-12`
-                }
-                style={style?.cartCounterDiv}
-              >
+              <div className={`col-xl-2 col-md-2 col-lg-2 col-sm-2 col-12`}>
                 <Counter
                   item={item}
                   setFetchData={setFetchData}
@@ -574,13 +562,7 @@ const Cart = () => {
               </div>
             </div>
             <div className="row">
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12`
-                }
-                style={style?.cartNoteDiv}
-              >
+              <div className={`col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12`}>
                 {item?.itemNote === undefined ? (
                   ""
                 ) : (
@@ -595,11 +577,7 @@ const Cart = () => {
                 )}
               </div>
               <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12 text-right`
-                }
-                style={style?.cartTotalDiv}
+                className={`col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12 text-right`}
               >
                 <Typography style={style?.cartDescription} gutterBottom>
                   <b>{locale?.total_price}: </b>
@@ -636,7 +614,7 @@ const Cart = () => {
   return (
     <div className="p-5">
       {cart.length === 0 ? (
-        <div className="card" style={style?.cardStyle}>
+        <div className="card" style={style?.card}>
           <div className="card-body">
             <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
               {locale?.no_item_available}
@@ -1012,7 +990,7 @@ const Cart = () => {
                           className="col-12 btn"
                           style={style?.buttonStyle}
                           onClick={() => [
-                            emptyCart(),
+                            emptyCart(branch),
                             setCart([]),
                             setUserData([]),
                           ]}

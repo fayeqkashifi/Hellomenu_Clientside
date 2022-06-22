@@ -2,6 +2,30 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const SecondStyle = (custom, theme) => {
   return {
+    // profile
+    activeMenu: {
+      cursor: "pointer",
+      border: "1px solid",
+      margin: "10px",
+      borderRadius: "10px",
+      borderColor: "#33cd6b",
+      boxShadow:
+        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      backgroundColor: "#33cd6b",
+      color: "#fff",
+    },
+    DeActiveMenu: {
+      height: "50px",
+      cursor: "pointer",
+      border: "1px solid",
+      borderRadius: "10px",
+      margin: "10px",
+      boxShadow:
+        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      borderColor: "#ffffff",
+      backgroundColor: "#ffffff",
+      color: "#33cd6b",
+    },
     // footer home
     sidebarLinks: {
       // display: "inline-block",
@@ -295,10 +319,18 @@ export const SecondStyle = (custom, theme) => {
         : "#fff",
     },
     favIconDeactive: {
-      display: "none",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
     },
     favIconActive: {
-      display: "none",
+      color: custom?.menusActiveColor
+        ? custom.menusActiveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
     },
     imageStyle: {
       height: "40vh",

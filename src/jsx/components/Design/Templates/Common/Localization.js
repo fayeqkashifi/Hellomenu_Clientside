@@ -8,7 +8,7 @@ import { TemplateContext } from "../TemplateContext";
 import { LanguagesContext } from "../LanguagesContext";
 
 export default function LanguageLocalization() {
-  const { languages, selectedLang, setSelectedLang, setLocale, style } =
+  const { languages, selectedLang, setSelectedLang, setLocale, style, branch } =
     useContext(TemplateContext);
   const { dataLoad } = useContext(LanguagesContext);
 
@@ -18,8 +18,11 @@ export default function LanguageLocalization() {
     setAnchorEl(event.currentTarget);
   };
   const handleMenuItemClick = (event, option) => {
-    sessionStorage.setItem("selectedLang", JSON.stringify(option));
-    sessionStorage.setItem("locale", option.locale);
+    sessionStorage.setItem(
+      btoa("selectedLang" + branch.id),
+      JSON.stringify(option)
+    );
+    sessionStorage.setItem(btoa("locale" + branch.id), option.locale);
     setSelectedLang(option);
     setLocale(JSON.parse(option.locale));
     dataLoad(option);
@@ -30,13 +33,16 @@ export default function LanguageLocalization() {
     setAnchorEl(null);
   };
   const [first, setFirst] = useState(
-    JSON.parse(sessionStorage.getItem("selectedLang")) || []
+    JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branch.id))) || []
   );
   useEffect(() => {
     if (first.length === 0) {
       let defaultLang = languages.filter((item) => {
         if (item.default == 1) {
-          sessionStorage.setItem("selectedLang", JSON.stringify(item));
+          sessionStorage.setItem(
+            btoa("selectedLang" + branch.id),
+            JSON.stringify(item)
+          );
           setSelectedLang(item);
           return item;
         }

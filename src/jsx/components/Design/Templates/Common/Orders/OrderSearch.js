@@ -31,7 +31,7 @@ const OrderSearch = (props) => {
   };
 
   return (
-    <div className="card" style={style?.cardStyle}>
+    <div className="card" style={style?.card}>
       <div className="card-body">
         <div className="row">
           <div className="col align-self-center">

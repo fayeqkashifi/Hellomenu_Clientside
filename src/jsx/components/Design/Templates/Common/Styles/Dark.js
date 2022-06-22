@@ -767,28 +767,7 @@ export const DarkStyle = (custom, theme) => {
         ? theme.HighlightColor
         : "#fff",
     },
-    cartImageDiv: {
-      width: "20%",
-    },
-    cartProductDiv: {
-      width: "30%",
-      display: "flex",
-      flexDirection: "column",
-      // flexWrap: "wrap",
-    },
-    cartVariantDiv: {
-      width: "35%",
-    },
-    cartCounterDiv: {
-      width: "15%",
-    },
-    cartNoteDiv: {
-      width: "50%",
-    },
-    cartTotalDiv: {
-      width: "50%",
-      textAlign: "right",
-    },
+
     clearIcon: {
       color: custom?.menusAcriveColor
         ? custom.menusAcriveColor

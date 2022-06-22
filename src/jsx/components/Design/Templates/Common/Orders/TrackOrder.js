@@ -4,7 +4,7 @@ import axios from "axios";
 import OrderSearch from "./OrderSearch";
 import { TemplateContext } from "../../TemplateContext";
 import CardOrder from "./Card";
-
+import Moment from "react-moment";
 const TrackOrder = () => {
   let { style } = useContext(TemplateContext);
 
@@ -40,7 +40,7 @@ const TrackOrder = () => {
         error == null ? (
           ""
         ) : (
-          <div className="card" style={style?.cardStyle}>
+          <div className="card" style={style?.card}>
             <div className="card-body">
               <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
                 {error}
@@ -50,19 +50,33 @@ const TrackOrder = () => {
         )
       ) : (
         <div className="padding-bottom-3x mb-1 " key={order}>
-          <div className="card mb-3" style={style?.cardStyle}>
-            <div className="p-4 text-center text-white text-lg ">
+          <div className="card mb-3" style={style?.card}>
+            <div
+              className={`p-4 text-center text-lg ${
+                style.template === "dark" && "text-white"
+              }`}
+            >
               <span className="text-uppercase">Tracking Order No - </span>
               <span className="text-medium">{order.orderId}</span>
             </div>
-            <div className="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 text-white text-lg">
+            <div
+              className={`d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 text-lg ${
+                style.template === "dark" && "text-white"
+              }`}
+            >
               <div className="w-100 text-center py-1 px-2 ">
                 <span className="text-medium">Status:</span>
                 {order.label}
               </div>
               <div className="w-100 text-center py-1 px-2">
                 <span className="text-medium">Order Date:</span>{" "}
-                {order.created_at}
+                <Moment format="D MMM YYYY" withTitle>
+                  {order.created_at}
+                </Moment>
+              </div>
+              <div className="w-100 text-center py-1 px-2">
+                <span className="text-medium">Ordered:</span>{" "}
+                <Moment fromNow>{order.created_at}</Moment>
               </div>
             </div>
             <div className="card-body ">
@@ -100,7 +114,13 @@ const TrackOrder = () => {
                           ></i>
                         </div>
                       </div>
-                      <h4 className="step-title text-white">{itemMap.label}</h4>
+                      <h4
+                        className={`step-title ${
+                          style.template === "dark" && "text-white"
+                        }`}
+                      >
+                        {itemMap.label}
+                      </h4>
                     </div>
                   );
                 })}
@@ -118,8 +138,9 @@ const TrackOrder = () => {
               <div className="custom-control custom-checkbox mr-3"></div>
               <div className="text-left text-sm-right">
                 <button
-                  className="btn btn-outline-primary btn-rounded btn-sm"
                   onClick={() => setShowDetails(true)}
+                  className="btn"
+                  style={style?.buttonStyle}
                 >
                   View Order Details
                 </button>

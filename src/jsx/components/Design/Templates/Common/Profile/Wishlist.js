@@ -15,7 +15,9 @@ import Tooltip from "@mui/material/Tooltip";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 
 const WishList = () => {
-  let {
+  const {
+    products,
+    setProducts,
     style,
     branch,
     cart,
@@ -27,13 +29,13 @@ const WishList = () => {
   } = useContext(TemplateContext);
   const currency = getSymbolFromCurrency(branch?.currency_code);
   const [loading, setLoading] = useState(true);
-  let [sum, setSum] = useState(0);
+  const [sum, setSum] = useState(0);
   const [fetchData, setFetchData] = useState([]);
   let source = axios.CancelToken.source();
   const dataLoad = async () => {
     let total = 0;
-    let newArray = [];
-    await wishlist.map((item) => {
+    const newArray = [];
+    wishlist.map((item, i) => {
       getProduct(item.id, selectedLang.id, source).then((result) => {
         if (result !== undefined) {
           if (result.data.fetchData.length !== 0) {
@@ -124,13 +126,23 @@ const WishList = () => {
           } else {
             const filterData = wishlist.filter((check) => check.id != item.id);
             setWishList(filterData);
-            localStorage.setItem("wishlist", JSON.stringify(filterData));
+            const filterProducts = products.filter(
+              (check) => check.id != item.id
+            );
+            setProducts(filterProducts);
+            localStorage.setItem(
+              btoa("wishlist" + branch.id),
+              JSON.stringify(filterData)
+            );
           }
         }
       });
+      if (wishlist.length === i + 1) {
+        console.log(newArray);
+        setFetchData(newArray);
+        setLoading(false);
+      }
     });
-    await setFetchData(newArray);
-    setLoading(false);
   };
   useEffect(() => {
     if (source) {
@@ -147,22 +159,28 @@ const WishList = () => {
     setFetchData(fetchData.filter((item) => item.id != id));
     const data = wishlist.filter((item) => item.id != id);
     setWishList(data);
-    localStorage.setItem("wishlist", JSON.stringify(data));
+    localStorage.setItem(btoa("wishlist" + branch.id), JSON.stringify(data));
   };
   const addItem = (id) => {
     const checkData = wishlist.filter((item) => item.id == id);
     if (checkData.length != 0) {
-      localStorage.setItem("cart", JSON.stringify(cart.concat(checkData)));
+      localStorage.setItem(
+        btoa("cart" + branch.id),
+        JSON.stringify(cart.concat(checkData))
+      );
       setCart(cart.concat(checkData));
       const wishArray = wishlist.filter((item) => item.id != id);
       setWishList(wishArray);
-      localStorage.setItem("wishlist", JSON.stringify(wishArray));
+      localStorage.setItem(
+        btoa("wishlist" + branch.id),
+        JSON.stringify(wishArray)
+      );
       setFetchData(fetchData.filter((item) => item.id != id));
     }
   };
 
   var viewImages_HTMLTABLE = "";
-  if (loading) {
+  if (loading || fetchData.length === 0) {
     return (
       <div className="d-flex justify-content-center align-items-center">
         <div className="spinner-border " role="status">
@@ -184,14 +202,7 @@ const WishList = () => {
 
           <CardContent>
             <div className="row">
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12`
-                }
-                // className="col border"
-                style={style?.cartImageDiv}
-              >
+              <div className={`col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12`}>
                 <img
                   style={style?.cartImage}
                   src={`http://${base_url}:${port}/images/products/${
@@ -200,14 +211,7 @@ const WishList = () => {
                   alt="Image"
                 />
               </div>
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-4 col-md-6 col-lg-6 col-sm-6 col-12`
-                }
-                // className="col border"
-                sx={style?.cartProductDiv}
-              >
+              <div className={`col-xl-4 col-md-6 col-lg-6 col-sm-6 col-12`}>
                 <Typography style={style?.cartProductName}>
                   {item.ProductName}
                 </Typography>
@@ -239,13 +243,7 @@ const WishList = () => {
                   </Typography>
                 )}
               </div>
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-4 col-md-11 col-lg-11 col-sm-11 col-12`
-                }
-                style={style?.cartVariantDiv}
-              >
+              <div className={`col-xl-4 col-md-11 col-lg-11 col-sm-11 col-12`}>
                 {" "}
                 {item.ingredients === undefined
                   ? ""
@@ -301,13 +299,7 @@ const WishList = () => {
                       </Typography>
                     )}
               </div>
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-1 col-md-1 col-lg-1 col-sm-1 col-12`
-                }
-                style={style?.cartCounterDiv}
-              >
+              <div className={`col-xl-1 col-md-1 col-lg-1 col-sm-1 col-12`}>
                 <Tooltip title={locale?.add_to_cart}>
                   <IconButton onClick={() => addItem(item.id)}>
                     <ShoppingCartCheckoutIcon sx={style.favIconDeactive} />
@@ -316,13 +308,7 @@ const WishList = () => {
               </div>
             </div>
             <div className="row">
-              <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12`
-                }
-                style={style?.cartNoteDiv}
-              >
+              <div className={`col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12`}>
                 {item?.itemNote === undefined ? (
                   ""
                 ) : (
@@ -337,11 +323,7 @@ const WishList = () => {
                 )}
               </div>
               <div
-                className={
-                  style.template === "dark" &&
-                  `col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12 text-right`
-                }
-                style={style?.cartTotalDiv}
+                className={`col-xl-6 col-md-6 col-lg-6 col-sm-12 col-12 text-right`}
               >
                 <Typography style={style?.cartDescription} gutterBottom>
                   <b>{locale?.total_price}: </b>
@@ -364,7 +346,7 @@ const WishList = () => {
           No Item Found
         </div>
       ) : (
-        <>{viewImages_HTMLTABLE}</>
+        viewImages_HTMLTABLE
       )}
     </div>
   );

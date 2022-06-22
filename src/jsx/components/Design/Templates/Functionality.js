@@ -275,25 +275,25 @@ export const addItemWithdoutDetails = async (id, cart, products, name) => {
     console.error(err);
   }
 };
-export const remCartItem = async (id, cart) => {
+export const remCartItem = async (id, cart, branch) => {
   try {
     const data = cart.filter((cart) => {
       return cart.id !== id;
     });
-    localStorage.setItem("cart", JSON.stringify(data));
+    localStorage.setItem(btoa("cart" + branch.id), JSON.stringify(data));
     return data;
   } catch (err) {
     console.error(err);
   }
 };
-export const emptyCart = async () => {
+export const emptyCart = async (branch) => {
   try {
-    localStorage.removeItem("cart");
+    localStorage.removeItem(btoa("cart" + branch.id));
   } catch (err) {
     console.error(err);
   }
 };
-export const handleDecrementQuantity = async (qty, id, cart) => {
+export const handleDecrementQuantity = async (qty, id, cart, branch) => {
   try {
     if (qty > 1) {
       let vars = cart.map((item) =>
@@ -304,7 +304,7 @@ export const handleDecrementQuantity = async (qty, id, cart) => {
             }
           : item
       );
-      localStorage.setItem("cart", JSON.stringify(vars));
+      localStorage.setItem(btoa("cart" + branch.id), JSON.stringify(vars));
       return vars;
     }
     // else {
@@ -314,13 +314,13 @@ export const handleDecrementQuantity = async (qty, id, cart) => {
     console.error(err);
   }
 };
-export const handelIncrementQuantity = async (qty, id, stock, cart) => {
+export const handelIncrementQuantity = async (qty, id, stock, cart, branch) => {
   try {
     if (stock > qty) {
       let vars = cart.map((item) =>
         id === item.id ? { ...item, qty: item.qty + 1 } : item
       );
-      localStorage.setItem("cart", JSON.stringify(vars));
+      localStorage.setItem(btoa("cart" + branch.id), JSON.stringify(vars));
       return vars;
     } else {
       return null;

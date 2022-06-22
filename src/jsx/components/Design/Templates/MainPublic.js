@@ -31,21 +31,21 @@ const MainPublic = (props) => {
   const [template, setTemplate] = useState([]);
   const [theme, setTheme] = useState([]);
   const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
+    JSON.parse(localStorage.getItem(btoa("cart" + branchId))) || []
   );
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(0);
   const [languages, setLanguages] = useState(
-    JSON.parse(sessionStorage.getItem("languages")) || []
+    JSON.parse(sessionStorage.getItem(btoa("languages" + branchId))) || []
   );
   const [selectedLang, setSelectedLang] = useState(
-    JSON.parse(sessionStorage.getItem("selectedLang")) || {}
+    JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branchId))) || {}
   );
   const [locale, setLocale] = useState(
-    JSON.parse(sessionStorage.getItem("locale")) || []
+    JSON.parse(sessionStorage.getItem(btoa("locale" + branchId))) || []
   );
   const [wishlist, setWishList] = useState(
-    JSON.parse(localStorage.getItem("wishlist")) || []
+    JSON.parse(localStorage.getItem(btoa("wishlist" + branchId))) || []
   );
   const dataLoad = async (input) => {
     setActiveCategory("All~~~1");
@@ -61,20 +61,22 @@ const MainPublic = (props) => {
           if (res.data.status === 200) {
             setLanguages(res.data.fetchData);
             sessionStorage.setItem(
-              "languages",
+              btoa("languages" + branchId),
               JSON.stringify(res.data.fetchData)
             );
           }
           defaultLang = res?.data?.fetchData?.filter((item) => {
             if (item.default == 1) {
               setLocale(JSON.parse(item.locale));
-              sessionStorage.setItem("locale", item.locale);
+              sessionStorage.setItem(btoa("locale" + branchId), item.locale);
               return item;
             }
           })[0];
         }
       } else {
-        defaultLang = JSON.parse(sessionStorage.getItem("selectedLang"));
+        defaultLang = JSON.parse(
+          sessionStorage.getItem(btoa("selectedLang" + branchId))
+        );
       }
     }
     let page = 1;
@@ -122,8 +124,8 @@ const MainPublic = (props) => {
         setBranch(data);
       }
     });
-    if (localStorage.getItem("uniqueId") === null) {
-      localStorage.setItem("uniqueId", btoa(uuid()));
+    if (localStorage.getItem(btoa("uniqueId" + branchId)) === null) {
+      localStorage.setItem(btoa("uniqueId" + branchId), btoa(uuid()));
     }
     dataLoad();
 
@@ -186,7 +188,6 @@ const MainPublic = (props) => {
             : template?.checkTemplate === "thrid"
             ? ThridStyle(template?.Customization, theme)
             : console.log("style Error in Mainpublic file"),
-        branchId,
         branch,
         categories,
         activeCategory,

@@ -21,8 +21,10 @@ function VideoList(props) {
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(0);
   const [loading, setLoading] = useState(true);
-  const selectedLang = JSON.parse(sessionStorage.getItem("selectedLang")) || {};
-  const locale = JSON.parse(sessionStorage.getItem("locale")) || [];
+  const selectedLang =
+    JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branch.id))) || {};
+  const locale =
+    JSON.parse(sessionStorage.getItem(btoa("locale" + branch.id))) || [];
   const [changeState, setChangeState] = useState(true);
   const dataLoad = () => {
     getProductsBasedOnBranchId(branch.id, page, selectedLang.id, source).then(

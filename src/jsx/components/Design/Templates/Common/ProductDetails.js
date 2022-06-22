@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import Container from "@mui/material/Container";
-import Header from "./Layout/Header";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
@@ -22,8 +21,16 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import Tooltip from "@mui/material/Tooltip";
 
 const ProductDetails = (props) => {
-  const { style, cart, setCart, locale, wishlist, setWishList, setAlerts } =
-    useContext(TemplateContext);
+  const {
+    branch,
+    style,
+    cart,
+    setCart,
+    locale,
+    wishlist,
+    setWishList,
+    setAlerts,
+  } = useContext(TemplateContext);
   const { fetchData, recommend } = useContext(LanguagesContext);
   const { id, extra, productIngredients } = props;
   const [swiper, setSwiper] = useState(null);
@@ -179,7 +186,7 @@ const ProductDetails = (props) => {
   };
 
   const addItem = () => {
-    added(cart, setCart, "cart");
+    added(cart, setCart, btoa("cart" + branch.id));
     // remove from wishlist
     const wishCheck = wishlist.every((item) => {
       return item.id !== fetchData.id;
@@ -187,7 +194,10 @@ const ProductDetails = (props) => {
     if (!wishCheck) {
       const filterData = wishlist.filter((item) => item.id !== fetchData.id);
       setWishList(filterData);
-      localStorage.setItem("wishlist", JSON.stringify(filterData));
+      localStorage.setItem(
+        btoa("wishlist" + branch.id),
+        JSON.stringify(filterData)
+      );
     }
   };
 
@@ -248,7 +258,7 @@ const ProductDetails = (props) => {
       return item.id !== id;
     });
     if (check) {
-      added(wishlist, setWishList, "wishlist");
+      added(wishlist, setWishList, btoa("wishlist" + branch.id));
     } else {
       setAlerts(true, "warning", locale?.item_is_already_in_cart);
     }

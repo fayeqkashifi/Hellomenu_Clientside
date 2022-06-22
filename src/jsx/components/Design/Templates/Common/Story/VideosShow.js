@@ -11,7 +11,8 @@ function VideosShow(props) {
   const categories = props.history.location.state.categories;
   const deliveryFees = props.history.location.state.deliveryFees;
   const branchStory = props.history.location.state.branchStory;
-  const selectedLang = JSON.parse(sessionStorage.getItem("selectedLang")) || {};
+  const selectedLang =
+    JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branch.id))) || {};
   return (
     <TemplateContext.Provider
       value={{

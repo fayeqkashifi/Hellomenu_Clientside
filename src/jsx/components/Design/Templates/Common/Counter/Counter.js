@@ -17,6 +17,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 const Counter = (props) => {
   const {
+    branch,
     style,
     products,
     cart,
@@ -28,13 +29,13 @@ const Counter = (props) => {
   } = useContext(TemplateContext);
   const { item, setFetchData, fetchData } = props;
   const handleDecrement = (qty, id) => {
-    handleDecrementQuantity(qty, id, cart).then((data) => {
+    handleDecrementQuantity(qty, id, cart, branch).then((data) => {
       setCart((cart) => data);
       item.qty = qty - 1;
     });
   };
   const handelIncrement = (qty, id, stock) => {
-    handelIncrementQuantity(qty, id, stock, cart).then((data) => {
+    handelIncrementQuantity(qty, id, stock, cart, branch).then((data) => {
       if (data !== null) {
         setCart((cart) => data);
         item.qty = qty + 1;
@@ -49,24 +50,29 @@ const Counter = (props) => {
   };
 
   const addItem = (id) => {
-    addItemWithdoutDetails(id, cart, products, "cart").then((data) => {
-      if (data === "") {
-        setAlerts(true, "warning", locale?.please_select_product_variantion);
-      } else {
-        setCart(data);
+    addItemWithdoutDetails(id, cart, products, btoa("cart" + branch.id)).then(
+      (data) => {
+        if (data === "") {
+          setAlerts(true, "warning", locale?.please_select_product_variantion);
+        } else {
+          setCart(data);
+        }
       }
-    });
+    );
     const wishCheck = wishlist.every((item) => {
       return item.id !== id;
     });
     if (!wishCheck) {
       const filterData = wishlist.filter((item) => item.id !== id);
       setWishList(filterData);
-      localStorage.setItem("wishlist", JSON.stringify(filterData));
+      localStorage.setItem(
+        btoa("wishlist" + branch.id),
+        JSON.stringify(filterData)
+      );
     }
   };
   const remItem = (id) => {
-    remCartItem(id, cart).then((data) => {
+    remCartItem(id, cart, branch).then((data) => {
       setCart(data);
       if (fetchData) {
         setFetchData(fetchData.filter((item) => item.id !== id));
@@ -74,7 +80,8 @@ const Counter = (props) => {
     });
   };
   var cartItem = [];
-  const getvalue = JSON.parse(localStorage.getItem("cart")) || [];
+  const getvalue =
+    JSON.parse(localStorage.getItem(btoa("cart" + branch.id))) || [];
   if (getvalue) {
     cartItem = getvalue.filter((cart) => {
       return cart.id === item.id;

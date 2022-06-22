@@ -2,9 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { useHistory } from "react-router-dom";
 import FunctionsIcon from "@mui/icons-material/Functions";
-import Drawer from "./Drawer";
 import getSymbolFromCurrency from "currency-symbol-map";
 import ScrollContainer from "react-indiana-drag-scroll";
 import axios from "axios";
@@ -23,6 +21,7 @@ function Header(props) {
     style,
     categories,
     activeCategory,
+    products,
     setProducts,
     setActiveCategory,
     cart,
@@ -34,8 +33,6 @@ function Header(props) {
     branch,
   } = useContext(TemplateContext);
   const { search, details, setChangeState } = props;
-
-  const [modalCentered, setModalCentered] = useState(false);
 
   const filterProducts = async (menu) => {
     if (menu !== "All") {
@@ -132,7 +129,7 @@ function Header(props) {
                           );
                           setCart(filterData);
                           localStorage.setItem(
-                            "cart",
+                            btoa("cart" + branch.id),
                             JSON.stringify(filterData)
                           );
                         }
@@ -149,8 +146,15 @@ function Header(props) {
               setSum(total);
             } else {
               const filterData = cart.filter((check) => check.id != item.id);
+              const filterProducts = products.filter(
+                (check) => check.id != item.id
+              );
               setCart(filterData);
-              localStorage.setItem("cart", JSON.stringify(filterData));
+              setProducts(filterProducts);
+              localStorage.setItem(
+                btoa("cart" + branch.id),
+                JSON.stringify(filterData)
+              );
             }
           }
         });
@@ -218,13 +222,9 @@ function Header(props) {
       <Toolbar
         sx={{
           position: "sticky",
-          // , zIndex: 9999999
         }}
         className="top-0"
       >
-        {/* <IconButton onClick={() => history.goBack()} sx={style?.backIcon}>
-          <KeyboardBackspaceIcon fontSize="small" />
-        </IconButton> */}
         <Typography align="left" style={style?.title} noWrap>
           {activeCategory?.split("~~~")[0] === "All"
             ? locale?.all
@@ -252,15 +252,6 @@ function Header(props) {
           </div>
         )}
         <LanguageLocalization />
-        {/* <IconButton onClick={() => setModalCentered(true)}>
-          <Badge
-            badgeContent={cart.length}
-            sx={style?.BadgeStyle}
-            overlap="circular"
-          >
-            <AddShoppingCartIcon fontSize="small" sx={style?.cartIcon} />
-          </Badge>
-        </IconButton> */}
         <div style={style?.headerTotalDiv}>
           <IconButton sx={style?.totalPriceIcon}>
             <FunctionsIcon fontSize="small" />

@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Chip from "@mui/material/Chip";
+import { TemplateContext } from "../../TemplateContext";
 
 export default function LatestOrder() {
+  const { style, branch } = useContext(TemplateContext);
   const [fetchData, setFetchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const dataLoad = async () => {
     try {
-      const data = atob(localStorage.getItem("uniqueId"));
+      const data = atob(localStorage.getItem(btoa("uniqueId" + branch.id)));
       if (data !== null) {
         const result = await axios.get(`/api/getOrderBasedOnBroswerId/${data}`);
         if (result.data.status === 200) {
@@ -43,7 +45,11 @@ export default function LatestOrder() {
     return (
       <div>
         {fetchData.length !== 0 ? (
-          <table className="table table-dark table-hover">
+          <table
+            className={`table table-hover ${
+              style.template === "dark" && "table-dark"
+            }`}
+          >
             <thead>
               <tr>
                 <th scope="col">#</th>
