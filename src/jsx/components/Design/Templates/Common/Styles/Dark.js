@@ -1,6 +1,6 @@
 import { base_url, port } from "../../../../../../Consts";
 
-export const DarkStyle = (custom, theme) => {
+export const DarkStyle = (custom, theme, isTablet, isMobile) => {
   return {
     // profile
     activeMenu: {
@@ -27,20 +27,28 @@ export const DarkStyle = (custom, theme) => {
       color: "#f27d1e",
     },
     // SideBar
-    sidebar: {
-      margin: 0,
-      padding: 0,
-      width: "4%",
-      backgroundColor: custom?.cardBgColor
-        ? custom.cardBgColor
-        : theme.CardColor
-        ? theme.CardColor
-        : "#2d3134",
-      position: "fixed",
-      height: "100vh",
-      overflow: "auto",
-      textAlign: "center",
-    },
+    sidebar:
+      isMobile || isTablet
+        ? {
+            backgroundColor: "inherit",
+            position: "fixed",
+            overflow: "auto",
+            textAlign: "center",
+          }
+        : {
+            margin: 0,
+            padding: 0,
+            width: "4%",
+            backgroundColor: custom?.cardBgColor
+              ? custom.cardBgColor
+              : theme.CardColor
+              ? theme.CardColor
+              : "#2d3134",
+            position: "fixed",
+            height: "100vh",
+            overflow: "auto",
+            textAlign: "center",
+          },
     sidebarLinks: {
       display: "block",
       color: custom?.menusDeactiveColor
@@ -48,12 +56,13 @@ export const DarkStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
-      padding: "20%",
+      // padding: "5%",
       textDecoration: "none",
+      fontSize: isMobile ? "5vw" : "3vw",
     },
     sidebarActiveLink: {
       display: "block",
-      padding: "20%",
+      // padding: "5%",
       textDecoration: "none",
       backgroundColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
@@ -65,26 +74,21 @@ export const DarkStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#f27d1e",
+      fontSize: isMobile ? "5vw" : "3vw",
     },
     content: {
-      marginLeft: "4%",
+      marginLeft: isMobile || isTablet ? "0%" : "4%",
     },
 
     logoText: {
-      display: "block",
       color: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
-      paddingTop: "16px",
-      paddingBottom: "16px",
-      borderBottom: "1px solid",
-      borderColor: custom?.menusDeactiveColor
-        ? custom.menusDeactiveColor
-        : theme.HighlightColor
-        ? theme.HighlightColor
-        : "#fff",
+      fontSize: isMobile ? "5vw" : "3vw",
+      marginTop: "12px",
+      // padding: "10px",
     },
     logoImage: {
       width: "50px",
@@ -121,7 +125,23 @@ export const DarkStyle = (custom, theme) => {
     },
     title: { visibility: "hidden" },
     searchFields: {
-      visibility: "hidden",
+      width: isMobile ? "70%" : "20%",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#2d3134",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
+      fontSize: isMobile ? "2vw" : "1vw",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#ff751d",
     },
     inputfield: {
       width: "100%",
@@ -156,7 +176,7 @@ export const DarkStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
-      fontSize: 12,
+      fontSize: isMobile ? "2vw" : "1vw",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -189,17 +209,16 @@ export const DarkStyle = (custom, theme) => {
     },
     headertoolbar: {
       overflowX: "auto",
-      zIndex: 9999999,
+      // zIndex: 9999999,
     },
     // localization
     localeBackground: {
-      fontSize: 12,
+      fontSize: isMobile ? "2vw" : "1vw",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor
         ? theme.TextColor
         : "#fff",
-      zIndex: 99999999,
     },
 
     cateActive: {
@@ -220,6 +239,7 @@ export const DarkStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#f27d1e",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     cateDeActive: {
       cursor: "pointer",
@@ -230,6 +250,7 @@ export const DarkStyle = (custom, theme) => {
         : "#fff",
       marginRight: "10px",
       marginLeft: "10px",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     // end Header
 
@@ -241,12 +262,13 @@ export const DarkStyle = (custom, theme) => {
         ? theme.TextColor
         : "#ff751d",
       cursor: "pointer",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     branchStory: {
-      width: "80px",
-      height: "130px",
+      width: isMobile ? "40px" : isTablet ? "60px" : "80px",
+      height: isMobile ? "60px" : isTablet ? "90px" : "130px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -260,10 +282,10 @@ export const DarkStyle = (custom, theme) => {
       overflow: "hidden",
     },
     productStory: {
-      width: "80px",
-      height: "130px",
+      width: isMobile ? "40px" : isTablet ? "60px" : "80px",
+      height: isMobile ? "60px" : isTablet ? "90px" : "130px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
         : theme.HighlightColor
@@ -295,10 +317,10 @@ export const DarkStyle = (custom, theme) => {
       overflow: "hidden",
     },
     branchStoryList: {
-      width: "150px",
-      height: "200px",
+      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
+      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -312,10 +334,10 @@ export const DarkStyle = (custom, theme) => {
       overflow: "hidden",
     },
     productStoryList: {
-      width: "150px",
-      height: "200px",
+      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
+      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
         : theme.HighlightColor
@@ -414,6 +436,7 @@ export const DarkStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     favIconActive: {
       color: custom?.menusActiveColor
@@ -421,9 +444,11 @@ export const DarkStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#ff751d",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     imageStyle: {
-      height: "150px",
+      height: isMobile ? "50px" : isTablet ? "100px" : "150px",
+
       width: "100%",
       borderRadius: "15px",
       objectFit: "contain",
@@ -431,16 +456,27 @@ export const DarkStyle = (custom, theme) => {
 
     productName: {
       textTransform: "capitalize",
-      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
+      fontSize: custom?.pNameSize
+        ? custom.pNameSize + "rem"
+        : isMobile
+        ? "2vw"
+        : "1vw",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor
         ? theme.TextColor
         : "#fff",
     },
-    productDiv: { width: "60%", textAlign: "left" },
+    productDiv: {
+      width: isMobile ? "100%" : isTablet ? "50%" : "60%",
+      textAlign: "left",
+    },
     price: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
+      fontSize: custom?.priceSize
+        ? custom.priceSize + "rem"
+        : isMobile || isTablet
+        ? "2vw"
+        : "1vw",
       color: custom?.price_color
         ? custom.price_color
         : theme.TextColor
@@ -452,7 +488,8 @@ export const DarkStyle = (custom, theme) => {
       display: "none",
     },
     addIcon: {
-      width: "40%",
+      width: isMobile ? "100%" : isTablet ? "50%" : "40%",
+      // fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     // end Show Card Style
 
@@ -463,6 +500,7 @@ export const DarkStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#f27d1e",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     counterIncrementIcon: {
       color: custom?.menusAcriveColor
@@ -470,6 +508,7 @@ export const DarkStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#f27d1e",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     counterValue: {
       color: custom?.menusDeactiveColor
@@ -477,12 +516,17 @@ export const DarkStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     // End
 
     // product dtails Style
     cartPrice: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.25rem",
+      fontSize: custom?.priceSize
+        ? custom.priceSize + "rem"
+        : isMobile || isTablet
+        ? "2vw"
+        : "1vw",
       color: custom?.price_color
         ? custom.price_color
         : theme.TextColor
@@ -493,7 +537,9 @@ export const DarkStyle = (custom, theme) => {
     cartDescription: {
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+        : isMobile || isTablet
+        ? "1vw"
+        : "0.5vw",
 
       color: custom?.product_discription_color
         ? custom.product_discription_color
@@ -524,7 +570,9 @@ export const DarkStyle = (custom, theme) => {
         : "#f27d1e",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+        : isMobile || isTablet
+        ? "1vw"
+        : "0.5vw",
     },
     ingredientsDeActive: {
       display: "inline-block",
@@ -546,7 +594,9 @@ export const DarkStyle = (custom, theme) => {
         : "#fff",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+        : isMobile || isTablet
+        ? "1vw"
+        : "0.5vw",
     },
     show_extras: custom?.show_extras,
     show_variants: custom?.show_variants,
@@ -653,7 +703,11 @@ export const DarkStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#f1fcfe",
-      fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1rem",
+      fontSize: custom?.bTextSize
+        ? custom.bTextSize + "rem"
+        : isMobile || isTablet
+        ? "2vw"
+        : "1vw",
       borderRadius: theme.ButtonShape == "R" ? 100 : 0,
     },
     footerStyle: {
@@ -672,7 +726,11 @@ export const DarkStyle = (custom, theme) => {
 
     // Drawer Style
     categories: {
-      fontSize: custom?.menusSize ? custom.menusSize + "rem" : "1rem",
+      fontSize: custom?.menusSize
+        ? custom.menusSize + "rem"
+        : isMobile || isTablet
+        ? "2vw"
+        : "1vw",
       color: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -702,7 +760,7 @@ export const DarkStyle = (custom, theme) => {
     // End
 
     // Counter Style
-    divCounter: { marginTop: "-5px", marginRight: "15px", textAlign: "center" },
+    divCounter: { marginTop: "-6px", marginRight: "15px", textAlign: "center" },
     addToCartIcon: {
       cursor: "pointer",
       color: custom?.menusDeactiveColor
@@ -710,9 +768,11 @@ export const DarkStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     counterRemovIcon: {
       color: "rgb(223, 71, 89)",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     // End
 
@@ -784,7 +844,11 @@ export const DarkStyle = (custom, theme) => {
     },
     cartProductName: {
       textTransform: "capitalize",
-      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
+      fontSize: custom?.pNameSize
+        ? custom.pNameSize + "rem"
+        : isMobile || isTablet
+        ? "2vw"
+        : "1vw",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor

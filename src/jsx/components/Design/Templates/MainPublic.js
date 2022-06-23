@@ -17,7 +17,7 @@ import { TemplateContext } from "./TemplateContext";
 import { LanguagesContext } from "./LanguagesContext";
 import uuid from "react-uuid";
 import CustomAlert from "../../CustomAlert";
-
+import { useMediaQuery } from "react-responsive";
 const MainPublic = (props) => {
   const [loading, setLoading] = useState(true);
   const branchId = atob(atob(atob(props.match.params.id)));
@@ -155,6 +155,15 @@ const MainPublic = (props) => {
       message: message,
     });
   };
+
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
+  const isBigScreen = useMediaQuery({ query: "(min-width: 1824px)" });
+  const isTablet = useMediaQuery({ query: "(max-width: 1224px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 700px)" });
+  const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
+  const isRetina = useMediaQuery({ query: "(min-resolution: 2dppx)" });
   var view = "";
   if (loading) {
     return (
@@ -179,10 +188,12 @@ const MainPublic = (props) => {
   return (
     <TemplateContext.Provider
       value={{
+        isTablet,
+        isMobile,
         products,
         style:
           template?.checkTemplate === "dark"
-            ? DarkStyle(template?.Customization, theme)
+            ? DarkStyle(template?.Customization, theme, isTablet, isMobile)
             : template?.checkTemplate === "second"
             ? SecondStyle(template?.Customization, theme)
             : template?.checkTemplate === "thrid"

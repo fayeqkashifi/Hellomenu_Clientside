@@ -95,7 +95,7 @@ const Counter = (props) => {
           cartItem.length === 0 ? " " : "d-none"
         } `}
       >
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
+        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 ">
           <Tooltip title={locale?.add_to_cart}>
             <IconButton onClick={(e) => [addItem(item.id)]}>
               {style?.template === "second" ? (
@@ -112,12 +112,10 @@ const Counter = (props) => {
           cartItem.length !== 0 ? " " : "d-none"
         }`}
       >
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 ">
+        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 d-flex align-items-center justify-content-center">
           {(cartItem.length !== 0 ? cartItem[0].qty : item.qty) === 1 ? (
             <IconButton onClick={() => remItem(item.id)}>
-              <Typography style={style?.counterRemovIcon}>
-                <DeleteRoundedIcon fontSize="small" />
-              </Typography>
+              <DeleteRoundedIcon style={style?.counterRemovIcon} />
             </IconButton>
           ) : (
             <IconButton
@@ -129,21 +127,18 @@ const Counter = (props) => {
                 )
               }
             >
-              <Typography style={style?.counterDecrementIcon}>
-                <RemoveRoundedIcon fontSize="small" />
-              </Typography>
+              <RemoveRoundedIcon style={style?.counterDecrementIcon} />
             </IconButton>
           )}
         </div>
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
+        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 d-flex align-items-center justify-content-center">
           <IconButton>
             <Typography style={style?.counterValue}>
               {cartItem.length !== 0 ? cartItem[0].qty : item.qty}
             </Typography>
           </IconButton>
         </div>
-
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
+        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 d-flex align-items-center justify-content-center">
           <IconButton
             onClick={() =>
               handelIncrement(
@@ -154,9 +149,7 @@ const Counter = (props) => {
               )
             }
           >
-            <Typography style={style?.counterIncrementIcon}>
-              <AddRoundedIcon fontSize="small" />
-            </Typography>
+            <AddRoundedIcon style={style?.counterIncrementIcon} />
           </IconButton>
         </div>
       </div>

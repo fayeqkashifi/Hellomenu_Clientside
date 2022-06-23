@@ -52,6 +52,7 @@
     "react-hook-form": "^7.25.3",
     "react-horizontal-scroll-container": "^1.0.1",
     "react-i18next": "^11.15.3",
+    "react-icons": "^4.4.0",
     "react-idle-timer": "^4.6.4",
     "react-image-magnify": "^2.7.4",
     "react-images-uploading": "^3.1.6",

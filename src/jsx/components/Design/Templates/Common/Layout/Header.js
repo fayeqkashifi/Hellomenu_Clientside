@@ -238,20 +238,12 @@ function Header(props) {
           style={style?.searchFields}
         ></Typography>
         {search && (
-          <div
-            style={
-              style?.template === "second"
-                ? { width: "60%" }
-                : { width: "100%" }
-            }
-          >
-            <input
-              onChange={searchItem}
-              style={style?.inputfield}
-              className={`form-control`}
-              placeholder={locale?.search_by_name}
-            />
-          </div>
+          <input
+            onChange={searchItem}
+            style={style?.searchFields}
+            className={`form-control`}
+            placeholder={locale?.search_by_name}
+          />
         )}
         <LanguageLocalization />
         <div style={style?.headerTotalDiv}>

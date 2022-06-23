@@ -25,10 +25,13 @@ import VideosShow from "../Common/Story/VideosShow";
 import Tooltip from "@mui/material/Tooltip";
 import profile from "../../../../../images/hellomenu/logo.svg";
 import { base_url, port } from "../../../../../Consts";
+import * as FaIcons from "react-icons/fa";
+import IconButton from "@mui/material/IconButton";
 
 export default function Main() {
   const { path, url } = useRouteMatch();
-  const { style, locale, branch, cart } = useContext(TemplateContext);
+  const { style, locale, branch, cart, isMobile, isTablet } =
+    useContext(TemplateContext);
   const geturl = document.location.href.split("/");
 
   const [urlCheck, setUrlCheck] = useState(
@@ -43,78 +46,86 @@ export default function Main() {
   return (
     <Router>
       <div style={style?.sidebar}>
-        <div style={style?.logoText}>
-          <img
-            src={
-              branch.branchImages === null
-                ? profile
-                : `http://${base_url}:${port}/images/branches/${
-                    JSON.parse(branch.branchImages)[0]
-                  }`
-            }
-            alt="logo"
-            style={style?.logoImage}
-          />
-        </div>
-        <Tooltip title={locale?.home} placement="right">
-          <Link
-            to={`${url}`}
-            style={
-              urlCheck === "home"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("home")}
-          >
-            <HomeIcon fontSize="large" />
-          </Link>
-        </Tooltip>
-        <Tooltip title={locale?.profile} placement="right">
-          <Link
-            to={`${url}/profile`}
-            // style={style?.sidebarLinks}
-            style={
-              urlCheck === "profile"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("profile")}
-          >
-            <PersonIcon fontSize="large" />
-          </Link>
-        </Tooltip>
-        <Tooltip title={locale?.cart} placement="right">
-          <Link
-            to={`${url}/cart`}
-            style={
-              urlCheck === "cart"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("cart")}
-          >
-            <Badge
-              badgeContent={cart.length}
-              sx={style?.BadgeStyle}
-              overlap="circular"
-            >
-              <ShoppingCartIcon fontSize="large" />
-            </Badge>
-          </Link>
-        </Tooltip>
-        <Tooltip title={locale?.track_order} placement="right">
-          <Link
-            to={`${url}/track-order`}
-            style={
-              urlCheck === "track-order"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("track-order")}
-          >
-            <PageviewIcon fontSize="large" />
-          </Link>
-        </Tooltip>
+        {isMobile || isTablet ? (
+          <IconButton style={style?.logoText}>
+            <FaIcons.FaBars />
+          </IconButton>
+        ) : (
+          <>
+            <div style={style?.logoText}>
+              <img
+                src={
+                  branch.branchImages === null
+                    ? profile
+                    : `http://${base_url}:${port}/images/branches/${
+                        JSON.parse(branch.branchImages)[0]
+                      }`
+                }
+                alt="logo"
+                style={style?.logoImage}
+              />
+            </div>
+            <Tooltip title={locale?.home} placement="right">
+              <Link
+                to={`${url}`}
+                style={
+                  urlCheck === "home"
+                    ? style?.sidebarActiveLink
+                    : style?.sidebarLinks
+                }
+                onClick={() => setUrlCheck("home")}
+              >
+                <HomeIcon fontSize="large" />
+              </Link>
+            </Tooltip>
+            <Tooltip title={locale?.profile} placement="right">
+              <Link
+                to={`${url}/profile`}
+                // style={style?.sidebarLinks}
+                style={
+                  urlCheck === "profile"
+                    ? style?.sidebarActiveLink
+                    : style?.sidebarLinks
+                }
+                onClick={() => setUrlCheck("profile")}
+              >
+                <PersonIcon fontSize="large" />
+              </Link>
+            </Tooltip>
+            <Tooltip title={locale?.cart} placement="right">
+              <Link
+                to={`${url}/cart`}
+                style={
+                  urlCheck === "cart"
+                    ? style?.sidebarActiveLink
+                    : style?.sidebarLinks
+                }
+                onClick={() => setUrlCheck("cart")}
+              >
+                <Badge
+                  badgeContent={cart.length}
+                  sx={style?.BadgeStyle}
+                  overlap="circular"
+                >
+                  <ShoppingCartIcon fontSize="large" />
+                </Badge>
+              </Link>
+            </Tooltip>
+            <Tooltip title={locale?.track_order} placement="right">
+              <Link
+                to={`${url}/track-order`}
+                style={
+                  urlCheck === "track-order"
+                    ? style?.sidebarActiveLink
+                    : style?.sidebarLinks
+                }
+                onClick={() => setUrlCheck("track-order")}
+              >
+                <PageviewIcon fontSize="large" />
+              </Link>
+            </Tooltip>
+          </>
+        )}
       </div>
       <div style={style?.content}>
         <div style={style?.background}>
