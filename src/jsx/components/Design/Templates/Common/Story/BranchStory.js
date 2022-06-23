@@ -13,9 +13,8 @@ import axios from "axios";
 import { useRouteMatch } from "react-router-dom";
 function BranchStory(props) {
   const { url } = useRouteMatch();
-
-  const { style, branch, deliveryFees, branchStory, selectedLang } =
-    useContext(TemplateContext);
+  const { branchStory } = props;
+  const { style, branch, selectedLang } = useContext(TemplateContext);
   const [loading, setLoading] = useState(true);
   const [tagProducts, setTagProducts] = useState([]);
 
@@ -83,11 +82,6 @@ function BranchStory(props) {
                             pathname: `${url}/details/${btoa(
                               btoa(btoa(item.id))
                             )}`,
-                            state: {
-                              style: style,
-                              deliveryFees: deliveryFees,
-                              branchId: branch.id,
-                            },
                           }}
                           key={i}
                           className="text-center"
@@ -132,7 +126,6 @@ function BranchStory(props) {
               style={{
                 width: "100%",
                 height: "100%",
-                zIndex: 100000,
               }}
             >
               <div
@@ -179,11 +172,6 @@ function BranchStory(props) {
                             pathname: `${url}/details/${btoa(
                               btoa(btoa(item.id))
                             )}`,
-                            state: {
-                              style: style,
-                              deliveryFees: deliveryFees,
-                              branchId: branch.id,
-                            },
                           }}
                           key={i}
                         >
@@ -211,14 +199,9 @@ function BranchStory(props) {
     });
 
     return (
-      <div className="row" style={style?.background}>
-        <div className="d-flex align-items-center justify-content-center mt-2">
-          <Stories
-            stories={urls}
-            defaultInterval={1500}
-            width={432}
-            // style={{ overflow: "auto", minHeight: "500px", height: "auto" }}
-          />
+      <div className="row">
+        <div className="d-flex align-items-center justify-content-center mb-5 mt-2">
+          <Stories stories={urls} defaultInterval={1500} width={432} />
         </div>
       </div>
     );

@@ -116,11 +116,6 @@ export default function ShowCards(props) {
               <Link
                 to={{
                   pathname: `${url}/details/${btoa(btoa(btoa(item.id)))}`,
-                  state: {
-                    style: style,
-                    deliveryFees: deliveryFees,
-                    branchId: branch.id,
-                  },
                 }}
               >
                 <div className="text-center">

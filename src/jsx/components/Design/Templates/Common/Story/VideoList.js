@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactPlayer from "react-player/lazy";
 import { base_url, port } from "../../../../../../Consts";
 import { Link } from "react-router-dom";
@@ -7,24 +7,25 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import axios from "axios";
-import { useRouteMatch } from "react-router-dom";
-
-function VideoList(props) {
+import { TemplateContext } from "../../TemplateContext";
+import VideosShow from "./VideosShow";
+import {
+  BrowserRouter as Router,
+  Switch,
+  useRouteMatch,
+} from "react-router-dom";
+import PublicRoute from "../../../../PublicRoute";
+import VideoDetails from "./VideoDetails";
+export function Show(props) {
   const { url } = useRouteMatch();
-
-  const style = props.history.location.state.style;
-  const branch = props.history.location.state.branch;
-  const deliveryFees = props.history.location.state.deliveryFees;
-  const categories = props.history.location.state.categories;
+  const { products, style, branch, locale, setProducts } =
+    useContext(TemplateContext);
   const branchStories = props.history.location.state.branchStories;
-  const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const selectedLang =
     JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branch.id))) || {};
-  const locale =
-    JSON.parse(sessionStorage.getItem(btoa("locale" + branch.id))) || [];
   const [changeState, setChangeState] = useState(true);
   const dataLoad = () => {
     getProductsBasedOnBranchId(branch.id, page, selectedLang.id, source).then(
@@ -86,13 +87,8 @@ function VideoList(props) {
                     to={{
                       pathname: `${url}/video`,
                       state: {
-                        style: style,
-                        branch: branch,
-                        deliveryFees: deliveryFees,
                         branchState: true,
                         branchStory: item,
-                        products: products,
-                        categories: categories,
                       },
                     }}
                     style={style?.headerVideos}
@@ -149,10 +145,7 @@ function VideoList(props) {
                     to={{
                       pathname: `${url}/video`,
                       state: {
-                        style: style,
-                        branch: branch,
                         product_id: item.id,
-                        deliveryFees: deliveryFees,
                         branchState: false,
                       },
                     }}
@@ -176,10 +169,7 @@ function VideoList(props) {
                       to={{
                         pathname: `${url}/video`,
                         state: {
-                          style: style,
-                          branch: branch,
                           product_id: item.id,
-                          deliveryFees: deliveryFees,
                           branchState: false,
                         },
                       }}
@@ -241,5 +231,16 @@ function VideoList(props) {
     );
   }
 }
-
+function VideoList(props) {
+  const { path } = useRouteMatch();
+  return (
+    <Router>
+      <Switch>
+        <PublicRoute exact path={`${path}`} component={Show} />
+        <PublicRoute path={`${path}/video`} component={VideosShow} />
+        {/* <PublicRoute path={`${path}/video-details`} component={VideoDetails} /> */}
+      </Switch>
+    </Router>
+  );
+}
 export default VideoList;

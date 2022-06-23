@@ -12,12 +12,7 @@ import { useRouteMatch } from "react-router-dom";
 
 function Statusbar() {
   const { url } = useRouteMatch();
-
-  const { products, style, categories, branch, deliveryFees, locale } =
-    useContext(TemplateContext);
-
-  // const checkProduct = products.filter((item) => item.video !== null);
-  // const [branch, setBranch] = useState([]);
+  const { products, style, branch, locale } = useContext(TemplateContext);
   const [branchStories, setBranchStories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -76,11 +71,6 @@ function Statusbar() {
                 to={{
                   pathname: `${url}/video-list`,
                   state: {
-                    style: style,
-                    products: products,
-                    branch: branch,
-                    deliveryFees: deliveryFees,
-                    categories: categories,
                     branchStories: branchStories,
                   },
                 }}
@@ -97,15 +87,10 @@ function Statusbar() {
                     <Link
                       key={item.id}
                       to={{
-                        pathname: `/public/video`,
+                        pathname: `${url}/video`,
                         state: {
-                          style: style,
-                          branch: branch,
-                          deliveryFees: deliveryFees,
                           branchState: true,
                           branchStory: item,
-                          products: products,
-                          categories: categories,
                         },
                       }}
                       style={style?.headerVideos}
@@ -159,13 +144,8 @@ function Statusbar() {
                       to={{
                         pathname: `${url}/video`,
                         state: {
-                          style: style,
-                          branch: branch,
                           product_id: item.id,
-                          deliveryFees: deliveryFees,
                           branchState: false,
-                          products: products,
-                          categories: categories,
                         },
                       }}
                       key={item.id}

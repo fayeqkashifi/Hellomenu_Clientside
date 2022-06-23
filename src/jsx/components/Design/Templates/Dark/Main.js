@@ -21,7 +21,6 @@ import Profile from "../Common/Profile/Profile";
 import MainDetails from "../MainDetails";
 import Badge from "@mui/material/Badge";
 import VideoList from "../Common/Story/VideoList";
-import VideoDetails from "../Common/Story/VideoDetails";
 import VideosShow from "../Common/Story/VideosShow";
 import Tooltip from "@mui/material/Tooltip";
 import profile from "../../../../../images/hellomenu/logo.svg";
@@ -126,10 +125,7 @@ export default function Main() {
             <PublicRoute path={`${path}/profile`} component={Profile} />
             <PublicRoute path={`${path}/details/:id`} component={MainDetails} />
             <PublicRoute path={`${path}/video-list`} component={VideoList} />
-            <PublicRoute
-              path={`${path}/video-details"`}
-              component={VideoDetails}
-            />
+
             <PublicRoute path={`${path}/video`} component={VideosShow} />
           </Switch>
         </div>

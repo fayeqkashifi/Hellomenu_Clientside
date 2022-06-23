@@ -16,10 +16,10 @@ import ReactPlayer from "react-player/lazy";
 import { TemplateContext } from "../../TemplateContext";
 import { useRouteMatch } from "react-router-dom";
 
-function ProductsStory() {
+function ProductsStory(props) {
   const { url } = useRouteMatch();
-
-  const { style, branch, product_id, deliveryFees, categories, selectedLang } =
+  const { product_id } = props;
+  const { style, branch, deliveryFees, categories, selectedLang } =
     useContext(TemplateContext);
 
   const [loading, setLoading] = useState(true);
@@ -284,17 +284,13 @@ function ProductsStory() {
                     to={{
                       pathname: `${url}/video-details`,
                       state: {
-                        style: style,
                         product: data,
-                        products: recomandProducts,
-                        branch: branch,
-                        deliveryFees: deliveryFees,
-                        categories: categories,
+                        // products: recomandProducts,
                       },
                     }}
                     style={style?.headerVideos}
                   >
-                    See More{" "}
+                    See More
                   </Link>
                 </div>
                 <ScrollContainer className="scroll-container">
@@ -307,11 +303,6 @@ function ProductsStory() {
                               pathname: `${url}/details/${btoa(
                                 btoa(btoa(item.id))
                               )}`,
-                              state: {
-                                style: style,
-                                deliveryFees: deliveryFees,
-                                branchId: branch.id,
-                              },
                             }}
                           >
                             <img
@@ -399,12 +390,8 @@ function ProductsStory() {
                     to={{
                       pathname: `${url}/video-details`,
                       state: {
-                        style: style,
                         product: data,
-                        products: recomandProducts,
-                        branch: branch,
-                        deliveryFees: deliveryFees,
-                        categories: categories,
+                        // products: recomandProducts,
                       },
                     }}
                     style={style?.headerVideos}
@@ -422,11 +409,6 @@ function ProductsStory() {
                               pathname: `${url}/details/${btoa(
                                 btoa(btoa(item.id))
                               )}`,
-                              state: {
-                                style: style,
-                                deliveryFees: deliveryFees,
-                                branchId: branch.id,
-                              },
                             }}
                           >
                             <img
@@ -455,9 +437,14 @@ function ProductsStory() {
     });
 
     return (
-      <div className="row" {...handlers} style={style?.background}>
-        <div className="d-flex align-items-center justify-content-center mt-2">
-          <Stories stories={urls} defaultInterval={1500} width={432} />
+      <div className="row" {...handlers}>
+        <div className="d-flex align-items-center justify-content-center mb-5 mt-2">
+          <Stories
+            stories={urls}
+            defaultInterval={1500}
+            width={432}
+            // height={1000}
+          />
         </div>
       </div>
     );

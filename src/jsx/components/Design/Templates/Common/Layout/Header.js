@@ -146,11 +146,13 @@ function Header(props) {
               setSum(total);
             } else {
               const filterData = cart.filter((check) => check.id != item.id);
+              setCart(filterData);
+
               const filterProducts = products.filter(
                 (check) => check.id != item.id
               );
-              setCart(filterData);
               setProducts(filterProducts);
+
               localStorage.setItem(
                 btoa("cart" + branch.id),
                 JSON.stringify(filterData)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactPlayer from "react-player/lazy";
 import { base_url, port } from "../../../../../../Consts";
 import {
@@ -10,20 +10,22 @@ import Grid from "@mui/material/Grid";
 import ShowCards from "../ShowCards";
 import { TemplateContext } from "../../TemplateContext";
 import axios from "axios";
-
-function VideoDetails(props) {
-  const style = props.history.location.state.style;
-  const branch = props.history.location.state.branch;
-  const deliveryFees = props.history.location.state.deliveryFees;
+import {
+  BrowserRouter as Router,
+  Switch,
+  useRouteMatch,
+} from "react-router-dom";
+import PublicRoute from "../../../../PublicRoute";
+import MainDetails from "../../MainDetails";
+export function Show(props) {
+  const { style, locale, selectedLang } = useContext(TemplateContext);
   const product = props.history.location.state.product;
   const [products, setProducts] = useState([]);
-  const selectedLang =
-    JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branch.id))) || {};
-  const locale =
-    JSON.parse(sessionStorage.getItem(btoa("locale" + branch.id))) || [];
+
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [changeState, setChangeState] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [value, setValue] = useState("");
   const dataLoad = () => {
     if (product?.sub_category_id === null) {
@@ -38,6 +40,7 @@ function VideoDetails(props) {
           setLastPage(res.last_page);
           setValue("cate~~~" + product?.category_id);
           setPage(page + 1);
+          setLoading(false);
         }
       });
     } else {
@@ -52,12 +55,12 @@ function VideoDetails(props) {
           setProducts(res.data);
           setLastPage(res.last_page);
           setPage(page + 1);
+          setLoading(false);
         }
       });
     }
   };
   let source = axios.CancelToken.source();
-
   useEffect(() => {
     if (source) {
       source.cancel("Operations cancelled due to new request");
@@ -101,21 +104,18 @@ function VideoDetails(props) {
       setChangeState(false);
     }
   };
-  const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem(btoa("cart" + branch.id))) || []
-  );
-  const properties = {
-    branchId: branch.id,
-    deliveryFees: deliveryFees,
-    setCart: setCart,
-    cart: cart,
-    style: style,
-    products: products,
-    locale,
-    selectedLang,
-  };
-  return (
-    <TemplateContext.Provider value={properties}>
+  if (loading) {
+    return (
+      <div
+        className="spinner-border text-primary "
+        role="status"
+        style={{ position: "fixed", top: "50%", left: "50%" }}
+      >
+        <span className="sr-only"></span>
+      </div>
+    );
+  } else {
+    return (
       <div style={style?.background}>
         <div className="row p-3">
           <div className="d-flex align-items-center justify-content-center">
@@ -135,11 +135,7 @@ function VideoDetails(props) {
                 height="50vh"
                 style={style?.reactPlayerStyle}
                 url={JSON.parse(product?.videosUrl)[0]}
-              >
-                {/* <a href={JSON.parse(product?.videosUrl)[0]} target="_blank">
-                <small>{JSON.parse(product?.videosUrl)[0]}</small>
-              </a> */}
-              </ReactPlayer>
+              ></ReactPlayer>
             )}
           </div>
         </div>
@@ -167,8 +163,20 @@ function VideoDetails(props) {
           ></InfiniteScroll>
         </div>
       </div>
-    </TemplateContext.Provider>
-  );
+    );
+  }
 }
 
+function VideoDetails(props) {
+  const { path } = useRouteMatch();
+
+  return (
+    <Router>
+      <Switch>
+        <PublicRoute exact path={`${path}`} component={Show} />
+        <PublicRoute path={`${path}/details/:id`} component={MainDetails} />
+      </Switch>
+    </Router>
+  );
+}
 export default VideoDetails;

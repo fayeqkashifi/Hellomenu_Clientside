@@ -95,6 +95,7 @@ export const DarkStyle = (custom, theme) => {
     // Main public
     template: "dark",
     // darkMain file style
+
     background: {
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat",
