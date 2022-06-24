@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import Footer from "../Common/Layout/Footer";
 import { TemplateContext } from "../TemplateContext";
-import Menubar from "../Common/Layout/Menubar/Menubar";
 import "./style.css";
 import {
   Link,
@@ -25,8 +24,16 @@ import VideosShow from "../Common/Story/VideosShow";
 import Tooltip from "@mui/material/Tooltip";
 import profile from "../../../../../images/hellomenu/logo.svg";
 import { base_url, port } from "../../../../../Consts";
-import * as FaIcons from "react-icons/fa";
 import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import CssBaseline from "@mui/material/CssBaseline";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+const drawerWidth = 75;
 
 export default function Main() {
   const { path, url } = useRouteMatch();
@@ -43,13 +50,117 @@ export default function Main() {
         : "home"
       : "home"
   );
+
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+  const valueMenu = (
+    <>
+      <Tooltip title={locale?.home} placement="right">
+        <Link
+          to={`${url}`}
+          style={
+            urlCheck === "home" ? style?.sidebarActiveLink : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("home")}
+        >
+          <HomeIcon />
+        </Link>
+      </Tooltip>
+      <Tooltip title={locale?.profile} placement="right">
+        <Link
+          to={`${url}/profile`}
+          // style={style?.sidebarLinks}
+          style={
+            urlCheck === "profile"
+              ? style?.sidebarActiveLink
+              : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("profile")}
+        >
+          <PersonIcon />
+        </Link>
+      </Tooltip>
+      <Tooltip title={locale?.cart} placement="right">
+        <Link
+          to={`${url}/cart`}
+          style={
+            urlCheck === "cart" ? style?.sidebarActiveLink : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("cart")}
+        >
+          <Badge
+            badgeContent={cart.length}
+            sx={style?.BadgeStyle}
+            overlap="circular"
+          >
+            <ShoppingCartIcon />
+          </Badge>
+        </Link>
+      </Tooltip>
+      <Tooltip title={locale?.track_order} placement="right">
+        <Link
+          to={`${url}/track-order`}
+          style={
+            urlCheck === "track-order"
+              ? style?.sidebarActiveLink
+              : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("track-order")}
+        >
+          <PageviewIcon />
+        </Link>
+      </Tooltip>
+    </>
+  );
+
   return (
     <Router>
       <div style={style?.sidebar}>
         {isMobile || isTablet ? (
-          <IconButton style={style?.logoText}>
-            <FaIcons.FaBars />
-          </IconButton>
+          <Box sx={{ display: "flex" }} style={style?.logoText}>
+            <CssBaseline />
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{ mr: 2, ...(open && { display: "none" }) }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography style={style?.price}>{branch.BrancheName}</Typography>
+            </Toolbar>
+            <Drawer
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: drawerWidth,
+                  boxSizing: "border-box",
+                },
+              }}
+              variant="persistent"
+              anchor="left"
+              open={open}
+            >
+              <div className="text-right">
+                {" "}
+                <IconButton onClick={handleDrawerClose}>
+                  <ChevronLeftIcon />
+                </IconButton>
+              </div>
+              <Divider />
+              {valueMenu}
+            </Drawer>
+          </Box>
         ) : (
           <>
             <div style={style?.logoText}>
@@ -64,66 +175,8 @@ export default function Main() {
                 alt="logo"
                 style={style?.logoImage}
               />
+              {valueMenu}
             </div>
-            <Tooltip title={locale?.home} placement="right">
-              <Link
-                to={`${url}`}
-                style={
-                  urlCheck === "home"
-                    ? style?.sidebarActiveLink
-                    : style?.sidebarLinks
-                }
-                onClick={() => setUrlCheck("home")}
-              >
-                <HomeIcon fontSize="large" />
-              </Link>
-            </Tooltip>
-            <Tooltip title={locale?.profile} placement="right">
-              <Link
-                to={`${url}/profile`}
-                // style={style?.sidebarLinks}
-                style={
-                  urlCheck === "profile"
-                    ? style?.sidebarActiveLink
-                    : style?.sidebarLinks
-                }
-                onClick={() => setUrlCheck("profile")}
-              >
-                <PersonIcon fontSize="large" />
-              </Link>
-            </Tooltip>
-            <Tooltip title={locale?.cart} placement="right">
-              <Link
-                to={`${url}/cart`}
-                style={
-                  urlCheck === "cart"
-                    ? style?.sidebarActiveLink
-                    : style?.sidebarLinks
-                }
-                onClick={() => setUrlCheck("cart")}
-              >
-                <Badge
-                  badgeContent={cart.length}
-                  sx={style?.BadgeStyle}
-                  overlap="circular"
-                >
-                  <ShoppingCartIcon fontSize="large" />
-                </Badge>
-              </Link>
-            </Tooltip>
-            <Tooltip title={locale?.track_order} placement="right">
-              <Link
-                to={`${url}/track-order`}
-                style={
-                  urlCheck === "track-order"
-                    ? style?.sidebarActiveLink
-                    : style?.sidebarLinks
-                }
-                onClick={() => setUrlCheck("track-order")}
-              >
-                <PageviewIcon fontSize="large" />
-              </Link>
-            </Tooltip>
           </>
         )}
       </div>

@@ -15,13 +15,13 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import PublicRoute from "../../../../PublicRoute";
-import VideoDetails from "./VideoDetails";
+// import VideoDetails from "./VideoDetails";
 export function Show(props) {
   const { url } = useRouteMatch();
-  const { products, style, branch, locale, setProducts } =
-    useContext(TemplateContext);
+  const { style, branch, locale } = useContext(TemplateContext);
   const branchStories = props.history.location.state.branchStories;
   const [page, setPage] = useState(1);
+  const [data, setData] = useState(0);
   const [lastPage, setLastPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const selectedLang =
@@ -32,7 +32,7 @@ export function Show(props) {
       (data) => {
         if (data !== undefined) {
           setLastPage(data.last_page);
-          setProducts(data.data);
+          setData(data.data);
           setPage(page + 1);
           setLoading(false);
         }
@@ -49,7 +49,7 @@ export function Show(props) {
     dataLoad();
     return () => {
       source.cancel();
-      setProducts([]);
+      setData([]);
       setLoading(true);
     };
   }, []);
@@ -57,7 +57,7 @@ export function Show(props) {
     if (page <= lastPage) {
       getProductsBasedOnBranchId(branch.id, page, source).then((data) => {
         if (data !== undefined) {
-          setProducts(products.concat(data.data));
+          setData(data.concat(data.data));
           setPage(page + 1);
         }
       });
@@ -138,7 +138,7 @@ export function Show(props) {
                 </div>
               );
             })}
-            {products.map((item) => {
+            {data.map((item) => {
               return item?.video ? (
                 <div className={`col`} key={item.id}>
                   <Link
@@ -209,7 +209,7 @@ export function Show(props) {
             })}
           </div>
           <InfiniteScroll
-            dataLength={products.length} //This is important field to render the next data
+            dataLength={data.length} //This is important field to render the next data
             next={fetchMoreData}
             hasMore={changeState}
             loader={

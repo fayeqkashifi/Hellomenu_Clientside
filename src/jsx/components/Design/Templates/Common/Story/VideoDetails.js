@@ -20,7 +20,7 @@ import MainDetails from "../../MainDetails";
 export function Show(props) {
   const { style, locale, selectedLang } = useContext(TemplateContext);
   const product = props.history.location.state.product;
-  const [products, setProducts] = useState([]);
+  const [data, setData] = useState([]);
 
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
@@ -36,7 +36,7 @@ export function Show(props) {
         source
       ).then((res) => {
         if (res !== undefined) {
-          setProducts(res.data);
+          setData(res.data);
           setLastPage(res.last_page);
           setValue("cate~~~" + product?.category_id);
           setPage(page + 1);
@@ -52,7 +52,7 @@ export function Show(props) {
       ).then((res) => {
         if (res != undefined) {
           setValue("sub~~~" + product?.sub_category_id);
-          setProducts(res.data);
+          setData(res.data);
           setLastPage(res.last_page);
           setPage(page + 1);
           setLoading(false);
@@ -72,7 +72,7 @@ export function Show(props) {
       setPage(1);
       setLastPage(1);
       setValue("");
-      setProducts([]);
+      setData([]);
     };
   }, []);
   const fetchMoreData = () => {
@@ -82,7 +82,7 @@ export function Show(props) {
         getProductBasedOnCategory(data[1], page, selectedLang.id, source).then(
           (res) => {
             if (res !== undefined) {
-              setProducts(products.concat(res.data));
+              setData(data.concat(res.data));
               setPage(page + 1);
             }
           }
@@ -95,7 +95,7 @@ export function Show(props) {
           source
         ).then((res) => {
           if (res !== undefined) {
-            setProducts(products.concat(res.data));
+            setData(data.concat(res.data));
             setPage(page + 1);
           }
         });
@@ -144,7 +144,7 @@ export function Show(props) {
             <ShowCards check={true} />
           </Grid>
           <InfiniteScroll
-            dataLength={products.length} //This is important field to render the next data
+            dataLength={data.length} //This is important field to render the next data
             next={fetchMoreData}
             hasMore={changeState}
             loader={

@@ -484,7 +484,7 @@ const ProductDetails = (props) => {
                                 extraHandlers(e, item.price, item.value);
                               }}
                               color="default"
-                              // size="small"
+                              size="small"
                               sx={style?.checkbox}
                               value={
                                 item.label + " ( +" + item.price + ".00" + " )"

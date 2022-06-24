@@ -19,8 +19,7 @@ import { useRouteMatch } from "react-router-dom";
 function ProductsStory(props) {
   const { url } = useRouteMatch();
   const { product_id } = props;
-  const { style, branch, deliveryFees, categories, selectedLang } =
-    useContext(TemplateContext);
+  const { style, branch, selectedLang } = useContext(TemplateContext);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);

@@ -35,114 +35,122 @@ const WishList = () => {
   const dataLoad = async () => {
     let total = 0;
     const newArray = [];
-    wishlist.map((item, i) => {
-      getProduct(item.id, selectedLang.id, source).then((result) => {
-        if (result !== undefined) {
-          if (result.data.fetchData.length !== 0) {
-            let ingredientArray = [];
-            result.data.ingredients.map((ingredient) => {
-              if (item.ingredients.includes(ingredient.value)) {
-                ingredientArray.push(ingredient.label);
-              }
-            });
-            let extraArray = [];
-            let extraTotal = 0;
-            result.data.extras.map((extra) => {
-              if (item.extras.includes(extra.value)) {
-                extraArray.push(extra);
-                extraTotal += extra.price;
-              }
-            });
-            let recommendArray = [];
-            let recomendTotal = 0;
-            result.data.recommend.map((recom) => {
-              item.recommendations.filter((recommend) => {
-                if (recommend.value === recom.value) {
-                  recommendArray.push({
-                    ...recom,
-                    qty: recommend.qty,
-                  });
-                  recomendTotal += recom.price * recommend.qty;
+    console.log(wishlist.length);
+    if (wishlist.length !== 0) {
+      wishlist.map((item, i) => {
+        getProduct(item.id, selectedLang.id, source).then((result) => {
+          if (result !== undefined) {
+            if (result.data.fetchData.length !== 0) {
+              let ingredientArray = [];
+              result.data.ingredients.map((ingredient) => {
+                if (item.ingredients.includes(ingredient.value)) {
+                  ingredientArray.push(ingredient.label);
                 }
               });
-            });
-            const itemFetchData = result.data.fetchData[0];
-            if (item.checkSKU) {
-              if (item.checkSKU.length != 0) {
-                getVariations(item.id, source).then((res) => {
-                  if (res !== undefined) {
-                    if (res !== "") {
-                      let varData = JSON.parse(res.variants).filter(
-                        (variant) => variant.sku === item.checkSKU
-                      );
-                      if (varData.length !== 0) {
-                        newArray.push({
-                          ...itemFetchData,
-                          ...item,
-                          price: parseInt(varData[0].price),
-                          stock: parseInt(varData[0].stock),
-                          ingredients: ingredientArray,
-                          totalPrice:
-                            parseInt(varData[0].price) * item.qty +
-                            extraTotal +
-                            recomendTotal,
-                          extras: extraArray,
-                          recommendations: recommendArray,
-                        });
-                        total +=
-                          parseInt(varData[0].price) * item.qty +
-                          extraTotal +
-                          recomendTotal;
-                        setSum(total);
-                      }
-                    }
+              let extraArray = [];
+              let extraTotal = 0;
+              result.data.extras.map((extra) => {
+                if (item.extras.includes(extra.value)) {
+                  extraArray.push(extra);
+                  extraTotal += extra.price;
+                }
+              });
+              let recommendArray = [];
+              let recomendTotal = 0;
+              result.data.recommend.map((recom) => {
+                item.recommendations.filter((recommend) => {
+                  if (recommend.value === recom.value) {
+                    recommendArray.push({
+                      ...recom,
+                      qty: recommend.qty,
+                    });
+                    recomendTotal += recom.price * recommend.qty;
                   }
                 });
+              });
+              const itemFetchData = result.data.fetchData[0];
+              if (item.checkSKU) {
+                if (item.checkSKU.length != 0) {
+                  getVariations(item.id, source).then((res) => {
+                    if (res !== undefined) {
+                      if (res !== "") {
+                        let varData = JSON.parse(res.variants).filter(
+                          (variant) => variant.sku === item.checkSKU
+                        );
+                        if (varData.length !== 0) {
+                          newArray.push({
+                            ...itemFetchData,
+                            ...item,
+                            price: parseInt(varData[0].price),
+                            stock: parseInt(varData[0].stock),
+                            ingredients: ingredientArray,
+                            totalPrice:
+                              parseInt(varData[0].price) * item.qty +
+                              extraTotal +
+                              recomendTotal,
+                            extras: extraArray,
+                            recommendations: recommendArray,
+                          });
+                          total +=
+                            parseInt(varData[0].price) * item.qty +
+                            extraTotal +
+                            recomendTotal;
+                          setSum(total);
+                        }
+                      }
+                    }
+                  });
+                } else {
+                  newArray.push({
+                    ...itemFetchData,
+                    ...item,
+                    ingredients: ingredientArray,
+                    totalPrice:
+                      itemFetchData.price * item.qty +
+                      extraTotal +
+                      recomendTotal,
+                    extras: extraArray,
+                    recommendations: recommendArray,
+                  });
+                  total +=
+                    itemFetchData.price * item.qty + extraTotal + recomendTotal;
+                }
               } else {
                 newArray.push({
                   ...itemFetchData,
                   ...item,
+                  // totalPrice: 0,
                   ingredients: ingredientArray,
-                  totalPrice:
-                    itemFetchData.price * item.qty + extraTotal + recomendTotal,
                   extras: extraArray,
                   recommendations: recommendArray,
                 });
-                total +=
-                  itemFetchData.price * item.qty + extraTotal + recomendTotal;
+                total += item.qty * itemFetchData.price;
               }
+              setSum(total);
             } else {
-              newArray.push({
-                ...itemFetchData,
-                ...item,
-                // totalPrice: 0,
-                ingredients: ingredientArray,
-                extras: extraArray,
-                recommendations: recommendArray,
-              });
-              total += item.qty * itemFetchData.price;
+              const filterData = wishlist.filter(
+                (check) => check.id != item.id
+              );
+              setWishList(filterData);
+              const filterProducts = products.filter(
+                (check) => check.id != item.id
+              );
+              setProducts(filterProducts);
+              localStorage.setItem(
+                btoa("wishlist" + branch.id),
+                JSON.stringify(filterData)
+              );
             }
-            setSum(total);
-          } else {
-            const filterData = wishlist.filter((check) => check.id != item.id);
-            setWishList(filterData);
-            const filterProducts = products.filter(
-              (check) => check.id != item.id
-            );
-            setProducts(filterProducts);
-            localStorage.setItem(
-              btoa("wishlist" + branch.id),
-              JSON.stringify(filterData)
-            );
           }
+        });
+        if (wishlist.length === i + 1) {
+          setFetchData(newArray);
+          setLoading(false);
         }
       });
-      if (wishlist.length === i + 1) {
-        console.log(newArray);
-        setFetchData(newArray);
-        setLoading(false);
-      }
-    });
+    } else {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     if (source) {
@@ -181,7 +189,11 @@ const WishList = () => {
 
   var viewImages_HTMLTABLE = "";
   if (loading || fetchData.length === 0) {
-    return (
+    return wishlist.length === 0 ? (
+      <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+        No Item Found
+      </div>
+    ) : (
       <div className="d-flex justify-content-center align-items-center">
         <div className="spinner-border " role="status">
           <span className="sr-only"></span>

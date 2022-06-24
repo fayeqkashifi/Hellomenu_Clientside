@@ -52,7 +52,7 @@ export default function LanguageLocalization() {
   }, []);
 
   return (
-    <div>
+    <div style={style?.localeBackground}>
       <List component="nav" aria-label="Device settings">
         <ListItem
           button
@@ -61,7 +61,6 @@ export default function LanguageLocalization() {
           aria-controls="lock-menu"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClickListItem}
-          sx={style?.localeBackground}
         >
           <ListItemText
             primary={
@@ -81,7 +80,7 @@ export default function LanguageLocalization() {
           "aria-labelledby": "lock-button",
           role: "listbox",
         }}
-        style={{ zIndex: 99999999 }}
+        // style={{ zIndex: 99999999 }}
       >
         {languages?.map((option, index) => (
           <MenuItem

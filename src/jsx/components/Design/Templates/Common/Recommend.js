@@ -60,6 +60,7 @@ const Recommend = (props) => {
                               ? true
                               : false
                           }
+                          size="small"
                           color="default"
                           onChange={(e) => {
                             extraHandlers(e, item.price, item.value, item.qty);

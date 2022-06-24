@@ -9,7 +9,7 @@ import Show from "./Show";
 import VideoDetails from "./VideoDetails";
 import MainDetails from "../../MainDetails";
 
-function VideosShow(props) {
+function VideosShow() {
   const { path } = useRouteMatch();
 
   return (
