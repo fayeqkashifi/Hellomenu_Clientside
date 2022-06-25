@@ -35,7 +35,6 @@ const WishList = () => {
   const dataLoad = async () => {
     let total = 0;
     const newArray = [];
-    console.log(wishlist.length);
     if (wishlist.length !== 0) {
       wishlist.map((item, i) => {
         getProduct(item.id, selectedLang.id, source).then((result) => {
@@ -190,11 +189,17 @@ const WishList = () => {
   var viewImages_HTMLTABLE = "";
   if (loading || fetchData.length === 0) {
     return wishlist.length === 0 ? (
-      <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+      <div
+        className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center"
+        style={style?.cartDescription}
+      >
         No Item Found
       </div>
     ) : (
-      <div className="d-flex justify-content-center align-items-center">
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={style?.spinner}
+      >
         <div className="spinner-border " role="status">
           <span className="sr-only"></span>
         </div>

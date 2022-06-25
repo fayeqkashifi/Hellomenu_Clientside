@@ -75,7 +75,7 @@ const CardOrder = (props) => {
   var viewOrders_HTMLTABLE = "";
   if (loading) {
     return (
-      <div className="spinner-border text-primary " role="status">
+      <div className="spinner-border " role="status" style={style?.spinner}>
         <span className="sr-only"></span>
       </div>
     );

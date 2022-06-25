@@ -339,9 +339,9 @@ const Cart = () => {
   if (loading) {
     return (
       <div
-        className="spinner-border text-primary "
+        className="spinner-border"
         role="status"
-        style={{ position: "fixed", top: "50%", left: "50%" }}
+        style={style?.spinnerInCenter}
       >
         <span className="sr-only"></span>
       </div>
@@ -616,7 +616,10 @@ const Cart = () => {
       {cart.length === 0 ? (
         <div className="card" style={style?.card}>
           <div className="card-body">
-            <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+            <div
+              className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center"
+              style={style?.cartDescription}
+            >
               {locale?.no_item_available}
             </div>
           </div>

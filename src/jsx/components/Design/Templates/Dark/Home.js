@@ -117,7 +117,9 @@ export default function Home() {
               style={{ textAlign: "center", marginBottom: "100px" }}
               className="py-4"
             >
-              <b>{locale?.yay_you_have_seen_it_all}</b>
+              <b style={style?.cartDescription}>
+                {locale?.yay_you_have_seen_it_all}
+              </b>
             </p>
           }
         ></InfiniteScroll>

@@ -36,7 +36,7 @@ export default function LatestOrder() {
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
-        <div className="spinner-border " role="status">
+        <div className="spinner-border" role="status" style={style?.spinner}>
           <span className="sr-only"></span>
         </div>
       </div>
@@ -97,7 +97,10 @@ export default function LatestOrder() {
             </tbody>
           </table>
         ) : (
-          <div className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center">
+          <div
+            className="col-xl-12 col-xxl-12 col-lg-12 col-sm-12 text-center"
+            style={style?.cartDescription}
+          >
             No Item Found
           </div>
         )}{" "}

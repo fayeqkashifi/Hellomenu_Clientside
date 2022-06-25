@@ -25,7 +25,9 @@ function BranchStory(props) {
       const product = await getProduct(item.value, selectedLang?.id, source);
       if (product !== undefined) {
         if (product.data.status === 200) {
-          recData.push(product.data.fetchData[0]);
+          if (product.data.fetchData[0] != undefined) {
+            recData.push(product.data.fetchData[0]);
+          }
         }
       }
     });
@@ -50,11 +52,7 @@ function BranchStory(props) {
   if (loading) {
     return (
       <div className="container ">
-        <div
-          className="spinner-border text-primary "
-          role="status"
-          style={{ position: "fixed", top: "50%", left: "50%" }}
-        >
+        <div className="spinner-border " role="status" style={style?.spinner}>
           <span className="sr-only"></span>
         </div>
       </div>
@@ -75,31 +73,32 @@ function BranchStory(props) {
               <>
                 <ScrollContainer className="scroll-container">
                   <Toolbar>
-                    {tagProducts?.map((item, i) => {
-                      return (
-                        <Link
-                          to={{
-                            pathname: `${url}/details/${btoa(
-                              btoa(btoa(item.id))
-                            )}`,
-                          }}
-                          key={i}
-                          className="text-center"
-                        >
-                          <img
-                            src={`http://${base_url}:${port}/images/products/${
-                              JSON.parse(item.image)[0]
-                            }`}
-                            alt="Image"
-                            style={style?.imageVideo}
-                          />
-                          <small style={{ color: "#fff" }}>
-                            {item.price +
-                              getSymbolFromCurrency(item?.currency_code)}
-                          </small>
-                        </Link>
-                      );
-                    })}
+                    {tagProducts.length != 0 &&
+                      tagProducts?.map((item, i) => {
+                        return (
+                          <Link
+                            to={{
+                              pathname: `${url}/details/${btoa(
+                                btoa(btoa(item.id))
+                              )}`,
+                            }}
+                            key={i}
+                            className="text-center"
+                          >
+                            <img
+                              src={`http://${base_url}:${port}/images/products/${
+                                JSON.parse(item.image)[0]
+                              }`}
+                              alt="Image"
+                              style={style?.imageVideo}
+                            />
+                            <small style={{ color: "#fff" }}>
+                              {item.price +
+                                getSymbolFromCurrency(item?.currency_code)}
+                            </small>
+                          </Link>
+                        );
+                      })}
                   </Toolbar>
                 </ScrollContainer>
               </>

@@ -6,7 +6,7 @@ import { getProduct } from "./Functionality";
 import axios from "axios";
 
 const MainDetails = (props) => {
-  const { selectedLang } = useContext(TemplateContext);
+  const { selectedLang, style } = useContext(TemplateContext);
 
   const id = atob(atob(atob(props.match.params.id)));
   const [productIngredients, setProductIntgredients] = useState([]);
@@ -46,9 +46,9 @@ const MainDetails = (props) => {
   if (loading) {
     return (
       <div
-        className="spinner-border text-primary "
+        className="spinner-border"
         role="status"
-        style={{ position: "fixed", top: "50%", left: "50%" }}
+        style={style?.spinnerInCenter}
       >
         <span className="sr-only"></span>
       </div>

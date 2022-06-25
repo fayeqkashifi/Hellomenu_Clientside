@@ -2,6 +2,23 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const DarkStyle = (custom, theme, isTablet, isMobile) => {
   return {
+    spinner: {
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
+    },
+    spinnerInCenter: {
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#f27d1e",
+    },
     // profile
     activeMenu: {
       cursor: "pointer",
