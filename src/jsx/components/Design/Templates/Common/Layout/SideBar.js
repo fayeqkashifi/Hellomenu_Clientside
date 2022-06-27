@@ -95,101 +95,98 @@ const SideBar = () => {
     };
   }, []);
   return (
-    <Box sx={style?.sideBarBox}>
-      <Tabs
-        orientation={style?.sidebarPosition}
-        value={value}
-        onChange={handleChange}
-        variant="scrollable"
-        scrollButtons
-        aria-label="menu"
-        TabIndicatorProps={{
-          style: {
-            display: "none",
-          },
-        }}
-        sx={{
-          [`& .${tabsClasses.scrollButtons}`]: {
-            "&.Mui-disabled": { opacity: 1 },
-          },
-        }}
-      >
+    <Tabs
+      orientation={style?.sidebarPosition}
+      value={value}
+      onChange={handleChange}
+      variant="scrollable"
+      scrollButtons
+      aria-label="menu"
+      TabIndicatorProps={{
+        style: {
+          display: "none",
+        },
+      }}
+      style={style?.tabsStyle}
+      sx={{
+        [`& .${tabsClasses.scrollButtons}`]: {
+          "&.Mui-disabled": { opacity: 1 },
+        },
+      }}
+    >
+      <Tab
+        style={
+          activeCategory === "All~~~1"
+            ? style?.sidebarActive
+            : style?.sidebarDeActive
+        }
+        sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+        onClick={() => filterProducts("All")}
+        icon={
+          <AllOutIcon
+            style={style?.icon}
+            sx={
+              activeCategory === "All~~~1"
+                ? style?.textActive
+                : style?.textDeactive
+            }
+          />
+        }
+        label={
+          <Typography
+            style={
+              activeCategory === "All~~~1"
+                ? style?.textActive
+                : style?.textDeactive
+            }
+          >
+            {locale?.all}
+          </Typography>
+        }
+      ></Tab>
+      {categories?.map((section, i) => (
         <Tab
+          key={i}
+          onClick={() => filterProducts(section)}
           style={
-            activeCategory === "All~~~1"
+            activeCategory ===
+            (section.sub_category_id === null
+              ? section.CategoryName + "~~~cate~~~" + section.category_id
+              : section.SubCategoryName + "~~~sub~~~" + section.sub_category_id)
               ? style?.sidebarActive
               : style?.sidebarDeActive
           }
-          sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
-          onClick={() => filterProducts("All")}
           icon={
-            <AllOutIcon
+            <img
               style={style?.icon}
-              sx={
-                activeCategory === "All~~~1"
-                  ? style?.textActive
-                  : style?.textDeactive
+              src={
+                section.CategoryIcon !== null
+                  ? `http://${base_url}:${port}/images/catagories/${section.CategoryIcon}`
+                  : section.CategoryIcon !== null
+                  ? `http://${base_url}:${port}/images/sub_catagories/${section.SubCategoryIcon}`
+                  : DefaultPic
               }
             />
           }
           label={
             <Typography
               style={
-                activeCategory === "All~~~1"
+                activeCategory ===
+                (section.sub_category_id === null
+                  ? section.CategoryName + "~~~" + section.category_id
+                  : section.SubCategoryName + "~~~" + section.sub_category_id)
                   ? style?.textActive
                   : style?.textDeactive
               }
             >
-              {locale?.all}
+              {section.SubCategoryName === null
+                ? section.CategoryName
+                : section.SubCategoryName}
             </Typography>
           }
-        ></Tab>
-        {categories?.map((section, i) => (
-          <Tab
-            key={i}
-            onClick={() => filterProducts(section)}
-            style={
-              activeCategory ===
-              (section.sub_category_id === null
-                ? section.CategoryName + "~~~cate~~~" + section.category_id
-                : section.SubCategoryName +
-                  "~~~sub~~~" +
-                  section.sub_category_id)
-                ? style?.sidebarActive
-                : style?.sidebarDeActive
-            }
-            icon={
-              <img
-                style={style?.icon}
-                src={
-                  section.CategoryIcon !== null
-                    ? `http://${base_url}:${port}/images/catagories/${section.CategoryIcon}`
-                    : section.CategoryIcon !== null
-                    ? `http://${base_url}:${port}/images/sub_catagories/${section.SubCategoryIcon}`
-                    : DefaultPic
-                }
-              />
-            }
-            label={
-              <Typography
-                style={
-                  activeCategory ===
-                  (section.sub_category_id === null
-                    ? section.CategoryName + "~~~" + section.category_id
-                    : section.SubCategoryName + "~~~" + section.sub_category_id)
-                    ? style?.textActive
-                    : style?.textDeactive
-                }
-              >
-                {section.SubCategoryName === null
-                  ? section.CategoryName
-                  : section.SubCategoryName}
-              </Typography>
-            }
-          />
-        ))}
-      </Tabs>
-    </Box>
+        />
+      ))}
+    </Tabs>
   );
 };
 export default SideBar;

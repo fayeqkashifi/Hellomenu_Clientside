@@ -220,12 +220,13 @@ function Header(props) {
   };
 
   return (
-    <React.Fragment>
+    <div>
       <Toolbar
         sx={{
           position: "sticky",
         }}
-        className="top-0"
+        className="top-0 "
+        style={style?.toolbarHeader}
       >
         <Typography align="left" style={style?.title} noWrap>
           {activeCategory?.split("~~~")[0] === "All"
@@ -255,50 +256,49 @@ function Header(props) {
         </div>
       </Toolbar>
 
-      {style?.template === "dark" && (
-        <ScrollContainer
-          className={`croll-container ${details ? "d-none" : ""}`}
-        >
-          <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
-            {categories && (
-              <Typography
-                style={
-                  activeCategory === "All~~~1"
-                    ? style?.cateActive
-                    : style?.cateDeActive
-                }
-                sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
-                onClick={() => filterProducts("All")}
-              >
-                {locale?.all}
-              </Typography>
-            )}
+      <ScrollContainer
+        className={`croll-container ${details ? "d-none" : ""}`}
+        style={style?.catesDiv}
+      >
+        <Toolbar component="nav" variant="dense" sx={style?.headerToolbar}>
+          {categories && (
+            <Typography
+              style={
+                activeCategory === "All~~~1"
+                  ? style?.cateActive
+                  : style?.cateDeActive
+              }
+              sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+              onClick={() => filterProducts("All")}
+            >
+              {locale?.all}
+            </Typography>
+          )}
 
-            {categories?.map((section, i) => (
-              <Typography
-                style={
-                  activeCategory ===
-                  (section.sub_category_id === null
-                    ? section.CategoryName + "~~~cate~~~" + section.category_id
-                    : section.SubCategoryName +
-                      "~~~sub~~~" +
-                      section.sub_category_id)
-                    ? style?.cateActive
-                    : style?.cateDeActive
-                }
-                key={i}
-                sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
-                onClick={() => filterProducts(section)}
-              >
-                {section.SubCategoryName === null
-                  ? section.CategoryName
-                  : section.SubCategoryName}
-              </Typography>
-            ))}
-          </Toolbar>
-        </ScrollContainer>
-      )}
-    </React.Fragment>
+          {categories?.map((section, i) => (
+            <Typography
+              style={
+                activeCategory ===
+                (section.sub_category_id === null
+                  ? section.CategoryName + "~~~cate~~~" + section.category_id
+                  : section.SubCategoryName +
+                    "~~~sub~~~" +
+                    section.sub_category_id)
+                  ? style?.cateActive
+                  : style?.cateDeActive
+              }
+              key={i}
+              sx={{ p: 1, flexShrink: 0, cursor: "pointer" }}
+              onClick={() => filterProducts(section)}
+            >
+              {section.SubCategoryName === null
+                ? section.CategoryName
+                : section.SubCategoryName}
+            </Typography>
+          ))}
+        </Toolbar>
+      </ScrollContainer>
+    </div>
   );
 }
 

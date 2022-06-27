@@ -1,6 +1,6 @@
 import { base_url, port } from "../../../../../../Consts";
 
-export const SecondStyle = (custom, theme) => {
+export const SecondStyle = (custom, theme, isTablet, isMobile) => {
   return {
     // profile
     activeMenu: {
@@ -26,25 +26,7 @@ export const SecondStyle = (custom, theme) => {
       backgroundColor: "#ffffff",
       color: "#33cd6b",
     },
-    // footer home
-    sidebarLinks: {
-      // display: "inline-block",
-      color: custom?.menusDeactiveColor
-        ? custom.menusDeactiveColor
-        : theme.HighlightColor
-        ? theme.HighlightColor
-        : "#000",
-      padding: "20px",
-    },
-    sidebarActiveLink: {
-      // display: "inline",
-      padding: "20px",
-      color: custom?.menusAcriveColor
-        ? custom.menusAcriveColor
-        : theme.TextColor
-        ? theme.TextColor
-        : "#33cd6b",
-    },
+
     // main public
     template: "second",
     // second main
@@ -77,7 +59,8 @@ export const SecondStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
-      fontSize: 12,
+      fontSize: isMobile ? "2vw" : "1vw",
+
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -92,6 +75,7 @@ export const SecondStyle = (custom, theme) => {
         : "#000",
     },
     title: {
+      visibility: isMobile ? "hidden" : "visible",
       marginLeft: 200,
       paddingBottom: "2px",
       marginBottom: "10px",
@@ -104,14 +88,72 @@ export const SecondStyle = (custom, theme) => {
         ? theme.TextColor
         : "#33cd6b",
       color: "#000",
-      fontSize: "3rem",
+      fontSize: "2vw",
+
       fontWeight: "bold",
     },
     searchFields: {
-      visibility: "hidden",
+      visibility: isMobile ? "hidden" : "visible",
+      width: "20%",
+      // height: isMobile ? "20px" : "40px",
+      backgroundColor: custom?.cardBgColor
+        ? custom.cardBgColor
+        : theme.CardColor
+        ? theme.CardColor
+        : "#fff",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      fontSize: "1vw",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
     },
     headerTotalDiv: {
       display: "none",
+    },
+    catesDiv: {
+      display: !isMobile && "none",
+      marginTop: isMobile && "25px",
+    },
+    headertoolbar: {
+      overflowX: "auto",
+      // zIndex: 9999999,
+    },
+    cateActive: {
+      cursor: "pointer",
+      borderBottomStyle: "solid",
+      borderottomWidth: "2px",
+      width: "fit-content",
+      marginRight: "10px",
+      marginLeft: "10px",
+      borderColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+      fontSize: isMobile ? "2vw" : "1vw",
+    },
+    cateDeActive: {
+      cursor: "pointer",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      marginRight: "10px",
+      marginLeft: "10px",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     backIcon: { visibility: "hidden" },
     BadgeStyle: {
@@ -130,13 +172,16 @@ export const SecondStyle = (custom, theme) => {
     },
     // localization
     localeBackground: {
-      fontSize: 12,
+      fontSize: isMobile ? "2vw" : "1vw",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor
         ? theme.TextColor
         : "#000",
-      zIndex: 99999999,
+      visibility: isMobile ? "hidden" : "visible",
+    },
+    toolbarHeader: {
+      display: isMobile && "none",
     },
     // Header End
 
@@ -254,13 +299,32 @@ export const SecondStyle = (custom, theme) => {
     // end
 
     // sideBar
-    sidebarPosition: "vertical",
-    sideBarBox: {
-      flexGrow: 1,
-      display: "flex",
-      // width: "100%",
-      height: "100%",
+    sidebarMainDiv: {
+      position: "relative",
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      zIndex: 0,
     },
+    sidebarCard: {
+      display: isMobile && "none",
+      position: "fixed",
+      top: 0,
+      bottom: 0,
+      marginLeft: "5px",
+      marginTop: "1%",
+      marginBottom: "1%",
+      zIndex: 1,
+      borderRadius: "30px",
+      // width: isMobile ? "100%" : "10%",
+      height: "97%",
+    },
+    container: {
+      width: isMobile ? "100%" : "90%",
+      float: "right",
+    },
+    sidebarPosition: isMobile ? "horizontal" : "vertical",
     sidebarActive: {
       background: custom?.menusAcriveColor
         ? custom.menusAcriveColor
@@ -269,28 +333,30 @@ export const SecondStyle = (custom, theme) => {
         : "#33cd6b",
       borderRadius: "10px",
       padding: "15px",
-      // margin: "20px",
     },
     sidebarDeActive: {
       borderRadius: "10px",
       padding: "15px",
-      // margin: "px",
+    },
+    tabsStyle: {
+      height: "inherit",
+      width: "inherit",
     },
     icon: {
-      height: "10vh",
-      width: "100%",
+      height: isTablet ? "25px" : "50px",
+      width: isTablet ? "25px" : "50px",
       objectFit: "contain",
-      margin: "5px",
+      margin: !isTablet && "5px",
     },
     textActive: {
       color: "white",
-      fontSize: 14,
+      fontSize: isMobile ? "1vw" : "1vw",
       fontWeight: "bold",
       textTransform: "capitalize",
     },
     textDeactive: {
       color: "black",
-      fontSize: 14,
+      fontSize: isMobile ? "1vw" : "1vw",
       fontWeight: "bold",
       textTransform: "capitalize",
     },
@@ -341,7 +407,7 @@ export const SecondStyle = (custom, theme) => {
     productName: {
       textTransform: "capitalize",
       textAlign: "center",
-      fontSize: "25px",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     productDiv: { width: "100%", textAlign: "center" },
     addIcon: {
@@ -349,7 +415,11 @@ export const SecondStyle = (custom, theme) => {
     },
     price: {
       textAlign: "center",
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1.5rem",
+      fontSize: custom?.priceSize
+        ? custom.priceSize + "rem"
+        : isMobile
+        ? "2vw"
+        : "1vw",
       color: custom?.price_color
         ? custom.price_color
         : theme.TextColor
@@ -411,7 +481,7 @@ export const SecondStyle = (custom, theme) => {
         : "#33cd6b",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+        : "1vw",
     },
     ingredientsDeActive: {
       cursor: "pointer",
@@ -434,7 +504,7 @@ export const SecondStyle = (custom, theme) => {
         : "#000",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+        : "1vw",
     },
     show_extras: custom?.show_extras,
     show_variants: custom?.show_variants,
@@ -546,7 +616,41 @@ export const SecondStyle = (custom, theme) => {
     },
     // End
     // footer
+    logoText: {
+      position: "fixed",
+      top: 0,
+      width: "100%",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      paddingLeft: "5%",
+    },
+    // footer home
+    sidebarLinks: {
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      padding: isMobile ? "5px" : "20px",
+      // fontSize: isMobile ? "0.1vw" : "2vw",
+    },
+    sidebarActiveLink: {
+      paddingRight: isMobile ? "5px" : "20px",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+      padding: isMobile ? "5px" : "20px",
+    },
+    iconSize: {
+      fontSize: isMobile ? "2vw" : "2vw",
+    },
     footerStyle: {
+      visibility: isMobile ? "hidden" : "visible",
       bgcolor: custom?.cardBgColor
         ? custom.cardBgColor
         : theme.CardColor
@@ -570,7 +674,7 @@ export const SecondStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#fff",
-      fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "0.75rem",
+      fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1vw",
       borderRadius: theme.ButtonShape == "R" ? 100 : 0,
     },
     // End
@@ -619,7 +723,7 @@ export const SecondStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
-      fontSize: "0.5rem",
+      fontSize: "1vw",
     },
     deactive: {
       cursor: "pointer",
@@ -637,7 +741,7 @@ export const SecondStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
-      fontSize: "0.25rem",
+      fontSize: "1vw",
     },
 
     ordersText: {
@@ -681,7 +785,7 @@ export const SecondStyle = (custom, theme) => {
     },
     cartProductName: {
       textTransform: "capitalize",
-      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "0.75rem",
+      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1vw",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor
@@ -689,7 +793,7 @@ export const SecondStyle = (custom, theme) => {
         : "#000",
     },
     cartPrice: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1vw",
       color: custom?.price_color
         ? custom.price_color
         : theme.TextColor
@@ -700,8 +804,7 @@ export const SecondStyle = (custom, theme) => {
     cartDescription: {
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
-
+        : "1vw",
       color: custom?.product_discription_color
         ? custom.product_discription_color
         : theme.TextColor
@@ -723,32 +826,12 @@ export const SecondStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
-      fontSize: 12,
+      fontSize: isMobile ? "2vw" : "1vw",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
         ? theme.TextColor
         : "#33cd6b",
-    },
-    // sideBar
-    sidebarMainDiv: {
-      position: "relative",
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      zIndex: 0,
-    },
-    sidebarCard: {
-      position: "fixed",
-      top: 0,
-      bottom: 0,
-      marginLeft: "5px",
-      marginTop: "1%",
-      marginBottom: "1%",
-      zIndex: 1,
-      borderRadius: "30px",
-      width: "10%",
     },
   };
 };

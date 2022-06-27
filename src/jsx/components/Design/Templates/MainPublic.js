@@ -195,9 +195,9 @@ const MainPublic = (props) => {
           template?.checkTemplate === "dark"
             ? DarkStyle(template?.Customization, theme, isTablet, isMobile)
             : template?.checkTemplate === "second"
-            ? SecondStyle(template?.Customization, theme)
+            ? SecondStyle(template?.Customization, theme, isTablet, isMobile)
             : template?.checkTemplate === "thrid"
-            ? ThridStyle(template?.Customization, theme)
+            ? ThridStyle(template?.Customization, theme, isTablet, isMobile)
             : console.log("style Error in Mainpublic file"),
         branch,
         categories,

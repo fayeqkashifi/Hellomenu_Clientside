@@ -17,7 +17,7 @@ export default function Home(props) {
     <div style={style?.background}>
       <Header search={true} setChangeState={setChangeState} />
       <div style={style?.sidebarMainDiv}>
-        <div className="container">
+        <div style={style?.container}>
           <Statusbar />
         </div>
         <Card style={style?.sidebarCard}>
