@@ -24,8 +24,6 @@ import VideosShow from "../Common/Story/VideosShow";
 import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -34,7 +32,7 @@ import IconButton from "@mui/material/IconButton";
 
 const drawerWidth = 75;
 export default function SecondMain(props) {
-  const { style, locale, cart, isMobile, branch } = useContext(TemplateContext);
+  const { style, locale, cart, isTablet, branch } = useContext(TemplateContext);
   const { path, url } = useRouteMatch();
 
   const geturl = document.location.href.split("/");
@@ -59,7 +57,7 @@ export default function SecondMain(props) {
   };
   const valueMenu = (
     <>
-      <Tooltip title={locale?.home} placement="right">
+      <Tooltip title={locale?.home} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}`}
           style={
@@ -70,7 +68,7 @@ export default function SecondMain(props) {
           <HomeIcon />
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.profile} placement="right">
+      <Tooltip title={locale?.profile} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}/profile`}
           // style={style?.sidebarLinks}
@@ -84,7 +82,7 @@ export default function SecondMain(props) {
           <PersonIcon />
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.cart} placement="right">
+      <Tooltip title={locale?.cart} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}/cart`}
           style={
@@ -101,7 +99,7 @@ export default function SecondMain(props) {
           </Badge>
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.track_order} placement="right">
+      <Tooltip title={locale?.track_order} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}/track-order`}
           style={
@@ -135,7 +133,7 @@ export default function SecondMain(props) {
           </Switch>
         </div>
       </div>
-      {isMobile ? (
+      {isTablet ? (
         <div
           style={style?.logoText}
           className="d-flex align-items-center justify-content-left"
@@ -163,7 +161,7 @@ export default function SecondMain(props) {
             anchor="left"
             open={open}
           >
-            <div className="text-right">
+            <div className="text-center">
               {" "}
               <IconButton onClick={handleDrawerClose}>
                 <ChevronLeftIcon />

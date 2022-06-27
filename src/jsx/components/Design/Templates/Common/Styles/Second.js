@@ -2,6 +2,23 @@ import { base_url, port } from "../../../../../../Consts";
 
 export const SecondStyle = (custom, theme, isTablet, isMobile) => {
   return {
+    spinner: {
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+    },
+    spinnerInCenter: {
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#33cd6b",
+    },
     // profile
     activeMenu: {
       cursor: "pointer",
@@ -13,6 +30,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
       backgroundColor: "#33cd6b",
       color: "#fff",
+      fontSize: "1vw",
     },
     DeActiveMenu: {
       height: "50px",
@@ -25,10 +43,16 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       borderColor: "#ffffff",
       backgroundColor: "#ffffff",
       color: "#33cd6b",
+      fontSize: "1vw",
     },
 
     // main public
     template: "second",
+    showCartStyle: {
+      minHeight: !isTablet && "80vh",
+      maxWidth: !isTablet && "90%",
+      marginLeft: !isTablet && "10%",
+    },
     // second main
     background: {
       backgroundSize: "cover",
@@ -75,8 +99,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : "#000",
     },
     title: {
-      visibility: isMobile ? "hidden" : "visible",
-      marginLeft: 200,
+      display: isTablet && "none",
       paddingBottom: "2px",
       marginBottom: "10px",
       borderBottomStyle: "solid",
@@ -93,7 +116,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       fontWeight: "bold",
     },
     searchFields: {
-      visibility: isMobile ? "hidden" : "visible",
+      visibility: isTablet ? "hidden" : "visible",
       width: "20%",
       // height: isMobile ? "20px" : "40px",
       backgroundColor: custom?.cardBgColor
@@ -117,8 +140,8 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       display: "none",
     },
     catesDiv: {
-      display: !isMobile && "none",
-      marginTop: isMobile && "25px",
+      display: !isTablet && "none",
+      marginTop: isTablet && "25px",
     },
     headertoolbar: {
       overflowX: "auto",
@@ -155,7 +178,6 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       marginLeft: "10px",
       fontSize: isMobile ? "2vw" : "1vw",
     },
-    backIcon: { visibility: "hidden" },
     BadgeStyle: {
       "& .MuiBadge-badge": {
         color: custom?.menusDeactiveColor
@@ -170,6 +192,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
           : "#33cd6b",
       },
     },
+
     // localization
     localeBackground: {
       fontSize: isMobile ? "2vw" : "1vw",
@@ -178,10 +201,12 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.TextColor
         ? theme.TextColor
         : "#000",
-      visibility: isMobile ? "hidden" : "visible",
+      visibility: isTablet ? "hidden" : "visible",
     },
     toolbarHeader: {
-      display: isMobile && "none",
+      display: isTablet && "none",
+      width: isTablet ? "100%" : "94%",
+      float: "right",
     },
     // Header End
 
@@ -193,12 +218,13 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         ? theme.TextColor
         : "#33cd6b",
       cursor: "pointer",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     branchStory: {
-      width: "80px",
-      height: "130px",
+      width: isMobile ? "30px" : isTablet ? "50px" : "60px",
+      height: isMobile ? "50px" : isTablet ? "70px" : "80px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -212,10 +238,10 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       overflow: "hidden",
     },
     productStory: {
-      width: "80px",
-      height: "130px",
+      width: isMobile ? "30px" : isTablet ? "50px" : "60px",
+      height: isMobile ? "30px" : isTablet ? "70px" : "80px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
         : theme.HighlightColor
@@ -247,10 +273,10 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       overflow: "hidden",
     },
     branchStoryList: {
-      width: "150px",
-      height: "200px",
+      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
+      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -264,10 +290,10 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       overflow: "hidden",
     },
     productStoryList: {
-      width: "150px",
-      height: "200px",
+      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
+      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
       borderRadius: "10px",
-      border: "2px solid",
+      border: "1px solid",
       borderColor: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
         : theme.HighlightColor
@@ -308,23 +334,23 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       zIndex: 0,
     },
     sidebarCard: {
-      display: isMobile && "none",
+      display: isTablet && "none",
       position: "fixed",
       top: 0,
       bottom: 0,
       marginLeft: "5px",
       marginTop: "1%",
-      marginBottom: "1%",
+      marginBottom: "5%",
       zIndex: 1,
-      borderRadius: "30px",
-      // width: isMobile ? "100%" : "10%",
-      height: "97%",
+      borderRadius: "15px",
+      width: "6%",
+      height: "94%",
     },
     container: {
-      width: isMobile ? "100%" : "90%",
+      width: isTablet ? "100%" : "94%",
       float: "right",
     },
-    sidebarPosition: isMobile ? "horizontal" : "vertical",
+    sidebarPosition: "vertical",
     sidebarActive: {
       background: custom?.menusAcriveColor
         ? custom.menusAcriveColor
@@ -333,30 +359,32 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : "#33cd6b",
       borderRadius: "10px",
       padding: "15px",
+      fontSize: "2vw",
     },
     sidebarDeActive: {
       borderRadius: "10px",
       padding: "15px",
+      fontSize: "2vw",
     },
     tabsStyle: {
       height: "inherit",
-      width: "inherit",
+      width: "100%",
     },
     icon: {
-      height: isTablet ? "25px" : "50px",
-      width: isTablet ? "25px" : "50px",
+      height: isTablet ? "15px" : "30px",
+      width: isTablet ? "15px" : "30px",
       objectFit: "contain",
       margin: !isTablet && "5px",
     },
     textActive: {
       color: "white",
-      fontSize: isMobile ? "1vw" : "1vw",
+      fontSize: "0.7vw",
       fontWeight: "bold",
       textTransform: "capitalize",
     },
     textDeactive: {
       color: "black",
-      fontSize: isMobile ? "1vw" : "1vw",
+      fontSize: "0.7vw",
       fontWeight: "bold",
       textTransform: "capitalize",
     },
@@ -375,7 +403,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
     },
     cardStyle: {
       width: "50vh",
-      margin: "20px",
+      margin: isMobile || isTablet ? "10px" : "20px",
       display: "flex",
       flexDirection: "column",
       backgroundColor: custom?.cardBgColor
@@ -390,6 +418,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     favIconActive: {
       color: custom?.menusActiveColor
@@ -397,11 +426,12 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.TextColor
         ? theme.TextColor
         : "#33cd6b",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     imageStyle: {
-      height: "40vh",
+      height: isTablet ? "30vh" : "40vh",
       width: "100%",
-      borderRadius: "15px",
+      borderRadius: "10px",
       objectFit: "contain",
     },
     productName: {
@@ -412,6 +442,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
     productDiv: { width: "100%", textAlign: "center" },
     addIcon: {
       width: "100%",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     price: {
       textAlign: "center",
@@ -439,6 +470,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.TextColor
         ? theme.TextColor
         : "#000",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     counterIncrementIcon: {
       color: custom?.menusAcriveColor
@@ -446,6 +478,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.TextColor
         ? theme.TextColor
         : "#000",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     counterValue: {
       color: custom?.menusAcriveColor
@@ -453,6 +486,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#33cd6b",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     // End
 
@@ -462,7 +496,6 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
     ingredientsActive: {
       cursor: "pointer",
       display: "inline-block",
-
       padding: "3px",
       margin: "2px",
       border: "1px solid",
@@ -565,6 +598,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.TextColor
         ? theme.TextColor
         : "#33cd6b",
+      fontSize: "1vw",
     },
     variantsImage: {
       height: "400px",
@@ -628,6 +662,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       paddingLeft: "5%",
     },
     // footer home
+    tooltipPlacement: isTablet ? "right" : "top",
     sidebarLinks: {
       color: custom?.menusDeactiveColor
         ? custom.menusDeactiveColor
@@ -638,7 +673,6 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       // fontSize: isMobile ? "0.1vw" : "2vw",
     },
     sidebarActiveLink: {
-      paddingRight: isMobile ? "5px" : "20px",
       color: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -678,8 +712,16 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       borderRadius: theme.ButtonShape == "R" ? 100 : 0,
     },
     // End
+
     // Counter
     divCounter: { marginTop: "0px", textAlign: "center", display: "grid" },
+    counterRemovIcon: {
+      color: "rgb(223, 71, 89)",
+      fontSize: isMobile ? "2vw" : "1vw",
+    },
+    // End
+
+    // cart
     addToCartIcon: {
       cursor: "pointer",
       color: custom?.menusDeactiveColor
@@ -687,13 +729,8 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#33cd6b",
+      fontSize: "2vw",
     },
-    counterRemovIcon: {
-      color: "rgb(223, 71, 89)",
-    },
-    // End
-
-    // cart
     card: {
       display: "flex",
       flexDirection: "column",
@@ -754,6 +791,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
         : theme.TextColor
         ? theme.TextColor
         : "rgb(223, 71, 89)",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     cartImage: {
       height: "100px",

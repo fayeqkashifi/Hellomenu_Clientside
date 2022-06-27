@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import getSymbolFromCurrency from "currency-symbol-map";
 import { TemplateContext } from "../TemplateContext";
-import { getProduct, getVariations } from "../Functionality";
 import axios from "axios";
 import Container from "@mui/material/Container";
 import Header from "../Common/Layout/Header";

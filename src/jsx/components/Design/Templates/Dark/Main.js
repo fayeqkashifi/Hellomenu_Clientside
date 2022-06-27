@@ -62,7 +62,7 @@ export default function Main() {
   };
   const valueMenu = (
     <>
-      <Tooltip title={locale?.home} placement="right">
+      <Tooltip title={locale?.home} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}`}
           style={
@@ -73,7 +73,7 @@ export default function Main() {
           <HomeIcon />
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.profile} placement="right">
+      <Tooltip title={locale?.profile} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}/profile`}
           // style={style?.sidebarLinks}
@@ -87,7 +87,7 @@ export default function Main() {
           <PersonIcon />
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.cart} placement="right">
+      <Tooltip title={locale?.cart} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}/cart`}
           style={
@@ -104,7 +104,7 @@ export default function Main() {
           </Badge>
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.track_order} placement="right">
+      <Tooltip title={locale?.track_order} placement={style?.tooltipPlacement}>
         <Link
           to={`${url}/track-order`}
           style={

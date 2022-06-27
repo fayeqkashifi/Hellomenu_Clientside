@@ -85,7 +85,7 @@ const CardOrder = (props) => {
         <div key={i} className="card my-2" style={style?.card}>
           <div className="card-body">
             <Grid container spacing={2}>
-              <Grid item xs={12} lg={2} xl={3} sm={6} md={6}>
+              <Grid item xs={12} lg={3} xl={3} sm={6} md={6}>
                 <img
                   style={{
                     height: "200px",
@@ -99,7 +99,7 @@ const CardOrder = (props) => {
                   alt="Image"
                 />
               </Grid>
-              <Grid item xs={12} lg={3} xl={4} sm={6} md={6}>
+              <Grid item xs={12} lg={4} xl={4} sm={6} md={6}>
                 <Typography style={style?.cartProductName}>
                   {item.ProductName}
                 </Typography>
@@ -125,7 +125,7 @@ const CardOrder = (props) => {
                     (item.UnitName == null ? "" : item.UnitName)}
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={5} xl={5} sm={6} md={6}>
+              <Grid item xs={12} lg={5} xl={5} sm={12} md={12}>
                 {item?.ingredients.length == 0 ? null : (
                   <Typography style={style?.cartDescription}>
                     {locale?.ingredients}:

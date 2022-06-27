@@ -1,7 +1,24 @@
 import { base_url, port } from "../../../../../../Consts";
 
-export const ThridStyle = (custom, theme) => {
+export const ThridStyle = (custom, theme, isTablet, isMobile) => {
   return {
+    spinner: {
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#503e9d",
+    },
+    spinnerInCenter: {
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      color: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#503e9d",
+    },
     // profile
     activeMenu: {
       cursor: "pointer",
@@ -13,6 +30,7 @@ export const ThridStyle = (custom, theme) => {
         "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
       backgroundColor: "#503e9d",
       color: "#fff",
+      fontSize: "1vw",
     },
     DeActiveMenu: {
       height: "50px",
@@ -25,8 +43,14 @@ export const ThridStyle = (custom, theme) => {
       borderColor: "#ffffff",
       backgroundColor: "#ffffff",
       color: "#503e9d",
+      fontSize: "1vw",
     },
+
     // footer home
+    tooltipPlacement: isMobile ? "right" : "top",
+    iconSize: {
+      fontSize: isMobile ? "2vw" : "2vw",
+    },
     sidebarLinks: {
       // display: "inline-block",
       color: custom?.menusDeactiveColor
@@ -34,11 +58,12 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
-      padding: "20px",
+      padding: isMobile ? "5px" : "20px",
     },
     sidebarActiveLink: {
       // display: "inline",
-      padding: "20px",
+      padding: isMobile ? "5px" : "20px",
+
       color: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -65,6 +90,51 @@ export const ThridStyle = (custom, theme) => {
     varaintContainer: { paddingBottom: "100px" },
 
     // header
+    cateActive: {
+      cursor: "pointer",
+      width: "fit-content",
+      marginRight: "10px",
+      borderRadius: "5px",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
+      backgroundColor: custom?.menusAcriveColor
+        ? custom.menusAcriveColor
+        : theme.TextColor
+        ? theme.TextColor
+        : "#503e9d",
+      fontSize: "1vw",
+    },
+    cateDeActive: {
+      cursor: "pointer",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      marginRight: "10px",
+      fontSize: "1vw",
+    },
+    logoText: {
+      position: "fixed",
+      top: 0,
+      width: "100%",
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#000",
+      paddingLeft: "5%",
+    },
+    toolbarHeader: {
+      display: isMobile && "none",
+    },
+    catesDiv: {
+      display: !isMobile && "none",
+      marginTop: isMobile && "25px",
+    },
     title: {
       display: "none",
     },
@@ -106,6 +176,7 @@ export const ThridStyle = (custom, theme) => {
         : "#fff",
 
       margin: "5px",
+      fontSize: "1vw",
     },
     totalPriceDiv: {
       marginRight: "20px",
@@ -126,13 +197,13 @@ export const ThridStyle = (custom, theme) => {
     },
     // localization
     localeBackground: {
-      fontSize: 12,
+      fontSize: "1vw",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor
         ? theme.TextColor
         : "#000",
-      zIndex: 99999999,
+      // zIndex: 99999999,
     },
     // header End
 
@@ -144,10 +215,11 @@ export const ThridStyle = (custom, theme) => {
         ? theme.TextColor
         : "#fbd460",
       cursor: "pointer",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     branchStory: {
-      width: "80px",
-      height: "130px",
+      width: isMobile ? "30px" : isTablet ? "50px" : "60px",
+      height: isMobile ? "50px" : isTablet ? "70px" : "80px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
@@ -163,8 +235,8 @@ export const ThridStyle = (custom, theme) => {
       overflow: "hidden",
     },
     productStory: {
-      width: "80px",
-      height: "130px",
+      width: isMobile ? "30px" : isTablet ? "50px" : "60px",
+      height: isMobile ? "30px" : isTablet ? "70px" : "80px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
@@ -198,8 +270,8 @@ export const ThridStyle = (custom, theme) => {
       overflow: "hidden",
     },
     branchStoryList: {
-      width: "150px",
-      height: "200px",
+      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
+      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
@@ -215,8 +287,8 @@ export const ThridStyle = (custom, theme) => {
       overflow: "hidden",
     },
     productStoryList: {
-      width: "150px",
-      height: "200px",
+      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
+      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
@@ -249,6 +321,11 @@ export const ThridStyle = (custom, theme) => {
     },
     // end
     // sideBar
+    tabsStyle: {
+      height: "inherit",
+      width: "100%",
+      display: isMobile && "none",
+    },
     sidebarPosition: "horizontal",
     sideBarBox: {
       flexGrow: 1,
@@ -262,32 +339,32 @@ export const ThridStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#fbd460",
-      borderRadius: "40px",
-      padding: "20px",
-      maring: "40px",
+      borderRadius: isTablet ? "5px" : "40px",
+      padding: isTablet ? "5px" : "20px",
+      margin: isTablet ? "5px" : "10px",
     },
     sidebarDeActive: {
-      borderRadius: "40px",
-      padding: "20px",
-      maring: "40px",
+      borderRadius: isTablet ? "5px" : "30px",
+      padding: isTablet ? "5px" : "15px",
+      margin: isTablet ? "5px" : "10px",
     },
     icon: {
-      height: "50px",
-      width: "50px",
+      height: isTablet ? "30px" : "50px",
+      width: isTablet ? "30px" : "50px",
       objectFit: "contain",
       margin: "5px",
     },
     textActive: {
       color: "#000",
-      fontSize: 14,
       fontWeight: "bold",
       textTransform: "capitalize",
+      fontSize: "0.8vw",
     },
     textDeactive: {
       color: "#000",
-      fontSize: 14,
       fontWeight: "bold",
       textTransform: "capitalize",
+      fontSize: "0.8vw",
     },
     // end
 
@@ -318,6 +395,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     favIconActive: {
       color: custom?.menusActiveColor
@@ -325,14 +403,9 @@ export const ThridStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#fbd460",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
-    shoppingIcon: {
-      color: custom?.menusDeactiveColor
-        ? custom.menusDeactiveColor
-        : theme.HighlightColor
-        ? theme.HighlightColor
-        : "#000",
-    },
+
     imageStyle: {
       height: "150px",
       width: "100%",
@@ -342,7 +415,7 @@ export const ThridStyle = (custom, theme) => {
     productName: {
       textTransform: "capitalize",
       textAlign: "left",
-      fontSize: "20px",
+      fontSize: "2vw",
     },
     productDiv: { width: "100%", textAlign: "left" },
     addIcon: {
@@ -350,6 +423,7 @@ export const ThridStyle = (custom, theme) => {
       textAlign: "center",
       borderRadius: "50px",
       border: "1px solid #aaa",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     counterPosition: "last",
     priceDiv: {
@@ -357,7 +431,7 @@ export const ThridStyle = (custom, theme) => {
       margin: "10px",
     },
     price: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1vw",
       color: custom?.price_color
         ? custom.price_color
         : theme.TextColor
@@ -408,7 +482,7 @@ export const ThridStyle = (custom, theme) => {
         : 3
       : 3,
     unitName: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "0.75rem",
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1vw",
       color: custom?.price_color
         ? custom.price_color
         : theme.TextColor
@@ -424,6 +498,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#000",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     counterIncrementIcon: {
       color: custom?.menusAcriveColor
@@ -431,6 +506,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#000",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     counterValue: {
       color: custom?.menusDeactiveColor
@@ -438,6 +514,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     // End
 
@@ -467,12 +544,11 @@ export const ThridStyle = (custom, theme) => {
         : "#fbd460",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+        : "1vw",
     },
     ingredientsDeActive: {
       cursor: "pointer",
       display: "inline-block",
-
       padding: "3px",
       margin: "2px",
       border: "1px solid",
@@ -490,7 +566,7 @@ export const ThridStyle = (custom, theme) => {
         : "#000",
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
+        : "1vw",
     },
     show_extras: custom?.show_extras,
     show_variants: custom?.show_variants,
@@ -539,6 +615,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#fbd460",
+      fontSize: "1vw",
     },
     variantsImage: {
       height: "400px",
@@ -590,7 +667,11 @@ export const ThridStyle = (custom, theme) => {
     // end
 
     // footer
+    iconSize: {
+      fontSize: isMobile ? "2vw" : "2vw",
+    },
     footerStyle: {
+      visibility: isMobile ? "hidden" : "visible",
       bgcolor: custom?.cardBgColor
         ? custom.cardBgColor
         : theme.CardColor
@@ -603,7 +684,6 @@ export const ThridStyle = (custom, theme) => {
     },
     buttonStyle: {
       display: theme.ShowButton == 1 ? "block" : "none",
-
       textTransform: "capitalize",
       backgroundColor: custom?.button_background_color
         ? custom.button_background_color
@@ -615,7 +695,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "#fff",
-      fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "0.75rem",
+      fontSize: custom?.bTextSize ? custom.bTextSize + "rem" : "1vw",
       borderRadius: theme.ButtonShape == "R" ? 100 : 0,
     },
     // End
@@ -628,9 +708,11 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fbd460",
+      fontSize: "2vw",
     },
     counterRemovIcon: {
       color: "rgb(223, 71, 89)",
+      fontSize: isMobile ? "2vw" : "1vw",
     },
     // End
 
@@ -647,7 +729,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
-      fontSize: 12,
+      fontSize: isMobile ? "2vw" : "1vw",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -666,7 +748,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
-      fontSize: 12,
+      fontSize: isMobile ? "2vw" : "1vw",
       borderColor: custom?.menusAcriveColor
         ? custom.menusAcriveColor
         : theme.TextColor
@@ -699,7 +781,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
-      fontSize: "0.5rem",
+      fontSize: "1vw",
     },
     deactive: {
       cursor: "pointer",
@@ -717,7 +799,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#000",
-      fontSize: "0.25rem",
+      fontSize: "1vw",
     },
 
     ordersText: {
@@ -730,6 +812,7 @@ export const ThridStyle = (custom, theme) => {
         : theme.TextColor
         ? theme.TextColor
         : "rgb(223, 71, 89)",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     cartImage: {
       height: "200px",
@@ -740,7 +823,7 @@ export const ThridStyle = (custom, theme) => {
 
     cartProductName: {
       textTransform: "capitalize",
-      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "1rem",
+      fontSize: custom?.pNameSize ? custom.pNameSize + "rem" : "2vw",
       color: custom?.product_name_color
         ? custom.product_name_color
         : theme.TextColor
@@ -748,7 +831,7 @@ export const ThridStyle = (custom, theme) => {
         : "#000",
     },
     cartPrice: {
-      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "1rem",
+      fontSize: custom?.priceSize ? custom.priceSize + "rem" : "2vw",
       color: custom?.price_color
         ? custom.price_color
         : theme.TextColor
@@ -759,8 +842,7 @@ export const ThridStyle = (custom, theme) => {
     cartDescription: {
       fontSize: custom?.pDiscriptionSize
         ? custom.pDiscriptionSize + "rem"
-        : "0.75rem",
-
+        : "1vw",
       color: custom?.product_discription_color
         ? custom.product_discription_color
         : theme.TextColor

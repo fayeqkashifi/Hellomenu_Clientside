@@ -113,7 +113,6 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
-
       fontSize: isMobile ? "2vw" : "3vw",
       // padding: "10px",
     },
@@ -143,13 +142,7 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
     },
     varaintContainer: { paddingBottom: "100px" },
     // Header file style
-    backIcon: {
-      color: custom?.menusDeactiveColor
-        ? custom.menusDeactiveColor
-        : theme.HighlightColor
-        ? theme.HighlightColor
-        : "#fff",
-    },
+
     title: { visibility: "hidden" },
     searchFields: {
       visibility: isMobile ? "hidden" : "visible",
@@ -225,13 +218,6 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
           ? theme.TextColor
           : "#f27d1e",
       },
-    },
-    cartIcon: {
-      color: custom?.menusDeactiveColor
-        ? custom.menusDeactiveColor
-        : theme.HighlightColor
-        ? theme.HighlightColor
-        : "#fff",
     },
     headerTotalDiv: {
       display: "none",
@@ -478,7 +464,6 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
     },
     imageStyle: {
       height: isMobile ? "50px" : isTablet ? "100px" : "150px",
-
       width: "100%",
       borderRadius: "15px",
       objectFit: "contain",
@@ -716,6 +701,8 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
     // End
 
     // footer
+    tooltipPlacement: "right",
+
     buttonStyle: {
       display: theme.ShowButton == 1 ? "block" : "none",
       textTransform: "capitalize",
@@ -863,6 +850,7 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#f27d1e",
+      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     cartImage: {
       height: "200px",

@@ -23,9 +23,16 @@ import VideoDetails from "../Common/Story/VideoDetails";
 import VideosShow from "../Common/Story/VideosShow";
 import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import IconButton from "@mui/material/IconButton";
+const drawerWidth = 50;
 
 export default function ThridMain(props) {
-  const { style, locale, cart } = useContext(TemplateContext);
+  const { style, locale, cart, isMobile, branch } = useContext(TemplateContext);
   const { path, url } = useRouteMatch();
 
   const geturl = document.location.href.split("/");
@@ -39,7 +46,74 @@ export default function ThridMain(props) {
         : "home"
       : "home"
   );
+  const [open, setOpen] = useState(false);
 
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+  const valueMenu = (
+    <>
+      <Tooltip title={locale?.home} placement={style?.tooltipPlacement}>
+        <Link
+          to={`${url}`}
+          style={
+            urlCheck === "home" ? style?.sidebarActiveLink : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("home")}
+        >
+          <HomeIcon />
+        </Link>
+      </Tooltip>
+      <Tooltip title={locale?.profile} placement={style?.tooltipPlacement}>
+        <Link
+          to={`${url}/profile`}
+          // style={style?.sidebarLinks}
+          style={
+            urlCheck === "profile"
+              ? style?.sidebarActiveLink
+              : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("profile")}
+        >
+          <PersonIcon />
+        </Link>
+      </Tooltip>
+      <Tooltip title={locale?.cart} placement={style?.tooltipPlacement}>
+        <Link
+          to={`${url}/cart`}
+          style={
+            urlCheck === "cart" ? style?.sidebarActiveLink : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("cart")}
+        >
+          <Badge
+            badgeContent={cart.length}
+            sx={style?.BadgeStyle}
+            overlap="circular"
+          >
+            <ShoppingCartIcon />
+          </Badge>
+        </Link>
+      </Tooltip>
+      <Tooltip title={locale?.track_order} placement={style?.tooltipPlacement}>
+        <Link
+          to={`${url}/track-order`}
+          style={
+            urlCheck === "track-order"
+              ? style?.sidebarActiveLink
+              : style?.sidebarLinks
+          }
+          onClick={() => setUrlCheck("track-order")}
+        >
+          <PageviewIcon />
+        </Link>
+      </Tooltip>
+    </>
+  );
   return (
     <Router>
       <div style={style?.content}>
@@ -59,67 +133,49 @@ export default function ThridMain(props) {
           </Switch>
         </div>
       </div>
-      <Box component="footer" sx={style?.footerStyle} className=" mt-5">
-        <Tooltip title={locale?.home} placement="top">
-          <Link
-            to={`${url}`}
-            style={
-              urlCheck === "home"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("home")}
+      {isMobile ? (
+        <div
+          style={style?.logoText}
+          className="d-flex align-items-center justify-content-left"
+        >
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            // sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
-            <HomeIcon fontSize="large" />
-          </Link>
-        </Tooltip>
-        <Tooltip title={locale?.profile} placement="top">
-          <Link
-            to={`${url}/profile`}
-            // style={style?.sidebarLinks}
-            style={
-              urlCheck === "profile"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("profile")}
+            <MenuIcon style={style?.iconSize} />
+          </IconButton>
+          <Typography style={style?.price}>{branch.BrancheName}</Typography>
+          <Drawer
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
+                width: drawerWidth,
+                boxSizing: "border-box",
+              },
+            }}
+            variant="persistent"
+            anchor="left"
+            open={open}
           >
-            <PersonIcon fontSize="large" />
-          </Link>
-        </Tooltip>
-        <Tooltip title={locale?.cart} placement="top">
-          <Link
-            to={`${url}/cart`}
-            style={
-              urlCheck === "cart"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("cart")}
-          >
-            <Badge
-              badgeContent={cart.length}
-              sx={style?.BadgeStyle}
-              overlap="circular"
-            >
-              <ShoppingCartIcon fontSize="large" />
-            </Badge>
-          </Link>
-        </Tooltip>
-        <Tooltip title={locale?.track_order} placement="top">
-          <Link
-            to={`${url}/track-order`}
-            style={
-              urlCheck === "track-order"
-                ? style?.sidebarActiveLink
-                : style?.sidebarLinks
-            }
-            onClick={() => setUrlCheck("track-order")}
-          >
-            <PageviewIcon fontSize="large" />
-          </Link>
-        </Tooltip>
-      </Box>
+            <div className="text-center">
+              {" "}
+              <IconButton onClick={handleDrawerClose}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </div>
+            <Divider />
+            {valueMenu}
+          </Drawer>
+        </div>
+      ) : (
+        <Box component="footer" sx={style?.footerStyle} className="mt-5">
+          {valueMenu}
+        </Box>
+      )}
     </Router>
   );
 }

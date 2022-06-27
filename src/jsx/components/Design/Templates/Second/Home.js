@@ -26,11 +26,7 @@ export default function Home(props) {
         <Grid
           container
           spacing={2}
-          style={{
-            minHeight: "80vh",
-            maxWidth: "90%",
-            marginLeft: "10%",
-          }}
+          style={style?.showCartStyle}
         >
           <ScrollContainer className="scroll-container row align-items-center justify-content-center">
             <Toolbar>
