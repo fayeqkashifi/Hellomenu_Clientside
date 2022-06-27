@@ -11,11 +11,11 @@ const ImageSlider = (props) => {
   const { rimProps, rsProps, varPics, setSwiper, style, fetchData } = props;
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   return (
-    <div>
+    <div style={style?.maindivforSilder}>
       {(() => {
         if (varPics.length !== 0) {
           return (
-            <div style={style.imageSilderMainDiv}>
+            <div>
               <Swiper
                 spaceBetween={20}
                 speed={2500}
@@ -24,13 +24,13 @@ const ImageSlider = (props) => {
                 onSwiper={(s) => {
                   setSwiper(s);
                 }}
-                style={style.mainSwiper}
+                // style={style.mainSwiper}
                 {...rsProps}
               >
                 {varPics?.map((section) => {
                   return section.image?.map((image, i) => {
                     return (
-                      <SwiperSlide key={image}>
+                      <SwiperSlide key={image} style={style.swiperMainImage}>
                         <ReactImageMagnify
                           {...{
                             smallImage: {
@@ -50,7 +50,6 @@ const ImageSlider = (props) => {
                             lensStyle: { backgroundColor: "rgba(0,0,0,.6)" },
                           }}
                           {...rimProps}
-                          style={style.swiperMainImage}
                         />
                       </SwiperSlide>
                     );
@@ -82,7 +81,7 @@ const ImageSlider = (props) => {
           );
         } else {
           return (
-            <div style={style.imageSilderMainDiv}>
+            <div>
               <Swiper
                 spaceBetween={20}
                 speed={2500}
@@ -91,12 +90,12 @@ const ImageSlider = (props) => {
                 onSwiper={(s) => {
                   setSwiper(s);
                 }}
-                style={style.mainSwiper}
+                // style={style.mainSwiper}
                 {...rsProps}
               >
                 {JSON.parse(fetchData.image).map((image) => {
                   return (
-                    <SwiperSlide key={image}>
+                    <SwiperSlide key={image} style={style.swiperMainImage}>
                       <ReactImageMagnify
                         {...{
                           smallImage: {
@@ -105,18 +104,17 @@ const ImageSlider = (props) => {
                             // width: 430,
                             // height: 500,
                             src: `http://${base_url}:${port}/images/products/${image}`,
-                            sizes:
-                              "(max-width: 480px) 100vw, (max-width: 1200px) 30vw, 360px",
+                            // sizes:
+                            //   "(max-width: 480px) 100vw, (max-width: 1200px) 30vw, 360px",
                           },
                           largeImage: {
                             src: `http://${base_url}:${port}/images/products/${image}`,
-                            width: 1200,
-                            height: 1800,
+                            // width: 1200,
+                            // height: 1800,
                           },
                           lensStyle: { backgroundColor: "rgba(0,0,0,.6)" },
                         }}
                         {...rimProps}
-                        style={style.swiperMainImage}
                       />
                     </SwiperSlide>
                   );

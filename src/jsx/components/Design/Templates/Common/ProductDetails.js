@@ -269,8 +269,8 @@ const ProductDetails = (props) => {
       <Container maxWidth="lg " style={style?.varaintContainer}>
         {/* <Header details={true} search={false} /> */}
         <Card sx={style?.cardStyleDetails}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
+          <Grid container>
+            <div style={style?.divSilder}>
               <ImageSlider
                 varPics={varPics}
                 setSwiper={setSwiper}
@@ -286,9 +286,9 @@ const ProductDetails = (props) => {
                   },
                 }}
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12} sm={7} md={7} lg={7} xl={7}>
+            <div style={style?.divDetails}>
               <div className="ml-2">
                 <div
                   className="fluid__instructions "
@@ -503,7 +503,7 @@ const ProductDetails = (props) => {
                 )}
                 <Recommend note={note} setNote={setNote} />
               </div>
-            </Grid>
+            </div>
           </Grid>
         </Card>
       </Container>

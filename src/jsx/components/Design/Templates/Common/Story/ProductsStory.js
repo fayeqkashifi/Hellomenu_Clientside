@@ -255,7 +255,11 @@ function ProductsStory(props) {
   if (loading) {
     return (
       <div className="container ">
-        <div className="spinner-border " role="status" style={style?.spinner}>
+        <div
+          className="spinner-border "
+          role="status"
+          style={style?.spinnerInCenter}
+        >
           <span className="sr-only"></span>
         </div>
       </div>

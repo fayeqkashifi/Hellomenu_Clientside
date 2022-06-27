@@ -113,6 +113,7 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#fff",
+
       fontSize: isMobile ? "2vw" : "3vw",
       // padding: "10px",
     },
@@ -142,7 +143,13 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
     },
     varaintContainer: { paddingBottom: "100px" },
     // Header file style
-
+    backIcon: {
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
+    },
     title: { visibility: "hidden" },
     searchFields: {
       visibility: isMobile ? "hidden" : "visible",
@@ -218,6 +225,13 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
           ? theme.TextColor
           : "#f27d1e",
       },
+    },
+    cartIcon: {
+      color: custom?.menusDeactiveColor
+        ? custom.menusDeactiveColor
+        : theme.HighlightColor
+        ? theme.HighlightColor
+        : "#fff",
     },
     headerTotalDiv: {
       display: "none",
@@ -464,6 +478,7 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
     },
     imageStyle: {
       height: isMobile ? "50px" : isTablet ? "100px" : "150px",
+
       width: "100%",
       borderRadius: "15px",
       objectFit: "contain",
@@ -663,46 +678,51 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
       borderRadius: "5%",
       objectFit: "contain",
     },
-    recomandImage: {
-      height: "200px",
-      width: "100%",
-      borderRadius: "15px",
-
-      objectFit: "contain",
-    },
-
     // Image Slider Style
-    imageSilderMainDiv: { position: "sticky" },
-    mainSwiper: {
-      margin: "10px",
-      padding: "10px",
+    divSilder: {
+      width: isMobile ? "100%" : "30%",
+      padding: "20px",
+      display: isMobile && "flex",
+      alignItems: isMobile && "center",
+      justifyContent: isMobile && "center",
+    },
+    divDetails: {
+      width: isMobile ? "100%" : "70%",
+      padding: "20px",
+    },
+    maindivforSilder: {
+      width: isMobile ? "40%" : "100%",
+      height: isMobile ? "200px" : isTablet ? "350px" : "450px",
     },
     swiperMainImage: {
-      height: "400px",
-      width: "100%",
-      borderRadius: "10px",
-    },
-    ThumbsSwiper: { maxHeight: "100px", cursor: "pointer", margin: "10px" },
-    thumbsImage: {
-      // objectFit: "contain",
-      height: "60px",
-      width: "40px",
+      height: isMobile ? "170px" : isTablet ? "300px" : "400px",
+      width: "inherit",
       textAlign: "center",
       borderRadius: "10px",
+      // objectFit: "contain",
+    },
+    ThumbsSwiper: {
+      minHeight: isMobile ? "30px" : isTablet ? "45px" : "65px",
+      cursor: "pointer",
+      margin: isMobile || isTablet ? "2px" : "5px",
+    },
+    thumbsImage: {
+      height: isMobile ? "25px" : isTablet ? "40px" : "60px",
+      width: isMobile ? "15px" : isTablet ? "25px" : "40px",
+      textAlign: "center",
+      borderRadius: isMobile ? "2px" : "5px",
       ":hover": {
         border: "1px solid",
         borderColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
           : theme.TextColor
           ? theme.TextColor
-          : "#ff751d",
+          : "#33cd6b",
       },
     },
     // End
 
     // footer
-    tooltipPlacement: "right",
-
     buttonStyle: {
       display: theme.ShowButton == 1 ? "block" : "none",
       textTransform: "capitalize",
@@ -850,7 +870,6 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
         : theme.HighlightColor
         ? theme.HighlightColor
         : "#f27d1e",
-      fontSize: isMobile || isTablet ? "2vw" : "1vw",
     },
     cartImage: {
       height: "200px",

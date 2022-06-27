@@ -218,8 +218,8 @@ export const ThridStyle = (custom, theme, isTablet, isMobile) => {
       fontSize: isMobile ? "2vw" : "1vw",
     },
     branchStory: {
-      width: isMobile ? "30px" : isTablet ? "50px" : "60px",
-      height: isMobile ? "50px" : isTablet ? "70px" : "80px",
+      width: isMobile ? "40px" : isTablet ? "60px" : "80px",
+      height: isMobile ? "60px" : isTablet ? "90px" : "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusAcriveColor
@@ -235,8 +235,8 @@ export const ThridStyle = (custom, theme, isTablet, isMobile) => {
       overflow: "hidden",
     },
     productStory: {
-      width: isMobile ? "30px" : isTablet ? "50px" : "60px",
-      height: isMobile ? "30px" : isTablet ? "70px" : "80px",
+      width: isMobile ? "40px" : isTablet ? "60px" : "80px",
+      height: isMobile ? "60px" : isTablet ? "90px" : "130px",
       borderRadius: "10px",
       border: "2px solid",
       borderColor: custom?.menusDeactiveColor
@@ -629,42 +629,50 @@ export const ThridStyle = (custom, theme, isTablet, isMobile) => {
       borderRadius: "5%",
       // objectFit: "contain",
     },
-    recomandImage: {
-      height: "200px",
-      width: "100%",
-      borderRadius: "5%",
-
-      objectFit: "contain",
-    },
     // Image Slider Style
-    imageSilderMainDiv: { minHeight: "80vh", position: "sticky" },
-    mainSwiper: {
-      minHeight: "70vh",
-      margin: "10px",
-      padding: "10px",
+    // Image Slider Style
+    divSilder: {
+      width: isMobile ? "100%" : "30%",
+      padding: "20px",
+      display: isMobile && "flex",
+      alignItems: isMobile && "center",
+      justifyContent: isMobile && "center",
+    },
+    divDetails: {
+      width: isMobile ? "100%" : "70%",
+      padding: "20px",
+    },
+    maindivforSilder: {
+      width: isMobile ? "40%" : "100%",
+      height: isMobile ? "200px" : isTablet ? "350px" : "450px",
     },
     swiperMainImage: {
-      height: "400px",
-      width: "100%",
+      height: isMobile ? "170px" : isTablet ? "300px" : "400px",
+      width: "inherit",
+      textAlign: "center",
       borderRadius: "10px",
       // objectFit: "contain",
     },
-    ThumbsSwiper: { minHeight: "10vh", cursor: "pointer", margin: "10px" },
+    ThumbsSwiper: {
+      minHeight: isMobile ? "30px" : isTablet ? "45px" : "65px",
+      cursor: "pointer",
+      margin: isMobile || isTablet ? "2px" : "5px",
+    },
     thumbsImage: {
-      height: "60px",
-      width: "40px",
+      height: isMobile ? "25px" : isTablet ? "40px" : "60px",
+      width: isMobile ? "15px" : isTablet ? "25px" : "40px",
       textAlign: "center",
-      borderRadius: "10px",
+      borderRadius: isMobile ? "2px" : "5px",
       ":hover": {
         border: "1px solid",
         borderColor: custom?.menusAcriveColor
           ? custom.menusAcriveColor
           : theme.TextColor
           ? theme.TextColor
-          : "#ff751d",
+          : "#33cd6b",
       },
     },
-    // end
+    // End
 
     // footer
     iconSize: {
