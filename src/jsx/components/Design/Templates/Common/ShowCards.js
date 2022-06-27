@@ -167,7 +167,9 @@ export default function ShowCards(props) {
     });
   } else {
     viewShow_HTMLTABLE = (
-      <div className="text-center">{check ? " " : locale?.no_data_found}</div>
+      <div className="text-center" style={style?.cartDescription}>
+        {check ? " " : locale?.no_data_found}
+      </div>
     );
   }
   return viewShow_HTMLTABLE;

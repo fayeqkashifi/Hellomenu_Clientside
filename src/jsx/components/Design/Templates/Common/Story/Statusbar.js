@@ -52,7 +52,10 @@ function Statusbar() {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center">
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={style?.spinner}
+      >
         <div className="spinner-border" role="status"></div>
       </div>
     );

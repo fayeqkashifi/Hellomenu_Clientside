@@ -106,11 +106,7 @@ export function Show(props) {
   };
   if (loading) {
     return (
-      <div
-        className="spinner-border text-primary "
-        role="status"
-        style={{ position: "fixed", top: "50%", left: "50%" }}
-      >
+      <div className="spinner-border " role="status" style={style?.spinner}>
         <span className="sr-only"></span>
       </div>
     );
