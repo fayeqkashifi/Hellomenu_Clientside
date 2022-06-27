@@ -27,20 +27,7 @@ export function Show(props) {
   const selectedLang =
     JSON.parse(sessionStorage.getItem(btoa("selectedLang" + branch.id))) || {};
   const [changeState, setChangeState] = useState(true);
-  const dataLoad = () => {
-    getProductsBasedOnBranchId(branch.id, page, selectedLang.id, source).then(
-      (data) => {
-        if (data !== undefined) {
-          setLastPage(data.last_page);
-          setData(data.data);
-          setPage(page + 1);
-          setLoading(false);
-        }
-      }
-    );
-  };
   let source = axios.CancelToken.source();
-
   useEffect(() => {
     if (source) {
       source.cancel("Operations cancelled due to new request");
@@ -53,14 +40,29 @@ export function Show(props) {
       setLoading(true);
     };
   }, []);
+  const dataLoad = () => {
+    getProductsBasedOnBranchId(branch.id, page, selectedLang.id, source).then(
+      (res) => {
+        if (res !== undefined) {
+          setLastPage(res.last_page);
+          setData(res.data);
+          setPage(page + 1);
+          setLoading(false);
+        }
+      }
+    );
+  };
+
   const fetchMoreData = () => {
     if (page <= lastPage) {
-      getProductsBasedOnBranchId(branch.id, page, source).then((data) => {
-        if (data !== undefined) {
-          setData(data.concat(data.data));
-          setPage(page + 1);
+      getProductsBasedOnBranchId(branch.id, page, selectedLang.id, source).then(
+        (res) => {
+          if (res !== undefined) {
+            setData(data.concat(res.data));
+            setPage(page + 1);
+          }
         }
-      });
+      );
     } else {
       setChangeState(false);
     }
@@ -103,37 +105,39 @@ export function Show(props) {
                         }`}
                         playing={false}
                       />
-                    ) : JSON.parse(item.storyVideosUrl)[0]
+                    ) : JSON.parse(item.storyVideosUrl).length != 0 ? (
+                      JSON.parse(item.storyVideosUrl)[0]
                         .split(".")
                         .includes("tiktok") ? (
-                      <ReactPlayer
-                        width="150px"
-                        height="200px"
-                        style={style?.branchStory}
-                        playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                        light={
-                          item.branchImages
-                            ? `http://${base_url}:${port}/images/branches/${
-                                JSON.parse(item.branchImages)[0]
-                              }`
-                            : true
-                        }
-                        url={JSON.parse(item.storyVideosUrl)[0]}
-                      />
-                    ) : (
-                      <div
-                        style={style?.branchStoryList}
-                        className="text-center"
-                      >
                         <ReactPlayer
-                          width="140px"
-                          height="170px"
-                          style={style?.fullScreenIcon}
+                          width="150px"
+                          height="200px"
+                          style={style?.branchStory}
+                          playIcon={<PlayCircleOutlineIcon fontSize="large" />}
+                          light={
+                            item.branchImages
+                              ? `http://${base_url}:${port}/images/branches/${
+                                  JSON.parse(item.branchImages)[0]
+                                }`
+                              : true
+                          }
                           url={JSON.parse(item.storyVideosUrl)[0]}
-                        ></ReactPlayer>
-                        <FullscreenIcon fontSize="small" />
-                      </div>
-                    )}
+                        />
+                      ) : JSON.parse(item.storyVideosUrl).length != 0 ? (
+                        <div
+                          style={style?.branchStoryList}
+                          className="text-center"
+                        >
+                          <ReactPlayer
+                            width="140px"
+                            height="170px"
+                            style={style?.fullScreenIcon}
+                            url={JSON.parse(item.storyVideosUrl)[0]}
+                          ></ReactPlayer>
+                          <FullscreenIcon fontSize="small" />
+                        </div>
+                      ) : null
+                    ) : null}
                   </Link>
                 </div>
               );
@@ -175,33 +179,37 @@ export function Show(props) {
                       }}
                       style={style?.headerVideos}
                     >
-                      {JSON.parse(item.videosUrl)[0]
-                        .split(".")
-                        .includes("tiktok") ? (
-                        <ReactPlayer
-                          width="150px"
-                          height="200px"
-                          style={style?.productStory}
-                          playIcon={<PlayCircleOutlineIcon fontSize="large" />}
-                          light={`http://${base_url}:${port}/images/products/${
-                            JSON.parse(item.image)[0]
-                          }`}
-                          url={JSON.parse(item.videosUrl)[0]}
-                        />
-                      ) : (
-                        <div
-                          style={style?.productStoryList}
-                          className="text-center"
-                        >
+                      {JSON.parse(item.videosUrl).length ? (
+                        JSON.parse(item.videosUrl)[0]
+                          .split(".")
+                          .includes("tiktok") ? (
                           <ReactPlayer
-                            width="140px"
-                            height="170px"
-                            style={style?.fullScreenIcon}
+                            width="150px"
+                            height="200px"
+                            style={style?.productStory}
+                            playIcon={
+                              <PlayCircleOutlineIcon fontSize="large" />
+                            }
+                            light={`http://${base_url}:${port}/images/products/${
+                              JSON.parse(item.image)[0]
+                            }`}
                             url={JSON.parse(item.videosUrl)[0]}
-                          ></ReactPlayer>
-                          <FullscreenIcon fontSize="small" />
-                        </div>
-                      )}
+                          />
+                        ) : JSON.parse(item.videosUrl).length ? (
+                          <div
+                            style={style?.productStoryList}
+                            className="text-center"
+                          >
+                            <ReactPlayer
+                              width="140px"
+                              height="170px"
+                              style={style?.fullScreenIcon}
+                              url={JSON.parse(item.videosUrl)[0]}
+                            ></ReactPlayer>
+                            <FullscreenIcon fontSize="small" />
+                          </div>
+                        ) : null
+                      ) : null}
                     </Link>
                   </div>
                 )

@@ -112,7 +112,7 @@ function Statusbar() {
                           .split(".")
                           .includes("tiktok") ? (
                         <ReactPlayer
-                          width="80px"
+                          width="60px"
                           height="130px"
                           style={style?.branchStory}
                           playIcon={<PlayCircleOutlineIcon fontSize="large" />}

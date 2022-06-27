@@ -129,6 +129,7 @@ function BranchStory(props) {
               style={{
                 width: "100%",
                 height: "100%",
+                zIndex: 100000,
               }}
             >
               <div

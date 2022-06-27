@@ -57,7 +57,7 @@ export default function SecondMain(props) {
   };
   const valueMenu = (
     <>
-      <Tooltip title={locale?.home} placement={style?.tooltipPlacement}>
+      <Tooltip title={locale?.home} placement={style?.tooltipPlacement} arrow>
         <Link
           to={`${url}`}
           style={
@@ -68,7 +68,11 @@ export default function SecondMain(props) {
           <HomeIcon />
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.profile} placement={style?.tooltipPlacement}>
+      <Tooltip
+        title={locale?.profile}
+        placement={style?.tooltipPlacement}
+        arrow
+      >
         <Link
           to={`${url}/profile`}
           // style={style?.sidebarLinks}
@@ -82,7 +86,7 @@ export default function SecondMain(props) {
           <PersonIcon />
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.cart} placement={style?.tooltipPlacement}>
+      <Tooltip title={locale?.cart} placement={style?.tooltipPlacement} arrow>
         <Link
           to={`${url}/cart`}
           style={
@@ -99,7 +103,11 @@ export default function SecondMain(props) {
           </Badge>
         </Link>
       </Tooltip>
-      <Tooltip title={locale?.track_order} placement={style?.tooltipPlacement}>
+      <Tooltip
+        title={locale?.track_order}
+        placement={style?.tooltipPlacement}
+        arrow
+      >
         <Link
           to={`${url}/track-order`}
           style={

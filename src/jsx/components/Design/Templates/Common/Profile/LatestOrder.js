@@ -56,7 +56,6 @@ export default function LatestOrder() {
                 <th scope="col">Order Id</th>
                 <th scope="col">Status</th>
                 <th scope="col">Ordering Method</th>
-                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -90,7 +89,6 @@ export default function LatestOrder() {
                         />
                       )}
                     </td>
-                    <td>Show Details</td>
                   </tr>
                 );
               })}

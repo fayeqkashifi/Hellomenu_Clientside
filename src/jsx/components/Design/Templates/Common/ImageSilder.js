@@ -104,13 +104,13 @@ const ImageSlider = (props) => {
                             // width: 430,
                             // height: 500,
                             src: `http://${base_url}:${port}/images/products/${image}`,
-                            // sizes:
-                            //   "(max-width: 480px) 100vw, (max-width: 1200px) 30vw, 360px",
+                            sizes:
+                              "(max-width: 480px) 100vw, (max-width: 1200px) 30vw, 360px",
                           },
                           largeImage: {
                             src: `http://${base_url}:${port}/images/products/${image}`,
-                            // width: 1200,
-                            // height: 1800,
+                            width: 1200,
+                            height: 1800,
                           },
                           lensStyle: { backgroundColor: "rgba(0,0,0,.6)" },
                         }}

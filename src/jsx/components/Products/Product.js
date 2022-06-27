@@ -70,6 +70,7 @@ const Product = (props) => {
   // delete End
   //for retriving data using laravel API
   const [fetchData, setFetchData] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(true);
   const dataLoad = async () => {
@@ -78,6 +79,12 @@ const Product = (props) => {
       if (result.data.status === 200) {
         setFetchData(result.data.fetchData.data);
         setLoading(false);
+      } else {
+        throw Error("Due to an error, the data cannot be retrieved.");
+      }
+      const response = await axios.get(`/api/getProductsAll/${branchId}`);
+      if (response.data.status === 200) {
+        setData(response.data.fetchData);
       } else {
         throw Error("Due to an error, the data cannot be retrieved.");
       }
@@ -146,7 +153,7 @@ const Product = (props) => {
         // columnFilter
         columnSorter
         // footer
-        items={fetchData}
+        items={data}
         pagination
         itemsPerPage={5}
         itemsPerPageSelect={true}

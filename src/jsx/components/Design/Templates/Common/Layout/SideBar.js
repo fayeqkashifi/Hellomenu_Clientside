@@ -146,7 +146,7 @@ const SideBar = () => {
       ></Tab>
       {categories?.map((section, i) => (
         <Tab
-          key={i}
+          key={i + 1}
           onClick={() => filterProducts(section)}
           style={
             activeCategory ===

@@ -38,39 +38,39 @@ const Storybranch = (props) => {
   };
 
   const save = (data, { resetForm }) => {
-    if (videos.length != 0) {
-      const formData = new FormData();
-      for (let i = 0; i < videos.storyVideos.length; i++) {
-        formData.append("storyVideos[]", videos.storyVideos[i]);
+    const formData = new FormData();
+    if (videos !== undefined) {
+      if (videos.length != 0) {
+        for (let i = 0; i < videos.storyVideos.length; i++) {
+          formData.append("storyVideos[]", videos.storyVideos[i]);
+        }
       }
-      formData.append("storyTagProducts", JSON.stringify(tagProducts));
-      formData.append("branch_id", id);
-      formData.append("form", JSON.stringify(form));
-      axios
-        .post("/api/insertStories", formData)
-        .then((res) => {
-          if (res.data.status === 200) {
-            setCheck(!check);
-
-            resetForm();
-            setForm([
-              {
-                name: "",
-                errors: {
-                  name: null,
-                },
-              },
-            ]);
-            setTagProducts([]);
-            setAlerts(true, "success", res.data.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      setVideoValidation("This Field is Required.");
     }
+    formData.append("storyTagProducts", JSON.stringify(tagProducts));
+    formData.append("branch_id", id);
+    formData.append("form", JSON.stringify(form));
+    axios
+      .post("/api/insertStories", formData)
+      .then((res) => {
+        if (res.data.status === 200) {
+          setCheck(!check);
+
+          resetForm();
+          setForm([
+            {
+              name: "",
+              errors: {
+                name: null,
+              },
+            },
+          ]);
+          setTagProducts([]);
+          setAlerts(true, "success", res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const [loading, setLoading] = useState(true);

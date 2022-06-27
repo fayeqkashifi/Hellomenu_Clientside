@@ -47,6 +47,8 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
       fontSize: "1vw",
     },
     // SideBar
+    tooltipPlacement: "right",
+
     sidebar:
       isMobile || isTablet
         ? {
