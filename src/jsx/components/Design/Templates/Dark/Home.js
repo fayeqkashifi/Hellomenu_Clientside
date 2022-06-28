@@ -17,7 +17,7 @@ export default function Home() {
   const {
     products,
     style,
-    branchId,
+    branch,
     activeCategory,
     setProducts,
     setPage,
@@ -30,7 +30,7 @@ export default function Home() {
     if (page <= lastPage) {
       if (activeCategory === "All~~~1") {
         getProductsBasedOnBranchId(
-          branchId,
+          branch.id,
           page,
           selectedLang.id,
           source

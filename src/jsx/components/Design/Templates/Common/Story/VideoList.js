@@ -134,7 +134,7 @@ export function Show(props) {
                             style={style?.fullScreenIcon}
                             url={JSON.parse(item.storyVideosUrl)[0]}
                           ></ReactPlayer>
-                          <FullscreenIcon fontSize="small" />
+                          <FullscreenIcon fontSize="1vw" />
                         </div>
                       ) : null
                     ) : null}
@@ -206,7 +206,7 @@ export function Show(props) {
                               style={style?.fullScreenIcon}
                               url={JSON.parse(item.videosUrl)[0]}
                             ></ReactPlayer>
-                            <FullscreenIcon fontSize="small" />
+                            <FullscreenIcon fontSize="1vw" />
                           </div>
                         ) : null
                       ) : null}

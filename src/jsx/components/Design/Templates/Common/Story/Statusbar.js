@@ -12,7 +12,8 @@ import { useRouteMatch } from "react-router-dom";
 
 function Statusbar() {
   const { url } = useRouteMatch();
-  const { products, style, branch, locale } = useContext(TemplateContext);
+  const { products, style, branch, locale, isMobile, isTablet } =
+    useContext(TemplateContext);
   const [branchStories, setBranchStories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -112,8 +113,10 @@ function Statusbar() {
                           .split(".")
                           .includes("tiktok") ? (
                         <ReactPlayer
-                          width="60px"
-                          height="130px"
+                          width={isMobile ? "40px" : isTablet ? "60px" : "80px"}
+                          height={
+                            isMobile ? "60px" : isTablet ? "90px" : "130px"
+                          }
                           style={style?.branchStory}
                           playIcon={<PlayCircleOutlineIcon fontSize="large" />}
                           light={
@@ -128,12 +131,16 @@ function Statusbar() {
                       ) : (
                         <div className="text-center" style={style?.branchStory}>
                           <ReactPlayer
-                            width="70px"
-                            height="100px"
+                            width={
+                              isMobile ? "30px" : isTablet ? "50px" : "70px"
+                            }
+                            height={
+                              isMobile ? "40px" : isTablet ? "60px" : "100px"
+                            }
                             style={style?.fullScreenIcon}
                             url={JSON.parse(item.storyVideosUrl)[0]}
                           />
-                          <FullscreenIcon fontSize="small" />
+                          <FullscreenIcon fontSize="1vw" />
                         </div>
                       )}
                     </Link>
@@ -168,8 +175,10 @@ function Statusbar() {
                           .split(".")
                           .includes("tiktok") ? (
                         <ReactPlayer
-                          width="80px"
-                          height="130px"
+                          width={isMobile ? "40px" : isTablet ? "60px" : "80px"}
+                          height={
+                            isMobile ? "60px" : isTablet ? "90px" : "130px"
+                          }
                           style={style?.productStory}
                           playIcon={<PlayCircleOutlineIcon fontSize="large" />}
                           light={`http://${base_url}:${port}/images/products/${
@@ -183,12 +192,16 @@ function Statusbar() {
                           style={style?.productStory}
                         >
                           <ReactPlayer
-                            width="70px"
-                            height="100px"
+                            width={
+                              isMobile ? "30px" : isTablet ? "50px" : "70px"
+                            }
+                            height={
+                              isMobile ? "40px" : isTablet ? "60px" : "100px"
+                            }
                             style={style?.fullScreenIcon}
                             url={JSON.parse(item.videosUrl)[0]}
                           />
-                          <FullscreenIcon fontSize="small" />
+                          <FullscreenIcon fontSize="1vw" />
                         </div>
                       )}
                     </Link>
