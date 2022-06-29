@@ -656,11 +656,13 @@ export const ThridStyle = (custom, theme, isTablet, isMobile) => {
     ThumbsSwiper: {
       minHeight: isMobile ? "30px" : isTablet ? "45px" : "65px",
       cursor: "pointer",
-      margin: isMobile || isTablet ? "2px" : "5px",
+      padding: isMobile || isTablet ? "2px" : "5px",
     },
     thumbsImage: {
       height: isMobile ? "25px" : isTablet ? "40px" : "60px",
       width: isMobile ? "15px" : isTablet ? "25px" : "40px",
+      padding: isMobile || isTablet ? "2px" : "5px",
+
       textAlign: "center",
       borderRadius: isMobile ? "2px" : "5px",
       ":hover": {
