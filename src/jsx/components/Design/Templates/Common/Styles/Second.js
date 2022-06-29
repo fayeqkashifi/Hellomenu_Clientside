@@ -273,8 +273,8 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       overflow: "hidden",
     },
     branchStoryList: {
-      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
-      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
+      width: "150px",
+      height: "200px",
       borderRadius: "10px",
       border: "1px solid",
       borderColor: custom?.menusAcriveColor
@@ -290,8 +290,8 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
       overflow: "hidden",
     },
     productStoryList: {
-      width: isMobile ? "50px" : isTablet ? "100px" : "150px",
-      height: isMobile ? "80px" : isTablet ? "100px" : "200px",
+      width: "150px",
+      height: "200px",
       borderRadius: "10px",
       border: "1px solid",
       borderColor: custom?.menusDeactiveColor

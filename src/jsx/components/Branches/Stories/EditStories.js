@@ -43,8 +43,22 @@ const EditStories = (props) => {
             },
           });
         });
-        setForm(value);
-        setTagProducts(JSON.parse(result?.storyTagProducts));
+        setForm(
+          value.length != 0
+            ? value
+            : [
+                {
+                  name: "",
+                  errors: {
+                    name: null,
+                  },
+                },
+              ]
+        );
+        const resp = await axios.get(`/api/storyBranchProduct/${id}`);
+        if (resp.data.status === 200) {
+          setTagProducts(resp.data.data);
+        }
         const res = await axios.get(`/api/getProductsAll/${result.branch_id}`);
         if (res.data.status === 200) {
           setProducts(res.data.fetchData);
@@ -63,34 +77,49 @@ const EditStories = (props) => {
     dataLoad();
   }, []);
   const save = () => {
-    const formData = new FormData();
-    formData.append("storyVideos", data.storyVideos);
-    formData.append("storyTagProducts", JSON.stringify(tagProducts));
-    formData.append("id", data.id);
-    formData.append("form", JSON.stringify(form));
-    axios
-      .post("/api/updateStory", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          Swal.fire({
-            title: "Good job!",
-            html: res.data.message,
-            icon: "success",
-            confirmButtonText: "OK",
-            confirmButtonColor: "#93de8b",
-          }).then((check) => {
-            if (check) {
-              history.push({
-                pathname: `/branches/story-branch`,
-                state: { id: data.branch_id },
+    setVideoValidation();
+    if (form[0].name != "" || data.storyVideos !== null) {
+      if (
+        data.storyVideos != null
+          ? form[0].name != ""
+            ? 1
+            : JSON.parse(data.storyVideos).length != 0
+          : 0
+      ) {
+        const formData = new FormData();
+        formData.append("storyVideos", data.storyVideos);
+        formData.append("storyTagProducts", JSON.stringify(tagProducts));
+        formData.append("id", data.id);
+        formData.append("form", JSON.stringify(form));
+        axios
+          .post("/api/updateStory", formData)
+          .then((res) => {
+            if (res.data.status === 200) {
+              Swal.fire({
+                title: "Good job!",
+                html: res.data.message,
+                icon: "success",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#93de8b",
+              }).then((check) => {
+                if (check) {
+                  history.push({
+                    pathname: `/branches/story-branch`,
+                    state: { id: data.branch_id },
+                  });
+                }
               });
             }
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      } else {
+        setVideoValidation("Please add video links or upload videos directly.");
+      }
+    } else {
+      setVideoValidation("Please add video links or upload videos directly.");
+    }
   };
   const removeVideo = (e, video) => {
     e.preventDefault();
@@ -156,7 +185,7 @@ const EditStories = (props) => {
     }
   };
 
-  const [form, setForm] = useState([]);
+  const [form, setForm] = useState();
 
   const prevIsValid = () => {
     if (form.length === 0) {
@@ -356,14 +385,18 @@ const EditStories = (props) => {
                           </div>
                         )}
                       </div>
-
-                      <div className="col-2">
-                        <IconButton
-                          onClick={(e) => handleRemoveField(e, index)}
-                        >
-                          <DeleteIcon fontSize="small" sx={{ color: "red" }} />
-                        </IconButton>
-                      </div>
+                      {form.length > 1 && (
+                        <div className="col-2">
+                          <IconButton
+                            onClick={(e) => handleRemoveField(e, index)}
+                          >
+                            <DeleteIcon
+                              fontSize="small"
+                              sx={{ color: "red" }}
+                            />
+                          </IconButton>
+                        </div>
+                      )}
                     </div>
                   ))}
 

@@ -105,8 +105,6 @@ function Home(props) {
           >
             {viewShow_HTMLTABLE}
           </Container>
-          {console.log(products.length)}
-          {console.log(changeState)}
 
           {products.length >= 10 && (
             <InfiniteScroll

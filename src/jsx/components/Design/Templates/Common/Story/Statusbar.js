@@ -25,6 +25,7 @@ function Statusbar() {
         })
         .then((res) => {
           if (res?.data?.status === 200) {
+            // console.log(res?.data?.data);
             setBranchStories(res?.data?.data);
             setLoading(false);
           }

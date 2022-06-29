@@ -72,7 +72,7 @@ function MyVerticallyCenteredModal(props) {
       .then((res) => {
         if (res.data.status === 200) {
           item.status_id = statusId;
-          item.status = label;
+          item.label = label;
           setCheck(!check);
         }
       })
@@ -98,6 +98,8 @@ function MyVerticallyCenteredModal(props) {
           key={check}
         >
           {data?.map((itemMap) => {
+            // console.log(itemMap);
+            // console.log(item);
             return (
               <Chip
                 key={itemMap.id}
@@ -120,7 +122,6 @@ function MyVerticallyCenteredModal(props) {
                 }
                 className="mr-2"
                 variant={itemMap.id === item.status_id ? "" : "outlined"}
-                // size="small"
               />
             );
           })}

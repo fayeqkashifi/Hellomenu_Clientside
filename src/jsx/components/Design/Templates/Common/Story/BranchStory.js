@@ -20,9 +20,9 @@ function BranchStory(props) {
 
   const loadProdcut = () => {
     const recData = [];
-    const value = JSON.parse(branchStory?.storyTagProducts);
+    const value = branchStory.ids === null ? [] : branchStory.ids.split(",");
     value.map(async (item) => {
-      const product = await getProduct(item.value, selectedLang?.id, source);
+      const product = await getProduct(item, selectedLang?.id, source);
       if (product !== undefined) {
         if (product.data.status === 200) {
           if (product.data.fetchData[0] != undefined) {

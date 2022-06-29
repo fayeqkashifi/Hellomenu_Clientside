@@ -9,8 +9,6 @@ import CustomAlert from "../../CustomAlert";
 import "yup-phone";
 import { localization as t } from "../../Localization";
 import { checkPermission } from "../../Permissions";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import {
@@ -38,39 +36,44 @@ const Storybranch = (props) => {
   };
 
   const save = (data, { resetForm }) => {
-    const formData = new FormData();
-    if (videos !== undefined) {
-      if (videos.length != 0) {
-        for (let i = 0; i < videos.storyVideos.length; i++) {
-          formData.append("storyVideos[]", videos.storyVideos[i]);
+    setVideoValidation();
+    if (form[0].name != "" || videos.length !== 0) {
+      const formData = new FormData();
+      if (videos !== undefined) {
+        if (videos.length != 0) {
+          for (let i = 0; i < videos.storyVideos.length; i++) {
+            formData.append("storyVideos[]", videos.storyVideos[i]);
+          }
         }
       }
-    }
-    formData.append("storyTagProducts", JSON.stringify(tagProducts));
-    formData.append("branch_id", id);
-    formData.append("form", JSON.stringify(form));
-    axios
-      .post("/api/insertStories", formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setCheck(!check);
+      formData.append("storyTagProducts", JSON.stringify(tagProducts));
+      formData.append("branch_id", id);
+      formData.append("form", JSON.stringify(form));
+      axios
+        .post("/api/insertStories", formData)
+        .then((res) => {
+          if (res.data.status === 200) {
+            setCheck(!check);
 
-          resetForm();
-          setForm([
-            {
-              name: "",
-              errors: {
-                name: null,
+            resetForm();
+            setForm([
+              {
+                name: "",
+                errors: {
+                  name: null,
+                },
               },
-            },
-          ]);
-          setTagProducts([]);
-          setAlerts(true, "success", res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+            ]);
+            setTagProducts([]);
+            setAlerts(true, "success", res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setVideoValidation("Please add video links or upload videos directly.");
+    }
   };
 
   const [loading, setLoading] = useState(true);
@@ -106,7 +109,7 @@ const Storybranch = (props) => {
   useEffect(() => {
     dataLoad();
     return () => {
-      setVideos();
+      setVideos([]);
     };
   }, [check]);
 
@@ -170,13 +173,9 @@ const Storybranch = (props) => {
     if (someEmpty) {
       form.map((item, index) => {
         const allPrev = [...form];
-        // console.log();
         if (form[index].name === "") {
           allPrev[index].errors.name = "URL is required";
         }
-        //  if (allPrev.some((val) => val.name == form[index].name)) {
-        //   allPrev[index].errors.name = "Duplicate Entry";
-        // }
         return setForm(allPrev);
       });
     }
@@ -362,17 +361,18 @@ const Storybranch = (props) => {
                                 </div>
                               )}
                             </div>
-
-                            <div className="col-2">
-                              <IconButton
-                                onClick={(e) => handleRemoveField(e, index)}
-                              >
-                                <DeleteIcon
-                                  fontSize="small"
-                                  sx={{ color: "red" }}
-                                />
-                              </IconButton>
-                            </div>
+                            {form.length > 1 && (
+                              <div className="col-2">
+                                <IconButton
+                                  onClick={(e) => handleRemoveField(e, index)}
+                                >
+                                  <DeleteIcon
+                                    fontSize="small"
+                                    sx={{ color: "red" }}
+                                  />
+                                </IconButton>
+                              </div>
+                            )}
                           </div>
                         ))}
 
@@ -445,56 +445,44 @@ const Storybranch = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {stories.map((item, i) => {
-                      return (
-                        <tr key={item.id}>
-                          <td>
-                            <div className="row">
-                              {JSON.parse(item.storyTagProducts).map((item) => {
-                                return (
-                                  <div className="col" key={item.value}>
-                                    <Stack
-                                      direction="row"
-                                      className="m-1"
-                                      spacing={1}
-                                    >
-                                      <Chip
-                                        label={item.label}
-                                        // color="primary"
-                                        variant="outlined"
-                                      />
-                                    </Stack>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </td>
-                          <td width="30%">
-                            {checkPermission("branches-edit") && (
-                              <Link
-                                to={{
-                                  pathname: `/branches/edit-stories`,
-                                  state: { id: item.id },
-                                }}
-                                className="btn btn-outline-info btn-sm"
-                              >
-                                {t("edit")}
-                              </Link>
-                            )}
-                            &nbsp;&nbsp;&nbsp;
-                            {checkPermission("branches-delete") && (
-                              <button
-                                type="button"
-                                onClick={(e) => deleteItem(e, item.id)}
-                                className="btn btn-outline-danger btn-sm"
-                              >
-                                {t("delete")}
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {stories.length !== 0 ? (
+                      stories.map((item, i) => {
+                        return (
+                          <tr key={item.id}>
+                            <td>
+                              <div className="row">{item.label}</div>
+                            </td>
+                            <td width="30%">
+                              {checkPermission("branches-edit") && (
+                                <Link
+                                  to={{
+                                    pathname: `/branches/edit-stories`,
+                                    state: { id: item.id },
+                                  }}
+                                  className="btn btn-outline-info btn-sm"
+                                >
+                                  {t("edit")}
+                                </Link>
+                              )}
+                              &nbsp;&nbsp;&nbsp;
+                              {checkPermission("branches-delete") && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => deleteItem(e, item.id)}
+                                  className="btn btn-outline-danger btn-sm"
+                                >
+                                  {t("delete")}
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={2}>{t("noItemFound")}</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
