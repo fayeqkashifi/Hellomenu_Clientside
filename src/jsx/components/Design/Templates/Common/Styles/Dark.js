@@ -800,7 +800,7 @@ export const DarkStyle = (custom, theme, isTablet, isMobile) => {
     // End
 
     // Counter Style
-    divCounter: { marginTop: "-6px", marginRight: "15px", textAlign: "center" },
+    divCounter: { marginTop: "-6px", textAlign: "center" },
     addToCartIcon: {
       cursor: "pointer",
       color: custom?.menusDeactiveColor

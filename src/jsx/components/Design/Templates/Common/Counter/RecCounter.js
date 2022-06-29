@@ -41,37 +41,30 @@ const RecCounter = (props) => {
   };
 
   return (
-    <div className="row">
-      <div className={`row`}>
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
-          <Typography variant="h6" gutterBottom>
-            <IconButton
-              onClick={() => handleDecrement(item.qty, item.value, item.price)}
-            >
-              <Typography style={style?.counterDecrementIcon}>
-                <RemoveRoundedIcon />
-              </Typography>
-            </IconButton>
-          </Typography>
-        </div>
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 mt-1">
-          {" "}
-          <IconButton>
-            <Typography style={style?.counterValue}>{item.qty}</Typography>
-          </IconButton>
-        </div>
+    <div
+      className={`d-flex flex-row align-items-center justify-content-center`}
+    >
+      <div>
+        <IconButton
+          onClick={() => handleDecrement(item.qty, item.value, item.price)}
+        >
+          <RemoveRoundedIcon style={style?.counterDecrementIcon} />
+        </IconButton>
+      </div>
+      <div>
+        <IconButton>
+          <Typography style={style?.counterValue}>{item.qty}</Typography>
+        </IconButton>
+      </div>
 
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4">
-          <IconButton
-            onClick={() =>
-              handelIncrement(item.qty, item.value, item.price, item.stock)
-            }
-          >
-            <Typography style={style?.counterIncrementIcon}>
-              <AddRoundedIcon />
-            </Typography>
-          </IconButton>
-        </div>
+      <div>
+        <IconButton
+          onClick={() =>
+            handelIncrement(item.qty, item.value, item.price, item.stock)
+          }
+        >
+          <AddRoundedIcon style={style?.counterIncrementIcon} />
+        </IconButton>
       </div>
     </div>
   );

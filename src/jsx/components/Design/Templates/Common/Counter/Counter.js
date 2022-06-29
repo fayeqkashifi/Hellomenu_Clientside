@@ -108,11 +108,9 @@ const Counter = (props) => {
         </div>
       </div>
       <div
-        className={`row justify-content-center ${
-          cartItem.length !== 0 ? " " : "d-none"
-        }`}
+        className={`d-flex flex-row align-items-center justify-content-center`}
       >
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 d-flex align-items-center justify-content-center">
+        <div className={cartItem.length !== 0 ? " " : "d-none"}>
           {(cartItem.length !== 0 ? cartItem[0].qty : item.qty) === 1 ? (
             <IconButton onClick={() => remItem(item.id)}>
               <DeleteRoundedIcon style={style?.counterRemovIcon} />
@@ -131,14 +129,14 @@ const Counter = (props) => {
             </IconButton>
           )}
         </div>
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 d-flex align-items-center justify-content-center">
+        <div className={cartItem.length !== 0 ? " " : "d-none"}>
           <IconButton>
             <Typography style={style?.counterValue}>
               {cartItem.length !== 0 ? cartItem[0].qty : item.qty}
             </Typography>
           </IconButton>
         </div>
-        <div className="col-xs-4 col-md-4 col-lg-4 col-xlg-4 col-sm-4 d-flex align-items-center justify-content-center">
+        <div className={cartItem.length !== 0 ? " " : "d-none"}>
           <IconButton
             onClick={() =>
               handelIncrement(

@@ -724,7 +724,7 @@ export const SecondStyle = (custom, theme, isTablet, isMobile) => {
     // End
 
     // Counter
-    divCounter: { marginTop: "0px", textAlign: "center", display: "grid" },
+    divCounter: { marginTop: "0px", textAlign: "center", display: "row" },
     counterRemovIcon: {
       color: "rgb(223, 71, 89)",
       fontSize: isMobile ? "2vw" : "1vw",
